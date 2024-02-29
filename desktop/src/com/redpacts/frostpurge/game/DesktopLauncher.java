@@ -10,6 +10,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("FrostPurge");
+		config.setWindowedMode(2560, 1440);
+//		config.setFullscreenMode(config.getDisplayMode());
 		new Lwjgl3Application(new GDXRoot(), config);
 	}
 }
