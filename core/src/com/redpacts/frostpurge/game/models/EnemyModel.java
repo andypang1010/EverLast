@@ -1,4 +1,4 @@
 package com.redpacts.frostpurge.game.models;
 
-public class EnemyModel {
+public class EnemyModel extends CharactersModel{
 }
