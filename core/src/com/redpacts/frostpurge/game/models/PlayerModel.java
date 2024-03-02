@@ -1,8 +1,5 @@
 package com.redpacts.frostpurge.game.models;
 
-<<<<<<< Updated upstream
-public class PlayerModel {
-=======
 import com.badlogic.gdx.math.Vector2;
 
 public class PlayerModel extends CharactersModel {
@@ -38,5 +35,4 @@ public class PlayerModel extends CharactersModel {
     public void boost() {
 
     }
->>>>>>> Stashed changes
 }

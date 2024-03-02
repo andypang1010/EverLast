@@ -1,8 +1,6 @@
 package com.redpacts.frostpurge.game.models;
 
-<<<<<<< Updated upstream
-public class EnemyModel {
-=======
+
 import com.badlogic.gdx.math.Vector2;
 
 public class EnemyModel extends CharactersModel{
@@ -30,5 +28,4 @@ public class EnemyModel extends CharactersModel{
     public float getRotation() {
         return super.getRotation();
     }
->>>>>>> Stashed changes
 }
