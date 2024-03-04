@@ -54,7 +54,8 @@ public class PlayerModel {
      * @param location vector2 representing the starting location
      * @param angle float representing angle the player is facing
      */
-    public void PlayerModel(Vector2 location, float angle){
+    public PlayerModel(Vector2 location, float angle){
+        System.out.println("new player");
         this.location = location;
         this.angle = angle;
         this.velocity = new Vector2(0,0);
@@ -67,7 +68,7 @@ public class PlayerModel {
      * draws the player onto the game canvas
      */
     public void drawplayer(GameCanvas canvas){
-        canvas.draw(texture, Color.WHITE,location.x,location.y,location.x,location.y,angle,1,1);
+        canvas.draw(texture, Color.WHITE,location.x,location.y,location.x,location.y,angle,.1f,.1f);
     }
 
 }
