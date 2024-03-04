@@ -57,7 +57,7 @@ public class PlayerController extends CharactersModel {
     public Vector2 getVelocity() {
         return player.getVelocity();
     }
-    @Override
+
     public float getRotation() {
         return player.getAngle();
     }
@@ -72,7 +72,7 @@ public class PlayerController extends CharactersModel {
      * resets the player to origin for testing
      */
     private void reset(){
-        player.setLocation(new Vector2(100,100));
+        player.setLocation(100, 100);
         player.setAngle(0);
         player.setVelocity(0,0);
     }
@@ -97,11 +97,15 @@ public class PlayerController extends CharactersModel {
         if (restart){
             reset();
         }
+      
         System.out.println("angle");
         System.out.println(player.getAngle());
+      
         System.out.println("velocity");
         System.out.println(player.getVelocity());
-        player.setLocation(player.getLocation().add(player.getVelocity()));
+      
+        Vector2 newLocation = player.getLocation().add(player.getVelocity());
+        player.setLocation(newLocation.x, newLocation.y);
     }
     public void draw(GameCanvas canvas){
         player.drawPlayer(canvas);
