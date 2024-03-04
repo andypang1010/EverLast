@@ -17,7 +17,6 @@ public class PlayerModel extends CharactersModel{
      * @param angle float representing angle the player is facing
      */
     public PlayerModel(Vector2 location, float angle){
-        System.out.println("new player");
         this.location = location;
         this.angle = angle;
         this.velocity = new Vector2(0,0);
@@ -31,7 +30,6 @@ public class PlayerModel extends CharactersModel{
      */
     public void drawPlayer(GameCanvas canvas){
         canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, location.x, location.y, angle,.5f,.5f);
-//        System.out.println("Center of player: " + location.x + ", " + location.y);
     }
 
 }

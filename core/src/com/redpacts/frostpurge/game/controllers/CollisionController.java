@@ -164,16 +164,16 @@ public class CollisionController {
         // Do not let the player go off screen.
         if (player.getLocation().x <= 0) {
             player.setLocation(0, player.getLocation().y);
-            player.setVelocity(-player.getVelocity().x, player.getVelocity().y);
+            player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
         } else if (player.getLocation().y <= 0) {
             player.setLocation(player.getLocation().x, 0);
-            player.setVelocity(player.getVelocity().x, -player.getVelocity().y);
+            player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
         } else if (player.getLocation().x >= getWidth()) {
             player.setLocation(getWidth(), player.getLocation().y);
-            player.setVelocity(-player.getVelocity().x, player.getVelocity().y);
+            player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
         } else if (player.getLocation().y >= getHeight()){
             player.setLocation(player.getLocation().x, getHeight());
-            player.setVelocity(player.getVelocity().x, -player.getVelocity().y);
+            player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
         }
     }
 
