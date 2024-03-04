@@ -17,7 +17,7 @@ public class PlayerController extends CharactersModel {
         float y = (float) -Math.sin(player.getAngle());
         vel.x += x;
         vel.y += y;
-        player.setVelocity(vel);
+        player.setVelocity(vel.x, vel.y);
     }
     public void rotate(Boolean left) {
         if (left){
@@ -33,7 +33,7 @@ public class PlayerController extends CharactersModel {
         float y = (float) Math.sin(player.getAngle());
         vel.x = stophelper(vel.x,x);
         vel.y = stophelper(vel.y,y);
-        player.setVelocity(vel);
+        player.setVelocity(vel.x, vel.y);
     }
     private float stophelper (float vel, float change){
         if (vel<0){
