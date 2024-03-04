@@ -9,52 +9,13 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.Gdx;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-public class PlayerModel {
+public class PlayerModel extends CharactersModel{
 
-    /**
-    location of the player where the first index is the x coordinate and the second
-    is the y coordinate
-     */
-    private Vector2 location;
-    /**
-    Angle of the player in radians where 0 is the player facing right and it follows
-    standard unit circle conventions
-     */
-    private float angle;
-    /**
-     * Velocity vector of the player where the first index is the x coordinate and the
-     * second is the y coordinate
-     */
-    private Vector2 velocity;
     /**
      *sprite for the player
      */
     private Texture texture;
 
-    public Vector2 getLocation(){
-        return location;
-    }
-    public void setLocation(float x, float y){
-        this.location = new Vector2(x, y);
-    }
-    public void setLocation(Vector2 location){
-        this.location = location;
-    }
-    public float getAngle(){
-        return angle;
-    }
-    public void setAngle(float angle){
-        this.angle = angle;
-    }
-    public Vector2 getVelocity(){
-        return velocity;
-    }
-    public void setVelocity(float x, float y){
-        this.velocity = new Vector2(x, y);
-    }
-    public void setVelocity(Vector2 v){
-        this.velocity = new Vector2(v);
-    }
     /**
      * Instantiates the player with their starting location and angle and with their texture
      * @param location vector2 representing the starting location
@@ -65,7 +26,7 @@ public class PlayerModel {
         this.location = location;
         this.angle = angle;
         this.velocity = new Vector2(0,0);
-        FileHandle fileHandle = Gdx.files.internal("redpacts.jpg");
+        FileHandle fileHandle = Gdx.files.internal("livhead.png");
         Pixmap pixmap = new Pixmap(fileHandle);
         this.texture = new Texture(pixmap);
         pixmap.dispose();
@@ -74,7 +35,8 @@ public class PlayerModel {
      * draws the player onto the game canvas
      */
     public void drawPlayer(GameCanvas canvas){
-        canvas.draw(texture, Color.WHITE,location.x,location.y,location.x,location.y,angle,.1f,.1f);
+        canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, location.x, location.y, angle,.5f,.5f);
+        System.out.println("Center of player: " + location.x + ", " + location.y);
     }
 
 }
