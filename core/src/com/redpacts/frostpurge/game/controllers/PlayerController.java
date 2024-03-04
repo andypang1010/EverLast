@@ -21,16 +21,16 @@ public class PlayerController extends CharactersModel {
     }
     public void rotate(Boolean left) {
         if (left){
-            player.setAngle(player.getAngle()+1f);
+            player.setAngle(player.getAngle()+3f);
         }else{
-            player.setAngle(player.getAngle()-1f);
+            player.setAngle(player.getAngle()-3f);
         }
     }
     @Override
     public void stop() {
         Vector2 vel = player.getVelocity();
-        float x = (float) (-.5f*Math.cos(Math.toRadians(player.getAngle())));
-        float y = (float) (-.5f*Math.sin(Math.toRadians(player.getAngle())));
+        float x = -.1f*player.getVelocity().y;
+        float y = -.1f*player.getVelocity().y;
         vel.x = stophelper(vel.x,x);
         vel.y = stophelper(vel.y,y);
         player.setVelocity(vel.x, vel.y);
@@ -72,7 +72,7 @@ public class PlayerController extends CharactersModel {
      * resets the player to origin for testing
      */
     private void reset(){
-        player.setLocation(new Vector2(0,0));
+        player.setLocation(new Vector2(100,100));
         player.setAngle(0);
         player.setVelocity(0,0);
     }
@@ -97,6 +97,10 @@ public class PlayerController extends CharactersModel {
         if (restart){
             reset();
         }
+        System.out.println("angle");
+        System.out.println(player.getAngle());
+        System.out.println("velocity");
+        System.out.println(player.getVelocity());
         player.setLocation(player.getLocation().add(player.getVelocity()));
     }
     public void draw(GameCanvas canvas){

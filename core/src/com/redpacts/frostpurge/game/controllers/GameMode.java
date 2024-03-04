@@ -44,7 +44,7 @@ public class GameMode implements Screen {
         inputController = new InputController();
         gameplayController = new GameplayController();
         Board = new MapModel(20,20);
-        Player = new PlayerModel(new Vector2(10,10),0);
+        Player = new PlayerModel(new Vector2(100,100),0);
         Playercontroller = new PlayerController(Player);
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
         physicsController = new CollisionController(Board,Player,null, canvas.getWidth(), canvas.getHeight());
@@ -87,11 +87,11 @@ public class GameMode implements Screen {
     public void update(float delta) {
         inputController.readInput(null,null);
         Playercontroller.update(inputController.didAccelerate(),inputController.didDecelerate(),inputController.didRotateLeft(),inputController.didRotateRight(), inputController.didBoost());
+        physicsController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
-        physicsController.update();
         Board.draw(canvas);
         Playercontroller.draw(canvas);
         canvas.end();
