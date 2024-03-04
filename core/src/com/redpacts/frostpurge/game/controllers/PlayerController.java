@@ -100,6 +100,6 @@ public class PlayerController extends CharactersModel {
         player.setLocation(player.getLocation().add(player.getVelocity()));
     }
     public void draw(GameCanvas canvas){
-        player.drawplayer(canvas);
+        player.drawPlayer(canvas);
     }
 }

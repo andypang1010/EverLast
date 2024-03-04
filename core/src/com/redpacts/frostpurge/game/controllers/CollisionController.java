@@ -17,12 +17,36 @@ public class CollisionController {
     private float width;
     /** Height of the collision geometry */
     private float height;
+    /** Offset of bounds */
+    private int offset = 10;
 
 
 
     // Cache objects for collision calculations
     private Vector2 temp1;
     private Vector2 temp2;
+
+    /// ACCESSORS
+
+    /**
+     * Returns width of the game window (necessary to detect out of bounds)
+     *
+     * @return width of the game window
+     */
+    public float getWidth() {
+        return width;
+    }
+
+    /**
+     * Returns height of the game window (necessary to detect out of bounds)
+     *
+     * @return height of the game window
+     */
+    public float getHeight() {
+        return height;
+    }
+
+    /// COLLISION CHECK
 
     /**
      * Creates a CollisionController for the given screen dimensions.
@@ -46,19 +70,26 @@ public class CollisionController {
     }
 
     /**
-     * Updates all the ships and photons, moving them forward.
+     * Updates all the collisions.
      *
      */
     public void update() {
-        // Test collisions between ships.
         int length = enemies.size;
-        for (int ii = 0; ii < length - 1; ii++) {
+
+        // Process bounds for player
+        processBound((PlayerModel) player);
+
+        // Test collisions between player and enemies. Process enemies bounds
+        for (int ii = 0; ii <= length - 1; ii++) {
             checkForCollision(player, enemies.get(ii));
+            processBound((EnemyModel) enemies.get(ii));
+        }
+
+        for (int ii = 0; ii < length - 1; ii++) {
             for (int jj = ii + 1; jj < length; jj++) {
                 checkForCollision(enemies.get(ii), enemies.get(jj));
             }
         }
-        checkForCollision(player, enemies.get(length - 1));
     }
     /**
      * Handles collisions between enemies, causing them to bounce off one another.
@@ -121,6 +152,50 @@ public class CollisionController {
 
             player.setVelocity(-vx1, -vy1);
             enemy.setVelocity(-vx2, -vy2);
+        }
+    }
+
+    /**
+     * Check player for being out-of-bounds.
+     *
+     * @param player Player to check
+     */
+    private void processBound(PlayerModel player) {
+        // Do not let the player go off screen.
+        if (player.getLocation().x <= 0) {
+            player.setLocation(0, player.getLocation().y);
+            player.setVelocity(-player.getVelocity().x, player.getVelocity().y);
+        } else if (player.getLocation().y <= 0) {
+            player.setLocation(player.getLocation().x, 0);
+            player.setVelocity(player.getVelocity().x, -player.getVelocity().y);
+        } else if (player.getLocation().x >= getWidth()) {
+            player.setLocation(getWidth(), player.getLocation().y);
+            player.setVelocity(-player.getVelocity().x, player.getVelocity().y);
+        } else if (player.getLocation().y >= getHeight()){
+            player.setLocation(player.getLocation().x, getHeight());
+            player.setVelocity(player.getVelocity().x, -player.getVelocity().y);
+        }
+    }
+
+    /**
+     * Check enemy for being out-of-bounds.
+     *
+     * @param enemy Enemy to check
+     */
+    private void processBound(EnemyModel enemy) {
+        // Do not let the enemy go off screen.
+        if (enemy.getLocation().x <= 0) {
+            enemy.setLocation(0, enemy.getLocation().y);
+            enemy.setVelocity(-enemy.getVelocity().x, enemy.getVelocity().y);
+        } else if (enemy.getLocation().y <= 0) {
+            enemy.setLocation(enemy.getLocation().x, 0);
+            enemy.setVelocity(enemy.getVelocity().x, -enemy.getVelocity().y);
+        } else if (enemy.getLocation().x >= getWidth()) {
+            enemy.setLocation(getWidth(), enemy.getLocation().y);
+            enemy.setVelocity(-enemy.getVelocity().x, enemy.getVelocity().y);
+        } else if (enemy.getLocation().y >= getHeight()){
+            enemy.setLocation(enemy.getLocation().x, getHeight());
+            enemy.setVelocity(enemy.getVelocity().x, -enemy.getVelocity().y);
         }
     }
 
