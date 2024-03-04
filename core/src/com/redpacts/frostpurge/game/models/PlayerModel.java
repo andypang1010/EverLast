@@ -12,11 +12,6 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerModel extends CharactersModel{
 
     /**
-     *sprite for the player
-     */
-    private Texture texture;
-
-    /**
      * Instantiates the player with their starting location and angle and with their texture
      * @param location vector2 representing the starting location
      * @param angle float representing angle the player is facing
@@ -36,7 +31,7 @@ public class PlayerModel extends CharactersModel{
      */
     public void drawPlayer(GameCanvas canvas){
         canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, location.x, location.y, angle,.5f,.5f);
-        System.out.println("Center of player: " + location.x + ", " + location.y);
+//        System.out.println("Center of player: " + location.x + ", " + location.y);
     }
 
 }
