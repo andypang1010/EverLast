@@ -74,22 +74,22 @@ public class CollisionController {
      *
      */
     public void update() {
-        int length = enemies.size;
+//        int length = enemies.size;
 
         // Process bounds for player
         processBound((PlayerModel) player);
 
-        // Test collisions between player and enemies. Process enemies bounds
-        for (int ii = 0; ii <= length - 1; ii++) {
-            checkForCollision(player, enemies.get(ii));
-            processBound((EnemyModel) enemies.get(ii));
-        }
-
-        for (int ii = 0; ii < length - 1; ii++) {
-            for (int jj = ii + 1; jj < length; jj++) {
-                checkForCollision(enemies.get(ii), enemies.get(jj));
-            }
-        }
+//        // Test collisions between player and enemies. Process enemies bounds
+//        for (int ii = 0; ii <= length - 1; ii++) {
+//            checkForCollision(player, enemies.get(ii));
+//            processBound((EnemyModel) enemies.get(ii));
+//        }
+//
+//        for (int ii = 0; ii < length - 1; ii++) {
+//            for (int jj = ii + 1; jj < length; jj++) {
+//                checkForCollision(enemies.get(ii), enemies.get(jj));
+//            }
+//        }
     }
     /**
      * Handles collisions between enemies, causing them to bounce off one another.

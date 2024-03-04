@@ -1,16 +1,24 @@
 package com.redpacts.frostpurge.game.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.views.GameCanvas;
+import org.w3c.dom.Text;
 
 public class MapModel {
     /** The dimensions of a single tile */
-    private static final int TILE_WIDTH = 64;
+    private static final int TILE_WIDTH = 128;
     /** Color of a regular tile */
-    private static final Color BASIC_COLOR = new Color(1f, 1f, 1f, 0.5f);
+    private static final Color BASIC_COLOR = new Color(1f, 1f, 1f, 1f);
     /** Highlight color for power tiles */
-    private static final Color POWER_COLOR = new Color( 0.0f,  1.0f,  0.5f, 0.5f);
+    private static final Color OBSTACLE_COLOR = new Color( 0.0f,  1.0f,  0.5f, 1f);
+
+    /** The texture used for tiles */
+    private Texture tile_texture;
 
     // Instance attributes
     /** The map width (in number of tiles) */
@@ -21,17 +29,47 @@ public class MapModel {
     private TileModel[] tiles;
 
     /**
-     * Creates a new map of the given size
+     * Creates a new empty map of the given size
      *
      * @param width Map width in tiles
      * @param height Map height in tiles
      */
     public MapModel(int width, int height) {
+        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
+        Pixmap pixmap = new Pixmap(fileHandle);
+        this.tile_texture = new Texture(pixmap);
+        pixmap.dispose();
+
         this.width = width;
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
-            tiles[ii] = new TileModel();
+            tiles[ii] = new EmptyTile(tile_texture);
+        }
+    }
+
+    /**
+     * Creates a new map of the given size with obstacles at specified positions
+     *
+     * @param width Map width in tiles
+     * @param height Map height in tiles
+     * @param obstacle_pos Indices of obstacle tiles
+     */
+    public MapModel(int width, int height, Array<Integer> obstacle_pos) {
+        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
+        Pixmap pixmap = new Pixmap(fileHandle);
+        this.tile_texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        this.width = width;
+        this.height = height;
+        tiles = new TileModel[width * height];
+        for (int ii = 0; ii < tiles.length; ii++) {
+            if(obstacle_pos.contains(ii, true)){
+                tiles[ii] = new ObstacleTile(tile_texture);
+            }else{
+                tiles[ii] = new EmptyTile(tile_texture);
+            }
         }
     }
 
@@ -77,101 +115,37 @@ public class MapModel {
     }
 
     /**
-     * Returns true if a tile is a power up tile.
+     * Returns true if a tile is an obstacle tile.
      *
      * @param x The x value in screen coordinates
      * @param y The y value in screen coordinates
      *
-     * @return true if a tile is a power up tile
+     * @return true if a tile is an obstacle tile
      */
-    public boolean isPowerTileAtScreen(float x, float y) {
+    public boolean isObstacleTileAtScreen(float x, float y) {
         int tx = screenToBoard(x);
         int ty = screenToBoard(y);
         if (!inBounds(tx, ty)) {
             return false;
         }
 
-        return getTileState(tx, ty).isPowered();
+        return getTileState(tx, ty).getType() == TileModel.TileType.OBSTACLE;
     }
 
     /**
-     * Returns true if a tile is a power up tile.
+     * Returns true if a tile is a obstacle tile.
      *
      * @param x The x index for the Tile
      * @param y The y index for the Tile
      *
-     * @return true if a tile is a power up tile
+     * @return true if a tile is an obstacle tile
      */
-    public boolean isPowerTileAt(int x, int y) {
+    public boolean isObstacleTileAt(int x, int y) {
         if (!inBounds(x, y)) {
             return false;
         }
 
-        return getTileState(x, y).isPowered();
-    }
-
-    /**
-     * Sets a tile as a power up tile.
-     *
-     * @param x The x index for the Tile
-     * @param y The y index for the Tile
-     */
-    public void setPower(int x, int y) {
-        if (!inBounds(x,y)) {
-            Gdx.app.error("Map", "Illegal tile "+x+","+y, new IndexOutOfBoundsException());
-            return;
-        }
-        getTileState(x, y).setPower(true);
-    }
-
-    /**
-     * Returns true if a tile is a goal tile.
-     *
-     * @param x The x value in screen coordinates
-     * @param y The y value in screen coordinates
-     *
-     * @return true if a tile is a goal tile
-     */
-    public boolean isGoalAtScreen(float x, float y) {
-        int tx = screenToBoard(x);
-        int ty = screenToBoard(y);
-        if (!inBounds(tx, ty)) {
-            return false;
-        }
-
-        return getTileState(tx, ty).isGoal();
-    }
-
-    /**
-     * Returns true if the tile is a goal.
-     *
-     * A tile position that is not on the map will always evaluate to false.
-     *
-     * @param x The x index for the Tile
-     * @param y The y index for the Tile
-     *
-     * @return true if the tile is a goal.
-     */
-    public boolean isGoal(int x, int y) {
-        if (!inBounds(x, y)) {
-            return false;
-        }
-
-        return getTileState(x, y).isGoal();
-    }
-
-    /**
-     * Marks a tile as a goal.
-     *
-     * @param x The x index for the Tile
-     * @param y The y index for the Tile
-     */
-    public void setGoal(int x, int y) {
-        if (!inBounds(x,y)) {
-            Gdx.app.error("Map", "Illegal tile "+x+","+y, new IndexOutOfBoundsException());
-            return;
-        }
-        getTileState(x, y).setGoal(true);
+        return getTileState(x, y).getType() == TileModel.TileType.OBSTACLE;
     }
 
     /**
@@ -186,14 +160,14 @@ public class MapModel {
     }
 
     /**
-     * Returns the screen position coordinate for a map tile index.
+     * Returns the screen position coordinate for a map tile index(bottom left corner of the tile).
      *
      * @param n Tile index
      *
      * @return the screen position coordinate for a tile index.
      */
     public float boardToScreen(int n) {
-        return (float) (n + 0.5f) * (getTileSize());
+        return (float) (n) * (getTileSize());
     }
 
     /**
@@ -237,11 +211,13 @@ public class MapModel {
         float sx = boardToScreen(x);
         float sy = boardToScreen(y);
 
+        float scale = (float) TILE_WIDTH / tile.getTexture().getWidth();
+
         // Draw
-        if (tile.isPowered()) {
-            canvas.draw(tile.getTexture(), POWER_COLOR, sx, sy, sx, sy, 0, 1, 1);
+        if (tile.getType() == TileModel.TileType.OBSTACLE) {
+            canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale);
         }else{
-            canvas.draw(tile.getTexture(), BASIC_COLOR, sx, sy, sx, sy, 0, 1, 1);
+            canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale);
         }
     }
 }
