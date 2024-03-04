@@ -34,6 +34,9 @@ public class PlayerModel {
     public Vector2 getLocation(){
         return location;
     }
+    public void setLocation(float x, float y){
+        this.location = new Vector2(x, y);
+    }
     public void setLocation(Vector2 location){
         this.location = location;
     }
@@ -48,6 +51,9 @@ public class PlayerModel {
     }
     public void setVelocity(float x, float y){
         this.velocity = new Vector2(x, y);
+    }
+    public void setVelocity(Vector2 v){
+        this.velocity = new Vector2(v);
     }
     /**
      * Instantiates the player with their starting location and angle and with their texture
@@ -67,7 +73,7 @@ public class PlayerModel {
     /**
      * draws the player onto the game canvas
      */
-    public void drawplayer(GameCanvas canvas){
+    public void drawPlayer(GameCanvas canvas){
         canvas.draw(texture, Color.WHITE,location.x,location.y,location.x,location.y,angle,.1f,.1f);
     }
 
