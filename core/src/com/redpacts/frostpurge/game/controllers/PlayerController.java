@@ -7,30 +7,30 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerController extends CharactersModel {
     private PlayerModel player;
-    void PlayerController(PlayerModel player){
+    PlayerController(PlayerModel player){
         this.player = player;
     }
     @Override
     public void accelerate() {
         Vector2 vel = player.getVelocity();
-        float x = (float) Math.cos(player.getAngle());
-        float y = (float) -Math.sin(player.getAngle());
+        float x = (float) (.5f*Math.cos(Math.toRadians(player.getAngle())));
+        float y = (float) (.5f*Math.sin(Math.toRadians(player.getAngle())));
         vel.x += x;
         vel.y += y;
         player.setVelocity(vel.x, vel.y);
     }
     public void rotate(Boolean left) {
         if (left){
-            player.setAngle(player.getAngle()+.1f);
+            player.setAngle(player.getAngle()+1f);
         }else{
-            player.setAngle(player.getAngle()-.1f);
+            player.setAngle(player.getAngle()-1f);
         }
     }
     @Override
     public void stop() {
         Vector2 vel = player.getVelocity();
-        float x = (float) -Math.cos(player.getAngle());
-        float y = (float) Math.sin(player.getAngle());
+        float x = (float) (-.5f*Math.cos(Math.toRadians(player.getAngle())));
+        float y = (float) (-.5f*Math.sin(Math.toRadians(player.getAngle())));
         vel.x = stophelper(vel.x,x);
         vel.y = stophelper(vel.y,y);
         player.setVelocity(vel.x, vel.y);
@@ -69,10 +69,19 @@ public class PlayerController extends CharactersModel {
     }
 
     /**
+     * resets the player to origin for testing
+     */
+    private void reset(){
+        player.setLocation(new Vector2(0,0));
+        player.setAngle(0);
+        player.setVelocity(0,0);
+    }
+
+    /**
      * Update function that will be called in gameplaycontroller to update the player actions.
      * Right now the input controller isn't done yet, so I am using booleans for buttons presses.
      */
-    public void update(GameCanvas canvas,boolean accelerate, boolean decelerate, boolean left, boolean right){
+    public void update(boolean accelerate, boolean decelerate, boolean left, boolean right, boolean restart){
         if (accelerate){
             accelerate();
         }
@@ -85,7 +94,12 @@ public class PlayerController extends CharactersModel {
         if (right){
             rotate(false);
         }
+        if (restart){
+            reset();
+        }
         player.setLocation(player.getLocation().add(player.getVelocity()));
+    }
+    public void draw(GameCanvas canvas){
         player.drawplayer(canvas);
     }
 }

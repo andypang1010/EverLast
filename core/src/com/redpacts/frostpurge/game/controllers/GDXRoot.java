@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -28,7 +29,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * This method configures the asset manager, but does not load any assets
 	 * or assign any screen.
 	 */
-	public GDXRoot() {}
+	public GDXRoot( ) {}
 
 	/**
 	 * Called when the Application is first created.
@@ -44,6 +45,16 @@ public class GDXRoot extends Game implements ScreenListener {
 //		loading.setScreenListener(this);
 //		setScreen(loading);
 		setScreen(playing);
+	}
+
+	@Override
+	public void render(){
+
+		// Update the game state
+		playing.update(60);
+
+		// Draw the game
+
 	}
 
 	/**

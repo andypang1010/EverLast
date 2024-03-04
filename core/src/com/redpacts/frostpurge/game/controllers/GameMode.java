@@ -1,7 +1,13 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.redpacts.frostpurge.game.models.MapModel;
+import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -16,6 +22,12 @@ public class GameMode implements Screen {
     private GameplayController gameplayController;
     /** Whether or not this player mode is still active */
     private boolean active;
+    /** Board for the game*/
+    private MapModel Board;
+    /** Player for the game*/
+    private PlayerModel Player;
+    /** Player for the game*/
+    private PlayerController Playercontroller;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -31,8 +43,11 @@ public class GameMode implements Screen {
         // Create the controllers.
         inputController = new InputController();
         gameplayController = new GameplayController();
+        Board = new MapModel(20,20);
+        Player = new PlayerModel(new Vector2(10,10),0);
+        Playercontroller = new PlayerController(Player);
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        physicsController = new CollisionController(canvas.getWidth(), canvas.getHeight());
+        physicsController = new CollisionController(Board,Player,null, canvas.getWidth(), canvas.getHeight());
     }
 
     @Override
@@ -68,6 +83,17 @@ public class GameMode implements Screen {
     @Override
     public void dispose() {
 
+    }
+    public void update(float delta) {
+        inputController.readInput(null,null);
+        Playercontroller.update(inputController.didAccelerate(),inputController.didDecelerate(),inputController.didRotateLeft(),inputController.didRotateRight(), inputController.didBoost());
+
+        Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        canvas.begin();
+        Playercontroller.draw(canvas);
+
+        canvas.end();
     }
 
     public enum GameState {
