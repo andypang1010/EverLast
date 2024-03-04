@@ -74,10 +74,10 @@ public class CollisionController {
     private void checkForCollision(EnemyModel enemy1, EnemyModel enemy2) {
         // TODO: Update so that we get position of enemy
         // Got the positions for each ship
-        float x1 = enemy1.getX();
-        float y1 = enemy1.getY();
-        float x2 = enemy2.getX();
-        float y2 = enemy2.getY();
+        float x1 = enemy1.getPosition().x;
+        float y1 = enemy1.getPosition().y;
+        float x2 = enemy2.getPosition().x;
+        float y2 = enemy2.getPosition().y;
 
         // TODO: Update logic of guard check and location update such that it will account for enemy size.
         // TODO: Update logic so that it will change velocity properly.
@@ -106,15 +106,22 @@ public class CollisionController {
     private void checkForCollision(PlayerModel player, EnemyModel enemy) {
         // TODO: Update so that we get position of enemy
         // Got the positions for each ship
-        float x1 = player.getX();
-        float y1 = player.getY();
-        float x2 = enemy.getX();
-        float y2 = enemy.getY();
+        float x1 = player.getPosition().x;
+        float y1 = player.getPosition().y;
+        float x2 = enemy.getPosition().x;
+        float y2 = enemy.getPosition().y;
 
         // TODO: Update logic of guard check and location update such that it will account for enemy size.
         // TODO: Update game over logic
         // If the two enemies collide
         if (x1 == x2 && y1 == y2) {
+            float vx1 = player.getVelocity().x;
+            float vy1 = player.getVelocity().y;
+            float vx2 = enemy.getVelocity().x;
+            float vy2 = enemy.getVelocity().y;
+
+            player.setVelocity(-vx1, -vy1);
+            enemy.setVelocity(-vx2, -vy2);
         }
     }
 
@@ -125,4 +132,5 @@ public class CollisionController {
      */
     private float manhattan(float x0, float y0, float x1, float y1) {
         return Math.abs(x1 - x0) + Math.abs(y1 - y0);
+    }
 }
