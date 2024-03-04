@@ -10,7 +10,4 @@ public interface Movable {
 
     void stop();
 
-    Vector2 getVelocity();
-
-    float getRotation();
 }

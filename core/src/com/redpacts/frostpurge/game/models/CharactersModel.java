@@ -1,9 +1,15 @@
 package com.redpacts.frostpurge.game.models;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.util.Movable;
 
 public abstract class CharactersModel implements Movable {
+    protected Vector2 location;
+    protected float angle;
+    protected Vector2 velocity;
+    protected Texture texture;
+
     public void accelerate() {
 
     }
@@ -16,13 +22,22 @@ public abstract class CharactersModel implements Movable {
 
     }
 
-    @Override
-    public Vector2 getVelocity() {
-        return null;
+    public Vector2 getLocation(){
+        return location;
     }
-
-    @Override
-    public float getRotation() {
-        return 0;
+    public void setLocation(float x, float y){
+        location = new Vector2(x, y);
+    }
+    public float getAngle(){
+        return angle;
+    }
+    public void setAngle(float angle){
+        this.angle = angle;
+    }
+    public Vector2 getVelocity(){
+        return velocity;
+    }
+    public void setVelocity(float x, float y){
+        velocity = new Vector2(x, y);
     }
 }
