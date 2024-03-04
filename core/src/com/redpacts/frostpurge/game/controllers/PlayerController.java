@@ -29,8 +29,8 @@ public class PlayerController extends CharactersModel {
     @Override
     public void stop() {
         Vector2 vel = player.getVelocity();
-        float x = -.1f*player.getVelocity().y;
-        float y = -.1f*player.getVelocity().y;
+        float x = -.05f*player.getVelocity().x;
+        float y = -.05f*player.getVelocity().y;
         vel.x = stophelper(vel.x,x);
         vel.y = stophelper(vel.y,y);
         player.setVelocity(vel.x, vel.y);
