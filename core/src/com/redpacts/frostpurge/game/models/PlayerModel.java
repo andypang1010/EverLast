@@ -46,8 +46,8 @@ public class PlayerModel {
     public Vector2 getVelocity(){
         return velocity;
     }
-    public void setVelocity(Vector2 velocity){
-        this.velocity = velocity;
+    public void setVelocity(float x, float y){
+        this.velocity = new Vector2(x, y);
     }
     /**
      * Instantiates the player with their starting location and angle and with their texture
