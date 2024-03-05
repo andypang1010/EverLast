@@ -44,11 +44,11 @@ public class GameMode implements Screen {
         // Create the controllers.
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-        obstacles.add(1, 2, 3, 4);
+        obstacles.add(21, 24, 51, 54);
 
         inputController = new InputController();
         gameplayController = new GameplayController();
-        Board = new MapModel(20,20, obstacles);
+        Board = new MapModel(10,10, obstacles);
         Player = new PlayerModel(new Vector2(100,100),0);
         Playercontroller = new PlayerController(Player);
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
