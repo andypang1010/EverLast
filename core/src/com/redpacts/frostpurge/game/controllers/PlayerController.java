@@ -98,12 +98,6 @@ public class PlayerController extends CharactersModel {
             reset();
         }
       
-        System.out.println("angle");
-        System.out.println(player.getAngle());
-      
-        System.out.println("velocity");
-        System.out.println(player.getVelocity());
-      
         Vector2 newLocation = player.getLocation().add(player.getVelocity());
         player.setLocation(newLocation.x, newLocation.y);
     }
