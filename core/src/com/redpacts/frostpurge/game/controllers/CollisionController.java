@@ -175,6 +175,27 @@ public class CollisionController {
             player.setLocation(player.getLocation().x, getHeight());
             player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
         }
+
+        if(board.isObstacleTileAtScreen(player.getLocation().x, player.getLocation().y)){
+            float tile_x = player.getLocation().x - board.screenToBoard(player.getLocation().x) * board.getTileSize();
+            float tile_y = player.getLocation().y - board.screenToBoard(player.getLocation().y) * board.getTileSize();
+            float width = board.getTileSize();
+            float half = width / 2f;
+
+            if((tile_y <= tile_x && tile_x <= half) || (tile_y <= width - tile_x && tile_x > half)){
+                player.setLocation(player.getLocation().x, board.screenToBoard(player.getLocation().y) * board.getTileSize());
+                player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
+            }else if((tile_x > tile_y && tile_y > half) || (tile_x > width - tile_y && tile_y <= half)){
+                player.setLocation((1 + board.screenToBoard(player.getLocation().x)) * board.getTileSize(), player.getLocation().y);
+                player.setVelocity(-player.getVelocity().x / 5, player.getVelocity().y);
+            }else if((tile_y > tile_x && tile_x > half) || (tile_y > width - tile_x && tile_x <= half)){
+                player.setLocation(player.getLocation().x, (1 + board.screenToBoard(player.getLocation().y)) * board.getTileSize());
+                player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
+            }else{
+                player.setLocation(board.screenToBoard(player.getLocation().x) * board.getTileSize(), player.getLocation().y);
+                player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
+            }
+        }
     }
 
     /**

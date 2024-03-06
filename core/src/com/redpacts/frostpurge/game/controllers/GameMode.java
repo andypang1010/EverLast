@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.ScreenListener;
@@ -41,9 +42,13 @@ public class GameMode implements Screen {
         gameState = GameState.INTRO;
 
         // Create the controllers.
+
+        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
+        obstacles.add(21, 24, 51, 54);
+
         inputController = new InputController();
         gameplayController = new GameplayController();
-        Board = new MapModel(20,20);
+        Board = new MapModel(10,10, obstacles);
         Player = new PlayerModel(new Vector2(100,100),0);
         Playercontroller = new PlayerController(Player);
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
