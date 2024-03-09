@@ -88,6 +88,28 @@ public class MapModel {
     }
 
     /**
+     * Returns an array of tile objects neighboring the given position
+     *
+     * Returns an empty list if that position has no neighbor
+     *
+     * @return array of tile objects neighboring the given position
+     */
+    private Array<TileModel> getTileNeighbors(int x, int y){
+        Array<TileModel> neighbors = new Array<TileModel>();
+        for(int i = x-1; i <= x+1; i++){
+            for(int j = y-1; j <= y+1; j++){
+                if(i == x && j == y){
+                    continue;
+                }
+                if(inBounds(i, j)){
+                    neighbors.add(getTileState(i, j));
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    /**
      * Returns the number of tiles horizontally across the map.
      *
      * @return the number of tiles horizontally across the map.
