@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.XBoxController;
 
+
 public class InputController {
 
     /** The singleton instance of the input controller */
@@ -28,6 +29,8 @@ public class InputController {
 
     /** X-Box controller associated with this player (if any) */
     protected XBoxController xbox;
+    /** array used to normalize vectors*/
+    protected float [] normalization;
     // Fields to manage buttons
     /** How much the player should move left or right */
     private float horizontal;
@@ -37,10 +40,6 @@ public class InputController {
     private boolean boostPressed;
     /** Whether the vacuum button was pressed. */
     private boolean vacuumPressed;
-    /** Whether the rotate left button was pressed. */
-    private boolean rotateLeftPressed;
-    /** Whether the rotate right button was pressed. */
-    private boolean rotateRightPressed;
     /** Whether the decelerate button was pressed. */
     private boolean deceleratePressed;
     /** Whether the exit button was pressed. */
@@ -93,10 +92,6 @@ public class InputController {
         return vacuumPressed;
     }
 
-   public boolean didRotate() {
-        return rotateLeftPressed || rotateRightPressed;
-    }
-
     /**
      * Returns true if the decelerate action button was pressed.
      *
@@ -124,6 +119,7 @@ public class InputController {
             xbox = controllers.get(0);
         } else {
             xbox = null;
+            normalization = new float[2];
         }
     }
 
@@ -154,13 +150,47 @@ public class InputController {
             boostPressed = xbox.getRBumper();
             vacuumPressed = xbox.getLBumper();
         }else{
+            float x = Gdx.input.getX() - 640f;
+            float y = Gdx.input.getY() - 360f;
+            if (Math.abs(x) < 10f){
+                x = 0;
+            }
+            if (Math.abs(y) < 10f){
+                y = 0;
+            }
+            normalize(x,y);
+            if (Gdx.input.isKeyPressed(Input.Keys.D)){
+                horizontal = normalization[0];
+                vertical = normalization[1];
+            }else{
+                horizontal = 0;
+                vertical = 0;
+            }
             boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
             vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
-            rotateLeftPressed = Gdx.input.isKeyPressed(Input.Keys.A);
-            rotateRightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
             deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
             exitPressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
         }
+    }
 
+    /**
+     * normalizes the vector created by x and y so that it can fit on the unit circle
+     * @param x amount in x direction
+     * @param y amount in y direction
+     */
+    private void normalize(float x, float y){
+        if (x == 0 && y!=0){
+            y = 1;
+        }
+        else if (y == 0){
+            x = 1;
+        }
+        else{
+            float c = (float) Math.sqrt((x*x+y*y));
+            x /= c;
+            y /= c;
+        }
+        normalization[0] = x;
+        normalization[1] = y;
     }
 }
