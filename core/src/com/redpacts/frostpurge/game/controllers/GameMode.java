@@ -91,7 +91,7 @@ public class GameMode implements Screen {
     }
     public void update(float delta) {
         inputController.readInput(null,null);
-        Playercontroller.update(inputController.didAccelerate(),inputController.didDecelerate(),inputController.didRotateLeft(),inputController.didRotateRight(), inputController.didBoost());
+        Playercontroller.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         physicsController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years

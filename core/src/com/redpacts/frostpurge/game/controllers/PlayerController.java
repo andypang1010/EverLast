@@ -10,13 +10,10 @@ public class PlayerController extends CharactersModel {
     PlayerController(PlayerModel player){
         this.player = player;
     }
-    @Override
-    public void accelerate() {
+    public void accelerate(float x, float y) {
         Vector2 vel = player.getVelocity();
-        float x = (float) (.5f*Math.cos(Math.toRadians(player.getAngle())));
-        float y = (float) (.5f*Math.sin(Math.toRadians(player.getAngle())));
-        vel.x += x;
-        vel.y += y;
+        vel.x += .33f * x;
+        vel.y -= .33f * y;
         player.setVelocity(vel.x, vel.y);
     }
     public void rotate(Boolean left) {
@@ -81,23 +78,18 @@ public class PlayerController extends CharactersModel {
      * Update function that will be called in gameplaycontroller to update the player actions.
      * Right now the input controller isn't done yet, so I am using booleans for buttons presses.
      */
-    public void update(boolean accelerate, boolean decelerate, boolean left, boolean right, boolean restart){
-        if (accelerate){
-            accelerate();
-        }
-        if (decelerate){
+    public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
+        if (!decelerate){
+            accelerate(horizontal,vertical);
+        }else{
             stop();
         }
-        if (left){
-            rotate(true);
+        if (boost){
+            //Check boost then boost
         }
-        if (right){
-            rotate(false);
+        if (vacuum){
+            //Check if there is goop then vacuum
         }
-        if (restart){
-            reset();
-        }
-      
         Vector2 newLocation = player.getLocation().add(player.getVelocity());
         player.setLocation(newLocation.x, newLocation.y);
     }
