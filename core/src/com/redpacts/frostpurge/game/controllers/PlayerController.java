@@ -13,17 +13,17 @@ public class PlayerController extends CharactersModel {
     @Override
     public void accelerate() {
         Vector2 vel = player.getVelocity();
-        float x = (float) (.5f*Math.cos(Math.toRadians(player.getAngle())));
-        float y = (float) (.5f*Math.sin(Math.toRadians(player.getAngle())));
+        float x = (float) (.5f*Math.cos(Math.toRadians(player.getRotation())));
+        float y = (float) (.5f*Math.sin(Math.toRadians(player.getRotation())));
         vel.x += x;
         vel.y += y;
         player.setVelocity(vel.x, vel.y);
     }
     public void rotate(Boolean left) {
         if (left){
-            player.setAngle(player.getAngle()+3f);
+            player.setRotation(player.getRotation()+3f);
         }else{
-            player.setAngle(player.getAngle()-3f);
+            player.setRotation(player.getRotation()-3f);
         }
     }
     @Override
@@ -59,7 +59,7 @@ public class PlayerController extends CharactersModel {
     }
 
     public float getRotation() {
-        return player.getAngle();
+        return player.getRotation();
     }
     public void vacuum() {
 
@@ -73,7 +73,7 @@ public class PlayerController extends CharactersModel {
      */
     private void reset(){
         player.setLocation(100, 100);
-        player.setAngle(0);
+        player.setRotation(0);
         player.setVelocity(0,0);
     }
 
@@ -98,7 +98,7 @@ public class PlayerController extends CharactersModel {
             reset();
         }
       
-        Vector2 newLocation = player.getLocation().add(player.getVelocity());
+        Vector2 newLocation = player.getPosition().add(player.getVelocity());
         player.setLocation(newLocation.x, newLocation.y);
     }
     public void draw(GameCanvas canvas){

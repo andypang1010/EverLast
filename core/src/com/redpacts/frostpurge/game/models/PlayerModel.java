@@ -13,12 +13,12 @@ public class PlayerModel extends CharactersModel{
 
     /**
      * Instantiates the player with their starting location and angle and with their texture
-     * @param location vector2 representing the starting location
-     * @param angle float representing angle the player is facing
+     * @param position vector2 representing the starting location
+     * @param rotation float representing angle the player is facing
      */
-    public PlayerModel(Vector2 location, float angle){
-        this.location = location;
-        this.angle = angle;
+    public PlayerModel(Vector2 position, float rotation){
+        this.position = position;
+        this.rotation = rotation;
         this.velocity = new Vector2(0,0);
         FileHandle fileHandle = Gdx.files.internal("livhead.png");
         Pixmap pixmap = new Pixmap(fileHandle);
@@ -29,7 +29,7 @@ public class PlayerModel extends CharactersModel{
      * draws the player onto the game canvas
      */
     public void drawPlayer(GameCanvas canvas){
-        canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, location.x, location.y, angle,.5f,.5f);
+        canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, position.x, position.y, rotation,.5f,.5f);
     }
 
 }

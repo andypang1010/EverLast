@@ -11,8 +11,6 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
  * Each tile has certain attributes that affects the game
  */
 public class ObstacleTile extends TileModel{
-    /** Texture of the tile */
-    private Texture texture;
 
     /** Type of the tile */
     private final TileType type = TileType.OBSTACLE;

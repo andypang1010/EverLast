@@ -7,7 +7,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
  * Class representing tiles in the game scene
  * Each tile has certain attributes that affects the game
  */
-abstract class TileModel {
+abstract class TileModel extends GameObject {
     public enum TileType{
         /** An empty tile */
         EMPTY,
@@ -15,11 +15,8 @@ abstract class TileModel {
         OBSTACLE
     }
 
-    /** Texture of the tile */
-    private Texture texture;
-
     /** Type of the tile */
-    private TileType type;
+    protected TileType type;
 
     /**
      * Returns the type of this tile
@@ -30,12 +27,4 @@ abstract class TileModel {
         return this.type;
     }
 
-    /**
-     * Returns the texture of this tile
-     *
-     * @return texture of this tile
-     */
-    public Texture getTexture(){
-        return this.texture;
-    }
 }

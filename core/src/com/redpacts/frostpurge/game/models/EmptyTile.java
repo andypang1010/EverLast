@@ -12,8 +12,6 @@ import org.w3c.dom.Text;
  * Each tile has certain attributes that affects the game
  */
 public class EmptyTile extends TileModel{
-    /** Texture of the tile */
-    private Texture texture;
 
     /** Type of the tile */
     private final TileType type = TileType.EMPTY;
