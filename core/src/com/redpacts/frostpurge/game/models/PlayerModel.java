@@ -28,7 +28,7 @@ public class PlayerModel extends CharactersModel{
     /**
      * draws the player onto the game canvas
      */
-    public void drawPlayer(GameCanvas canvas){
+    public void drawPlayer(GameCanvas canvas, float angle){
         canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, location.x, location.y, angle,.5f,.5f);
     }
 

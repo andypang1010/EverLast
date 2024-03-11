@@ -6,8 +6,10 @@ import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerController extends CharactersModel {
+    private float angle;
     private PlayerModel player;
     PlayerController(PlayerModel player){
+        angle = 0;
         this.player = player;
     }
     public void accelerate(float x, float y) {
@@ -73,12 +75,22 @@ public class PlayerController extends CharactersModel {
         player.setAngle(0);
         player.setVelocity(0,0);
     }
+    /**
+     * Sets angle of the player so the character can be drawn correctly
+     */
+    private void setAngle(float x, float y){
+        if (x != 0 && y!= 0){
+            angle = (float) Math.atan2(-y,x);
+        }
+    }
 
     /**
      * Update function that will be called in gameplaycontroller to update the player actions.
      * Right now the input controller isn't done yet, so I am using booleans for buttons presses.
      */
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
+        setAngle(horizontal,vertical);
+        System.out.println(angle);
         if (!decelerate){
             accelerate(horizontal,vertical);
         }else{
@@ -94,6 +106,6 @@ public class PlayerController extends CharactersModel {
         player.setLocation(newLocation.x, newLocation.y);
     }
     public void draw(GameCanvas canvas){
-        player.drawPlayer(canvas);
+        player.drawPlayer(canvas, (float) Math.toDegrees(angle));
     }
 }
