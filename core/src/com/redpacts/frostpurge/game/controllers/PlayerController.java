@@ -20,9 +20,9 @@ public class PlayerController extends CharactersModel {
     }
     public void rotate(Boolean left) {
         if (left){
-            player.setAngle(player.getAngle()+3f);
+            player.setRotation(player.getRotation()+3f);
         }else{
-            player.setAngle(player.getAngle()-3f);
+            player.setRotation(player.getRotation()-3f);
         }
     }
     @Override
@@ -58,7 +58,7 @@ public class PlayerController extends CharactersModel {
     }
 
     public float getRotation() {
-        return player.getAngle();
+        return player.getRotation();
     }
     public void vacuum() {
 
@@ -72,7 +72,7 @@ public class PlayerController extends CharactersModel {
      */
     private void reset(){
         player.setLocation(100, 100);
-        player.setAngle(0);
+        player.setRotation(0);
         player.setVelocity(0,0);
     }
     /**
@@ -102,7 +102,8 @@ public class PlayerController extends CharactersModel {
         if (vacuum){
             //Check if there is goop then vacuum
         }
-        Vector2 newLocation = player.getLocation().add(player.getVelocity());
+      
+        Vector2 newLocation = player.getPosition().add(player.getVelocity());
         player.setLocation(newLocation.x, newLocation.y);
     }
     public void draw(GameCanvas canvas){
