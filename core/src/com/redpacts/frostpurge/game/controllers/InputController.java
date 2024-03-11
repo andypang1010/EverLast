@@ -2,9 +2,13 @@ package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.redpacts.frostpurge.game.util.Controllers;
+import com.redpacts.frostpurge.game.util.XBoxController;
+
 
 public class InputController {
 
@@ -23,17 +27,19 @@ public class InputController {
         return theController;
     }
 
+    /** X-Box controller associated with this player (if any) */
+    protected XBoxController xbox;
+    /** array used to normalize vectors*/
+    protected float [] normalization;
     // Fields to manage buttons
-    /** Whether the accelerate button was pressed. */
-    private boolean acceleratePressed;
+    /** How much the player should move left or right */
+    private float horizontal;
+    /** How much the player should move up or down */
+    private float vertical;
     /** Whether the boost button was pressed. */
     private boolean boostPressed;
     /** Whether the vacuum button was pressed. */
     private boolean vacuumPressed;
-    /** Whether the rotate left button was pressed. */
-    private boolean rotateLeftPressed;
-    /** Whether the rotate right button was pressed. */
-    private boolean rotateRightPressed;
     /** Whether the decelerate button was pressed. */
     private boolean deceleratePressed;
     /** Whether the exit button was pressed. */
@@ -45,15 +51,22 @@ public class InputController {
     private float momentum;
 
     /**
-     * Returns true if the accelerate action button was pressed.
+     * Returns the amount to move in the horizontal direction
      *
-     * This is a sustained button. It will returns true as long as the player
+     * This is a sustained button. It will return the same as long as the player
      * holds it down.
-     *
-     * @return true if the accelerate action button was pressed.
      */
-    public boolean didAccelerate() {
-        return acceleratePressed;
+    public float getHorizontal() {
+        return horizontal;
+    }
+    /**
+     * Returns the amount to move in the vertical direction
+     *
+     * This is a sustained button. It will return the same as long as the player
+     * holds it down.
+     */
+    public float getVertical() {
+        return vertical;
     }
     /**
      * Returns true if the boost action button was pressed.
@@ -78,39 +91,6 @@ public class InputController {
     public boolean didVacuum() {
         return vacuumPressed;
     }
-    /**
-     * Returns true if the rotate left action button was pressed.
-     *
-     * This is a sustained button. It will returns true as long as the player
-     * holds it down.
-     *
-     * @return true if the rotation action button was pressed.
-     */
-    public boolean didRotateLeft() {
-        return rotateLeftPressed;
-    }
-    /**
-     * Returns true if the rotate right action button was pressed.
-     *
-     * This is a sustained button. It will returns true as long as the player
-     * holds it down.
-     *
-     * @return true if the rotation action button was pressed.
-     */
-    public boolean didRotateRight() {
-        return rotateRightPressed;
-    }
-    /**
-     * Returns true if the rotation action button was pressed.
-     *
-     * This is a sustained button. It will returns true as long as the player
-     * holds it down.
-     *
-     * @return true if the rotation action button was pressed.
-     */
-    public boolean didRotate() {
-        return rotateLeftPressed || rotateRightPressed;
-    }
 
     /**
      * Returns true if the decelerate action button was pressed.
@@ -125,10 +105,22 @@ public class InputController {
     }
 
     /**
-     * Creates a new input controller
+     * Creates a new input controller for the specified player.
+     *
+     * The game supports two players working against each other in hot seat mode.
+     * We need a separate input controller for each player. In keyboard, this is
+     * WASD vs. Arrow keys.  We also support multiple X-Box game controllers.
      *
      */
     public InputController() {
+        // If we have a game-pad for id, then use it.
+        Array<XBoxController> controllers = Controllers.get().getXBoxControllers();
+        if (controllers.size > 0) {
+            xbox = controllers.get(0);
+        } else {
+            xbox = null;
+            normalization = new float[2];
+        }
     }
 
     /**
@@ -142,12 +134,63 @@ public class InputController {
      * @param scale  The drawing scale
      */
     public void readInput(Rectangle bounds, Vector2 scale) {
-        acceleratePressed = Gdx.input.isKeyPressed(Input.Keys.W);
-        boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
-        vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
-        rotateLeftPressed = Gdx.input.isKeyPressed(Input.Keys.A);
-        rotateRightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
-        deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
-        exitPressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+        if (xbox != null){
+            float x = xbox.getLeftX();
+            float y = xbox.getLeftY();
+            if (Math.abs(x) < xbox.getDeadZone()){
+                x = 0;
+            }
+            if (Math.abs(y) < xbox.getDeadZone()){
+                y = 0;
+            }
+            horizontal = x;
+            vertical = y;
+            exitPressed = xbox.getStart();
+            deceleratePressed = xbox.getA();
+            boostPressed = xbox.getRBumper();
+            vacuumPressed = xbox.getLBumper();
+        }else{
+            float x = Gdx.input.getX() - 640f;
+            float y = Gdx.input.getY() - 360f;
+            if (Math.abs(x) < 10f){
+                x = 0;
+            }
+            if (Math.abs(y) < 10f){
+                y = 0;
+            }
+            normalize(x,y);
+            if (Gdx.input.isKeyPressed(Input.Keys.D)){
+                horizontal = normalization[0];
+                vertical = normalization[1];
+            }else{
+                horizontal = 0;
+                vertical = 0;
+            }
+            boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+            vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
+            deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
+            exitPressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+        }
+    }
+
+    /**
+     * normalizes the vector created by x and y so that it can fit on the unit circle
+     * @param x amount in x direction
+     * @param y amount in y direction
+     */
+    private void normalize(float x, float y){
+        if (x == 0 && y!=0){
+            y = 1;
+        }
+        else if (y == 0){
+            x = 1;
+        }
+        else{
+            float c = (float) Math.sqrt((x*x+y*y));
+            x /= c;
+            y /= c;
+        }
+        normalization[0] = x;
+        normalization[1] = y;
     }
 }

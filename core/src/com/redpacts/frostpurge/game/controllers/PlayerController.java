@@ -6,17 +6,16 @@ import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerController extends CharactersModel {
+    private float angle;
     private PlayerModel player;
     PlayerController(PlayerModel player){
+        angle = 0;
         this.player = player;
     }
-    @Override
-    public void accelerate() {
+    public void accelerate(float x, float y) {
         Vector2 vel = player.getVelocity();
-        float x = (float) (.5f*Math.cos(Math.toRadians(player.getRotation())));
-        float y = (float) (.5f*Math.sin(Math.toRadians(player.getRotation())));
-        vel.x += x;
-        vel.y += y;
+        vel.x += .33f * x;
+        vel.y -= .33f * y;
         player.setVelocity(vel.x, vel.y);
     }
     public void rotate(Boolean left) {
@@ -76,32 +75,38 @@ public class PlayerController extends CharactersModel {
         player.setRotation(0);
         player.setVelocity(0,0);
     }
+    /**
+     * Sets angle of the player so the character can be drawn correctly
+     */
+    private void setAngle(float x, float y){
+        if (x != 0 && y!= 0){
+            angle = (float) Math.atan2(-y,x);
+        }
+    }
 
     /**
      * Update function that will be called in gameplaycontroller to update the player actions.
      * Right now the input controller isn't done yet, so I am using booleans for buttons presses.
      */
-    public void update(boolean accelerate, boolean decelerate, boolean left, boolean right, boolean restart){
-        if (accelerate){
-            accelerate();
-        }
-        if (decelerate){
+    public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
+        setAngle(horizontal,vertical);
+        System.out.println(angle);
+        if (!decelerate){
+            accelerate(horizontal,vertical);
+        }else{
             stop();
         }
-        if (left){
-            rotate(true);
+        if (boost){
+            //Check boost then boost
         }
-        if (right){
-            rotate(false);
-        }
-        if (restart){
-            reset();
+        if (vacuum){
+            //Check if there is goop then vacuum
         }
       
         Vector2 newLocation = player.getPosition().add(player.getVelocity());
         player.setLocation(newLocation.x, newLocation.y);
     }
     public void draw(GameCanvas canvas){
-        player.drawPlayer(canvas);
+        player.drawPlayer(canvas, (float) Math.toDegrees(angle));
     }
 }
