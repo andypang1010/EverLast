@@ -54,6 +54,7 @@ public class PlayerController extends CharactersModel {
     public Vector2 getVelocity() {
         return player.getVelocity();
     }
+    public Vector2 getPosition(){return player.getPosition();}
 
     public float getRotation() {
         return player.getRotation();
