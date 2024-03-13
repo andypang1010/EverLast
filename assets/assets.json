@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "Liv" : "characters/livhead.png",
+    "Tile" : "environment/tile.jpg"
+  },
+  "jsons"  : {
+
+  },
+  "sounds" : {
+
+  },
+  "fonts": {
+
+  }
+}
