@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.ScreenListener;
@@ -64,15 +65,10 @@ public class GameMode implements Screen {
         Board = new MapModel(10,10, obstacles, directory);
         Player = new PlayerModel(new Vector2(100,100),0, directory);
         Playercontroller = new PlayerController(Player);
-<<<<<<< Updated upstream
-=======
-
         EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
         enemyController = new EnemyController(enemy);
 
         enemies.add(enemy);
-
->>>>>>> Stashed changes
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
