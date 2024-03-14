@@ -31,8 +31,13 @@ public class GameMode implements Screen {
     private MapModel Board;
     /** Player for the game*/
     private PlayerModel Player;
+
     /** Player for the game*/
     private PlayerController Playercontroller;
+
+    private EnemyController enemyController;
+
+    private Array<EnemyModel> enemies;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -48,6 +53,7 @@ public class GameMode implements Screen {
         directory = new AssetDirectory("assets.json");
         directory.loadAssets();
         directory.finishLoading();
+        enemies = new Array<EnemyModel>();
         // Create the controllers.
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
@@ -58,10 +64,19 @@ public class GameMode implements Screen {
         Board = new MapModel(10,10, obstacles, directory);
         Player = new PlayerModel(new Vector2(100,100),0, directory);
         Playercontroller = new PlayerController(Player);
+<<<<<<< Updated upstream
+=======
+
+        EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        enemyController = new EnemyController(enemy);
+
+        enemies.add(enemy);
+
+>>>>>>> Stashed changes
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        physicsController = new CollisionController(Board,Player,null, canvas.getWidth(), canvas.getHeight());
+        physicsController = new CollisionController(Board, Player, enemies, canvas.getWidth(), canvas.getHeight());
     }
 
     @Override
@@ -109,6 +124,7 @@ public class GameMode implements Screen {
         canvas.center(camera, Playercontroller.getPosition().x,Playercontroller.getPosition().y);
         Board.draw(canvas);
         Playercontroller.draw(canvas);
+        enemyController.draw(canvas);
         canvas.end();
     }
 
