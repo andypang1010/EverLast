@@ -1,9 +1,10 @@
 {
   "textures": {
-    "Liv" : "characters/livhead.png",
-    "Tile" : "environment/tile.jpg"
+    "Liv" : "characters/liv_still.png",
+    "Tile" : "environment/tile.jpg",
+    "Liv_Run": "characters/liv_run.png"
   },
-  "jsons"  : {
+  "animations"  : {
 
   },
   "sounds" : {

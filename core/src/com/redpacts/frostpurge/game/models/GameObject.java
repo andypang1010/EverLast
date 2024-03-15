@@ -11,7 +11,7 @@ public abstract class GameObject {
     public Vector2 getPosition(){
         return position;
     }
-    public void setLocation(float x, float y){
+    public void setPosition(float x, float y){
         position = new Vector2(x, y);
     }
     public float getRotation(){

@@ -361,7 +361,7 @@ public class GameCanvas {
      * @param sy 	The y-axis scaling factor
      */
     public void draw(Texture image, Color tint, float ox, float oy,
-                     float x, float y, float angle, float sx, float sy) {
+                     float x, float y, float angle, float sx, float sy,boolean flip) {
         if (!active) {
             Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
             return;
@@ -369,7 +369,7 @@ public class GameCanvas {
 
         // Call the master drawing method (we have to for transforms)
         holder.setRegion(image);
-        draw(holder,tint,ox,oy,x,y,angle,sx,sy);
+        draw(holder,tint,ox,oy,x,y,angle,sx,sy,flip);
     }
 
     /**
@@ -440,7 +440,7 @@ public class GameCanvas {
      * @param sy 	The y-axis scaling factor
      */
     public void draw(TextureRegion region, Color tint, float ox, float oy,
-                     float x, float y, float angle, float sx, float sy) {
+                     float x, float y, float angle, float sx, float sy, boolean flip) {
         if (!active) {
             Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
             return;
@@ -448,8 +448,16 @@ public class GameCanvas {
 
         computeTransform(ox,oy,x,y,angle,sx,sy);
         spriteBatch.setColor(tint);
+        if (flip){
+            region.flip(true, false);
+        }
         spriteBatch.draw(region,region.getRegionWidth(),region.getRegionHeight(),local);
+        if (flip){
+            region.flip(true, false);
+        }
+
     }
+
 
     /**
      * Compute the affine transform (and store it in local) for this image.
