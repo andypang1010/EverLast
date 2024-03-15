@@ -6,8 +6,6 @@ public interface Movable {
 
     void accelerate(float x, float y);
 
-    void rotate(boolean left);
-
     void stop();
 
 }

@@ -7,7 +7,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerController extends CharactersController {
     PlayerController(PlayerModel player){
-        owner = player;
+        model = player;
     }
 
     public void vacuum() {
@@ -21,16 +21,16 @@ public class PlayerController extends CharactersController {
      * resets the owner to origin for testing
      */
     private void reset(){
-        owner.setLocation(100, 100);
-        owner.setRotation(0);
-        owner.setVelocity(0,0);
+        model.setPosition(100, 100);
+        model.setRotation(0);
+        model.setVelocity(0,0);
     }
     /**
      * Sets angle of the owner so the character can be drawn correctly
      */
     private void setAngle(float x, float y){
         if (x != 0 && y!= 0){
-            owner.setRotation((float) Math.atan2(-y,x));
+            model.setRotation((float) Math.atan2(-y,x));
         }
     }
 
@@ -52,10 +52,10 @@ public class PlayerController extends CharactersController {
             //Check if there is goop then vacuum
         }
       
-        Vector2 newLocation = owner.getPosition().add(owner.getVelocity());
-        owner.setLocation(newLocation.x, newLocation.y);
+        Vector2 newLocation = model.getPosition().add(model.getVelocity());
+        model.setPosition(newLocation.x, newLocation.y);
     }
     public void draw(GameCanvas canvas){
-        owner.drawCharacter(canvas, (float) Math.toDegrees(owner.getRotation()), Color.WHITE);
+        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE);
     }
 }
