@@ -24,11 +24,4 @@ public class PlayerModel extends CharactersModel{
         this.velocity = new Vector2(0,0);
         texture = new TextureRegion(directory.getEntry( "Liv", Texture.class )).getTexture();
     }
-    /**
-     * draws the player onto the game canvas
-     */
-    public void drawPlayer(GameCanvas canvas, float rotation){
-        canvas.draw(texture, Color.WHITE, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, position.x, position.y, rotation,.5f,.5f);
-    }
-
 }

@@ -4,9 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public interface Movable {
 
-    void accelerate();
-
-    void rotate();
+    void accelerate(float x, float y);
 
     void stop();
 

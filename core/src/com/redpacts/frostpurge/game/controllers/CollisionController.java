@@ -163,16 +163,16 @@ public class CollisionController {
     private void processBound(PlayerModel player) {
         // Do not let the player go off screen.
         if (player.getPosition().x <= 0) {
-            player.setLocation(0, player.getPosition().y);
+            player.setPosition(0, player.getPosition().y);
             player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
         } else if (player.getPosition().y <= 0) {
-            player.setLocation(player.getPosition().x, 0);
+            player.setPosition(player.getPosition().x, 0);
             player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
         } else if (player.getPosition().x >= getWidth()) {
-            player.setLocation(getWidth(), player.getPosition().y);
+            player.setPosition(getWidth(), player.getPosition().y);
             player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
         } else if (player.getPosition().y >= getHeight()){
-            player.setLocation(player.getPosition().x, getHeight());
+            player.setPosition(player.getPosition().x, getHeight());
             player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
         }
 
@@ -183,16 +183,16 @@ public class CollisionController {
             float half = width / 2f;
 
             if((tile_y <= tile_x && tile_x <= half) || (tile_y <= width - tile_x && tile_x > half)){
-                player.setLocation(player.getPosition().x, board.screenToBoard(player.getPosition().y) * board.getTileSize());
+                player.setPosition(player.getPosition().x, board.screenToBoard(player.getPosition().y) * board.getTileSize());
                 player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
             }else if((tile_x > tile_y && tile_y > half) || (tile_x > width - tile_y && tile_y <= half)){
-                player.setLocation((1 + board.screenToBoard(player.getPosition().x)) * board.getTileSize(), player.getPosition().y);
+                player.setPosition((1 + board.screenToBoard(player.getPosition().x)) * board.getTileSize(), player.getPosition().y);
                 player.setVelocity(-player.getVelocity().x / 5, player.getVelocity().y);
             }else if((tile_y > tile_x && tile_x > half) || (tile_y > width - tile_x && tile_x <= half)){
-                player.setLocation(player.getPosition().x, (1 + board.screenToBoard(player.getPosition().y)) * board.getTileSize());
+                player.setPosition(player.getPosition().x, (1 + board.screenToBoard(player.getPosition().y)) * board.getTileSize());
                 player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
             }else{
-                player.setLocation(board.screenToBoard(player.getPosition().x) * board.getTileSize(), player.getPosition().y);
+                player.setPosition(board.screenToBoard(player.getPosition().x) * board.getTileSize(), player.getPosition().y);
                 player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
             }
         }
@@ -206,16 +206,16 @@ public class CollisionController {
     private void processBound(EnemyModel enemy) {
         // Do not let the enemy go off screen.
         if (enemy.getPosition().x <= 0) {
-            enemy.setLocation(0, enemy.getPosition().y);
+            enemy.setPosition(0, enemy.getPosition().y);
             enemy.setVelocity(-enemy.getVelocity().x, enemy.getVelocity().y);
         } else if (enemy.getPosition().y <= 0) {
-            enemy.setLocation(enemy.getPosition().x, 0);
+            enemy.setPosition(enemy.getPosition().x, 0);
             enemy.setVelocity(enemy.getVelocity().x, -enemy.getVelocity().y);
         } else if (enemy.getPosition().x >= getWidth()) {
-            enemy.setLocation(getWidth(), enemy.getPosition().y);
+            enemy.setPosition(getWidth(), enemy.getPosition().y);
             enemy.setVelocity(-enemy.getVelocity().x, enemy.getVelocity().y);
         } else if (enemy.getPosition().y >= getHeight()){
-            enemy.setLocation(enemy.getPosition().x, getHeight());
+            enemy.setPosition(enemy.getPosition().x, getHeight());
             enemy.setVelocity(enemy.getVelocity().x, -enemy.getVelocity().y);
         }
     }
