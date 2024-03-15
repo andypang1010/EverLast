@@ -1,16 +1,18 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.graphics.Color;
+
 import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-public class EnemyController {
-    private EnemyModel enemy;
+import java.awt.*;
 
+public class EnemyController extends CharactersController {
     EnemyController(EnemyModel enemy) {
-        this.enemy = enemy;
+        this.owner = enemy;
     }
 
     public void draw(GameCanvas canvas){
-        enemy.drawEnemy(canvas, (float) Math.toDegrees(enemy.getRotation()));
+        owner.drawCharacter(canvas, (float) Math.toDegrees(owner.getRotation()), Color.RED);
     }
 }
