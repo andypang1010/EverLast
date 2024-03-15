@@ -214,9 +214,9 @@ public class MapModel {
 
         // Draw
         if (tile.getType() == TileModel.TileType.OBSTACLE) {
-            canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale);
+            canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }else{
-            canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale);
+            canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }
     }
 }

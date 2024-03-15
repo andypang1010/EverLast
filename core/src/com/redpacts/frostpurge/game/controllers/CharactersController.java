@@ -1,13 +1,17 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.models.CharactersModel;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.util.Movable;
 
 public abstract class CharactersController implements Movable {
     protected CharactersModel model;
+    private Float time;
+    protected boolean flip;
 
-    @Override
     public void accelerate(float x, float y) {
         Vector2 vel = model.getVelocity();
         vel.x += .33f * x;
@@ -15,7 +19,6 @@ public abstract class CharactersController implements Movable {
         model.setVelocity(vel.x, vel.y);
     }
 
-    @Override
     public void stop() {
         Vector2 vel = model.getVelocity();
         float x = -.05f* model.getVelocity().x;
@@ -42,7 +45,32 @@ public abstract class CharactersController implements Movable {
         }
         return vel;
     }
-
+    /**
+     * Update the animation of the ship to process a turn
+     *
+     * Turning changes the frame of the filmstrip, as we change from a level ship to
+     * a hard bank.  This method also updates the field dang cumulatively.
+     *
+     */
+    protected void processRun() {
+        if (time == null){
+            time = 0f;
+        }
+        else{
+            time += Gdx.graphics.getDeltaTime();
+        }
+        FilmStrip running = model.getFilmStrip();
+        int frame = (running == null ? 11 : running.getFrame());
+        if (running != null) {
+            if (time >= .08){
+                frame++;
+                time = 0f;
+                if (frame >= model.getFilmStrip().getSize())
+                    frame = 0;
+                running.setFrame(frame);
+            }
+        }
+    }
     public CharactersModel getModel() {
         return model;
     }
