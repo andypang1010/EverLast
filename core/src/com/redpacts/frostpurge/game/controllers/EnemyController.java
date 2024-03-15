@@ -13,7 +13,6 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
     PlayerModel playerModel;
-
     Vector2 startPatrolPoint, endPatrolPoint;
     EnemyStates initState;
     EnemyStates currentState;
@@ -33,6 +32,10 @@ public class EnemyController extends CharactersController implements StateMachin
         // TODO: Move along patrolPath
     }
 
+    public void chase() {
+        // TODO: Move along chasePath
+    }
+
     public void draw(GameCanvas canvas){
         model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED);
     }
@@ -45,8 +48,8 @@ public class EnemyController extends CharactersController implements StateMachin
 
                 // TODO: Check if player is in sight
 
-                // Naive check for state transitions
-                if (playerModel.getPosition().y < 500) {
+                // Naive check for state transitions (If within certain distance, transition to chase state)
+                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 100) {
                     patrol();
                 }
                 else {
@@ -60,6 +63,14 @@ public class EnemyController extends CharactersController implements StateMachin
                 // TODO: Find all traversable tiles
                 // TODO: Use pathfinding to find valid path to target tile
                 // TODO: Move towards the next node in path
+
+                // Naive check for state transitions (If within certain distance, transition to chase state)
+                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) < 200) {
+                    chase();
+                }
+                else {
+                    changeState(EnemyStates.PATROL);
+                }
                 break;
         }
     }
