@@ -37,7 +37,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas){
-        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED);
+        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "idle", false);
     }
 
     @Override

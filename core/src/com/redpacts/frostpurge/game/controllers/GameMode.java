@@ -120,7 +120,7 @@ public class GameMode implements Screen {
         canvas.begin();
         canvas.center(camera, Playercontroller.getModel().getPosition().x,Playercontroller.getModel().getPosition().y);
         Board.draw(canvas);
-        Playercontroller.draw(canvas);
+        Playercontroller.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
         enemyController.draw(canvas);
         canvas.end();
     }

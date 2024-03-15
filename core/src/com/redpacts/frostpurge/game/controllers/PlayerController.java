@@ -8,6 +8,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerController extends CharactersController {
     PlayerController(PlayerModel player){
         model = player;
+        flip = false;
     }
 
     public void vacuum() {
@@ -55,7 +56,20 @@ public class PlayerController extends CharactersController {
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
     }
-    public void draw(GameCanvas canvas){
-        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE);
+    public void draw(GameCanvas canvas, float horizontal, float vertical){
+
+        if (horizontal<0){
+            flip = true;
+        }else if (horizontal >0){
+            flip = false;
+        }
+        if (Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>1) {
+            processRun();
+            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
+        }else{
+            model.resetFilmStrip(model.getFilmStrip());
+            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
+        }
+
     }
 }
