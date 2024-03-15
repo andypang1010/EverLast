@@ -11,6 +11,7 @@ import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -65,7 +66,7 @@ public class GameMode implements Screen {
         Player = new PlayerModel(new Vector2(100,100),0, directory);
         Playercontroller = new PlayerController(Player);
         EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        enemyController = new EnemyController(enemy);
+        enemyController = new EnemyController(enemy, Player, new Vector2(0, 0), new Vector2(100, 0), EnemyStates.PATROL);
 
         enemies.add(enemy);
         camera = new OrthographicCamera();

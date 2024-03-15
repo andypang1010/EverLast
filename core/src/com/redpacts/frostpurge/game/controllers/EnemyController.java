@@ -6,21 +6,26 @@ import com.badlogic.gdx.ai.fsm.*;
 
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.models.EnemyModel;
+import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.views.GameCanvas;
-import com.sun.tools.javac.util.Pair;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
-    Pair<Vector2, Vector2> patrolPoints;
+
+    PlayerModel playerModel;
+
+    Vector2 startPatrolPoint, endPatrolPoint;
     EnemyStates initState;
     EnemyStates currentState;
     EnemyStates prevState = null;
 
 
-    EnemyController(EnemyModel enemy, Vector2 startPatrolPoint, Vector2 endPatrolPoint) {
+    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, Vector2 startPatrolPoint, Vector2 endPatrolPoint, EnemyStates initState) {
         this.model = enemy;
-        setInitialState(EnemyStates.PATROL);
-        patrolPoints = new Pair<>(startPatrolPoint, endPatrolPoint);
+        playerModel = targetPlayerModel;
+        this.startPatrolPoint = startPatrolPoint;
+        this.endPatrolPoint = endPatrolPoint;
+        setInitialState(initState);
         // TODO: Find valid path between patrol points and store as patrolPath
     }
 
@@ -39,8 +44,9 @@ public class EnemyController extends CharactersController implements StateMachin
                 System.out.println("PATROLLING");
 
                 // TODO: Check if player is in sight
-                boolean playerFound = false;
-                if (!playerFound) {
+
+                // Naive check for state transitions
+                if (playerModel.getPosition().y < 500) {
                     patrol();
                 }
                 else {
