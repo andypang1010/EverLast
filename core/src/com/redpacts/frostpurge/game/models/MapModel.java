@@ -52,7 +52,9 @@ public class MapModel {
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
-            tiles[ii] = new EmptyTile(tile_texture);
+            int y = ii % height;
+            int x = (ii - y) / height;
+            tiles[ii] = new EmptyTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
         }
     }
 
@@ -70,10 +72,12 @@ public class MapModel {
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
+            int y = ii % height;
+            int x = (ii - y) / height;
             if(obstacle_pos.contains(ii, true)){
-                tiles[ii] = new ObstacleTile(tile_texture);
+                tiles[ii] = new ObstacleTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
             }else{
-                tiles[ii] = new EmptyTile(tile_texture);
+                tiles[ii] = new EmptyTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
             }
         }
     }
@@ -85,7 +89,7 @@ public class MapModel {
      *
      * @return the tile object for the given position
      */
-    private TileModel getTileState(int x, int y) {
+    public TileModel getTileState(int x, int y) {
         if (!inBounds(x, y)) {
             return null;
         }
