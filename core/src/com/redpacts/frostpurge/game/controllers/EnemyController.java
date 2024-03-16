@@ -3,27 +3,32 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.ai.fsm.*;
+import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.Queue.*;
 
 import com.badlogic.gdx.math.Vector2;
-import com.redpacts.frostpurge.game.models.EnemyModel;
+import com.redpacts.frostpurge.game.models.enemyModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
+import com.redpacts.frostpurge.game.models.TileModel;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.views.GameCanvas;
+
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
     PlayerModel playerModel;
-    Vector2 startPatrolPoint, endPatrolPoint;
+    TileModel startPatrolTile, endPatrolTile;
     EnemyStates initState;
     EnemyStates currentState;
     EnemyStates prevState = null;
 
+    Queue<TileModel> pathQueue = new Queue<TileModel>();
 
-    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, Vector2 startPatrolPoint, Vector2 endPatrolPoint, EnemyStates initState) {
+    EnemyController(enemyModel enemy, PlayerModel targetPlayerModel, TileModel startPatrolTile, TileModel endPatrolTile, EnemyStates initState) {
         this.model = enemy;
         playerModel = targetPlayerModel;
-        this.startPatrolPoint = startPatrolPoint;
-        this.endPatrolPoint = endPatrolPoint;
+        this.startPatrolTile = startPatrolTile;
+        this.endPatrolTile = endPatrolTile;
         setInitialState(initState);
         // TODO: Find valid path between patrol points and store as patrolPath
     }

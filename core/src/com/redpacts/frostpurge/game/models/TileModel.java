@@ -7,7 +7,8 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
  * Class representing tiles in the game scene
  * Each tile has certain attributes that affects the game
  */
-abstract class TileModel extends GameObject {
+public abstract class TileModel extends GameObject {
+    public int index;
     public enum TileType{
         /** An empty tile */
         EMPTY,
@@ -25,6 +26,10 @@ abstract class TileModel extends GameObject {
      */
     public TileType getType(){
         return this.type;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
 }
