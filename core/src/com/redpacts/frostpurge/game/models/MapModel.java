@@ -18,6 +18,8 @@ public class MapModel {
     private static final Color BASIC_COLOR = new Color(1f, 1f, 1f, 1f);
     /** Highlight color for power tiles */
     private static final Color OBSTACLE_COLOR = new Color( 0.0f,  1.0f,  0.5f, 1f);
+    /** Highlight color for swamp tiles */
+    private static final Color SWAMP_COLOR = new Color( 1f,  1.0f,  0f, 1f);
 
     /** The texture used for tiles */
     private Texture tile_texture;
@@ -59,7 +61,7 @@ public class MapModel {
      * @param height Map height in tiles
      * @param obstacle_pos Indices of obstacle tiles
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos, AssetDirectory directory) {
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos, AssetDirectory directory) {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
         house_texture = new TextureRegion(directory.getEntry( "House", Texture.class )).getTexture();
         plant_texture = new TextureRegion(directory.getEntry( "Plant", Texture.class )).getTexture();
@@ -67,9 +69,40 @@ public class MapModel {
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
+            if(obstacle_pos.contains(ii, true)) {
+                tiles[ii] = new ObstacleTile(tile_texture);
+            }
+            else if(swamp_pos.contains(ii, true)){
+                    tiles[ii] = new SwampTile(tile_texture);
+            }else{
+                tiles[ii] = new EmptyTile(tile_texture);
+            }
+        }
+    }
+
+    /**
+     * Creates a new map of the given size with obstacles and swamps at specified positions
+     *
+     * @param width Map width in tiles
+     * @param height Map height in tiles
+     * @param obstacle_pos Indices of obstacle tiles
+     * @param swamp_pos Indices of swamp tiles
+     */
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos) {
+        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
+        Pixmap pixmap = new Pixmap(fileHandle);
+        this.tile_texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        this.width = width;
+        this.height = height;
+        tiles = new TileModel[width * height];
+        for (int ii = 0; ii < tiles.length; ii++) {
             if(obstacle_pos.contains(ii, true)){
                 tiles[ii] = new ObstacleTile(tile_texture);
-            }else{
+            }else if(swamp_pos.contains(ii, true)){
+                tiles[ii] = new SwampTile(tile_texture);
+            } else{
                 tiles[ii] = new EmptyTile(tile_texture);
             }
         }
@@ -135,7 +168,7 @@ public class MapModel {
     }
 
     /**
-     * Returns true if a tile is a obstacle tile.
+     * Returns true if a tile is an obstacle tile.
      *
      * @param x The x index for the Tile
      * @param y The y index for the Tile
@@ -148,6 +181,54 @@ public class MapModel {
         }
 
         return getTileState(x, y).getType() == TileModel.TileType.OBSTACLE;
+    }
+
+    /**
+     * Returns true if a tile is a swamp tile.
+     *
+     * @param x The x value in screen coordinates
+     * @param y The y value in screen coordinates
+     *
+     * @return true if a tile is a swamp tile
+     */
+    public boolean isSwampTileAtScreen(float x, float y) {
+        int tx = screenToBoard(x);
+        int ty = screenToBoard(y);
+        if (!inBounds(tx, ty)) {
+            return false;
+        }
+
+        return getTileState(tx, ty).getType() == TileModel.TileType.SWAMP;
+    }
+
+    /**
+     * Returns true if a tile is a swamp tile.
+     *
+     * @param x The x index for the Tile
+     * @param y The y index for the Tile
+     *
+     * @return true if a tile is an swamp tile
+     */
+    public boolean isSwampTileAt(int x, int y) {
+        if (!inBounds(x, y)) {
+            return false;
+        }
+
+        return getTileState(x, y).getType() == TileModel.TileType.SWAMP;
+    }
+
+    /**
+     * Removes the power up effect at a swamp tile
+     * Does nothing if the given tile is not a swamp
+     *
+     * @param x The x index for the swamp tile
+     * @param y The y index for the swamp tile
+     */
+    public void removePowerAt(int x, int y){
+        if(this.getTileState(x, y).getType() == TileModel.TileType.SWAMP){
+            SwampTile swamp = (SwampTile) this.getTileState(x, y);
+            swamp.setPowered(false);
+        }
     }
 
     /**
@@ -218,6 +299,8 @@ public class MapModel {
         // Draw
         if (tile.getType() == TileModel.TileType.OBSTACLE) {
             canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
+        }else if(tile.getType() == TileModel.TileType.SWAMP){
+            canvas.draw(tile.getTexture(), SWAMP_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }else{
             canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }

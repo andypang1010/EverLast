@@ -78,7 +78,7 @@ public class CollisionController {
 
         // Process bounds for player
         processBound((PlayerModel) player);
-
+        pickPowerUp((PlayerModel) player);
 //        // Test collisions between player and enemies. Process enemies bounds
 //        for (int ii = 0; ii <= length - 1; ii++) {
 //            checkForCollision(player, enemies.get(ii));
@@ -217,6 +217,18 @@ public class CollisionController {
         } else if (enemy.getPosition().y >= getHeight()){
             enemy.setPosition(enemy.getPosition().x, getHeight());
             enemy.setVelocity(enemy.getVelocity().x, -enemy.getVelocity().y);
+        }
+    }
+
+    /**
+     * Check if the player is on a swamp tile, and pick up the power up if true
+     *
+     * @param player Player to check
+     */
+    private void pickPowerUp(PlayerModel player){
+        if(board.isSwampTileAtScreen(player.getPosition().x, player.getPosition().y)){
+            board.removePowerAt(board.screenToBoard(player.getPosition().x), board.screenToBoard(player.getPosition().y));
+            player.setCanBoost(true);
         }
     }
 

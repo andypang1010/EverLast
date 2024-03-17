@@ -12,7 +12,9 @@ abstract class TileModel extends GameObject {
         /** An empty tile */
         EMPTY,
         /** Obstacle that blocks movement */
-        OBSTACLE
+        OBSTACLE,
+        /** A swamp of radioactive liquid */
+        SWAMP
     }
 
     /** Type of the tile */
