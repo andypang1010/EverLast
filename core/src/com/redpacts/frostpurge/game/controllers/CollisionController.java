@@ -2,7 +2,7 @@ package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.redpacts.frostpurge.game.models.enemyModel;
+import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 
@@ -12,7 +12,7 @@ public class CollisionController {
     /** Reference to the player in the game */
     public PlayerModel player;
     /** Reference to all the enemies in the game */
-    public Array<enemyModel> enemies;
+    public Array<EnemyModel> enemies;
     /** Width of the collision geometry */
     private float width;
     /** Height of the collision geometry */
@@ -56,7 +56,7 @@ public class CollisionController {
      * @param width   Width of the screen
      * @param height  Height of the screen
      */
-    public CollisionController(MapModel board, PlayerModel player, Array<enemyModel> enemies, float width, float height) {
+    public CollisionController(MapModel board, PlayerModel player, Array<EnemyModel> enemies, float width, float height) {
         this.board = board;
         this.player = player;
         this.enemies = enemies;
@@ -102,7 +102,7 @@ public class CollisionController {
      * @param enemy1 The collider
      * @param enemy2 The collidee
      */
-    private void checkForCollision(enemyModel enemy1, enemyModel enemy2) {
+    private void checkForCollision(EnemyModel enemy1, EnemyModel enemy2) {
         // TODO: Update so that we get position of enemy
         // Got the positions for each ship
         float x1 = enemy1.getPosition().x;
@@ -134,7 +134,7 @@ public class CollisionController {
      * @param player The player
      * @param enemy  The enemy
      */
-    private void checkForCollision(PlayerModel player, enemyModel enemy) {
+    private void checkForCollision(PlayerModel player, EnemyModel enemy) {
         // TODO: Update so that we get position of enemy
         // Got the positions for each ship
         float x1 = player.getPosition().x;
@@ -203,7 +203,7 @@ public class CollisionController {
      *
      * @param enemy Enemy to check
      */
-    private void processBound(enemyModel enemy) {
+    private void processBound(EnemyModel enemy) {
         // Do not let the enemy go off screen.
         if (enemy.getPosition().x <= 0) {
             enemy.setPosition(0, enemy.getPosition().y);

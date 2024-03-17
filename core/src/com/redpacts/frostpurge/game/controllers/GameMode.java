@@ -8,12 +8,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
-import com.redpacts.frostpurge.game.models.EmptyTile;
-import com.redpacts.frostpurge.game.models.enemyModel;
+import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
+import com.redpacts.frostpurge.game.models.TileModel;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.ScreenListener;
+import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class GameMode implements Screen {
@@ -39,7 +40,9 @@ public class GameMode implements Screen {
 
     private EnemyController enemyController;
 
-    private Array<enemyModel> enemies;
+    private Array<EnemyModel> enemies;
+
+    private TileGraph tileGraph = new TileGraph();
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -55,7 +58,7 @@ public class GameMode implements Screen {
         directory = new AssetDirectory("assets.json");
         directory.loadAssets();
         directory.finishLoading();
-        enemies = new Array<enemyModel>();
+        enemies = new Array<EnemyModel>();
         // Create the controllers.
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
@@ -65,11 +68,13 @@ public class GameMode implements Screen {
         gameplayController = new GameplayController();
         board = new MapModel(10,10, obstacles, directory);
 
+        populateTileGraph();
+
         playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
 
-        enemyModel enemy = new enemyModel(new Vector2(600, 300), 90, directory);
-        enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 0), board.getTileState(0, 0), EnemyStates.PATROL);
+        EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        enemyController = new EnemyController(enemy, playerModel, board.getTileState(1, 2), board.getTileState(6, 7), EnemyStates.PATROL, tileGraph, board);
 
         enemies.add(enemy);
         camera = new OrthographicCamera();
@@ -112,6 +117,24 @@ public class GameMode implements Screen {
     public void dispose() {
 
     }
+
+    private void populateTileGraph() {
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int j = 0; j < board.getHeight(); j++) {
+                tileGraph.addTile(board.getTileState(i, j));
+            }
+        }
+
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int j = 0; j < board.getHeight(); j++) {
+                TileModel currentTile = board.getTileState(i, j);
+                for (TileModel tile : board.getTileNeighbors(i , j)) {
+                    tileGraph.connectTiles(currentTile, tile);
+                }
+            }
+        }
+    }
+
     public void update(float delta) {
         inputController.readInput(null,null);
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());

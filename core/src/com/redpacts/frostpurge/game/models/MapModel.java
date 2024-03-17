@@ -82,6 +82,8 @@ public class MapModel {
         }
     }
 
+    
+
     /**
      * Returns the tile object for the given position
      *
@@ -121,6 +123,21 @@ public class MapModel {
      */
     public int getTileSize() {
         return TILE_WIDTH;
+    }
+
+    public Array<TileModel> getTileNeighbors(int x, int y){
+        Array<TileModel> neighbors = new Array<TileModel>();
+        for(int i = x-1; i <= x+1; i++){
+            for(int j = y-1; j <= y+1; j++){
+                if(i == x && j == y){
+                    continue;
+                }
+                if(inBounds(i, j)){
+                    neighbors.add(getTileState(i, j));
+                }
+            }
+        }
+        return neighbors;
     }
 
     /**

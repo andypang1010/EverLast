@@ -7,14 +7,12 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.redpacts.frostpurge.game.models.TileHeuristic;
 import com.redpacts.frostpurge.game.models.TileModel;
-import com.redpacts.frostpurge.game.models.TilePath;
 
 public class TileGraph implements IndexedGraph<TileModel> {
     TileHeuristic tileHeuristic = new TileHeuristic();
-    Array<TileModel> tilesArray = new Array<>();
-    Array<TilePath> pathsArray = new Array<>();
+    Array<TileModel> tiles = new Array<>();
+    Array<TilePath> paths = new Array<>();
     ObjectMap<TileModel, Array<Connection<TileModel>>> tilesMap = new ObjectMap<>();
 
     private int lastTileIndex = 0;
@@ -23,7 +21,7 @@ public class TileGraph implements IndexedGraph<TileModel> {
         tileModel.index = lastTileIndex;
         lastTileIndex++;
 
-        tilesArray.add(tileModel);
+        tiles.add(tileModel);
     }
 
     public void connectTiles(TileModel fromTile, TileModel toTile){
@@ -33,7 +31,7 @@ public class TileGraph implements IndexedGraph<TileModel> {
             tilesMap.put(fromTile, new Array<Connection<TileModel>>());
         }
         tilesMap.get(fromTile).add(path);
-        pathsArray.add(path);
+        paths.add(path);
     }
 
     public GraphPath<TileModel> findPath(TileModel startTile, TileModel endTile){

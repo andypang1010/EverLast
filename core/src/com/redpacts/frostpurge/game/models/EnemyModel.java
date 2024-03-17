@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
-public class enemyModel extends CharactersModel{
+public class EnemyModel extends CharactersModel{
     /**
      * Instantiates the player with their starting location and angle and with their texture
      * @param position vector2 representing the starting location
      * @param rotation float representing angle the player is facing
      */
-    public enemyModel(Vector2 position, float rotation, AssetDirectory directory){
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory){
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
