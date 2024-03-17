@@ -59,15 +59,18 @@ public class MapModel {
      * @param height Map height in tiles
      * @param obstacle_pos Indices of obstacle tiles
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos, AssetDirectory directory) {
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos, AssetDirectory directory) {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
 
         this.width = width;
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
-            if(obstacle_pos.contains(ii, true)){
+            if(obstacle_pos.contains(ii, true)) {
                 tiles[ii] = new ObstacleTile(tile_texture);
+            }
+            else if(swamp_pos.contains(ii, true)){
+                    tiles[ii] = new SwampTile(tile_texture);
             }else{
                 tiles[ii] = new EmptyTile(tile_texture);
             }
@@ -292,9 +295,9 @@ public class MapModel {
 
         // Draw
         if (tile.getType() == TileModel.TileType.OBSTACLE) {
-            canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale);
+            canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }else if(tile.getType() == TileModel.TileType.SWAMP){
-            canvas.draw(tile.getTexture(), SWAMP_COLOR, 0, 0, sx, sy, 0, scale, scale);
+            canvas.draw(tile.getTexture(), SWAMP_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }else{
             canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }

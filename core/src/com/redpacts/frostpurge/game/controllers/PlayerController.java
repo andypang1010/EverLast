@@ -47,10 +47,11 @@ public class PlayerController extends CharactersController {
             stop();
         }
         if (boost && ((PlayerModel) model).getCanBoost()){
-            model.getVelocity().scl(1.3f);
+            model.getVelocity().scl(1.5f);
             ((PlayerModel) model).setCanBoost(false);
         }
         if (vacuum){
+
             //Check if there is goop then vacuum
         }
       

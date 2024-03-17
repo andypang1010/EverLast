@@ -303,19 +303,25 @@ public class GameCanvas {
 
     /**
      * Draws the tinted texture at the given position.
-     *
+     * <p>
      * The texture colors will be multiplied by the given color.  This will turn
      * any white into the given color.  Other colors will be similarly affected.
-     *
+     * <p>
      * Unless otherwise transformed by the global transform (@see begin(Affine2)),
      * the texture will be unscaled.  The bottom left of the texture will be positioned
      * at the given coordinates.
      *
-     * @param image The texture to draw
-     * @param x 	The x-coordinate of the bottom left corner
-     * @param y 	The y-coordinate of the bottom left corner
+     * @param image         The texture to draw
+     * @param obstacleColor
+     * @param x             The x-coordinate of the bottom left corner
+     * @param y             The y-coordinate of the bottom left corner
+     * @param sx
+     * @param sy
+     * @param i
+     * @param scale
+     * @param v
      */
-    public void draw(Texture image, float x, float y) {
+    public void draw(Texture image, Color obstacleColor, float x, float y, float sx, float sy, int i, float scale, float v) {
         if (!active) {
             Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
             return;

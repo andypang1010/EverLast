@@ -228,6 +228,7 @@ public class CollisionController {
     private void pickPowerUp(PlayerModel player){
         if(board.isSwampTileAtScreen(player.getPosition().x, player.getPosition().y)){
             board.removePowerAt(board.screenToBoard(player.getPosition().x), board.screenToBoard(player.getPosition().y));
+            player.setCanBoost(true);
         }
     }
 

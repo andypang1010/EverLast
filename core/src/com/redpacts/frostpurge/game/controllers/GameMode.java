@@ -59,13 +59,13 @@ public class GameMode implements Screen {
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
         obstacles.add(21, 24, 51, 54);
-        Array<Integer> swamps = new Array<Integer>();// Obstacle locations
+        Array<Integer> swamps = new Array<Integer>();// Swamp locations
         swamps.add(22, 25, 52, 55);
 
         inputController = new InputController();
         gameplayController = new GameplayController();
 
-        Board = new MapModel(10,10, obstacles, directory);
+        Board = new MapModel(10,10, obstacles, swamps, directory);
         Player = new PlayerModel(new Vector2(100,100),0, directory);
 
         Playercontroller = new PlayerController(Player);
