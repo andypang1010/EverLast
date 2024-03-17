@@ -7,7 +7,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
  * Class representing tiles in the game scene
  * Each tile has certain attributes that affects the game
  */
-abstract class TileModel extends GameObject {
+public abstract class TileModel extends GameObject {
     public enum TileType{
         /** An empty tile */
         EMPTY,
