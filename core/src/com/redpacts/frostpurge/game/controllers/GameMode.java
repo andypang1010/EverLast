@@ -22,6 +22,7 @@ public class GameMode implements Screen {
     private GameCanvas canvas;
 
     private OrthographicCamera camera;
+    private OrthographicCamera HUDcamera;
     private AssetDirectory directory;
     /** Reads input from keyboard or game pad (CONTROLLER CLASS) */
     private InputController inputController;
@@ -43,7 +44,8 @@ public class GameMode implements Screen {
 
     private Array<EnemyModel> enemies;
 
-    private TextureRegion statusBarBGTexture;
+    private Texture statusBarBGTexture;
+    private Texture statusBarTexture;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -62,7 +64,8 @@ public class GameMode implements Screen {
         enemies = new Array<EnemyModel>();
         // Create the controllers.
 
-        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class));
+        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
+        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
         obstacles.add(21, 24, 51, 54);
@@ -82,6 +85,8 @@ public class GameMode implements Screen {
         enemies.add(enemy);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        HUDcamera = new OrthographicCamera();
+        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
         physicsController = new CollisionController(Board, Player, enemies, canvas.getWidth(), canvas.getHeight());
     }
@@ -133,8 +138,11 @@ public class GameMode implements Screen {
         Board.draw(canvas);
         Playercontroller.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
         enemyController.draw(canvas);
-        canvas.draw(statusBarBGTexture, 0, canvas.getHeight() - 100, 0.5f, 0.5f);
         canvas.end();
+        canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
+        if (Playercontroller.hasResources()){
+            canvas.drawUI(statusBarTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
+        }
     }
 
     public enum GameState {

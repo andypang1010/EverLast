@@ -34,6 +34,12 @@ public class PlayerController extends CharactersController {
             model.setRotation((float) Math.atan2(-y,x));
         }
     }
+    /**
+     * Checks if the player has any resources
+     */
+    public boolean hasResources(){
+        return ((PlayerModel) model).getCanBoost();
+    }
 
     /**
      * Update function that will be called in gameplaycontroller to update the owner actions.

@@ -5,12 +5,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class GameCanvas {
     /** While we are not drawing polygons (yet), this spritebatch is more reliable */
@@ -33,6 +31,9 @@ public class GameCanvas {
     /** Cache object to unify everything under a master draw method */
     private TextureRegion holder;
 
+    private Vector3 screen;
+    private Vector3 world;
+
     /**
      * Creates a new GameCanvas determined by the application configuration.
      *
@@ -49,6 +50,8 @@ public class GameCanvas {
         // Initialize the cache objects
         holder = new TextureRegion();
         local  = new Affine2();
+        screen = new Vector3();
+        world = new Vector3();
     }
     /**
      * Center the camera around the player
@@ -525,6 +528,35 @@ public class GameCanvas {
         font.draw(spriteBatch, layout, x, y+offset);
     }
 
+    /**Draw the UI for the game which is different because it needs to follow the player.
+     *
+     * @param image
+     * @param tint
+     * @param x
+     * @param y
+     * @param angle
+     * @param sx
+     * @param sy
+     */
+    public void drawUI(Texture image, Color tint,
+                     float x, float y, float angle, float sx, float sy, OrthographicCamera camera) {
+        spriteBatch.begin();
+        active = true;
+        if (!active) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        // Call the master drawing method (we have to for transforms)
+
+        //Update HUD camera
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+
+        holder.setRegion(image);
+        draw(holder,tint,x,y,x,y,angle,sx,sy, false);
+        active = false;
+        spriteBatch.end();
+    }
 
     /**
      * Enumeration of supported BlendStates.
