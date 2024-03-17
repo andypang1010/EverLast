@@ -3,6 +3,7 @@ package com.redpacts.frostpurge.game.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -45,10 +46,18 @@ public class GameCanvas {
 
         // Set the projection matrix (for proper scaling)
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
-
         // Initialize the cache objects
         holder = new TextureRegion();
         local  = new Affine2();
+    }
+    /**
+     * Center the camera around the player
+     * @param camera The camera object to move
+     */
+    public void center(OrthographicCamera camera, float x, float y){
+        camera.position.set(x, y, 0);
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
     }
 
     /**
@@ -352,7 +361,7 @@ public class GameCanvas {
      * @param sy 	The y-axis scaling factor
      */
     public void draw(Texture image, Color tint, float ox, float oy,
-                     float x, float y, float angle, float sx, float sy) {
+                     float x, float y, float angle, float sx, float sy,boolean flip) {
         if (!active) {
             Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
             return;
@@ -360,7 +369,7 @@ public class GameCanvas {
 
         // Call the master drawing method (we have to for transforms)
         holder.setRegion(image);
-        draw(holder,tint,ox,oy,x,y,angle,sx,sy);
+        draw(holder,tint,ox,oy,x,y,angle,sx,sy,flip);
     }
 
     /**
@@ -431,7 +440,7 @@ public class GameCanvas {
      * @param sy 	The y-axis scaling factor
      */
     public void draw(TextureRegion region, Color tint, float ox, float oy,
-                     float x, float y, float angle, float sx, float sy) {
+                     float x, float y, float angle, float sx, float sy, boolean flip) {
         if (!active) {
             Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
             return;
@@ -439,8 +448,16 @@ public class GameCanvas {
 
         computeTransform(ox,oy,x,y,angle,sx,sy);
         spriteBatch.setColor(tint);
+        if (flip){
+            region.flip(true, false);
+        }
         spriteBatch.draw(region,region.getRegionWidth(),region.getRegionHeight(),local);
+        if (flip){
+            region.flip(true, false);
+        }
+
     }
+
 
     /**
      * Compute the affine transform (and store it in local) for this image.

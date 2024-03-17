@@ -5,7 +5,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 import org.w3c.dom.Text;
 
@@ -57,11 +59,8 @@ public class MapModel {
      * @param height Map height in tiles
      * @param obstacle_pos Indices of obstacle tiles
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos) {
-        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
-        Pixmap pixmap = new Pixmap(fileHandle);
-        this.tile_texture = new Texture(pixmap);
-        pixmap.dispose();
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, AssetDirectory directory) {
+        tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
 
         this.width = width;
         this.height = height;
@@ -297,7 +296,7 @@ public class MapModel {
         }else if(tile.getType() == TileModel.TileType.SWAMP){
             canvas.draw(tile.getTexture(), SWAMP_COLOR, 0, 0, sx, sy, 0, scale, scale);
         }else{
-            canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale);
+            canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }
     }
 }

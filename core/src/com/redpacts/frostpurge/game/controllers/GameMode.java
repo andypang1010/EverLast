@@ -4,17 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class GameMode implements Screen {
     private GameCanvas canvas;
 
+    private OrthographicCamera camera;
+    private AssetDirectory directory;
     /** Reads input from keyboard or game pad (CONTROLLER CLASS) */
     private InputController inputController;
     /** Handle collision and physics (CONTROLLER CLASS) */
@@ -27,8 +32,13 @@ public class GameMode implements Screen {
     private MapModel Board;
     /** Player for the game*/
     private PlayerModel Player;
+
     /** Player for the game*/
     private PlayerController Playercontroller;
+
+    private EnemyController enemyController;
+
+    private Array<EnemyModel> enemies;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -41,6 +51,10 @@ public class GameMode implements Screen {
         // Null out all pointers, 0 out all ints, etc.
         gameState = GameState.INTRO;
 
+        directory = new AssetDirectory("assets.json");
+        directory.loadAssets();
+        directory.finishLoading();
+        enemies = new Array<EnemyModel>();
         // Create the controllers.
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
@@ -50,11 +64,19 @@ public class GameMode implements Screen {
 
         inputController = new InputController();
         gameplayController = new GameplayController();
-        Board = new MapModel(10,10, obstacles, swamps);
-        Player = new PlayerModel(new Vector2(100,100),0);
+
+        Board = new MapModel(10,10, obstacles, directory);
+        Player = new PlayerModel(new Vector2(100,100),0, directory);
+
         Playercontroller = new PlayerController(Player);
+        EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        enemyController = new EnemyController(enemy, Player, new Vector2(0, 0), new Vector2(100, 0), EnemyStates.PATROL);
+
+        enemies.add(enemy);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        physicsController = new CollisionController(Board,Player,null, canvas.getWidth(), canvas.getHeight());
+        physicsController = new CollisionController(Board, Player, enemies, canvas.getWidth(), canvas.getHeight());
     }
 
     @Override
@@ -94,13 +116,16 @@ public class GameMode implements Screen {
     public void update(float delta) {
         inputController.readInput(null,null);
         Playercontroller.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
+        enemyController.update();
         physicsController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
+        canvas.center(camera, Playercontroller.getModel().getPosition().x,Playercontroller.getModel().getPosition().y);
         Board.draw(canvas);
-        Playercontroller.draw(canvas);
+        Playercontroller.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
+        enemyController.draw(canvas);
         canvas.end();
     }
 

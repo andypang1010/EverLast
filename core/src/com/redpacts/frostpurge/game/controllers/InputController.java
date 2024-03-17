@@ -150,8 +150,8 @@ public class InputController {
             boostPressed = xbox.getRBumper();
             vacuumPressed = xbox.getLBumper();
         }else{
-            float x = Gdx.input.getX() - 640f;
-            float y = Gdx.input.getY() - 360f;
+            float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
+            float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
             if (Math.abs(x) < 10f){
                 x = 0;
             }
@@ -159,7 +159,7 @@ public class InputController {
                 y = 0;
             }
             normalize(x,y);
-            if (Gdx.input.isKeyPressed(Input.Keys.D)){
+            if (Gdx.input.isKeyPressed(Input.Keys.W)){
                 horizontal = normalization[0];
                 vertical = normalization[1];
             }else{
@@ -167,7 +167,7 @@ public class InputController {
                 vertical = 0;
             }
             boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
-            vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
+            vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.V);
             deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
             exitPressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
         }
