@@ -3,8 +3,11 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -40,6 +43,8 @@ public class GameMode implements Screen {
 
     private Array<EnemyModel> enemies;
 
+    private TextureRegion statusBarBGTexture;
+
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
 
@@ -56,6 +61,8 @@ public class GameMode implements Screen {
         directory.finishLoading();
         enemies = new Array<EnemyModel>();
         // Create the controllers.
+
+        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class));
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
         obstacles.add(21, 24, 51, 54);
@@ -126,6 +133,7 @@ public class GameMode implements Screen {
         Board.draw(canvas);
         Playercontroller.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
         enemyController.draw(canvas);
+        canvas.draw(statusBarBGTexture, 0, canvas.getHeight() - 100, 0.5f, 0.5f);
         canvas.end();
     }
 

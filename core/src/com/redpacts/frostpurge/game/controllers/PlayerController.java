@@ -73,5 +73,7 @@ public class PlayerController extends CharactersController {
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
         }
 
+
+
     }
 }
