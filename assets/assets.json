@@ -2,7 +2,9 @@
   "textures": {
     "Liv" : "characters/liv_still.png",
     "Tile" : "environment/tile.jpg",
-    "Liv_Run": "characters/liv_run.png"
+    "Liv_Run": "characters/liv_run.png",
+    "StatusBar_BG": "ui/StatusBar_staticBackground.png",
+    "StatusBar_Bar": "ui/StatusBar_dynamicBar.png"
   },
   "animations"  : {
 
