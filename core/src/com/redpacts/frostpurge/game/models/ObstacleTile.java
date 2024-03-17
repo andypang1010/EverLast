@@ -13,7 +13,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class ObstacleTile extends TileModel{
 
     /** Type of the tile */
-    private final TileType type = TileType.OBSTACLE;
+    private TileType type = TileType.OBSTACLE;
 
     /**
      * Returns the texture of this tile
