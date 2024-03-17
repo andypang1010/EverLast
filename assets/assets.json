@@ -2,6 +2,8 @@
   "textures": {
     "Liv" : "characters/liv_still.png",
     "Tile" : "environment/tile.jpg",
+    "House" : "environment/House_Color.png",
+    "Plant" : "environment/Plant1_Color.png",
     "Liv_Run": "characters/liv_run.png"
   },
   "animations"  : {

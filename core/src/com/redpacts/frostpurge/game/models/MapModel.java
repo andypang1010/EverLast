@@ -21,6 +21,8 @@ public class MapModel {
 
     /** The texture used for tiles */
     private Texture tile_texture;
+    private Texture house_texture;
+    private Texture plant_texture;
 
     // Instance attributes
     /** The map width (in number of tiles) */
@@ -59,7 +61,8 @@ public class MapModel {
      */
     public MapModel(int width, int height, Array<Integer> obstacle_pos, AssetDirectory directory) {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
-
+        house_texture = new TextureRegion(directory.getEntry( "House", Texture.class )).getTexture();
+        plant_texture = new TextureRegion(directory.getEntry( "Plant", Texture.class )).getTexture();
         this.width = width;
         this.height = height;
         tiles = new TileModel[width * height];
