@@ -14,6 +14,8 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
 
+    private boolean canBoost;
+
     /**
      * Instantiates the player with their starting location and angle and with their texture
      *
@@ -27,6 +29,15 @@ public class PlayerModel extends CharactersModel {
         texture = new TextureRegion(directory.getEntry("Liv", Texture.class)).getTexture();
         Texture run = new TextureRegion(directory.getEntry("Liv_Run", Texture.class)).getTexture();
         running = new FilmStrip(run, 1, 12, 12);
+        canBoost = false;
+    }
+
+    public boolean getCanBoost() {
+        return canBoost;
+    }
+
+    public void setCanBoost(boolean b) {
+        canBoost = b;
     }
 }
 
