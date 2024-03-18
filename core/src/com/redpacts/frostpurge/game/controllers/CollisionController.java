@@ -2,17 +2,9 @@ package com.redpacts.frostpurge.game.controllers;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.assets.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.graphics.g2d.freetype.*;
 
 import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.util.GameContactListener;
@@ -213,16 +205,23 @@ public class CollisionController{
     public void update() {
         // TODO: Implement dt here
         // TODO: Not hard code check bound...
-//        processBound(player);
-//        for (EnemyModel e : enemies) {
-//            processBound(e);
-//        }
+        pickPowerUp((PlayerModel) player);
         for (EnemyModel e : enemies){
             checkEnemyVision(e, player);
         }
         postUpdate(1/60f);
     }
-
+    /**
+     * Check if the player is on a swamp tile, and pick up the power up if true
+     *
+     * @param player Player to check
+     */
+    private void pickPowerUp(PlayerModel player){
+        if(board.isSwampTileAtScreen(player.getPosition().x, player.getPosition().y)){
+            board.removePowerAt(board.screenToBoard(player.getPosition().x), board.screenToBoard(player.getPosition().y));
+            player.setCanBoost(true);
+        }
+    }
     /**
      * Processes physics
      *
