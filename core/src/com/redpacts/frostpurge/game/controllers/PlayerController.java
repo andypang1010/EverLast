@@ -60,9 +60,10 @@ public class PlayerController extends CharactersController {
 
             //Check if there is goop then vacuum
         }
-      
+
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
+        model.getBody().setTransform(newLocation, 0);
     }
     public void draw(GameCanvas canvas, float horizontal, float vertical){
 

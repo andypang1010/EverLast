@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.views.GameCanvas;
@@ -75,12 +76,14 @@ public class MapModel {
         tiles = new TileModel[width * height];
         this.objects = objects;
         System.out.println(obstacle_pos);
+
+        float scale = (float) TILE_WIDTH / tile_texture.getWidth();
         for (int ii = 0; ii < tiles.length; ii++) {
             if(obstacle_pos.contains(ii, false)) {
-                tiles[ii] = new ObstacleTile(tile_texture);
+                tiles[ii] = new ObstacleTile(tile_texture, getTileCoordinate(ii), scale);
             }
             else if(swamp_pos.contains(ii, false)){
-                    tiles[ii] = new SwampTile(tile_texture);
+                tiles[ii] = new SwampTile(tile_texture, getTileCoordinate(ii), scale);
             }else{
                 tiles[ii] = new EmptyTile(tile_texture);
             }
@@ -105,15 +108,30 @@ public class MapModel {
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
+
             if(obstacle_pos.contains(ii, true)){
+//                System.out.println("OBSTACLE");
+//                System.out.println(getTileCoordinate(ii));
                 tiles[ii] = new ObstacleTile(tile_texture);
-            }else if(swamp_pos.contains(ii, true)){
+            } else if(swamp_pos.contains(ii, true)){
                 tiles[ii] = new SwampTile(tile_texture);
             } else{
                 tiles[ii] = new EmptyTile(tile_texture);
             }
         }
     }
+
+    /**
+     * Returns the (x, y) coordinates from tiles indices.
+     *
+     * @return the (x, y) coordinates of tile[i]
+     */
+    public Vector2 getTileCoordinate(int index) {
+        int x = index / height;
+        int y = index % height;
+        return new Vector2(boardToScreen(x),boardToScreen(y));
+    }
+
 
     /**
      * Returns the tile object for the given position
@@ -127,6 +145,15 @@ public class MapModel {
             return null;
         }
         return tiles[x * height + y];
+    }
+
+    /**
+     * Returns the tiles
+     *
+     * @return the tiles array
+     */
+    public TileModel[] getTiles() {
+        return tiles;
     }
 
     /**
