@@ -74,7 +74,7 @@ public class GameMode implements Screen {
         playerController = new PlayerController(playerModel);
 
         EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        enemyController = new EnemyController(enemy, playerModel, board.getTileState(1, 2), board.getTileState(6, 7), EnemyStates.PATROL, tileGraph, board);
+        enemyController = new EnemyController(enemy, playerModel, board.getTileState(3, 3), board.getTileState(3, 7), EnemyStates.PATROL, tileGraph, board);
 
         enemies.add(enemy);
         camera = new OrthographicCamera();
@@ -121,15 +121,15 @@ public class GameMode implements Screen {
     private void populateTileGraph() {
         for (int i = 0; i < board.getWidth(); i++) {
             for (int j = 0; j < board.getHeight(); j++) {
-                tileGraph.addTile(board.getTileState(i, j));
-            }
-        }
 
-        for (int i = 0; i < board.getWidth(); i++) {
-            for (int j = 0; j < board.getHeight(); j++) {
-                TileModel currentTile = board.getTileState(i, j);
-                for (TileModel tile : board.getTileNeighbors(i , j)) {
-                    tileGraph.connectTiles(currentTile, tile);
+                if (board.getTileState(i, j).getType() != TileModel.TileType.OBSTACLE) {
+                    tileGraph.addTile(board.getTileState(i, j));
+
+                    for (TileModel neighbor : board.getTileNeighbors(i, j)) {
+                        if (neighbor.getType() != TileModel.TileType.OBSTACLE) {
+                            tileGraph.connectTiles(board.getTileState(i, j), neighbor);
+                        }
+                    }
                 }
             }
         }

@@ -15,6 +15,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
+    private Vector2 moveDirection = new Vector2();
     private float speedMultiplier = 1;
     /*
     FSM
@@ -30,7 +31,7 @@ public class EnemyController extends CharactersController implements StateMachin
     */
     MapModel board;
     TileGraph tileGraph;
-    TileModel previousTile, currentTile, nextTile;
+    TileModel previousTile;
     Queue<TileModel> pathQueue = new Queue<>();
 
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, TileModel startPatrolTile, TileModel endPatrolTile, EnemyStates initState, TileGraph tileGraph, MapModel board) {
@@ -40,46 +41,56 @@ public class EnemyController extends CharactersController implements StateMachin
         this.endPatrolTile = endPatrolTile;
         setInitialState(initState);
         this.tileGraph = tileGraph;
+        model.setPosition(startPatrolTile.cx, startPatrolTile.cy);
         previousTile = startPatrolTile;
-        currentTile = startPatrolTile;
         this.board = board;
-
-        setGoal(endPatrolTile);
     }
 
     public void setGoal(TileModel goalTile) {
         pathQueue.clear();
-        GraphPath<TileModel> graphPath = tileGraph.findPath(currentTile, goalTile);
+        GraphPath<TileModel> graphPath = tileGraph.findPath(previousTile, goalTile);
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
-            System.out.println(graphPath.get(i).getCenter());
+//            System.out.println(graphPath.get(i).getCenter());
         }
 
-        nextTile = pathQueue.first();
+        setMoveDirection();
     }
 
     private void checkCollision() {
         if (pathQueue.size > 0) {
             TileModel targetTile = pathQueue.first();
-            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.cx, targetTile.cy) < 5) {
+            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.cx, targetTile.cy) < targetTile.getTexture().getWidth()) {
                 reachNextTile();
             }
         }
     }
 
     private void reachNextTile() {
-        nextTile = pathQueue.first();
-
-        this.previousTile = nextTile;
+        this.previousTile = pathQueue.first();
         pathQueue.removeFirst();
+
+        if (pathQueue.size == 0) {
+            reachDestination();
+        } else {
+            setMoveDirection();
+        }
+    }
+
+    private void reachDestination() {
+        stop();
+    }
+
+    private void setMoveDirection() {
+        if (pathQueue.notEmpty()) {
+            TileModel nextTile = pathQueue.first();
+            moveDirection = new Vector2(nextTile.cx - model.getPosition().x, model.getPosition().y - nextTile.cy).nor();
+        }
     }
 
 
     @Override
     public void update() {
-
-        currentTile = modelPositionToTile(model);
-
         switch (currentState) {
             case PATROL:
                 System.out.println("PATROLLING");
@@ -97,17 +108,22 @@ public class EnemyController extends CharactersController implements StateMachin
                 }
                 break;
             case CHASE:
-                System.out.println("CHASING");
-                setGoal(board.getTileState(board.screenToBoard(playerModel.getPosition().x), board.screenToBoard(playerModel.getPosition().y)));
+                System.out.println("CHASING: " + modelPositionToTile(playerModel).getCenter().toString());
+                setGoal(modelPositionToTile(playerModel));
                 break;
         };
 
         moveToNextTile();
+        checkCollision();
     }
 
     private void moveToNextTile() {
-        Vector2 direction = new Vector2(nextTile.cx - model.getPosition().x, nextTile.cy - model.getPosition().y).nor().scl(speedMultiplier);
-        accelerate(direction.x, direction.y);
+        Vector2 vel = moveDirection;
+        vel.scl(1);
+        accelerate(vel.x, vel.y);
+
+        Vector2 newLocation = model.getPosition().add(model.getVelocity());
+        model.setPosition(newLocation.x, newLocation.y);
     }
 
     public void draw(GameCanvas canvas){

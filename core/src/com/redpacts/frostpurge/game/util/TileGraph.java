@@ -13,12 +13,12 @@ public class TileGraph implements IndexedGraph<TileModel> {
     TileHeuristic tileHeuristic = new TileHeuristic();
     Array<TileModel> tiles = new Array<>();
     Array<TilePath> paths = new Array<>();
-    ObjectMap<TileModel, Array<Connection<TileModel>>> tilesMap = new ObjectMap<>();
+    ObjectMap<TileModel, Array<Connection<TileModel>>> pathsMap = new ObjectMap<>();
 
     private int lastTileIndex = 0;
 
     public void addTile(TileModel tileModel) {
-        tileModel.index = lastTileIndex;
+        tileModel.setIndex(lastTileIndex);
         lastTileIndex++;
 
         tiles.add(tileModel);
@@ -27,17 +27,21 @@ public class TileGraph implements IndexedGraph<TileModel> {
     public void connectTiles(TileModel fromTile, TileModel toTile){
         TilePath path = new TilePath(fromTile, toTile);
 
-        if (!tilesMap.containsKey(fromTile)) {
-            tilesMap.put(fromTile, new Array<Connection<TileModel>>());
+        if (!pathsMap.containsKey(fromTile)) {
+            pathsMap.put(fromTile, new Array<>());
         }
-        tilesMap.get(fromTile).add(path);
         paths.add(path);
+        pathsMap.get(fromTile).add(path);
     }
 
-    public GraphPath<TileModel> findPath(TileModel startTile, TileModel endTile){
-        GraphPath<TileModel> path = new DefaultGraphPath<>();
-        new IndexedAStarPathFinder<>(this).searchNodePath(startTile, endTile, tileHeuristic, path);
-        return path;
+    public GraphPath<TileModel> findPath(TileModel startTile, TileModel endTile) {
+        GraphPath<TileModel> tilePath = new DefaultGraphPath<>();
+
+        new IndexedAStarPathFinder<>(this).searchNodePath(startTile, endTile, tileHeuristic, tilePath);
+//        for(TileModel tile : tilePath) {
+//            System.out.println(tile.getCenter().toString());
+//        }
+        return tilePath;
     }
 
     @Override
@@ -52,9 +56,9 @@ public class TileGraph implements IndexedGraph<TileModel> {
 
     @Override
     public Array<Connection<TileModel>> getConnections(TileModel tileModel) {
-        if (tilesMap.containsKey(tileModel)) {
-            return tilesMap.get(tileModel);
+        if (pathsMap.containsKey(tileModel)) {
+            return pathsMap.get(tileModel);
         }
-        return null;
+        return new Array<>(0);
     }
 }

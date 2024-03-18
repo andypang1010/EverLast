@@ -15,7 +15,8 @@ public class TilePath implements Connection<TileModel> {
         this.toTile = toTile;
 
         // Cost of path should be Float.MAX_VALUE if any tile between path is an obstacle and 0 otherwise
-        cost = (fromTile.getType() == TileModel.TileType.OBSTACLE || toTile.getType() == TileModel.TileType.EMPTY) ? Float.MAX_VALUE : 1;
+//        cost = (fromTile.getType() == TileModel.TileType.OBSTACLE || toTile.getType() == TileModel.TileType.EMPTY) ? Float.MAX_VALUE : 1;
+        cost = 1;
     }
 
     @Override
