@@ -34,6 +34,9 @@ public class MapModel {
     /** The tile grid (with above dimensions) */
     private TileModel[] tiles;
 
+    /** The items in the level */
+    private Array<EnvironmentalObject> objects;
+
     /**
      * Creates a new empty map of the given size
      *
@@ -60,19 +63,23 @@ public class MapModel {
      * @param width Map width in tiles
      * @param height Map height in tiles
      * @param obstacle_pos Indices of obstacle tiles
+     * @param swamp_pos Indices of swamp tiles
+     * @param objects An array of environmental objects
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos, AssetDirectory directory) {
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos, Array<EnvironmentalObject> objects, AssetDirectory directory) {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
         house_texture = new TextureRegion(directory.getEntry( "House", Texture.class )).getTexture();
         plant_texture = new TextureRegion(directory.getEntry( "Plant", Texture.class )).getTexture();
         this.width = width;
         this.height = height;
         tiles = new TileModel[width * height];
+        this.objects = objects;
+        System.out.println(obstacle_pos);
         for (int ii = 0; ii < tiles.length; ii++) {
-            if(obstacle_pos.contains(ii, true)) {
+            if(obstacle_pos.contains(ii, false)) {
                 tiles[ii] = new ObstacleTile(tile_texture);
             }
-            else if(swamp_pos.contains(ii, true)){
+            else if(swamp_pos.contains(ii, false)){
                     tiles[ii] = new SwampTile(tile_texture);
             }else{
                 tiles[ii] = new EmptyTile(tile_texture);
@@ -279,6 +286,9 @@ public class MapModel {
                 drawTile(x, y, canvas);
             }
         }
+        for(EnvironmentalObject object: objects){
+            drawObject(object, canvas);
+        }
     }
 
     /**
@@ -303,6 +313,16 @@ public class MapModel {
             canvas.draw(tile.getTexture(), SWAMP_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }else{
             canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
+        }
+    }
+
+    private void drawObject(EnvironmentalObject object, GameCanvas canvas){
+        float x = boardToScreen((int) object.getPosition().x);
+        float y = boardToScreen((int) object.getPosition().y);
+        if(object.getType() == EnvironmentalObject.ObjectType.PLANT){
+            canvas.draw(plant_texture, BASIC_COLOR, 0, 0, x, y, 0, 1, 1, false);
+        }else if(object.getType() == EnvironmentalObject.ObjectType.HOUSE){
+            canvas.draw(house_texture, BASIC_COLOR, 0, 0, x, y, 0, 1, 1, false);
         }
     }
 }

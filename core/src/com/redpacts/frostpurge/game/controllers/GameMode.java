@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.EnemyModel;
+import com.redpacts.frostpurge.game.models.EnvironmentalObject;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.EnemyStates;
@@ -58,14 +59,26 @@ public class GameMode implements Screen {
         // Create the controllers.
 
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-        obstacles.add(21, 24, 51, 54);
+        obstacles.add(43, 50, 57, 383);
+        obstacles.add(390, 397);
         Array<Integer> swamps = new Array<Integer>();// Swamp locations
-        swamps.add(22, 25, 52, 55);
+        //swamps.add(22, 25, 52, 55);
+        Array<EnvironmentalObject> objects = new Array<EnvironmentalObject>();// Objects in level
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
 
         inputController = new InputController();
         gameplayController = new GameplayController();
 
-        Board = new MapModel(10,10, obstacles, swamps, directory);
+        Board = new MapModel(20,20, obstacles, swamps, objects, directory);
         Player = new PlayerModel(new Vector2(100,100),0, directory);
 
         Playercontroller = new PlayerController(Player);

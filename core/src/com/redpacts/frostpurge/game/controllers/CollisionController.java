@@ -165,14 +165,17 @@ public class CollisionController {
         if (player.getPosition().x <= 0) {
             player.setPosition(0, player.getPosition().y);
             player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
-        } else if (player.getPosition().y <= 0) {
+        }
+        if (player.getPosition().y <= 0) {
             player.setPosition(player.getPosition().x, 0);
             player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
-        } else if (player.getPosition().x >= getWidth()) {
-            player.setPosition(getWidth(), player.getPosition().y);
+        }
+        if (player.getPosition().x >= board.getWidth()* board.getTileSize()) {
+            player.setPosition(board.getWidth()* board.getTileSize(), player.getPosition().y);
             player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
-        } else if (player.getPosition().y >= getHeight()){
-            player.setPosition(player.getPosition().x, getHeight());
+        }
+        if (player.getPosition().y >= board.getHeight()* board.getTileSize()){
+            player.setPosition(player.getPosition().x, board.getHeight()* board.getTileSize());
             player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
         }
 
