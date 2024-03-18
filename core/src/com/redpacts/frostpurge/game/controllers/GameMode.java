@@ -155,6 +155,8 @@ public class GameMode implements Screen {
         canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
         if (Playercontroller.hasResources()){
             canvas.drawUI(statusBarTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(statusBarTexture,Color.WHITE, 250, 1300, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(statusBarTexture,Color.WHITE, 300, 1300, 0, .5f,.5f, HUDcamera);
         }
     }
 
