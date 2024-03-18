@@ -44,7 +44,7 @@ public class EnemyController extends CharactersController implements StateMachin
     public void update() {
         switch (currentState) {
             case PATROL:
-                System.out.println("PATROLLING");
+                //System.out.println("PATROLLING");
 
                 // TODO: Check if player is in sight
 
@@ -58,7 +58,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
                 break;
             case CHASE:
-                System.out.println("CHASING");
+                //System.out.println("CHASING");
                 // TODO: Take in LevelModel as input
                 // TODO: Find all traversable tiles
                 // TODO: Use pathfinding to find valid path to target tile

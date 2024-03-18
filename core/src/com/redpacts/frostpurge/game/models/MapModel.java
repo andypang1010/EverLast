@@ -18,7 +18,8 @@ public class MapModel {
     /** Color of a regular tile */
     private static final Color BASIC_COLOR = new Color(1f, 1f, 1f, 1f);
     /** Highlight color for power tiles */
-    private static final Color OBSTACLE_COLOR = new Color( 0.0f,  1.0f,  0.5f, 1f);
+    //private static final Color OBSTACLE_COLOR = new Color( 0.0f,  1.0f,  0.5f, 1f);
+    private static final Color OBSTACLE_COLOR = BASIC_COLOR;
     /** Highlight color for swamp tiles */
     private static final Color SWAMP_COLOR = new Color( 1f,  1.0f,  0f, 1f);
 

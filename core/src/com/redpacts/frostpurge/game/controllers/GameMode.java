@@ -71,8 +71,12 @@ public class GameMode implements Screen {
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
         obstacles.add(43, 50, 57, 383);
         obstacles.add(390, 397);
+        createHouse(4, 4, obstacles);
+        createHouse(12, 4, obstacles);
+        createHouse(4, 10, obstacles);
+        createHouse(12, 10, obstacles);
         Array<Integer> swamps = new Array<Integer>();// Swamp locations
-        swamps.add(22, 25, 52, 55);
+        swamps.add(122, 125, 152, 155);
         Array<EnvironmentalObject> objects = new Array<EnvironmentalObject>();// Objects in level
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
@@ -102,6 +106,14 @@ public class GameMode implements Screen {
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
         physicsController = new CollisionController(Board, Player, enemies, canvas.getWidth(), canvas.getHeight());
+    }
+
+    private void createHouse(int start_x, int start_y, Array<Integer> houseArray){
+        for(int i = 1; i <= 4; i++){
+            for(int j = 0; j <= 4; j++){
+                houseArray.add(start_x * 20 + start_y + i + j*20);
+            }
+        }
     }
 
     @Override
