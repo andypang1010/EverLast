@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class EnemyModel extends CharactersModel{
@@ -18,6 +19,8 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
-        texture = new TextureRegion(directory.getEntry( "Liv", Texture.class )).getTexture();
+        texture = new TextureRegion(directory.getEntry( "Enemy", Texture.class )).getTexture();
+        running = new FilmStrip(texture, 1, 8, 8);
+        running.setFrame(4);
     }
 }
