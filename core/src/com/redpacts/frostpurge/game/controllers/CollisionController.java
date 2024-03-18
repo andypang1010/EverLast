@@ -161,6 +161,8 @@ public class CollisionController {
      * @param player Player to check
      */
     private void processBound(PlayerModel player) {
+        System.out.println("x:" + player.getPosition().x);
+        System.out.println("y:" + player.getPosition().y);
         // Do not let the player go off screen.
         if (player.getPosition().x <= 0) {
             player.setPosition(0, player.getPosition().y);
@@ -186,16 +188,16 @@ public class CollisionController {
             float half = width / 2f;
 
             if((tile_y <= tile_x && tile_x <= half) || (tile_y <= width - tile_x && tile_x > half)){
-                player.setPosition(player.getPosition().x, board.screenToBoard(player.getPosition().y) * board.getTileSize());
+                player.setPosition(player.getPosition().x, board.screenToBoard(player.getPosition().y) * board.getTileSize() - 1);
                 player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
             }else if((tile_x > tile_y && tile_y > half) || (tile_x > width - tile_y && tile_y <= half)){
-                player.setPosition((1 + board.screenToBoard(player.getPosition().x)) * board.getTileSize(), player.getPosition().y);
+                player.setPosition((1 + board.screenToBoard(player.getPosition().x)) * board.getTileSize() + 1, player.getPosition().y);
                 player.setVelocity(-player.getVelocity().x / 5, player.getVelocity().y);
             }else if((tile_y > tile_x && tile_x > half) || (tile_y > width - tile_x && tile_x <= half)){
-                player.setPosition(player.getPosition().x, (1 + board.screenToBoard(player.getPosition().y)) * board.getTileSize());
+                player.setPosition(player.getPosition().x, (1 + board.screenToBoard(player.getPosition().y)) * board.getTileSize() + 1);
                 player.setVelocity(player.getVelocity().x, -player.getVelocity().y/5);
             }else{
-                player.setPosition(board.screenToBoard(player.getPosition().x) * board.getTileSize(), player.getPosition().y);
+                player.setPosition(board.screenToBoard(player.getPosition().x) * board.getTileSize() - 1, player.getPosition().y);
                 player.setVelocity(-player.getVelocity().x/5, player.getVelocity().y);
             }
         }
