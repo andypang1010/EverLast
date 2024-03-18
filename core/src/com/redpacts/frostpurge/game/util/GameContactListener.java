@@ -1,10 +1,7 @@
 package com.redpacts.frostpurge.game.util;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.redpacts.frostpurge.game.models.EnemyModel;
-import com.redpacts.frostpurge.game.models.GameObject;
-import com.redpacts.frostpurge.game.models.PlayerModel;
-import com.redpacts.frostpurge.game.models.TileModel;
+import com.redpacts.frostpurge.game.models.*;
 
 public class GameContactListener implements ContactListener {
     /**
@@ -52,16 +49,16 @@ public class GameContactListener implements ContactListener {
             handleCollision((PlayerModel) obj1, (PlayerModel) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof EnemyModel) {
             handleCollision((PlayerModel) obj1, (EnemyModel) obj2);
-        } else if (obj1 instanceof PlayerModel && obj2 instanceof TileModel) {
-            handleCollision((PlayerModel) obj1, (TileModel) obj2);
+        } else if (obj1 instanceof PlayerModel && obj2 instanceof ObstacleTile) {
+            handleCollision((PlayerModel) obj1, (ObstacleTile) obj2);
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
             handleCollision((PlayerModel) obj2, (EnemyModel) obj1);
         } else if (obj1 instanceof EnemyModel && obj2 instanceof EnemyModel) {
             handleCollision((EnemyModel) obj1, (EnemyModel) obj2);
-        } else if (obj1 instanceof EnemyModel && obj2 instanceof TileModel) {
-            handleCollision((EnemyModel) obj1, (TileModel) obj2);
+        } else if (obj1 instanceof EnemyModel && obj2 instanceof ObstacleTile) {
+            handleCollision((EnemyModel) obj1, (ObstacleTile) obj2);
         }
     }
 
@@ -94,7 +91,7 @@ public class GameContactListener implements ContactListener {
      * @param player The player
      * @param tile   The tile
      */
-    private void handleCollision(PlayerModel player, TileModel tile) {
+    private void handleCollision(PlayerModel player, ObstacleTile tile) {
         // TODO: Update so that we dampen the velocity of player
         float vx1 = player.getVelocity().x;
         float vy1 = player.getVelocity().y;
@@ -125,7 +122,7 @@ public class GameContactListener implements ContactListener {
      * @param enemy The enemy
      * @param tile   The tile
      */
-    private void handleCollision(EnemyModel enemy, TileModel tile) {
+    private void handleCollision(EnemyModel enemy, ObstacleTile tile) {
         // TODO: Update so that we dampen the velocity of enemy
         float vx1 = enemy.getVelocity().x;
         float vy1 = enemy.getVelocity().y;

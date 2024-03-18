@@ -142,13 +142,21 @@ public class CollisionController{
         if (player != null) {
             player.createBody(world);
             addObject(player);
-            System.out.println(player.getPosition());
+//            System.out.println(player.getPosition());
         }
         for (EnemyModel e : enemies) {
             if (e != null) {
                 e.createBody(world);
                 addObject(e);
-                System.out.println(e.getPosition());
+//                System.out.println(e.getPosition());
+            }
+        }
+        for (TileModel t : board.getTiles()) {
+            if (t != null){
+                t.createBody(world);
+                addObject(t);
+//                System.out.println(t.getPosition());
+//                System.out.println(t.getType());
             }
         }
 
@@ -171,82 +179,6 @@ public class CollisionController{
         world  = null;
     }
 
-    // Create player body and fixtures with specific category and mask bits
-
-
-    // Create enemy bodies and fixtures with specific category and mask bits
-
-
-    // Create obstacle bodies and fixtures with specific category and mask bits
-    protected void createObstacleBody(TileModel tile) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(tile.getPosition());
-
-        Body body = world.createBody(bodyDef);
-        body.setUserData(tile);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((float) tile.getTexture().getWidth() / 2,
-                (float) tile.getTexture().getHeight() / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.filter.categoryBits = PhysicsConstants.CATEGORY_OBSTACLE;
-        fixtureDef.filter.maskBits = (short)(PhysicsConstants.CATEGORY_PLAYER |
-                PhysicsConstants.CATEGORY_ENEMY);
-
-        body.createFixture(fixtureDef);
-        shape.dispose();
-    }
-
-    // TODO: Change Swamp type to appropriate type
-    // Create swamp bodies and fixtures with specific category and mask bits
-    protected void createSwampBody(TileModel tile) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(tile.getPosition());
-
-        Body body = world.createBody(bodyDef);
-        body.setUserData(tile);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((float) tile.getTexture().getWidth() / 2,
-                (float) tile.getTexture().getHeight() / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = PhysicsConstants.CATEGORY_SWAMP;
-        fixtureDef.filter.maskBits = PhysicsConstants.CATEGORY_PLAYER;
-
-        body.createFixture(fixtureDef);
-        shape.dispose();
-    }
-
-    // TODO: Change Destructible type to appropriate type
-    // Create destructible bodies and fixtures with specific category and mask bits
-    protected void createDestructibleBody(TileModel tile) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(tile.getPosition());
-
-        Body body = world.createBody(bodyDef);
-        body.setUserData(tile);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((float) tile.getTexture().getWidth() / 2,
-                (float) tile.getTexture().getHeight() / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.filter.categoryBits = PhysicsConstants.CATEGORY_DESTRUCTIBLE;
-        fixtureDef.filter.maskBits = (short)(PhysicsConstants.CATEGORY_PLAYER |
-                PhysicsConstants.CATEGORY_ENEMY);
-
-        body.createFixture(fixtureDef);
-        shape.dispose();
-    }
 
     /**
      * Immediately adds the object to the physics world

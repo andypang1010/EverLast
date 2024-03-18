@@ -4,8 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.redpacts.frostpurge.game.controllers.CollisionController;
 import com.redpacts.frostpurge.game.views.GameCanvas;
-import org.w3c.dom.Text;
+//import org.w3c.dom.Text;
+//import sun.invoke.empty.Empty;
 
 /**
  * Class representing tiles in the game scene
@@ -14,7 +18,7 @@ import org.w3c.dom.Text;
 public class EmptyTile extends TileModel{
 
     /** Type of the tile */
-    private final TileType type = TileType.EMPTY;
+    private TileType type;
 
     /**
      * Returns the texture of this tile
@@ -51,6 +55,24 @@ public class EmptyTile extends TileModel{
      */
     public EmptyTile(Texture texture){
         this.texture = texture;
+        this.type = TileType.EMPTY;
+    }
+
+    /**
+     * Create a tile with the specified texture
+     *
+     * @param texture The texture of the tile
+     * @param position The texture of the tile
+     */
+    public EmptyTile(Texture texture, Vector2 position){
+        this.texture = texture;
+        this.type = TileType.EMPTY;
+        this.position = position;
+    }
+
+    public void createBody(World world) {
+        // TODO: should we have a body here?
+        return;
     }
 }
 
