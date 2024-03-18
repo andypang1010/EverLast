@@ -72,7 +72,7 @@ public class GameMode implements Screen {
         obstacles.add(43, 50, 57, 383);
         obstacles.add(390, 397);
         Array<Integer> swamps = new Array<Integer>();// Swamp locations
-        //swamps.add(22, 25, 52, 55);
+        swamps.add(22, 25, 52, 55);
         Array<EnvironmentalObject> objects = new Array<EnvironmentalObject>();// Objects in level
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
