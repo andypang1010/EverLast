@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
@@ -24,9 +25,13 @@ public class MapModel {
     private static final Color BASIC_COLOR = new Color(1f, 1f, 1f, 1f);
     /** Highlight color for power tiles */
     private static final Color OBSTACLE_COLOR = new Color( 0.0f,  1.0f,  0.5f, 1f);
+    /** Highlight color for swamp tiles */
+    private static final Color SWAMP_COLOR = new Color( 1f,  1.0f,  0f, 1f);
 
     /** The texture used for tiles */
     private Texture tile_texture;
+    private Texture house_texture;
+    private Texture plant_texture;
 
     // Instance attributes
     /** The map width (in number of tiles) */
@@ -35,6 +40,9 @@ public class MapModel {
     private int height;
     /** The tile grid (with above dimensions) */
     private TileModel[] tiles;
+
+    /** The items in the level */
+    private Array<EnvironmentalObject> objects;
 
     /**
      * Creates a new empty map of the given size
@@ -64,25 +72,85 @@ public class MapModel {
      * @param width Map width in tiles
      * @param height Map height in tiles
      * @param obstacle_pos Indices of obstacle tiles
+     * @param swamp_pos Indices of swamp tiles
+     * @param objects An array of environmental objects
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos, AssetDirectory directory) {
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos, Array<EnvironmentalObject> objects, AssetDirectory directory) {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
+        house_texture = new TextureRegion(directory.getEntry( "House", Texture.class )).getTexture();
+        plant_texture = new TextureRegion(directory.getEntry( "Plant", Texture.class )).getTexture();
+        this.width = width;
+        this.height = height;
+        tiles = new TileModel[width * height];
+        this.objects = objects;
+        System.out.println(obstacle_pos);
+
+        float scale = (float) TILE_WIDTH / tile_texture.getWidth();
+        for (int ii = 0; ii < tiles.length; ii++) {
+            if(obstacle_pos.contains(ii, false)) {
+                tiles[ii] = new ObstacleTile(tile_texture, getTileCoordinate(ii), scale);
+            }
+            else if(swamp_pos.contains(ii, false)){
+                tiles[ii] = new SwampTile(tile_texture, getTileCoordinate(ii), scale);
+            }else{
+                tiles[ii] = new EmptyTile(tile_texture);
+            }
+        }
+    }
+
+    /**
+     * Creates a new map of the given size with obstacles and swamps at specified positions
+     *
+     * @param width Map width in tiles
+     * @param height Map height in tiles
+     * @param obstacle_pos Indices of obstacle tiles
+     * @param swamp_pos Indices of swamp tiles
+     */
+    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos) {
+        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
+        Pixmap pixmap = new Pixmap(fileHandle);
+        this.tile_texture = new Texture(pixmap);
+        pixmap.dispose();
 
         this.width = width;
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
-            int y = ii % height;
-            int x = (ii - y) / height;
+// <<<<<<< 24-enemycontroller
+//             int y = ii % height;
+//             int x = (ii - y) / height;
+//             if(obstacle_pos.contains(ii, true)){
+//                 tiles[ii] = new ObstacleTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
+//             }else{
+//                 tiles[ii] = new EmptyTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
+// =======
+
             if(obstacle_pos.contains(ii, true)){
-                tiles[ii] = new ObstacleTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
-            }else{
-                tiles[ii] = new EmptyTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
+//                System.out.println("OBSTACLE");
+//                System.out.println(getTileCoordinate(ii));
+                tiles[ii] = new ObstacleTile(tile_texture);
+            } else if(swamp_pos.contains(ii, true)){
+                tiles[ii] = new SwampTile(tile_texture);
+            } else{
+                tiles[ii] = new EmptyTile(tile_texture);
+// >>>>>>> main
             }
         }
     }
 
     
+
+    /**
+     * Returns the (x, y) coordinates from tiles indices.
+     *
+     * @return the (x, y) coordinates of tile[i]
+     */
+    public Vector2 getTileCoordinate(int index) {
+        int x = index / height;
+        int y = index % height;
+        return new Vector2(boardToScreen(x),boardToScreen(y));
+    }
+
 
     /**
      * Returns the tile object for the given position
@@ -96,6 +164,15 @@ public class MapModel {
             return null;
         }
         return tiles[x * height + y];
+    }
+
+    /**
+     * Returns the tiles
+     *
+     * @return the tiles array
+     */
+    public TileModel[] getTiles() {
+        return tiles;
     }
 
     /**
@@ -159,7 +236,7 @@ public class MapModel {
     }
 
     /**
-     * Returns true if a tile is a obstacle tile.
+     * Returns true if a tile is an obstacle tile.
      *
      * @param x The x index for the Tile
      * @param y The y index for the Tile
@@ -172,6 +249,54 @@ public class MapModel {
         }
 
         return getTileState(x, y).getType() == TileModel.TileType.OBSTACLE;
+    }
+
+    /**
+     * Returns true if a tile is a swamp tile.
+     *
+     * @param x The x value in screen coordinates
+     * @param y The y value in screen coordinates
+     *
+     * @return true if a tile is a swamp tile
+     */
+    public boolean isSwampTileAtScreen(float x, float y) {
+        int tx = screenToBoard(x);
+        int ty = screenToBoard(y);
+        if (!inBounds(tx, ty)) {
+            return false;
+        }
+
+        return getTileState(tx, ty).getType() == TileModel.TileType.SWAMP;
+    }
+
+    /**
+     * Returns true if a tile is a swamp tile.
+     *
+     * @param x The x index for the Tile
+     * @param y The y index for the Tile
+     *
+     * @return true if a tile is an swamp tile
+     */
+    public boolean isSwampTileAt(int x, int y) {
+        if (!inBounds(x, y)) {
+            return false;
+        }
+
+        return getTileState(x, y).getType() == TileModel.TileType.SWAMP;
+    }
+
+    /**
+     * Removes the power up effect at a swamp tile
+     * Does nothing if the given tile is not a swamp
+     *
+     * @param x The x index for the swamp tile
+     * @param y The y index for the swamp tile
+     */
+    public void removePowerAt(int x, int y){
+        if(this.getTileState(x, y).getType() == TileModel.TileType.SWAMP){
+            SwampTile swamp = (SwampTile) this.getTileState(x, y);
+            swamp.setPowered(false);
+        }
     }
 
     /**
@@ -222,6 +347,9 @@ public class MapModel {
                 drawTile(x, y, canvas);
             }
         }
+        for(EnvironmentalObject object: objects){
+            drawObject(object, canvas);
+        }
     }
 
     /**
@@ -242,8 +370,20 @@ public class MapModel {
         // Draw
         if (tile.getType() == TileModel.TileType.OBSTACLE) {
             canvas.draw(tile.getTexture(), OBSTACLE_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
+        }else if(tile.getType() == TileModel.TileType.SWAMP){
+            canvas.draw(tile.getTexture(), SWAMP_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }else{
             canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
+        }
+    }
+
+    private void drawObject(EnvironmentalObject object, GameCanvas canvas){
+        float x = boardToScreen((int) object.getPosition().x);
+        float y = boardToScreen((int) object.getPosition().y);
+        if(object.getType() == EnvironmentalObject.ObjectType.PLANT){
+            canvas.draw(plant_texture, BASIC_COLOR, 0, 0, x, y, 0, 1, 1, false);
+        }else if(object.getType() == EnvironmentalObject.ObjectType.HOUSE){
+            canvas.draw(house_texture, BASIC_COLOR, 0, 0, x, y, 0, 1, 1, false);
         }
     }
 }

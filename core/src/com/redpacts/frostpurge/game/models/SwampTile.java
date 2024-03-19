@@ -13,12 +13,12 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
  * Class representing tiles in the game scene
  * Each tile has certain attributes that affects the game
  */
-public class ObstacleTile extends TileModel{
+public class SwampTile extends TileModel{
 
     /** Type of the tile */
     private TileType type;
-    /** Scale from texture to screen */
     private float scale;
+    private boolean powered = true;
 
     /**
      * Returns the texture of this tile
@@ -39,17 +39,29 @@ public class ObstacleTile extends TileModel{
     }
 
     /**
-     * Create a default obstacle tile with flat texture
+     * Returns if this tile has a power up
      *
-     * @param ox The x-coordinate of the tile's origin(bottom left)
-     * @param oy The y-coordinate of the tile's origin(bottom left)
-     * @param width The width of the tile
+     * @return whether this tile still has power up on it
      */
-    public ObstacleTile(float ox, float oy, int width){
-        this.ox = ox;
-        this.oy = oy;
-        this.cx = ox + width/2;
-        this.cy = oy + width/2;
+    public boolean getPowered(){return this.powered;}
+
+    /**
+     * Sets the powered state of this tile
+     * The tile's type becomes empty if it does not have power up anymore
+     *
+     * @param powered the powered state this tile is going to have
+     */
+    public void setPowered(boolean powered){
+        this.powered = powered;
+        if(!this.powered){
+            this.type = TileType.EMPTY;
+        }
+    }
+
+    /**
+     * Create a default tile with flat texture
+     */
+    public SwampTile(){
         Pixmap pixmap = new Pixmap( 64, 64, Pixmap.Format.RGBA8888 );
         pixmap.setColor( 1, 1, 1, 1f );
         this.texture = new Texture( pixmap );
@@ -57,31 +69,18 @@ public class ObstacleTile extends TileModel{
     }
 
     /**
-     * Create an obstacle tile with the specified texture
-     *
-     * @param ox The x-coordinate of the tile's origin(bottom left)
-     * @param oy The y-coordinate of the tile's origin(bottom left)
-     * @param width The width of the tile
-     * @param texture The texture of the tile
-     */
-    public ObstacleTile(float ox, float oy, int width, Texture texture){
-        this.ox = ox;
-        this.oy = oy;
-        this.cx = ox + width/2;
-        this.cy = oy + width/2;
-        this.texture = texture;
-        this.type = TileType.OBSTACLE;
-//        this.position = ;
-    }
-
-    /**
      * Create a tile with the specified texture
      *
      * @param texture The texture of the tile
      */
-    public ObstacleTile(Texture texture, Vector2 position, float scale){
+    public SwampTile(Texture texture){
         this.texture = texture;
-        this.type = TileType.OBSTACLE;
+        this.type = TileType.SWAMP;
+    }
+
+    public SwampTile(Texture texture, Vector2 position, float scale){
+        this.texture = texture;
+        this.type = TileType.SWAMP;
         this.position = position;
         this.scale = scale;
     }
@@ -103,20 +102,18 @@ public class ObstacleTile extends TileModel{
 //        shape.setAsBox((float) this.getTexture().getWidth() / (2 * scale),
 //                (float) this.getTexture().getHeight() / (2 * scale));
         shape.setAsBox(128f / 2, 128f / 2);
-//        System.out.println("Obstacle");
+//        System.out.println("Swamp");
 //        System.out.println(this.getPosition());
 //        System.out.println(this.getTexture().getWidth());
 //        System.out.println(this.getTexture().getHeight());
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_OBSTACLE;
-        fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_SWAMP;
+        fixtureDef.filter.maskBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;
 
         body.createFixture(fixtureDef);
         shape.dispose();
     }
 }
-
-

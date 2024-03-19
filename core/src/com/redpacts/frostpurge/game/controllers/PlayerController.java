@@ -34,6 +34,12 @@ public class PlayerController extends CharactersController {
             model.setRotation((float) Math.atan2(-y,x));
         }
     }
+    /**
+     * Checks if the player has any resources
+     */
+    public boolean hasResources(){
+        return ((PlayerModel) model).getCanBoost();
+    }
 
     /**
      * Update function that will be called in gameplaycontroller to update the owner actions.
@@ -46,15 +52,18 @@ public class PlayerController extends CharactersController {
         }else{
             stop();
         }
-        if (boost){
-            //Check boost then boost
+        if (boost && ((PlayerModel) model).getCanBoost()){
+            model.getVelocity().scl(1.5f);
+            ((PlayerModel) model).setCanBoost(false);
         }
         if (vacuum){
+
             //Check if there is goop then vacuum
         }
-      
+
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
+        model.getBody().setTransform(newLocation, 0);
     }
     public void draw(GameCanvas canvas, float horizontal, float vertical){
 
@@ -70,6 +79,8 @@ public class PlayerController extends CharactersController {
             model.resetFilmStrip(model.getFilmStrip());
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
         }
+
+
 
     }
 }

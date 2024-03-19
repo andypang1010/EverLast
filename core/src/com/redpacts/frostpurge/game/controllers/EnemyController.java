@@ -75,6 +75,10 @@ public class EnemyController extends CharactersController implements StateMachin
         } else {
             setMoveDirection();
         }
+
+    public void draw(GameCanvas canvas){
+        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "running", false);
+
     }
 
     private void reachDestination() {
@@ -131,9 +135,9 @@ public class EnemyController extends CharactersController implements StateMachin
         model.setPosition(newLocation.x, newLocation.y);
     }
 
-    public void draw(GameCanvas canvas){
-        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "idle", false);
-    }
+//     public void draw(GameCanvas canvas){
+//         model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "idle", false);
+//     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
         return board.getTileState(board.screenToBoard(model.getPosition().x), board.screenToBoard(model.getPosition().y));

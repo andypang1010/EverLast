@@ -3,12 +3,16 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.EnemyModel;
+import com.redpacts.frostpurge.game.models.EnvironmentalObject;
 import com.redpacts.frostpurge.game.models.MapModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.models.TileModel;
@@ -21,6 +25,7 @@ public class GameMode implements Screen {
     private GameCanvas canvas;
 
     private OrthographicCamera camera;
+    private OrthographicCamera HUDcamera;
     private AssetDirectory directory;
     /** Reads input from keyboard or game pad (CONTROLLER CLASS) */
     private InputController inputController;
@@ -44,6 +49,10 @@ public class GameMode implements Screen {
 
     private TileGraph tileGraph = new TileGraph();
 
+    private Texture statusBarBGTexture;
+    private Texture statusBarTexture;
+
+
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
 
@@ -61,12 +70,30 @@ public class GameMode implements Screen {
         enemies = new Array<EnemyModel>();
         // Create the controllers.
 
+        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
+        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
+
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-        obstacles.add(21, 24, 51, 54);
+        obstacles.add(43, 50, 57, 383);
+        obstacles.add(390, 397);
+        Array<Integer> swamps = new Array<Integer>();// Swamp locations
+        swamps.add(22, 25, 52, 55);
+        Array<EnvironmentalObject> objects = new Array<EnvironmentalObject>();// Objects in level
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
 
         inputController = new InputController();
         gameplayController = new GameplayController();
-        board = new MapModel(10,10, obstacles, directory);
+
+        board = new MapModel(10,10, obstacles, swamps, objects directory);
 
         populateTileGraph();
 
@@ -79,6 +106,8 @@ public class GameMode implements Screen {
         enemies.add(enemy);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        HUDcamera = new OrthographicCamera();
+        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
         collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
     }
@@ -149,6 +178,12 @@ public class GameMode implements Screen {
         playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
         enemyController.draw(canvas);
         canvas.end();
+        canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
+        if (Playercontroller.hasResources()){
+            canvas.drawUI(statusBarTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(statusBarTexture,Color.WHITE, 250, 1300, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(statusBarTexture,Color.WHITE, 300, 1300, 0, .5f,.5f, HUDcamera);
+        }
     }
 
     public enum GameState {
