@@ -19,10 +19,10 @@ public abstract class TileModel extends GameObject {
     public float ox;
     /** y-coordinate of the tile origin(bottom right corner) */
     public float oy;
-    /** x-coordinate of the tile center */
-    public float cx;
-    /** y-coordinate of the tile center */
-    public float cy;
+//    /** x-coordinate of the tile center */
+//    public float cx;
+//    /** y-coordinate of the tile center */
+//    public float cy;
 
     public enum TileType{
         /** An empty tile */
@@ -54,14 +54,14 @@ public abstract class TileModel extends GameObject {
         return new Vector2(this.ox, this.oy);
     }
 
-    /**
-     * Returns the center of this tile
-     *
-     * @return Vector2 center of the tile
-     */
-    public Vector2 getCenter(){
-        return new Vector2(this.cx, this.cy);
-    }
+//    /**
+//     * Returns the center of this tile
+//     *
+//     * @return Vector2 center of the tile
+//     */
+//    public Vector2 getCenter(){
+//        return new Vector2(position.x, position.y);
+//    }
 
     public void setIndex(int index) {
         this.index = index;

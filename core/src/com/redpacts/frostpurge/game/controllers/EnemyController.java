@@ -41,9 +41,16 @@ public class EnemyController extends CharactersController implements StateMachin
         this.endPatrolTile = endPatrolTile;
         setInitialState(initState);
         this.tileGraph = tileGraph;
-        model.setPosition(startPatrolTile.cx, startPatrolTile.cy);
+        model.setPosition(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y);
         previousTile = startPatrolTile;
         this.board = board;
+
+        if (initState == EnemyStates.PATROL) {
+            setGoal(endPatrolTile);
+        }
+        else {
+            setGoal(modelPositionToTile(playerModel));
+        }
     }
 
     public void setGoal(TileModel goalTile) {
@@ -60,7 +67,7 @@ public class EnemyController extends CharactersController implements StateMachin
     private void checkCollision() {
         if (pathQueue.size > 0) {
             TileModel targetTile = pathQueue.first();
-            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.cx, targetTile.cy) < targetTile.getTexture().getWidth()) {
+            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.getPosition().x, targetTile.getPosition().y) < targetTile.getTexture().getWidth()) {
                 reachNextTile();
             }
         }
@@ -75,6 +82,7 @@ public class EnemyController extends CharactersController implements StateMachin
         } else {
             setMoveDirection();
         }
+    }
 
     public void draw(GameCanvas canvas){
         model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "running", false);
@@ -88,7 +96,8 @@ public class EnemyController extends CharactersController implements StateMachin
     private void setMoveDirection() {
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
-            moveDirection = new Vector2(nextTile.cx - model.getPosition().x, model.getPosition().y - nextTile.cy).nor();
+            moveDirection = new Vector2(nextTile.getPosition().x - model.getPosition().x, nextTile.getPosition().y - model.getPosition().y).nor();
+            System.out.println(moveDirection.toString());
         }
     }
 
@@ -97,10 +106,10 @@ public class EnemyController extends CharactersController implements StateMachin
     public void update() {
         switch (currentState) {
             case PATROL:
-                System.out.println("PATROLLING");
+//                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
                 // Naive check for state transitions (If within certain distance, transition to chase state)
                 if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 100) {
-                    if (Vector2.dst(startPatrolTile.cx, startPatrolTile.cy, model.getPosition().x, model.getPosition().y) < 5) {
+                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 5) {
                         setGoal(endPatrolTile);
                     }
                     else {
@@ -112,7 +121,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 }
                 break;
             case CHASE:
-                System.out.println("CHASING: " + modelPositionToTile(playerModel).getCenter().toString());
+                System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
                 setGoal(modelPositionToTile(playerModel));
                 break;
         };
@@ -128,16 +137,12 @@ public class EnemyController extends CharactersController implements StateMachin
 
     private void moveToNextTile() {
         Vector2 vel = moveDirection;
-        vel.scl(1);
+        vel.scl(speedMultiplier);
         accelerate(vel.x, vel.y);
 
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
     }
-
-//     public void draw(GameCanvas canvas){
-//         model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "idle", false);
-//     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
         return board.getTileState(board.screenToBoard(model.getPosition().x), board.screenToBoard(model.getPosition().y));

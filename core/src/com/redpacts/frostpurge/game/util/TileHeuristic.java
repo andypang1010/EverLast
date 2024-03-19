@@ -7,6 +7,6 @@ import com.redpacts.frostpurge.game.models.TileModel;
 public class TileHeuristic implements Heuristic<TileModel> {
     @Override
     public float estimate(TileModel startTile, TileModel endTile) {
-        return Vector2.dst(startTile.cx, startTile.cy, endTile.cx, endTile.cy);
+        return Vector2.dst(startTile.getPosition().x, startTile.getPosition().y, endTile.getPosition().x, endTile.getPosition().y);
     }
 }

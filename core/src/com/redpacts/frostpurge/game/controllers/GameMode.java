@@ -31,8 +31,7 @@ public class GameMode implements Screen {
     private InputController inputController;
     /** Handle collision and physics (CONTROLLER CLASS) */
     private CollisionController collisionController;
-    /** Constructs the game models and handle basic gameplay (CONTROLLER CLASS) */
-    private GameplayController gameplayController;
+
     /** Whether or not this player mode is still active */
     private boolean active;
     /** Board for the game*/
@@ -91,9 +90,8 @@ public class GameMode implements Screen {
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
 
         inputController = new InputController();
-        gameplayController = new GameplayController();
 
-        board = new MapModel(10,10, obstacles, swamps, objects directory);
+        board = new MapModel(10,10, obstacles, swamps, objects, directory);
 
         populateTileGraph();
 
@@ -101,7 +99,7 @@ public class GameMode implements Screen {
         playerController = new PlayerController(playerModel);
 
         EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        enemyController = new EnemyController(enemy, playerModel, board.getTileState(3, 3), board.getTileState(3, 7), EnemyStates.PATROL, tileGraph, board);
+        enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
 
         enemies.add(enemy);
         camera = new OrthographicCamera();
@@ -179,7 +177,7 @@ public class GameMode implements Screen {
         enemyController.draw(canvas);
         canvas.end();
         canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
-        if (Playercontroller.hasResources()){
+        if (playerController.hasResources()){
             canvas.drawUI(statusBarTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
             canvas.drawUI(statusBarTexture,Color.WHITE, 250, 1300, 0, .5f,.5f, HUDcamera);
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, 1300, 0, .5f,.5f, HUDcamera);

@@ -1,9 +1,6 @@
 package com.redpacts.frostpurge.game.models;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.pfa.Connection;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,9 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
-import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 import org.w3c.dom.Text;
@@ -60,9 +54,7 @@ public class MapModel {
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
-            int y = ii % height;
-            int x = (ii - y) / height;
-            tiles[ii] = new EmptyTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
+            tiles[ii] = new EmptyTile(tile_texture);
         }
     }
 
@@ -93,7 +85,7 @@ public class MapModel {
             else if(swamp_pos.contains(ii, false)){
                 tiles[ii] = new SwampTile(tile_texture, getTileCoordinate(ii), scale);
             }else{
-                tiles[ii] = new EmptyTile(tile_texture);
+                tiles[ii] = new EmptyTile(tile_texture, getTileCoordinate(ii));
             }
         }
     }
@@ -116,14 +108,6 @@ public class MapModel {
         this.height = height;
         tiles = new TileModel[width * height];
         for (int ii = 0; ii < tiles.length; ii++) {
-// <<<<<<< 24-enemycontroller
-//             int y = ii % height;
-//             int x = (ii - y) / height;
-//             if(obstacle_pos.contains(ii, true)){
-//                 tiles[ii] = new ObstacleTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
-//             }else{
-//                 tiles[ii] = new EmptyTile(boardToScreen(x), boardToScreen(y), TILE_WIDTH, tile_texture);
-// =======
 
             if(obstacle_pos.contains(ii, true)){
 //                System.out.println("OBSTACLE");
@@ -133,12 +117,9 @@ public class MapModel {
                 tiles[ii] = new SwampTile(tile_texture);
             } else{
                 tiles[ii] = new EmptyTile(tile_texture);
-// >>>>>>> main
             }
         }
     }
-
-    
 
     /**
      * Returns the (x, y) coordinates from tiles indices.
@@ -200,21 +181,6 @@ public class MapModel {
      */
     public int getTileSize() {
         return TILE_WIDTH;
-    }
-
-    public Array<TileModel> getTileNeighbors(int x, int y){
-        Array<TileModel> neighbors = new Array<TileModel>();
-        for(int i = x-1; i <= x+1; i++){
-            for(int j = y-1; j <= y+1; j++){
-                if(i == x && j == y){
-                    continue;
-                }
-                if(inBounds(i, j)){
-                    neighbors.add(getTileState(i, j));
-                }
-            }
-        }
-        return neighbors;
     }
 
     /**
@@ -331,6 +297,21 @@ public class MapModel {
      */
     public boolean inBounds(int x, int y) {
         return x >= 0 && y >= 0 && x < width && y < height;
+    }
+
+    public Array<TileModel> getTileNeighbors(int x, int y){
+        Array<TileModel> neighbors = new Array<TileModel>();
+        for(int i = x-1; i <= x+1; i++){
+            for(int j = y-1; j <= y+1; j++){
+                if(i == x && j == y){
+                    continue;
+                }
+                if(inBounds(i, j)){
+                    neighbors.add(getTileState(i, j));
+                }
+            }
+        }
+        return neighbors;
     }
 
     /**
