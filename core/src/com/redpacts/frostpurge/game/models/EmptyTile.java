@@ -40,8 +40,16 @@ public class EmptyTile extends TileModel{
 
     /**
      * Create a default tile with flat texture
+     *
+     * @param ox The x-coordinate of the tile's origin(bottom left)
+     * @param oy The y-coordinate of the tile's origin(bottom left)
+     * @param width The width of the tile
      */
-    public EmptyTile(){
+    public EmptyTile(float ox, float oy, int width){
+        this.ox = ox;
+        this.oy = oy;
+        this.cx = ox + width/2;
+        this.cy = oy + width/2;
         Pixmap pixmap = new Pixmap( 64, 64, Pixmap.Format.RGBA8888 );
         pixmap.setColor( 1, 1, 1, 1f );
         this.texture = new Texture( pixmap );
@@ -51,9 +59,16 @@ public class EmptyTile extends TileModel{
     /**
      * Create a tile with the specified texture
      *
+     * @param ox The x-coordinate of the tile's origin(bottom left)
+     * @param oy The y-coordinate of the tile's origin(bottom left)
+     * @param width The width of the tile
      * @param texture The texture of the tile
      */
-    public EmptyTile(Texture texture){
+    public EmptyTile(float ox, float oy, int width, Texture texture){
+        this.ox = ox;
+        this.oy = oy;
+        this.cx = ox + width/2;
+        this.cy = oy + width/2;
         this.texture = texture;
         this.type = TileType.EMPTY;
     }

@@ -1,6 +1,9 @@
 package com.redpacts.frostpurge.game.models;
 
 import com.badlogic.gdx.graphics.Texture;
+
+import com.badlogic.gdx.math.Vector2;
+
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
 import com.redpacts.frostpurge.game.views.GameCanvas;
@@ -10,6 +13,17 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
  * Each tile has certain attributes that affects the game
  */
 public abstract class TileModel extends GameObject {
+    /** Index of the tile */
+    public int index;
+    /** x-coordinate of the tile origin(bottom left corner) */
+    public float ox;
+    /** y-coordinate of the tile origin(bottom right corner) */
+    public float oy;
+    /** x-coordinate of the tile center */
+    public float cx;
+    /** y-coordinate of the tile center */
+    public float cy;
+
     public enum TileType{
         /** An empty tile */
         EMPTY,
@@ -31,6 +45,27 @@ public abstract class TileModel extends GameObject {
         return this.type;
     }
 
+    /**
+     * Returns the origin of this tile
+     *
+     * @return Vector2 origin of the tile
+     */
+    public Vector2 getOrigin(){
+        return new Vector2(this.ox, this.oy);
+    }
+
+    /**
+     * Returns the center of this tile
+     *
+     * @return Vector2 center of the tile
+     */
+    public Vector2 getCenter(){
+        return new Vector2(this.cx, this.cy);
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 //    public void createBody(World world) {
 //        if (this.type != null) {
 //            switch (this.type){
