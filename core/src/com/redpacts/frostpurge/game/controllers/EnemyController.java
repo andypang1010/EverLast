@@ -113,7 +113,12 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
         };
 
+        if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
+            stop();
+        }
+        else {
         moveToNextTile();
+        }
         checkCollision();
     }
 
