@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.models;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
 import com.redpacts.frostpurge.game.util.FilmStrip;
+import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
 
