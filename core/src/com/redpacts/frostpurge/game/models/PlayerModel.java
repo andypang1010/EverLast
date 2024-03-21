@@ -17,6 +17,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerModel extends CharactersModel {
 
     private boolean canBoost;
+    private Texture fire;
     @Override
     public void activatePhysics(World world) {
         // Create and configure the player's physics body and fixtures
@@ -39,6 +40,7 @@ public class PlayerModel extends CharactersModel {
         texture = new TextureRegion(directory.getEntry("Liv", Texture.class)).getTexture();
         Texture run = new TextureRegion(directory.getEntry("Liv_Run", Texture.class)).getTexture();
         running = new FilmStrip(run, 1, 12, 12);
+        fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         canBoost = false;
     }
 
@@ -81,6 +83,15 @@ public class PlayerModel extends CharactersModel {
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
+    }
+
+    public void drawFire(GameCanvas canvas, boolean flip){
+        if (flip){
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, 180+getRotation(),.5f,.5f,true);
+        }else{
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),.5f,.5f,false);
+
+        }
     }
 }
 
