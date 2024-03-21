@@ -14,8 +14,8 @@ public abstract class CharactersController implements Movable {
 
     public void accelerate(float x, float y) {
         Vector2 vel = model.getVelocity();
-        vel.x += .33f * x;
-        vel.y -= .33f * y;
+        vel.x += .5f * x;
+        vel.y -= .5f * y;
         model.setVelocity(vel.x, vel.y);
     }
 
@@ -23,6 +23,14 @@ public abstract class CharactersController implements Movable {
         Vector2 vel = model.getVelocity();
         float x = -.05f* model.getVelocity().x;
         float y = -.05f* model.getVelocity().y;
+        vel.x = stopHelper(vel.x,x);
+        vel.y = stopHelper(vel.y,y);
+        model.setVelocity(vel.x, vel.y);
+    }
+    public void friction(){
+        Vector2 vel = model.getVelocity();
+        float x = -.15f* model.getVelocity().x/ Math.abs(model.getVelocity().x);
+        float y = -.15f* model.getVelocity().y/ Math.abs(model.getVelocity().y);
         vel.x = stopHelper(vel.x,x);
         vel.y = stopHelper(vel.y,y);
         model.setVelocity(vel.x, vel.y);

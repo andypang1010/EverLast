@@ -61,8 +61,8 @@ public class PlayerController extends CharactersController {
         }
         if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
-            System.out.println(Math.toDegrees(Math.atan2(vertical,horizontal)));
         }
+        friction();
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
         model.getBody().setTransform(newLocation, 0);
