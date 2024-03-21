@@ -87,11 +87,11 @@ public class PlayerModel extends CharactersModel {
 
     public void drawFire(GameCanvas canvas, boolean flip){
         if (flip){
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, 180+getRotation(),.5f,.5f,true);
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
         }else{
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),.5f,.5f,false);
-
         }
+
     }
 }
 

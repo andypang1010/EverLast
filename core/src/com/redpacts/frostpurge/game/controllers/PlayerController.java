@@ -59,8 +59,9 @@ public class PlayerController extends CharactersController {
         if (vacuum){
             //Check if there is goop then vacuum
         }
-        if (horizontal != 0 || vertical != 0){
+        if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
+            System.out.println(Math.toDegrees(Math.atan2(vertical,horizontal)));
         }
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
@@ -76,11 +77,11 @@ public class PlayerController extends CharactersController {
         if (Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>1) {
             processRun();
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
+            ((PlayerModel) model).drawFire(canvas, flip);
         }else{
             model.resetFilmStrip(model.getFilmStrip());
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
         }
-        ((PlayerModel) model).drawFire(canvas, flip);
 
 
 
