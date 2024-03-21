@@ -57,10 +57,12 @@ public class PlayerController extends CharactersController {
             ((PlayerModel) model).setCanBoost(false);
         }
         if (vacuum){
-
             //Check if there is goop then vacuum
         }
-
+        if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
+            model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
+        }
+        friction();
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
         model.getBody().setTransform(newLocation, 0);
@@ -75,10 +77,12 @@ public class PlayerController extends CharactersController {
         if (Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>1) {
             processRun();
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
+            ((PlayerModel) model).drawFire(canvas, flip);
         }else{
             model.resetFilmStrip(model.getFilmStrip());
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
         }
+
 
 
 
