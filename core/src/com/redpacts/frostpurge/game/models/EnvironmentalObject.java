@@ -12,7 +12,7 @@ public class EnvironmentalObject extends GameObject{
     private ObjectType type;
     public EnvironmentalObject(ObjectType type, int x, int y){
         this.type = type;
-        this.position = new Vector2(x, y);
+        this.position = new Vector2(x*128, y*128);
     }
 
     public ObjectType getType(){

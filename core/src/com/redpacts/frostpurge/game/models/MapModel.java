@@ -328,9 +328,6 @@ public class MapModel {
                 drawTile(x, y, canvas);
             }
         }
-        for(EnvironmentalObject object: objects){
-            drawObject(object, canvas);
-        }
     }
 
     /**
@@ -358,9 +355,9 @@ public class MapModel {
         }
     }
 
-    private void drawObject(EnvironmentalObject object, GameCanvas canvas){
-        float x = boardToScreen((int) object.getPosition().x);
-        float y = boardToScreen((int) object.getPosition().y);
+    public void drawObject(EnvironmentalObject object, GameCanvas canvas){
+        float x = object.getPosition().x;
+        float y = object.getPosition().y;
         if(object.getType() == EnvironmentalObject.ObjectType.PLANT){
             canvas.draw(plant_texture, BASIC_COLOR, 0, 0, x, y, 0, 1, 1, false);
         }else if(object.getType() == EnvironmentalObject.ObjectType.HOUSE){

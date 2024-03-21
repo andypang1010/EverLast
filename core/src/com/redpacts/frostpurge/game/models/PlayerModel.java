@@ -1,18 +1,12 @@
 package com.redpacts.frostpurge.game.models;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
 import com.redpacts.frostpurge.game.util.FilmStrip;
-import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
 
@@ -40,6 +34,10 @@ public class PlayerModel extends CharactersModel {
         Texture run = new TextureRegion(directory.getEntry("Liv_Run", Texture.class)).getTexture();
         running = new FilmStrip(run, 1, 12, 12);
         canBoost = false;
+    }
+
+    public float getPositionY(){
+        return this.position.y - 250;
     }
 
     public boolean getCanBoost() {

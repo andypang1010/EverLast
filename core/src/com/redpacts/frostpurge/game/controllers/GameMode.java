@@ -11,15 +11,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
-import com.redpacts.frostpurge.game.models.EnemyModel;
-import com.redpacts.frostpurge.game.models.EnvironmentalObject;
-import com.redpacts.frostpurge.game.models.MapModel;
-import com.redpacts.frostpurge.game.models.PlayerModel;
-import com.redpacts.frostpurge.game.models.TileModel;
+import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
+
+import java.util.Comparator;
 
 public class GameMode implements Screen {
     private GameCanvas canvas;
@@ -36,6 +34,8 @@ public class GameMode implements Screen {
     private boolean active;
     /** Board for the game*/
     private MapModel board;
+    /** Environmental objects for the game*/
+    private Array<EnvironmentalObject> envObjects = new Array<EnvironmentalObject>();
     /** Player for the game*/
     private PlayerModel playerModel;
 
@@ -89,9 +89,11 @@ public class GameMode implements Screen {
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
         objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
 
+        envObjects.addAll(objects);
+
         inputController = new InputController();
 
-        board = new MapModel(10,10, obstacles, swamps, objects, directory);
+        board = new MapModel(20,20, obstacles, swamps, objects, directory);
 
         populateTileGraph();
 
@@ -145,6 +147,22 @@ public class GameMode implements Screen {
 
     }
 
+    public void sort_by_y(Array<GameObject> obj_list) {
+        Comparator<GameObject> comparator = new Comparator<GameObject>() {
+            public int compare(GameObject o1, GameObject o2) {
+                float diff = o1.getPositionY() - o2.getPositionY();
+                if(diff > 0){
+                    return 1;
+                }else if(diff == 0){
+                    return 0;
+                }else{
+                    return -1;
+                }
+            }
+        };
+        obj_list.sort(comparator);
+    }
+
     private void populateTileGraph() {
         for (int i = 0; i < board.getWidth(); i++) {
             for (int j = 0; j < board.getHeight(); j++) {
@@ -163,6 +181,14 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
+        Array<GameObject> drawble = new Array<GameObject>();
+        drawble.addAll(envObjects);
+        drawble.add(playerModel);
+        drawble.addAll(enemies);
+        sort_by_y(drawble);
+        drawble.reverse();
+        System.out.println(drawble.get(0).getPosition().y);
+
         inputController.readInput(null,null);
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         enemyController.update();
@@ -173,8 +199,19 @@ public class GameMode implements Screen {
         canvas.begin();
         canvas.center(camera, playerController.getModel().getPosition().x, playerController.getModel().getPosition().y);
         board.draw(canvas);
-        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
-        enemyController.draw(canvas);
+//        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
+//        enemyController.draw(canvas);
+
+        for(GameObject object: drawble){
+            if(object instanceof PlayerModel){
+                playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
+            }else if(object instanceof EnemyModel){
+                enemyController.draw(canvas);
+            }else{
+                board.drawObject((EnvironmentalObject) object, canvas);
+            }
+        }
+
         canvas.end();
         canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
         if (playerController.hasResources()){
