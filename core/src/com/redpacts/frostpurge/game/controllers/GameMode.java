@@ -77,23 +77,20 @@ public class GameMode implements Screen {
         obstacles.add(390, 397);
         Array<Integer> swamps = new Array<Integer>();// Swamp locations
         swamps.add(22, 25, 52, 55);
-        Array<EnvironmentalObject> objects = new Array<EnvironmentalObject>();// Objects in level
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
-        objects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
-
-        envObjects.addAll(objects);
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
 
         inputController = new InputController();
 
-        board = new MapModel(20,20, obstacles, swamps, objects, directory);
+        board = new MapModel(20,20, obstacles, swamps, envObjects, directory);
 
         populateTileGraph();
 
