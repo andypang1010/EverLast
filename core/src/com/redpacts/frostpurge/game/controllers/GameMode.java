@@ -97,10 +97,10 @@ public class GameMode implements Screen {
         playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
 
-        EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
 
-        enemies.add(enemy);
+        //enemies.add(enemy);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         HUDcamera = new OrthographicCamera();
@@ -188,7 +188,7 @@ public class GameMode implements Screen {
 
         inputController.readInput(null,null);
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-        enemyController.update();
+        //enemyController.update();
         collisionController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years

@@ -179,11 +179,10 @@ public class InputController {
      * @param y amount in y direction
      */
     private void normalize(float x, float y){
-        if (x == 0 && y!=0){
-            y = 1;
-        }
-        else if (y == 0){
-            x = 1;
+        if (x == 0 && y == 0) {
+            normalization[0] = 0;
+            normalization[1] = 0;
+            return;
         }
         else{
             float c = (float) Math.sqrt((x*x+y*y));

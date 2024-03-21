@@ -85,7 +85,13 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas){
-        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.RED, "running", false);
+        if (model.getVelocity().x<0){
+            flip = true;
+        }else if (model.getVelocity().x >0){
+            flip = false;
+        }
+        processRun();
+        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
 
     }
 

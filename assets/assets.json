@@ -7,7 +7,8 @@
     "Liv_Run": "characters/liv_run.png",
     "StatusBar_BG": "ui/StatusBar_staticBackground.png",
     "StatusBar_Bar": "ui/StatusBar_dynamicBar.png",
-    "Enemy": "enemies/enemyLRfilmstripEDIT1.png"
+    "Enemy": "enemies/enemyLRfilmstripEDIT1.png",
+    "Fire" : "characters/fire.png"
   },
   "animations"  : {
 
