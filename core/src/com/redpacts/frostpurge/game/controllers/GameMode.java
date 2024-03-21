@@ -99,7 +99,7 @@ public class GameMode implements Screen {
         playerController = new PlayerController(playerModel);
 
         EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+        enemyController = new EnemyController(enemy, playerModel, board.getTileState(1, 7), board.getTileState(4, 6), EnemyStates.PATROL, tileGraph, board);
 
         enemies.add(enemy);
         camera = new OrthographicCamera();
