@@ -16,7 +16,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 1;
+    private float speedMultiplier = 0.5f;
     /*
     FSM
     */
@@ -31,7 +31,7 @@ public class EnemyController extends CharactersController implements StateMachin
     */
     MapModel board;
     TileGraph tileGraph;
-    TileModel previousTile;
+    TileModel previousTile, targetTile;
     Queue<TileModel> pathQueue = new Queue<>();
 
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, TileModel startPatrolTile, TileModel endPatrolTile, EnemyStates initState, TileGraph tileGraph, MapModel board) {
@@ -46,11 +46,13 @@ public class EnemyController extends CharactersController implements StateMachin
         this.board = board;
 
         if (initState == EnemyStates.PATROL) {
-            setGoal(endPatrolTile);
+            targetTile = endPatrolTile;
         }
         else {
-            setGoal(modelPositionToTile(playerModel));
+            targetTile = modelPositionToTile(playerModel);
         }
+
+        setGoal(targetTile);
     }
 
     public void setGoal(TileModel goalTile) {
@@ -62,6 +64,7 @@ public class EnemyController extends CharactersController implements StateMachin
         }
 
         setMoveDirection();
+        targetTile = goalTile;
     }
 
     private void checkCollision() {
@@ -110,15 +113,17 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public void update() {
+        System.out.println("Target location: " + targetTile.getPosition().toString());
+        System.out.println("Current location: " + model.getPosition().toString());
         switch (currentState) {
             case PATROL:
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
                 // Naive check for state transitions (If within certain distance, transition to chase state)
-                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 100) {
-                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 5) {
+                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 400) {
+                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
                         setGoal(endPatrolTile);
                     }
-                    else {
+                    else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
                         setGoal(startPatrolTile);
                     }
                 }
@@ -144,7 +149,7 @@ public class EnemyController extends CharactersController implements StateMachin
     private void moveToNextTile() {
         Vector2 vel = moveDirection;
         vel.scl(speedMultiplier);
-        accelerate(vel.x, vel.y);
+        accelerate(vel.x, -vel.y);
 
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
