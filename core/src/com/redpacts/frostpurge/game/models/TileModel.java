@@ -19,10 +19,6 @@ public abstract class TileModel extends GameObject {
     public float ox;
     /** y-coordinate of the tile origin(bottom right corner) */
     public float oy;
-//    /** x-coordinate of the tile center */
-//    public float cx;
-//    /** y-coordinate of the tile center */
-//    public float cy;
 
     public enum TileType{
         /** An empty tile */
@@ -54,54 +50,11 @@ public abstract class TileModel extends GameObject {
         return new Vector2(this.ox, this.oy);
     }
 
-//    /**
-//     * Returns the center of this tile
-//     *
-//     * @return Vector2 center of the tile
-//     */
-//    public Vector2 getCenter(){
-//        return new Vector2(position.x, position.y);
-//    }
 
     public void setIndex(int index) {
         this.index = index;
     }
-//    public void createBody(World world) {
-//        if (this.type != null) {
-//            switch (this.type){
-//                case SWAMP:
-//                    createSwampBody(world);
-//                    return;
-//                case OBSTACLE:
-//                    createObstacleBody(world);
-//                    return;
-//            }
-//        }
-//    }
-
-//    protected void createSwampBody(World world) {
-//        BodyDef bodyDef = new BodyDef();
-//        bodyDef.type = BodyDef.BodyType.StaticBody;
-//        bodyDef.position.set(this.getPosition());
 //
-//        Body body = world.createBody(bodyDef);
-//        body.setUserData(this);
-//
-//        // TODO: shape needs scaling
-//        PolygonShape shape = new PolygonShape();
-//        shape.setAsBox((float) this.getTexture().getWidth() / 2,
-//                (float) this.getTexture().getHeight() / 2);
-//
-//        FixtureDef fixtureDef = new FixtureDef();
-//        fixtureDef.shape = shape;
-//        fixtureDef.isSensor = true;
-//        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_SWAMP;
-//        fixtureDef.filter.maskBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;
-//
-//        body.createFixture(fixtureDef);
-//        shape.dispose();
-//    }
-
 //    protected void createDestructibleBody(TileModel tile) {
 //        BodyDef bodyDef = new BodyDef();
 //        bodyDef.type = BodyDef.BodyType.StaticBody;

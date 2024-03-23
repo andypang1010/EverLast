@@ -3,7 +3,6 @@ package com.redpacts.frostpurge.game.models;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.util.FilmStrip;
-import com.redpacts.frostpurge.game.util.Movable;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public abstract class CharactersModel extends GameObject {
