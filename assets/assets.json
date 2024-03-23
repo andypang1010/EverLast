@@ -10,13 +10,13 @@
     "Enemy": "enemies/enemyLRfilmstripEDIT1.png",
     "Fire" : "characters/fire.png"
   },
-  "animations"  : {
-
-  },
   "sounds" : {
 
   },
   "fonts": {
 
+  },
+  "jsons": {
+    "level1": "levels/testing.json"
   }
 }

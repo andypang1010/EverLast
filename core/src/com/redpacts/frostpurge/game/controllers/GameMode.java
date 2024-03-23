@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.util.EnemyStates;
@@ -107,6 +108,11 @@ public class GameMode implements Screen {
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
         collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+
+        //Testing
+        JsonValue leveljson = directory.getEntry("level1", JsonValue.class);
+        JsonValue layer1 = leveljson.get("layers");
+        System.out.println(layer1.child().next());
     }
 
     @Override
@@ -184,7 +190,7 @@ public class GameMode implements Screen {
         drawble.addAll(enemies);
         sort_by_y(drawble);
         drawble.reverse();
-        System.out.println(drawble.get(0).getPosition().y);
+        //System.out.println(drawble.get(0).getPosition().y);
 
         inputController.readInput(null,null);
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
