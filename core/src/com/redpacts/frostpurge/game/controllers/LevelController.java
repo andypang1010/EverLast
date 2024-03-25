@@ -10,6 +10,8 @@ import java.util.logging.Level;
 public class LevelController {
     private int tilesetWidth;
     private int tilesetHeight;
+    private int height;
+    private int width;
     /**
      * Function to read the Json level file and add all the objects into the level model.
      * This will be called when the game initially loads so that all the Jsons are parsed
@@ -22,19 +24,19 @@ public class LevelController {
      * @param twidth This is the width of the tileset in tiles
      * @param theight This is the height of the tileset in tiles
      */
-    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] tileset, int twidth, int theight, AssetDirectory directory){
+    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] extratileset, TextureRegion[][] basetileset,int twidth, int theight, AssetDirectory directory){
         tilesetWidth = twidth;
         tilesetHeight = theight;
-        int height = leveljson.getInt("height");
-        int width = leveljson.getInt("width");
-        LevelModel level = new LevelModel(width, height);
+        height = leveljson.getInt("height");
+        width = leveljson.getInt("width");
+        LevelModel level = new LevelModel(height, width);
 
         JsonValue layer1 = leveljson.get("layers").child();
         JsonValue layer2 = layer1.next();
         JsonValue characters = layer2.next();
 
-        initializeBaseTileLayer(level, layer1, tileset);
-        initializeExtraTileLayer(level, layer2, tileset,tileProperties);
+        initializeBaseTileLayer(level, layer1, basetileset);
+        initializeExtraTileLayer(level, layer2, extratileset,tileProperties);
         initializeCharacterLayer(level, characters, directory);
 
         return level;
@@ -51,7 +53,12 @@ public class LevelController {
         int[] data = layer.get("data").asIntArray();
         for (int i = 0; i<data.length;i++){
             int index = data[i];
-            level.populateBase(i/20, i%20, tileset[index/tilesetWidth][index/tilesetHeight].getTexture());
+            if (index!=0){
+                index-=93;
+                level.populateBase(height- 1-i/width, i%width, tileset[index/2][index%2]);
+            }else{
+                level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
+            }
         }
     }
 
@@ -62,30 +69,47 @@ public class LevelController {
      * @param layer This is the layer Json that we will be reading from to get all of the tiles
      */
     private void initializeExtraTileLayer(LevelModel level, JsonValue layer, TextureRegion[][]tileset, JsonValue tileProperties){
+        int x = 0;
+        boolean done;
         String type = "";
         String shape = "";
         int[] data = layer.get("data").asIntArray();
-        JsonValue properties = tileProperties.get("tiles").child();
         for (int i = 0; i<data.length;i++){
+            JsonValue properties = tileProperties.get("tiles").child();
             int index = data[i];
-            boolean done = false;
+            if (index == 0){
+                done = true;
+                type = "none";
+            }else{
+                done = false;
+            }
+            index-=21;
             while(!done){
+//                System.out.println(x);
+                x++;
+//                System.out.println(index/8);
                 if (properties.getInt("id") == index){
                     JsonValue variables = properties.get("properties").child();
-                    type = variables.getString("value");
-                    variables = variables.next();
                     shape = variables.getString("value");
+                    variables = variables.next();
+                    type = variables.getString("value");
                     done = true;
-                }else{
+                } else{
                     properties = properties.next();
                 }
             }
+            if (!type.equals("none")){
+                System.out.println(type);
+                System.out.println(index);
+                System.out.println(index/8);
+                System.out.println(index%8);
+            }
             switch(type){
                 case "obstacle":
-                    level.populateObstacle(i/20, i%20, tileset[index/tilesetWidth][index/tilesetHeight].getTexture(), shape);
+                    level.populateObstacle(height-1- i/width, i%width, tileset[index/8][index%8], shape);
                     break;
                 case "swamp":
-                    level.populateSwamp(i/20,i%20,tileset[index/tilesetWidth][index/tilesetHeight].getTexture());
+                    level.populateSwamp(height- 1-i/width,i%width,tileset[index/tilesetWidth][index/tilesetHeight]);
                     break;
                 default:
                     break;
@@ -100,7 +124,45 @@ public class LevelController {
      * @param layer This is the layer Json that we will be reading from to get all of the characters in the game
      */
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
+        int x,y,rotation;
+        int index = 0;
+        String type;
+        JsonValue objects = layer.get("objects").child();
+        while (objects != null){
+            x = objects.getInt("x");
+            y = objects.getInt("y");
+            rotation = objects.getInt("rotation");
+            JsonValue properties = objects.get("properties").child();
+            type = properties.getString("value");
+            switch (type){
+                case "player":
+                    level.createPlayer(x,y,rotation,directory);
+                    break;
+                default:
+                    properties = properties.next();
+                    String end = properties.getString("value");
+                    properties = properties.next();
+                    String start = properties.getString("value");
+                    level.createEnemy(x,y,rotation,directory,type, stringToCoordinate(start), stringToCoordinate(end), index);
+                    index +=1;
+                    break;
 
+            }
+            objects = objects.next();
+        }
+    }
+
+    /**
+     * Converts the string given into an array with the tile that is meant to patrol to or from
+     * @param input The string that represents the tile location
+     * @return The tile location in an array
+     */
+    private int[] stringToCoordinate(String input){
+        String [] list = input.split(",");
+        int [] coordinates = new int[2];
+        coordinates[0] = Integer.parseInt(list[0]);
+        coordinates[1] = Integer.parseInt(list[1]);
+        return coordinates;
     }
 
 }

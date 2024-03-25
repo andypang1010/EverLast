@@ -143,10 +143,11 @@ public class CollisionController{
 //                System.out.println(e.getPosition());
             }
         }
-        for (TileModel t : board.getTiles()) {
-            if (t != null){
-                t.createBody(world);
-                addObject(t);
+        for (TileModel[] t : board.getExtra()) {
+            for (TileModel tile : t)
+                if (tile != null){
+                    tile.createBody(world);
+                    addObject(tile);
 //                System.out.println(t.getPosition());
 //                System.out.println(t.getType());
             }
@@ -297,10 +298,10 @@ public class CollisionController{
 
         if (callback.canSeeTarget && !callback.hitObstacle) {
             // Enemy can see the target
-            System.out.println("Target spotted!");
+            //System.out.println("Target spotted!");
         } else {
             // Vision blocked or target not in sight
-            System.out.println("Can't see the target.");
+            //System.out.println("Can't see the target.");
         }
     }
 

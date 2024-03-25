@@ -1,6 +1,7 @@
 package com.redpacts.frostpurge.game.models;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -9,6 +10,7 @@ public abstract class GameObject {
     protected Vector2 position;
     protected float rotation;
     protected Texture texture;
+    protected TextureRegion textureRegion;
     protected Body body;
 
     public void activatePhysics(World world) {};
@@ -36,6 +38,9 @@ public abstract class GameObject {
     }
     public void setTexture(Texture texture){
         this.texture = texture;
+    }
+    public TextureRegion getTextureRegion(){
+        return textureRegion;
     }
 
     public boolean isRemoved() { return false;}

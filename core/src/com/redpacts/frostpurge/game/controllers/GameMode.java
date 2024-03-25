@@ -18,6 +18,8 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class GameMode implements Screen {
@@ -43,7 +45,7 @@ public class GameMode implements Screen {
     /** Player for the game*/
     private PlayerController playerController;
 
-    private EnemyController enemyController;
+    private Array<EnemyController> enemyControllers;
 
     private Array<EnemyModel> enemies;
 
@@ -51,6 +53,8 @@ public class GameMode implements Screen {
 
     private Texture statusBarBGTexture;
     private Texture statusBarTexture;
+    private TileModel[][] baseLayer;
+    private TileModel[][] extraLayer;
 
 
     /** Listener that will update the player mode when we are done */
@@ -67,41 +71,62 @@ public class GameMode implements Screen {
         directory = new AssetDirectory("assets.json");
         directory.loadAssets();
         directory.finishLoading();
-        enemies = new Array<EnemyModel>();
+
+        int tilewidth = 64;
+        int tileheight = 64;
+        JsonValue leveljson = directory.getEntry("level1", JsonValue.class);
+        JsonValue tilesetjson = directory.getEntry("extralayer", JsonValue.class);
+        TextureRegion basetilesetregion = new TextureRegion(directory.getEntry("baselayer",Texture.class));
+        TextureRegion[][] basetileset = basetilesetregion.split(tilewidth, tileheight);
+        TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
+        TextureRegion[][] extratileset = extratilesetregion.split(tilewidth, tileheight);
+        System.out.println(Arrays.deepToString(extratileset));
+        LevelController levelController = new LevelController();
+
+        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson, extratileset,basetileset,tilewidth, tileheight, directory);
+        enemies = level1.getEnemies();
+        baseLayer = level1.getBaseLayer();
+        extraLayer = level1.getExtraLayer();
+        playerModel = level1.getPlayer();
+
         // Create the controllers.
 
         statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
         statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
 
-        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-        obstacles.add(43, 50, 57, 383);
-        obstacles.add(390, 397);
-        Array<Integer> swamps = new Array<Integer>();// Swamp locations
-        swamps.add(22, 25, 52, 55);
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
+//        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
+//        obstacles.add(43, 50, 57, 383);
+//        obstacles.add(390, 397);
+//        Array<Integer> swamps = new Array<Integer>();// Swamp locations
+//        swamps.add(22, 25, 52, 55);
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
 
         inputController = new InputController();
 
-        board = new MapModel(20,20, obstacles, swamps, envObjects, directory);
+        board = new MapModel(baseLayer,extraLayer, directory);
 
         populateTileGraph();
 
-        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
+//        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
+        System.out.println(playerModel.getPosition());
 
         //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
         //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
-
-        //enemies.add(enemy);
+        enemyControllers = new Array<>();
+        for (int i = 0; i < enemies.size; i++){
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,board));
+        }
+//        enemies.add(enemy);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         HUDcamera = new OrthographicCamera();
@@ -110,9 +135,6 @@ public class GameMode implements Screen {
         collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
 
         //Testing
-        JsonValue leveljson = directory.getEntry("level1", JsonValue.class);
-        JsonValue layer1 = leveljson.get("layers");
-        System.out.println(layer1.child().next());
     }
 
     @Override
@@ -184,8 +206,16 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
+        //System.out.println(playerModel.getPosition());
         Array<GameObject> drawble = new Array<GameObject>();
-        drawble.addAll(envObjects);
+        for (int i = 0; i<board.getExtra().length;i++){
+            for (int j = 0; j<board.getExtra()[0].length;j++){
+                if (board.getExtra()[i][j]!=null){
+                    drawble.add(board.getExtra()[i][j]);
+                }
+            }
+        }
+
         drawble.add(playerModel);
         drawble.addAll(enemies);
         sort_by_y(drawble);
@@ -201,17 +231,29 @@ public class GameMode implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
         canvas.center(camera, playerController.getModel().getPosition().x, playerController.getModel().getPosition().y);
-        board.draw(canvas);
+        //board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
+        for (int i = 0; i<board.getBase().length;i++){
+            for (int j = 0; j<board.getBase()[0].length;j++){
+                board.drawTile(board.getBase()[i][j],canvas);
+            }
+        }
 
         for(GameObject object: drawble){
             if(object instanceof PlayerModel){
                 playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
             }else if(object instanceof EnemyModel){
-                enemyController.draw(canvas);
-            }else{
-                board.drawObject((EnvironmentalObject) object, canvas);
+                enemyControllers.get(0).draw(canvas);
+            }else if (object instanceof TileModel){
+                board.drawTile((TileModel) object, canvas);
+            }
+        }
+        TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
+        TextureRegion[][] extratileset = extratilesetregion.split(64, 64);
+        for (int i = 0; i<8;i++){
+            for (int j = 0 ; j<9; j++){
+                canvas.draw(extratileset[j][i], i*64,-j*64);
             }
         }
 

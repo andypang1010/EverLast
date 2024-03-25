@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
@@ -64,8 +65,8 @@ public class ObstacleTile extends TileModel{
      *
      * @param texture The texture of the tile
      */
-    public ObstacleTile(Texture texture, Vector2 position, float scale){
-        this.texture = texture;
+    public ObstacleTile(TextureRegion texture, Vector2 position, float scale){
+        this.textureRegion = texture;
         this.type = TileType.OBSTACLE;
         this.position = position;
         this.scale = scale;

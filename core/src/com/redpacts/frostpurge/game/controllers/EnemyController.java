@@ -34,11 +34,11 @@ public class EnemyController extends CharactersController implements StateMachin
     TileModel previousTile, targetTile;
     Queue<TileModel> pathQueue = new Queue<>();
 
-    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, TileModel startPatrolTile, TileModel endPatrolTile, EnemyStates initState, TileGraph tileGraph, MapModel board) {
+    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, MapModel board) {
         this.model = enemy;
         playerModel = targetPlayerModel;
-        this.startPatrolTile = startPatrolTile;
-        this.endPatrolTile = endPatrolTile;
+        this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
+        this.endPatrolTile = board.getTileState(enemy.getEndPatrol()[0],enemy.getEndPatrol()[1]);
         setInitialState(initState);
         this.tileGraph = tileGraph;
         model.setPosition(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y);
@@ -106,15 +106,15 @@ public class EnemyController extends CharactersController implements StateMachin
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
             moveDirection = new Vector2(nextTile.getPosition().x - model.getPosition().x, nextTile.getPosition().y - model.getPosition().y).nor();
-            System.out.println(moveDirection.toString());
+            //System.out.println(moveDirection.toString());
         }
     }
 
 
     @Override
     public void update() {
-        System.out.println("Target location: " + targetTile.getPosition().toString());
-        System.out.println("Current location: " + model.getPosition().toString());
+        //System.out.println("Target location: " + targetTile.getPosition().toString());
+        //System.out.println("Current location: " + model.getPosition().toString());
         switch (currentState) {
             case PATROL:
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
@@ -132,7 +132,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 }
                 break;
             case CHASE:
-                System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
+                //System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
                 setGoal(modelPositionToTile(playerModel));
                 break;
         };
