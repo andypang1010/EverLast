@@ -54,7 +54,7 @@ public class LevelController {
         for (int i = 0; i<data.length;i++){
             int index = data[i];
             if (index!=0){
-                index-=93;
+                index-=93; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
                 level.populateBase(height- 1-i/width, i%width, tileset[index/2][index%2]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
@@ -69,7 +69,6 @@ public class LevelController {
      * @param layer This is the layer Json that we will be reading from to get all of the tiles
      */
     private void initializeExtraTileLayer(LevelModel level, JsonValue layer, TextureRegion[][]tileset, JsonValue tileProperties){
-        int x = 0;
         boolean done;
         String type = "";
         String shape = "";
@@ -83,11 +82,8 @@ public class LevelController {
             }else{
                 done = false;
             }
-            index-=21;
+            index-=21; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
             while(!done){
-//                System.out.println(x);
-                x++;
-//                System.out.println(index/8);
                 if (properties.getInt("id") == index){
                     JsonValue variables = properties.get("properties").child();
                     shape = variables.getString("value");
@@ -98,19 +94,15 @@ public class LevelController {
                     properties = properties.next();
                 }
             }
-            if (!type.equals("none")){
-                System.out.println(type);
-                System.out.println(index);
-                System.out.println(index/8);
-                System.out.println(index%8);
-            }
             switch(type){
                 case "obstacle":
                     level.populateObstacle(height-1- i/width, i%width, tileset[index/8][index%8], shape);
                     break;
                 case "swamp":
-                    level.populateSwamp(height- 1-i/width,i%width,tileset[index/tilesetWidth][index/tilesetHeight]);
+                    level.populateSwamp(height-1- i/width, i%width, tileset[index/8][index%8]);
                     break;
+                case "empty tile":
+                    level.populateEmpty(height-1- i/width, i%width, tileset[index/8][index%8]);
                 default:
                     break;
             }

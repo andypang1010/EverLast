@@ -80,7 +80,6 @@ public class GameMode implements Screen {
         TextureRegion[][] basetileset = basetilesetregion.split(tilewidth, tileheight);
         TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
         TextureRegion[][] extratileset = extratilesetregion.split(tilewidth, tileheight);
-        System.out.println(Arrays.deepToString(extratileset));
         LevelController levelController = new LevelController();
 
         LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson, extratileset,basetileset,tilewidth, tileheight, directory);

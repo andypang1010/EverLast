@@ -79,8 +79,8 @@ public class SwampTile extends TileModel{
         this.type = TileType.SWAMP;
     }
 
-    public SwampTile(Texture texture, Vector2 position, float scale){
-        this.texture = texture;
+    public SwampTile(TextureRegion texture, Vector2 position, float scale){
+        this.textureRegion = texture;
         this.type = TileType.SWAMP;
         this.position = position;
         this.scale = scale;

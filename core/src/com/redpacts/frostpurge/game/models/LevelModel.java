@@ -54,7 +54,16 @@ public class LevelModel {
      * @param texture texture of the swamp tile
      */
     public void populateSwamp(int i, int j, TextureRegion texture){
-        extraLayer[i][j] = new SwampTile(texture);
+        extraLayer[i][j] = new SwampTile(texture, new Vector2(j*64,i*64), 1);
+    }
+    /**
+     * Function to add an empty to the extra layer at the appropriate index
+     * @param i row that the swamp tile is on
+     * @param j row that the swamp tile is in
+     * @param texture texture of the swamp tile
+     */
+    public void populateEmpty(int i, int j, TextureRegion texture){
+        extraLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
     }
 
     /**
