@@ -93,5 +93,9 @@ public class PlayerModel extends CharactersModel {
         }
 
     }
+
+    public void drawBody(GameCanvas canvas){
+        canvas.draw(fire, Color.GREEN, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, body.getPosition().x , body.getPosition().y, 0,.5f,.5f,false);
+    }
 }
 
