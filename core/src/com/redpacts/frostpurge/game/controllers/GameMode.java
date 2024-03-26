@@ -194,7 +194,8 @@ public class GameMode implements Screen {
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
-        canvas.center(camera, playerController.getModel().getPosition().x, playerController.getModel().getPosition().y);
+        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
+        canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
         board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
