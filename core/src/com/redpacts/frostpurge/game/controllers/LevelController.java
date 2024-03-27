@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.LevelModel;
+import com.redpacts.frostpurge.game.models.TileModel;
 
 import java.util.logging.Level;
 
@@ -29,14 +30,16 @@ public class LevelController {
         tilesetHeight = theight;
         height = leveljson.getInt("height");
         width = leveljson.getInt("width");
-        LevelModel level = new LevelModel(height, width);
+        LevelModel level = new LevelModel(height, width, directory);
 
         JsonValue layer1 = leveljson.get("layers").child();
         JsonValue layer2 = layer1.next();
-        JsonValue characters = layer2.next();
+        JsonValue layer3 = layer2.next();
+        JsonValue characters = layer3.next();
 
         initializeBaseTileLayer(level, layer1, basetileset);
         initializeExtraTileLayer(level, layer2, extratileset,tileProperties);
+        initializeAccentTileLayer(level, layer3, basetileset);
         initializeCharacterLayer(level, characters, directory);
 
         return level;
@@ -128,19 +131,36 @@ public class LevelController {
             type = properties.getString("value");
             switch (type){
                 case "player":
-                    level.createPlayer(x,y,rotation,directory);
+                    level.createPlayer(x,height*64-y,rotation,directory);
                     break;
                 default:
                     properties = properties.next();
                     String end = properties.getString("value");
                     properties = properties.next();
                     String start = properties.getString("value");
-                    level.createEnemy(x,y,rotation,directory,type, stringToCoordinate(start), stringToCoordinate(end), index);
+                    level.createEnemy(x,height*64-y,rotation,directory,type, stringToCoordinate(start), stringToCoordinate(end), index);
                     index +=1;
                     break;
 
             }
             objects = objects.next();
+        }
+    }
+    /**
+     * This function initializes the initial layer of tiles which is just the tiles that you can regularly
+     * walk on and also the tiles that are a part of the background
+     * @param level This is the instance of the level that we are storing everything into
+     * @param layer This is the layer Json that we will be reading from to get all of the tiles
+     * @param tileset This is the tileset that the tiles are pulling their textures from
+     */
+    public void initializeAccentTileLayer(LevelModel level, JsonValue layer, TextureRegion[][] tileset){
+        int[] data = layer.get("data").asIntArray();
+        for (int i = 0; i<data.length;i++){
+            int index = data[i];
+            if (index!=0){
+                index-=93; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILESET SIZE AND ORDER
+                level.populateAccent(height- 1-i/width, i%width, tileset[index/2][index%2]);
+            }
         }
     }
 

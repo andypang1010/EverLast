@@ -36,7 +36,7 @@ public class GameMode implements Screen {
     /** Whether or not this player mode is still active */
     private boolean active;
     /** Board for the game*/
-    private MapModel board;
+    private LevelModel currentLevel;
     /** Environmental objects for the game*/
     private Array<EnvironmentalObject> envObjects = new Array<EnvironmentalObject>();
     /** Player for the game*/
@@ -111,7 +111,7 @@ public class GameMode implements Screen {
 
         inputController = new InputController();
 
-        board = new MapModel(baseLayer,extraLayer, directory);
+        currentLevel = level1;
 
         populateTileGraph();
 
@@ -123,7 +123,7 @@ public class GameMode implements Screen {
         //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
         enemyControllers = new Array<>();
         for (int i = 0; i < enemies.size; i++){
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,board));
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel));
         }
 //        enemies.add(enemy);
         camera = new OrthographicCamera();
@@ -131,7 +131,7 @@ public class GameMode implements Screen {
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+        collisionController = new CollisionController(level1, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
 
         //Testing
     }
@@ -188,15 +188,15 @@ public class GameMode implements Screen {
     }
 
     private void populateTileGraph() {
-        for (int i = 0; i < board.getWidth(); i++) {
-            for (int j = 0; j < board.getHeight(); j++) {
+        for (int i = 0; i < currentLevel.getWidth(); i++) {
+            for (int j = 0; j < currentLevel.getHeight(); j++) {
 
-                if (board.getTileState(i, j).getType() != TileModel.TileType.OBSTACLE) {
-                    tileGraph.addTile(board.getTileState(i, j));
+                if (currentLevel.getTileState(i, j).getType() != TileModel.TileType.OBSTACLE) {
+                    tileGraph.addTile(currentLevel.getTileState(i, j));
 
-                    for (TileModel neighbor : board.getTileNeighbors(i, j)) {
+                    for (TileModel neighbor : currentLevel.getTileNeighbors(i, j)) {
                         if (neighbor.getType() != TileModel.TileType.OBSTACLE) {
-                            tileGraph.connectTiles(board.getTileState(i, j), neighbor);
+                            tileGraph.connectTiles(currentLevel.getTileState(i, j), neighbor);
                         }
                     }
                 }
@@ -207,10 +207,10 @@ public class GameMode implements Screen {
     public void update(float delta) {
         //System.out.println(playerModel.getPosition());
         Array<GameObject> drawble = new Array<GameObject>();
-        for (int i = 0; i<board.getExtra().length;i++){
-            for (int j = 0; j<board.getExtra()[0].length;j++){
-                if (board.getExtra()[i][j]!=null){
-                    drawble.add(board.getExtra()[i][j]);
+        for (int i = 0; i<currentLevel.getHeight();i++){
+            for (int j = 0; j<currentLevel.getWidth();j++){
+                if (currentLevel.getExtraLayer()[i][j]!=null){
+                    drawble.add(currentLevel.getExtraLayer()[i][j]);
                 }
             }
         }
@@ -233,9 +233,9 @@ public class GameMode implements Screen {
         //board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
-        for (int i = 0; i<board.getBase().length;i++){
-            for (int j = 0; j<board.getBase()[0].length;j++){
-                board.drawTile(board.getBase()[i][j],canvas);
+        for (int i = 0; i<currentLevel.getHeight();i++){
+            for (int j = 0; j<currentLevel.getWidth();j++){
+                currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
             }
         }
 
@@ -245,7 +245,7 @@ public class GameMode implements Screen {
             }else if(object instanceof EnemyModel){
                 enemyControllers.get(0).draw(canvas);
             }else if (object instanceof TileModel){
-                board.drawTile((TileModel) object, canvas);
+                currentLevel.drawTile((TileModel) object, canvas);
             }
         }
         TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));

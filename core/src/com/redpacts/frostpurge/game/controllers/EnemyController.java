@@ -12,6 +12,8 @@ import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.util.logging.Level;
+
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
@@ -29,12 +31,12 @@ public class EnemyController extends CharactersController implements StateMachin
     /*
     PATHFINDING
     */
-    MapModel board;
+    LevelModel board;
     TileGraph tileGraph;
     TileModel previousTile, targetTile;
     Queue<TileModel> pathQueue = new Queue<>();
 
-    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, MapModel board) {
+    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board) {
         this.model = enemy;
         playerModel = targetPlayerModel;
         this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
@@ -135,7 +137,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 //System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
                 setGoal(modelPositionToTile(playerModel));
                 break;
-        };
+        }
 
         if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
             stop();
@@ -156,7 +158,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
-        return board.getTileState(board.screenToBoard(model.getPosition().x), board.screenToBoard(model.getPosition().y));
+        return board.getTileState(model.getPosition().x, model.getPosition().y);
     }
 
     @Override
