@@ -122,6 +122,9 @@ public class LevelModel {
     public TileModel[][] getExtraLayer(){
         return extraLayer;
     }
+    public TileModel[][] getAccentLayer(){
+        return accentLayer;
+    }
     public Array<EnemyModel> getEnemies(){
         return enemies;
     }
@@ -186,6 +189,9 @@ public class LevelModel {
     public boolean isSwampTile(float x, float y){
         int indexx = (int) Math.floor(x/60);
         int indexy = (int) Math.floor(y/60);
+        if (!inBounds(indexx,indexy)){
+            return false;
+        }
         return extraLayer[indexy][indexx] instanceof SwampTile;
     }
     public void removeExtra(float x, float y){

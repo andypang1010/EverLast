@@ -205,10 +205,12 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
-        //System.out.println(playerModel.getPosition());
         Array<GameObject> drawble = new Array<GameObject>();
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
+                if (currentLevel.getAccentLayer()[i][j]!=null){
+                    drawble.add(currentLevel.getAccentLayer()[i][j]);
+                }
                 if (currentLevel.getExtraLayer()[i][j]!=null){
                     drawble.add(currentLevel.getExtraLayer()[i][j]);
                 }
@@ -246,13 +248,6 @@ public class GameMode implements Screen {
                 enemyControllers.get(0).draw(canvas);
             }else if (object instanceof TileModel){
                 currentLevel.drawTile((TileModel) object, canvas);
-            }
-        }
-        TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
-        TextureRegion[][] extratileset = extratilesetregion.split(64, 64);
-        for (int i = 0; i<8;i++){
-            for (int j = 0 ; j<9; j++){
-                canvas.draw(extratileset[j][i], i*64,-j*64);
             }
         }
 
