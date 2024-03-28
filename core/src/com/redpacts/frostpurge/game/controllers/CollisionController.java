@@ -134,21 +134,17 @@ public class CollisionController{
         if (player != null) {
             player.createBody(world);
             addObject(player);
-//            System.out.println(player.getPosition());
         }
         for (EnemyModel e : enemies) {
             if (e != null) {
                 e.createBody(world);
                 addObject(e);
-//                System.out.println(e.getPosition());
             }
         }
         for (TileModel t : board.getTiles()) {
             if (t != null){
                 t.createBody(world);
                 addObject(t);
-//                System.out.println(t.getPosition());
-//                System.out.println(t.getType());
             }
         }
 
@@ -278,22 +274,36 @@ public class CollisionController{
             return hitObstacle ? 0 : 1;
         }
     }
-    public void checkEnemyVision(EnemyModel enemy, PlayerModel player) {
-        // TODO: Not make end point fixed on players, but rather just relative to enemy
-        // Calculate the end point of the vision cone based on the enemy's direction and range
-        Vector2 start = enemy.getPosition().cpy();
-        Vector2 end1 =  start.cpy().add(-400f, 50f);
-        Vector2 end2 =  start.cpy().add(-400f, 0f);
-        Vector2 end3 =  start.cpy().add(-400f, -50f);
 
+    /**
+     * Create vision cone for enemy, where it will check for player.
+     *
+     * The vision cone will scan every object, and flags when it hits obstacle or player.
+     *
+     * @param enemy	    The vision cone of enemy
+     * @param player    The player
+     */
+    // TODO: Perhaps change parameters so that we can customize vision cone (length/fov).
+    public void checkEnemyVision(EnemyModel enemy, PlayerModel player) {
         // Create the callback instance
         VisionConeCallback callback = new VisionConeCallback(player.getBody().getFixtureList().first());
 
-        // Perform the ray cast
-        world.rayCast(callback, start, end1);
-        world.rayCast(callback, start, end2);
-        world.rayCast(callback, start, end3);
+        // Calculate the end point of the vision cone based on the enemy's direction and range
+        Vector2 start = enemy.getPosition().cpy();
+        float fov = 45f; // Field of view angle in degrees
+        int numRays = 20; // Number of rays to cast within the fov
+        float deltaAngle = fov / (numRays - 1); // Angle between each ray
 
+        // Calculate the direction vector based on enemy's rotation
+        Vector2 direction = new Vector2((float) Math.cos(enemy.getRotation()),
+                (float) Math.sin(enemy.getRotation())).nor(); // Normalize the direction vector
+
+        for (int i = 0; i < numRays; i++) {
+            float angle = -fov / 2 + deltaAngle * i; // Calculate current angle
+            Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
+            Vector2 rayEnd = start.cpy().add(rayDirection.scl(400f)); // Calculate end point of the ray
+            world.rayCast(callback, start, rayEnd); // Perform the ray cast
+        }
 
         if (callback.canSeeTarget && !callback.hitObstacle) {
             // Enemy can see the target
