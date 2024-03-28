@@ -289,7 +289,7 @@ public class CollisionController{
         VisionConeCallback callback = new VisionConeCallback(player.getBody().getFixtureList().first());
 
         // Calculate the end point of the vision cone based on the enemy's direction and range
-        Vector2 start = enemy.getPosition().cpy();
+        Vector2 rayStart = enemy.getPosition().cpy();
         float fov = 45f; // Field of view angle in degrees
         int numRays = 20; // Number of rays to cast within the fov
         float deltaAngle = fov / (numRays - 1); // Angle between each ray
@@ -298,11 +298,16 @@ public class CollisionController{
         Vector2 direction = new Vector2((float) Math.cos(enemy.getRotation()),
                 (float) Math.sin(enemy.getRotation())).nor(); // Normalize the direction vector
 
+        Vector2 rayPrevious = rayStart;
+
         for (int i = 0; i < numRays; i++) {
             float angle = -fov / 2 + deltaAngle * i; // Calculate current angle
             Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
-            Vector2 rayEnd = start.cpy().add(rayDirection.scl(400f)); // Calculate end point of the ray
-            world.rayCast(callback, start, rayEnd); // Perform the ray cast
+            Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(400f)); // Calculate end point of the ray
+            world.rayCast(callback, rayStart, rayEnd); // Perform the ray cast
+
+            enemy.setTriangle(rayStart, rayPrevious, rayEnd);
+            rayPrevious = rayEnd;
         }
 
         if (callback.canSeeTarget && !callback.hitObstacle) {

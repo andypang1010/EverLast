@@ -12,6 +12,9 @@ import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
@@ -96,6 +99,10 @@ public class EnemyController extends CharactersController implements StateMachin
         processRun();
         model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
 
+        for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
+            canvas.renderTriangle(t.first, t.second, t.third);
+        }
+        ((EnemyModel) model).getTriangles().clear();
     }
 
     private void reachDestination() {

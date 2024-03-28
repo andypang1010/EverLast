@@ -11,8 +11,30 @@ import com.redpacts.frostpurge.game.controllers.CollisionController;
 import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EnemyModel extends CharactersModel{
 
+    /*
+    VISION CONE
+     */
+    public class Vector2Triple {
+        public Vector2 first;
+        public Vector2 second;
+        public Vector2 third;
+
+        public Vector2Triple(Vector2 first, Vector2 second, Vector2 third) {
+            this.first = first;
+            this.second = second;
+            this.third = third;
+        }
+    }
+    List<Vector2Triple> triangles = new ArrayList<>();
+    public void setTriangle(Vector2 v1, Vector2 v2, Vector2 v3) {
+        triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
+    }
+    public List<Vector2Triple> getTriangles() {return triangles;}
     @Override
     public void activatePhysics(World world) {
         // Create and configure the enemy's physics body and fixtures

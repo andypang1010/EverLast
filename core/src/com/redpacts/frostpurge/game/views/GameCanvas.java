@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -30,6 +31,8 @@ public class GameCanvas {
     private Affine2 local;
     /** Cache object to unify everything under a master draw method */
     private TextureRegion holder;
+    /** Cache object to render shape for geometric shape (like vision cone). */
+    private ShapeRenderer renderer;
 
     private Vector3 screen;
     private Vector3 world;
@@ -48,8 +51,10 @@ public class GameCanvas {
         // Set the projection matrix (for proper scaling)
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
         // Initialize the cache objects
-        holder = new TextureRegion();
         local  = new Affine2();
+        holder = new TextureRegion();
+        renderer = new ShapeRenderer();
+
         screen = new Vector3();
         world = new Vector3();
     }
@@ -558,6 +563,50 @@ public class GameCanvas {
         spriteBatch.end();
     }
 
+    /** Render a triangle from provided coordinate.
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param x3
+     * @param y3
+     */
+    public void renderTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        // TODO: change color
+        renderer.setColor(Color.RED);
+
+        // Draw the triangle using the provided vertices
+        renderer.triangle(
+                x1, y1,
+                x2, y2,
+                x3, y3
+        );
+
+        renderer.end();
+    }
+
+    /** Render a triangle from provided coordinate.
+     *
+     * @param v1
+     * @param v2
+     * @param v3
+     */
+    public void renderTriangle(Vector2 v1, Vector2 v2, Vector2 v3) {
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        // TODO: change color
+        renderer.setColor(Color.RED);
+
+        // Draw the triangle using the provided vertices
+        renderer.triangle(
+                v1.x, v1.y,
+                v2.x, v2.y,
+                v3.x, v3.y
+        );
+
+        renderer.end();
+    }
     /**
      * Enumeration of supported BlendStates.
      *
