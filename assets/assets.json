@@ -10,7 +10,8 @@
     "Enemy": "enemies/enemyLRfilmstripEDIT1.png",
     "Fire" : "characters/fire.png",
     "baselayer": "Tilesets/fire.png",
-    "extralayer": "Tilesets/Testhouse.png"
+    "extralayer": "Tilesets/Testhouse.png",
+    "tileset": "Tilesets/PlaygroundTileset.png"
   },
   "sounds" : {
 
@@ -21,6 +22,8 @@
   "jsons": {
     "level1": "levels/level1.json",
     "baselayer": "Tilesets/firetileset.json",
-    "extralayer": "Tilesets/TestHouse.json"
+    "extralayer": "Tilesets/TestHouse.json",
+    "tileset": "Tilesets/PlaygroundTileset.json",
+    "playgroundlevel": "levels/Playgroundmap.json"
   }
 }

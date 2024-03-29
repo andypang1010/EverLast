@@ -74,16 +74,17 @@ public class GameMode implements Screen {
 
         int tilewidth = 64;
         int tileheight = 64;
-        JsonValue leveljson = directory.getEntry("level1", JsonValue.class);
-        JsonValue tilesetjson = directory.getEntry("extralayer", JsonValue.class);
-        TextureRegion basetilesetregion = new TextureRegion(directory.getEntry("baselayer",Texture.class));
-        TextureRegion[][] basetileset = basetilesetregion.split(tilewidth, tileheight);
-        TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
-        TextureRegion[][] extratileset = extratilesetregion.split(tilewidth, tileheight);
+        JsonValue leveljson = directory.getEntry("playgroundlevel", JsonValue.class);
+        JsonValue tilesetjson = directory.getEntry("tileset", JsonValue.class);
+        TextureRegion tilesetregion = new TextureRegion(directory.getEntry("tileset",Texture.class));
+        TextureRegion[][] tileset = tilesetregion.split(tilewidth, tileheight);
+//        TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
+//        TextureRegion[][] extratileset = extratilesetregion.split(tilewidth, tileheight);
         LevelController levelController = new LevelController();
 
-        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson, extratileset,basetileset,tilewidth, tileheight, directory);
+        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
         enemies = level1.getEnemies();
+        System.out.println(enemies);
         baseLayer = level1.getBaseLayer();
         extraLayer = level1.getExtraLayer();
         playerModel = level1.getPlayer();
@@ -240,12 +241,13 @@ public class GameMode implements Screen {
                 currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
             }
         }
-
+        int i = 0;
         for(GameObject object: drawble){
             if(object instanceof PlayerModel){
                 playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
             }else if(object instanceof EnemyModel){
-                enemyControllers.get(0).draw(canvas);
+                enemyControllers.get(i).draw(canvas,(EnemyModel) object);
+                i++;
             }else if (object instanceof TileModel){
                 currentLevel.drawTile((TileModel) object, canvas);
             }

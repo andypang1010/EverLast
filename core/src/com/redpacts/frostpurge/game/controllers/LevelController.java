@@ -25,7 +25,7 @@ public class LevelController {
      * @param twidth This is the width of the tileset in tiles
      * @param theight This is the height of the tileset in tiles
      */
-    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] extratileset, TextureRegion[][] basetileset,int twidth, int theight, AssetDirectory directory){
+    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] tileset,int twidth, int theight, AssetDirectory directory){
         tilesetWidth = twidth;
         tilesetHeight = theight;
         height = leveljson.getInt("height");
@@ -37,9 +37,9 @@ public class LevelController {
         JsonValue layer3 = layer2.next();
         JsonValue characters = layer3.next();
 
-        initializeBaseTileLayer(level, layer1, basetileset);
-        initializeExtraTileLayer(level, layer2, extratileset,tileProperties);
-        initializeAccentTileLayer(level, layer3, basetileset);
+        initializeBaseTileLayer(level, layer1, tileset);
+        initializeExtraTileLayer(level, layer2, tileset,tileProperties);
+        initializeAccentTileLayer(level, layer3, tileset);
         initializeCharacterLayer(level, characters, directory);
 
         return level;
@@ -57,8 +57,8 @@ public class LevelController {
         for (int i = 0; i<data.length;i++){
             int index = data[i];
             if (index!=0){
-                index-=93; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
-                level.populateBase(height- 1-i/width, i%width, tileset[index/2][index%2]);
+                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                level.populateBase(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
             }
@@ -84,8 +84,8 @@ public class LevelController {
                 type = "none";
             }else{
                 done = false;
+                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
             }
-            index-=21; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
             while(!done){
                 if (properties.getInt("id") == index){
                     JsonValue variables = properties.get("properties").child();
@@ -99,14 +99,18 @@ public class LevelController {
             }
             switch(type){
                 case "obstacle":
-                    level.populateObstacle(height-1- i/width, i%width, tileset[index/8][index%8], shape);
+                    level.populateObstacle(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], shape);
                     break;
                 case "swamp":
-                    level.populateSwamp(height-1- i/width, i%width, tileset[index/8][index%8]);
+                    level.populateSwamp(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
                     break;
                 case "empty tile":
-                    level.populateEmpty(height-1- i/width, i%width, tileset[index/8][index%8]);
+                    level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+                    break;
                 default:
+                    if (index!=0){
+                        level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+                    }
                     break;
             }
         }
@@ -158,8 +162,8 @@ public class LevelController {
         for (int i = 0; i<data.length;i++){
             int index = data[i];
             if (index!=0){
-                index-=93; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILESET SIZE AND ORDER
-                level.populateAccent(height- 1-i/width, i%width, tileset[index/2][index%2]);
+                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILESET SIZE AND ORDER
+                level.populateAccent(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }
         }
     }
