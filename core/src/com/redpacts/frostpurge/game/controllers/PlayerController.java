@@ -64,8 +64,9 @@ public class PlayerController extends CharactersController {
         }
         friction();
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
-        model.setPosition(newLocation.x, newLocation.y);
-        model.getBody().setTransform(newLocation, 0);
+        //System.out.println(model.getVelocity());
+        model.getBody().setLinearVelocity(model.getVelocity());
+        model.setPosition(model.getBody().getPosition().scl(10));
     }
     public void draw(GameCanvas canvas, float horizontal, float vertical){
 

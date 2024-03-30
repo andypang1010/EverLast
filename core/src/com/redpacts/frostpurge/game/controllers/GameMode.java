@@ -75,6 +75,10 @@ public class GameMode implements Screen {
         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
         obstacles.add(43, 50, 57, 383);
         obstacles.add(390, 397);
+        createHouse(4, 4, obstacles);
+        createHouse(12, 4, obstacles);
+        createHouse(4, 10, obstacles);
+        createHouse(12, 10, obstacles);
         Array<Integer> swamps = new Array<Integer>();// Swamp locations
         swamps.add(22, 25, 52, 55);
         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
@@ -94,7 +98,7 @@ public class GameMode implements Screen {
 
         populateTileGraph();
 
-        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
+        playerModel = new PlayerModel(new Vector2(10,10),0, directory);
         playerController = new PlayerController(playerModel);
 
         //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
@@ -177,6 +181,14 @@ public class GameMode implements Screen {
         }
     }
 
+    private void createHouse(int start_x, int start_y, Array<Integer> houseArray){
+        for(int i = 1; i <= 4; i++){
+            for(int j = 0; j <= 4; j++){
+                houseArray.add(start_x * 20 + start_y + i + j*20);
+            }
+        }
+    }
+
     public void update(float delta) {
         Array<GameObject> drawble = new Array<GameObject>();
         drawble.addAll(envObjects);
@@ -184,7 +196,6 @@ public class GameMode implements Screen {
         drawble.addAll(enemies);
         sort_by_y(drawble);
         drawble.reverse();
-        System.out.println(drawble.get(0).getPosition().y);
 
         inputController.readInput(null,null);
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
