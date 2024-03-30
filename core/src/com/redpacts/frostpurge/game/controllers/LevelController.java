@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -25,7 +26,7 @@ public class LevelController {
      * @param twidth This is the width of the tileset in tiles
      * @param theight This is the height of the tileset in tiles
      */
-    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] tileset,int twidth, int theight, AssetDirectory directory){
+    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] tileset, int twidth, int theight, AssetDirectory directory, TextureRegion[][] background){
         tilesetWidth = twidth;
         tilesetHeight = theight;
         height = leveljson.getInt("height");
@@ -37,7 +38,7 @@ public class LevelController {
         JsonValue layer3 = layer2.next();
         JsonValue characters = layer3.next();
 
-        initializeBaseTileLayer(level, layer1, tileset);
+        initializeBaseTileLayer(level, layer1, background);
         initializeExtraTileLayer(level, layer2, tileset,tileProperties);
         initializeAccentTileLayer(level, layer3, tileset);
         initializeCharacterLayer(level, characters, directory);
@@ -73,6 +74,7 @@ public class LevelController {
      */
     private void initializeExtraTileLayer(LevelModel level, JsonValue layer, TextureRegion[][]tileset, JsonValue tileProperties){
         boolean done;
+        int base = 0;
         String type = "";
         String shape = "";
         int[] data = layer.get("data").asIntArray();
@@ -84,11 +86,13 @@ public class LevelController {
                 type = "none";
             }else{
                 done = false;
-                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                index-=1401; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
             }
             while(!done){
                 if (properties.getInt("id") == index){
                     JsonValue variables = properties.get("properties").child();
+                    base = variables.getInt("value");
+                    variables = variables.next();
                     shape = variables.getString("value");
                     variables = variables.next();
                     type = variables.getString("value");
@@ -99,17 +103,17 @@ public class LevelController {
             }
             switch(type){
                 case "obstacle":
-                    level.populateObstacle(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], shape);
+                    level.populateObstacle(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], shape, base);
                     break;
                 case "swamp":
-                    level.populateSwamp(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+                    level.populateSwamp(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
                     break;
                 case "empty tile":
-                    level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+                    level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
                     break;
                 default:
                     if (index!=0){
-                        level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+                        level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
                     }
                     break;
             }

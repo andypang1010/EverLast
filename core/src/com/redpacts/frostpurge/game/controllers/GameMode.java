@@ -78,11 +78,11 @@ public class GameMode implements Screen {
         JsonValue tilesetjson = directory.getEntry("tileset", JsonValue.class);
         TextureRegion tilesetregion = new TextureRegion(directory.getEntry("tileset",Texture.class));
         TextureRegion[][] tileset = tilesetregion.split(tilewidth, tileheight);
-//        TextureRegion extratilesetregion = new TextureRegion(directory.getEntry("extralayer",Texture.class));
-//        TextureRegion[][] extratileset = extratilesetregion.split(tilewidth, tileheight);
+        TextureRegion white = new TextureRegion(directory.getEntry("baselayer",Texture.class));
+        TextureRegion[][] whitetile = white.split(tilewidth, tileheight);
         LevelController levelController = new LevelController();
 
-        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
+        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
         enemies = level1.getEnemies();
         System.out.println(enemies);
         baseLayer = level1.getBaseLayer();
@@ -175,7 +175,19 @@ public class GameMode implements Screen {
     public void sort_by_y(Array<GameObject> obj_list) {
         Comparator<GameObject> comparator = new Comparator<GameObject>() {
             public int compare(GameObject o1, GameObject o2) {
-                float diff = o1.getPositionY() - o2.getPositionY();
+                float o1y;
+                float o2y;
+                if (o1 instanceof TileModel){
+                    o1y = o1.getPositionY() + (((TileModel) o1).base-2) *64;
+                } else{
+                    o1y = o1.getPositionY();
+                }
+                if (o2 instanceof TileModel){
+                    o2y = o2.getPositionY() + (((TileModel) o2).base-2) *64;
+                } else{
+                    o2y = o2.getPositionY();
+                }
+                float diff = o1y - o2y;
                 if(diff > 0){
                     return 1;
                 }else if(diff == 0){

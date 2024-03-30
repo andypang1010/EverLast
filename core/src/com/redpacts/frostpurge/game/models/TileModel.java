@@ -19,6 +19,7 @@ public abstract class TileModel extends GameObject {
     public float ox;
     /** y-coordinate of the tile origin(bottom right corner) */
     public float oy;
+    public int base;
 //    /** x-coordinate of the tile center */
 //    public float cx;
 //    /** y-coordinate of the tile center */

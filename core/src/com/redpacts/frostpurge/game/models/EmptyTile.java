@@ -69,6 +69,20 @@ public class EmptyTile extends TileModel{
         this.textureRegion = texture;
         this.type = TileType.EMPTY;
         this.position = position;
+        this.base = 0;
+    }
+    /**
+     * Create a tile with the specified texture
+     *
+     * @param texture The texture of the tile
+     * @param position The texture of the tile
+     * @param base The index of the base of the object in relation to this one
+     */
+    public EmptyTile(TextureRegion texture, Vector2 position, int base){
+        this.textureRegion = texture;
+        this.type = TileType.EMPTY;
+        this.position = position;
+        this.base =base;
     }
 
     public void createBody(World world) {

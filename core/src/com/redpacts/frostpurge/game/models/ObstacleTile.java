@@ -65,11 +65,12 @@ public class ObstacleTile extends TileModel{
      *
      * @param texture The texture of the tile
      */
-    public ObstacleTile(TextureRegion texture, Vector2 position, float scale){
+    public ObstacleTile(TextureRegion texture, Vector2 position, float scale, int base){
         this.textureRegion = texture;
         this.type = TileType.OBSTACLE;
         this.position = position;
         this.scale = scale;
+        this.base  = base;
     }
 
     @Override

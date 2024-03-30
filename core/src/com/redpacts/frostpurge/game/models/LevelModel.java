@@ -62,9 +62,9 @@ public class LevelModel {
      * @param texture the texture for the obstacle
      * @param shape The shape that the obstacle is (circle, LRtriangle, square)
      */
-    public void populateObstacle(int i, int j, TextureRegion texture, String shape){
+    public void populateObstacle(int i, int j, TextureRegion texture, String shape, int base){
         //TODO Make the obstacles have different types of hitboxes EX: Circle vs Full Tile vs Triangle
-        extraLayer[i][j] = new ObstacleTile(texture, new Vector2(j*64,i*64), 1);
+        extraLayer[i][j] = new ObstacleTile(texture, new Vector2(j*64,i*64), 1, base);
     }
 
     /**
@@ -73,8 +73,8 @@ public class LevelModel {
      * @param j row that the swamp tile is in
      * @param texture texture of the swamp tile
      */
-    public void populateSwamp(int i, int j, TextureRegion texture){
-        extraLayer[i][j] = new SwampTile(texture, new Vector2(j*64,i*64), 1);
+    public void populateSwamp(int i, int j, TextureRegion texture, int base){
+        extraLayer[i][j] = new SwampTile(texture, new Vector2(j*64,i*64), 1, base);
     }
     /**
      * Function to add an empty to the extra layer at the appropriate index
@@ -82,8 +82,8 @@ public class LevelModel {
      * @param j row that the swamp tile is in
      * @param texture texture of the swamp tile
      */
-    public void populateEmpty(int i, int j, TextureRegion texture){
-        extraLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
+    public void populateEmpty(int i, int j, TextureRegion texture, int base){
+        extraLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64), base);
     }
 
     /**
