@@ -79,7 +79,7 @@ public class PlayerController extends CharactersController {
             processRun();
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
             ((PlayerModel) model).drawFire(canvas, flip);
-            ((PlayerModel) model).drawBody(canvas);
+            //((PlayerModel) model).drawBody(canvas);
         }else{
             model.resetFilmStrip(model.getFilmStrip());
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
