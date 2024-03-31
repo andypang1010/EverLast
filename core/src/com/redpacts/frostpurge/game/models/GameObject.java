@@ -1,14 +1,17 @@
 package com.redpacts.frostpurge.game.models;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public abstract class GameObject {
 
     protected Vector2 position;
     protected float rotation;
     protected Texture texture;
+    protected PolygonShape shape;
     protected Body body;
 
     public void activatePhysics(World world) {};
@@ -43,4 +46,9 @@ public abstract class GameObject {
     };
     public void createBody(World world) {}
     public Body getBody() {return body;}
+
+
+    public void drawDebug(GameCanvas canvas) {
+        canvas.drawPhysics(shape, Color.BLACK, position.x, position.y, 0, 1, 1);
+    }
 }

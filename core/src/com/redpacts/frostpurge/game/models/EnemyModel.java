@@ -1,6 +1,7 @@
 package com.redpacts.frostpurge.game.models;
 
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -52,6 +53,8 @@ public class EnemyModel extends CharactersModel{
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,
 //                (float) this.getTexture().getHeight() / 2);
         shape.setAsBox(50f, 50f);
+
+        this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();

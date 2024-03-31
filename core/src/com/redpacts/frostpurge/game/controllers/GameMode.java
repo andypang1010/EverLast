@@ -51,6 +51,7 @@ public class GameMode implements Screen {
     private Texture statusBarBGTexture;
     private Texture statusBarTexture;
 
+    private boolean debug;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -97,16 +98,38 @@ public class GameMode implements Screen {
         playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
 
-        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+        EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
 
-        //enemies.add(enemy);
+        enemies.add(enemy);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // YOU WILL NEED TO MODIFY THIS NEXT LINE
         collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+    }
+
+    /**
+     * Returns true if debug mode is active.
+     *
+     * If true, all objects will display their physics bodies.
+     *
+     * @return true if debug mode is active.
+     */
+    public boolean isDebug( ) {
+        return debug;
+    }
+
+    /**
+     * Sets whether debug mode is active.
+     *
+     * If true, all objects will display their physics bodies.
+     *
+     * @param value whether debug mode is active.
+     */
+    public void setDebug(boolean value) {
+        debug = value;
     }
 
     @Override
@@ -184,9 +207,15 @@ public class GameMode implements Screen {
         drawble.addAll(enemies);
         sort_by_y(drawble);
         drawble.reverse();
-        System.out.println(drawble.get(0).getPosition().y);
+//        System.out.println(drawble.get(0).getPosition().y);
 
         inputController.readInput(null,null);
+
+        // Toggle debug mode
+        if (inputController.didDebug()) {
+            debug = !debug;
+        }
+
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         //enemyController.update();
         collisionController.update();
@@ -194,7 +223,7 @@ public class GameMode implements Screen {
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
-        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
+//        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
         canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
         board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
@@ -208,6 +237,15 @@ public class GameMode implements Screen {
             }else{
                 board.drawObject((EnvironmentalObject) object, canvas);
             }
+        }
+
+        if (debug) {
+            canvas.beginDebug();
+            for (EnemyModel enemy : enemies) {
+                enemy.drawDebug(canvas);
+            }
+            playerModel.drawDebug(canvas);
+            canvas.endDebug();
         }
 
         canvas.end();
