@@ -6,6 +6,12 @@ import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerController extends CharactersController {
+
+    static final float MAX_OFFSET = 500f;
+    static final float OFFSET_MULTIPLIER = 5f;
+
+
+
     PlayerController(PlayerModel player){
         model = player;
         flip = false;
@@ -80,6 +86,11 @@ public class PlayerController extends CharactersController {
         model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.99f));//friction
         model.setPosition(model.getBody().getPosition().scl(10));
     }
+
+    public float cameraOffset(float speed) {
+        return Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, speed * OFFSET_MULTIPLIER));
+    }
+
     public void draw(GameCanvas canvas, float horizontal, float vertical){
 
         if (horizontal<0){
