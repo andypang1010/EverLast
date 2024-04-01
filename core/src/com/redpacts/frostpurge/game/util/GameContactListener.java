@@ -15,7 +15,7 @@ public class GameContactListener implements ContactListener {
      */
     @Override
     public void beginContact(Contact contact) {
-        System.out.println("CONTACTED");
+        //System.out.println("CONTACTED");
         Body body1 = contact.getFixtureA().getBody();
         Body body2 = contact.getFixtureB().getBody();
         GameObject obj1 = (GameObject)body1.getUserData();

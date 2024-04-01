@@ -1,0 +1,14 @@
+{ "columns":2,
+ "image":"fire.png",
+ "imageheight":178,
+ "imagewidth":136,
+ "margin":0,
+ "name":"firetileset",
+ "spacing":0,
+ "tilecount":4,
+ "tiledversion":"1.10.2",
+ "tileheight":64,
+ "tilewidth":64,
+ "type":"tileset",
+ "version":"1.10"
+}
