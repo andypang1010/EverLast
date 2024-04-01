@@ -56,6 +56,7 @@ public class GameMode implements Screen {
     private TileModel[][] baseLayer;
     private TileModel[][] extraLayer;
 
+    private boolean debug;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -135,6 +136,28 @@ public class GameMode implements Screen {
         collisionController = new CollisionController(level1, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
 
         //Testing
+    }
+
+    /**
+     * Returns true if debug mode is active.
+     *
+     * If true, all objects will display their physics bodies.
+     *
+     * @return true if debug mode is active.
+     */
+    public boolean isDebug( ) {
+        return debug;
+    }
+
+    /**
+     * Sets whether debug mode is active.
+     *
+     * If true, all objects will display their physics bodies.
+     *
+     * @param value whether debug mode is active.
+     */
+    public void setDebug(boolean value) {
+        debug = value;
     }
 
     @Override
@@ -234,9 +257,14 @@ public class GameMode implements Screen {
         drawble.addAll(enemies);
         sort_by_y(drawble);
         drawble.reverse();
-        //System.out.println(drawble.get(0).getPosition().y);
 
         inputController.readInput(null,null);
+
+        // Toggle debug mode
+        if (inputController.didDebug()) {
+            debug = !debug;
+        }
+
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         //enemyController.update();
         collisionController.update();
@@ -244,8 +272,9 @@ public class GameMode implements Screen {
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
-        canvas.center(camera, playerController.getModel().getPosition().x, playerController.getModel().getPosition().y);
-        //board.draw(canvas);
+//        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
+        canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
+        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
         for (int i = 0; i<currentLevel.getHeight();i++){
@@ -263,6 +292,15 @@ public class GameMode implements Screen {
             }else if (object instanceof TileModel){
                 currentLevel.drawTile((TileModel) object, canvas);
             }
+        }
+
+        if (debug) {
+            canvas.beginDebug();
+            for (EnemyModel enemy : enemies) {
+                enemy.drawDebug(canvas);
+            }
+            playerModel.drawDebug(canvas);
+            canvas.endDebug();
         }
 
         canvas.end();

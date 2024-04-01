@@ -95,6 +95,8 @@ public class ObstacleTile extends TileModel{
 //        System.out.println(this.getTexture().getWidth());
 //        System.out.println(this.getTexture().getHeight());
 
+        this.shape = shape;
+
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_OBSTACLE;

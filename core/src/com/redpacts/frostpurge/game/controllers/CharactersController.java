@@ -2,12 +2,10 @@ package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.models.CharactersModel;
 import com.redpacts.frostpurge.game.util.FilmStrip;
-import com.redpacts.frostpurge.game.util.Movable;
 
-public abstract class CharactersController implements Movable {
+public abstract class CharactersController {
     protected CharactersModel model;
     private Float time;
     protected boolean flip;
