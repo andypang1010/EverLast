@@ -37,8 +37,6 @@ public class GameMode implements Screen {
     private boolean active;
     /** Board for the game*/
     private LevelModel currentLevel;
-    /** Environmental objects for the game*/
-    private Array<EnvironmentalObject> envObjects = new Array<EnvironmentalObject>();
     /** Player for the game*/
     private PlayerModel playerModel;
 
@@ -274,7 +272,6 @@ public class GameMode implements Screen {
         canvas.begin();
 //        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
         canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
-        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
         for (int i = 0; i<currentLevel.getHeight();i++){
@@ -294,16 +291,27 @@ public class GameMode implements Screen {
             }
         }
 
+        canvas.end();
+
         if (debug) {
             canvas.beginDebug();
+            for (int ii = 0; ii<currentLevel.getHeight(); ii++){
+                for (int j = 0; j<currentLevel.getWidth(); j++){
+                    if (currentLevel.getExtraLayer()[ii][j] != null) {
+//                        System.out.println(currentLevel.getExtraLayer()[i][j].getPosition().toString());
+                        currentLevel.drawDebug(currentLevel.getExtraLayer()[ii][j], canvas);
+                    }
+                }
+            }
+
             for (EnemyModel enemy : enemies) {
                 enemy.drawDebug(canvas);
             }
             playerModel.drawDebug(canvas);
+
             canvas.endDebug();
         }
 
-        canvas.end();
         canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
         if (playerController.hasResources()){
             canvas.drawUI(statusBarTexture,Color.WHITE, -100, 1300, 0, .5f,.5f, HUDcamera);
