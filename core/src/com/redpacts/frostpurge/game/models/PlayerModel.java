@@ -12,8 +12,9 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
 
-    private boolean canBoost;
+    private int energy;
     private Texture fire;
+    private boolean isBoosting;
     @Override
     public void activatePhysics(World world) {
         // Create and configure the player's physics body and fixtures
@@ -37,19 +38,30 @@ public class PlayerModel extends CharactersModel {
         Texture run = new TextureRegion(directory.getEntry("Liv_Run", Texture.class)).getTexture();
         running = new FilmStrip(run, 1, 12, 12);
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
-        canBoost = false;
+        energy = 0;
+        isBoosting = false;
     }
 
     public float getPositionY(){
         return this.position.y - 250;
     }
 
-    public boolean getCanBoost() {
-        return canBoost;
+    public int getEnergy() {
+        return energy;
     }
 
-    public void setCanBoost(boolean b) {
-        canBoost = b;
+    public void setEnergy(int b) {
+        energy = b;
+    }
+
+    public void addEnergy(int b) { energy += b;}
+
+    public boolean getIsBoosting(){
+        return isBoosting;
+    }
+
+    public void setIsBoosting(boolean b){
+        isBoosting = b;
     }
 
     public void createBody(World world) {
@@ -93,10 +105,16 @@ public class PlayerModel extends CharactersModel {
     }
 
     public void drawFire(GameCanvas canvas, boolean flip){
+        Color c = Color.WHITE;
+        float s = 0.5f;
+        if(isBoosting){
+            c = Color.SKY;
+            s = 0.75f;
+        }
         if (flip){
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
+            canvas.draw(fire, c, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,s,s,true);
         }else{
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fire, c, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),s,s,false);
         }
 
     }

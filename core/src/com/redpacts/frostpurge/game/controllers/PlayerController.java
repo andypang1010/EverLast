@@ -38,7 +38,7 @@ public class PlayerController extends CharactersController {
      * Checks if the player has any resources
      */
     public boolean hasResources(){
-        return ((PlayerModel) model).getCanBoost();
+        return ((PlayerModel) model).getEnergy() > 0;
     }
 
     /**
@@ -70,9 +70,12 @@ public class PlayerController extends CharactersController {
         }else{
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
-        if (boost && ((PlayerModel) model).getCanBoost()){
-            model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
-            ((PlayerModel) model).setCanBoost(false);
+        if (boost && ((PlayerModel) model).getEnergy() > 0){
+            ((PlayerModel) model).setIsBoosting(true);
+            model.getBody().applyForceToCenter(horizontal*10f, -vertical*10f, true);
+            ((PlayerModel) model).addEnergy(-1);
+        }else{
+            ((PlayerModel) model).setIsBoosting(false);
         }
         if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
