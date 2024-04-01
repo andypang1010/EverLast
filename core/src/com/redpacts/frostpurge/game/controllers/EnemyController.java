@@ -4,6 +4,8 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.ai.fsm.*;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Queue;
 
 import com.badlogic.gdx.math.Vector2;
@@ -99,8 +101,15 @@ public class EnemyController extends CharactersController implements StateMachin
         processRun();
         model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
 
+        // Draw vision cones
         for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
-            canvas.renderTriangle(t.first, t.second, t.third);
+            float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
+            short[] indices = new short[3];
+            indices[0] = 0;
+            indices[1] = 1;
+            indices[2] = 2;
+            PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
+            canvas.draw(cone, new Color(1f, 1f, 1f, 0.5f), 100, 100 ,0);
         }
         ((EnemyModel) model).getTriangles().clear();
     }
@@ -148,7 +157,7 @@ public class EnemyController extends CharactersController implements StateMachin
             stop();
         }
         else {
-        moveToNextTile();
+//        moveToNextTile();
         }
         checkCollision();
     }

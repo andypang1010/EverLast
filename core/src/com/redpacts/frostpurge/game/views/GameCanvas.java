@@ -1,10 +1,7 @@
 package com.redpacts.frostpurge.game.views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
@@ -563,49 +560,53 @@ public class GameCanvas {
         spriteBatch.end();
     }
 
-    /** Render a triangle from provided coordinate.
+    /**
+     * Draws the tinted polygon with the given transformations
      *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @param x3
-     * @param y3
-     */
-    public void renderTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        // TODO: change color
-        renderer.setColor(Color.RED);
-
-        // Draw the triangle using the provided vertices
-        renderer.triangle(
-                x1, y1,
-                x2, y2,
-                x3, y3
-        );
-
-        renderer.end();
-    }
-
-    /** Render a triangle from provided coordinate.
+     * The texture of the polygon will be ignored.  This method will always use
+     * a blank texture.
      *
-     * @param v1
-     * @param v2
-     * @param v3
+     * The resulting polygon will be scaled (both position and size) by the global
+     * scaling factor.
+     *
+     * @param poly  The polygon to draw
+     * @param tint  The color tint
+     * @param x 	The x-coordinate of the screen location
+     * @param y 	The y-coordinate of the screen location
+     * @param angle The rotation angle (in radians) about the origin.
      */
-    public void renderTriangle(Vector2 v1, Vector2 v2, Vector2 v3) {
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        // TODO: change color
-        renderer.setColor(Color.RED);
+    public void draw(PolygonRegion poly, Color tint, float x, float y, float angle) {
+        if (!active) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
 
-        // Draw the triangle using the provided vertices
-        renderer.triangle(
-                v1.x, v1.y,
-                v2.x, v2.y,
-                v3.x, v3.y
-        );
+        // Convert angle to degrees
+        float rotate = angle*180.0f/(float)Math.PI;
 
-        renderer.end();
+        // Put in a blank texture
+        // TO DO: In future years I will write my own PolygonBatch to fix these issues.
+        TextureRegion region = poly.getRegion();
+        Texture orig = region.getTexture();
+        int rx = 0; int ry = 0;
+        int rw = 0; int rh = 0;
+        if (orig != null) {
+            rx = region.getRegionX(); ry = region.getRegionY();
+            rw = region.getRegionWidth(); rh = region.getRegionHeight();
+        }
+        int BLANK_SIZE = 1;
+        Pixmap map = new Pixmap(BLANK_SIZE,BLANK_SIZE,Pixmap.Format.RGBA4444);
+        map.setColor(Color.WHITE);
+        map.fillRectangle(0, 0, BLANK_SIZE, BLANK_SIZE);
+        Texture blank = new Texture(map);
+        region.setTexture(blank);
+        region.setRegion(0, 0, BLANK_SIZE, BLANK_SIZE);
+        spriteBatch.setColor(tint);
+        spriteBatch.draw(poly, x*1, y*1, 0.0f, 0.0f, BLANK_SIZE, BLANK_SIZE, 1, 1, rotate);
+        region.setTexture(orig);
+        if (orig != null) {
+            region.setRegion(rx,ry,rw,rh);
+        }
     }
     /**
      * Enumeration of supported BlendStates.
