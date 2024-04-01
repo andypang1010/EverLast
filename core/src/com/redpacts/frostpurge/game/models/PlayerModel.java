@@ -73,8 +73,9 @@ public class PlayerModel extends CharactersModel {
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.01f;
+        fixtureDef.density = 0.67f;
         fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.25f;
 
         // Setting category and mask bits for the player
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;

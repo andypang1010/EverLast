@@ -95,6 +95,7 @@ public class ObstacleTile extends TileModel{
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
+        fixtureDef.restitution = 0.25f;
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_OBSTACLE;
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
                 CollisionController.PhysicsConstants.CATEGORY_ENEMY);
