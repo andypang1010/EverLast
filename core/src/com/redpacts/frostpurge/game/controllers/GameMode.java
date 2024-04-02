@@ -93,21 +93,43 @@ public class GameMode implements Screen {
         statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
         statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
 
-//        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-//        obstacles.add(43, 50, 57, 383);
-//        obstacles.add(390, 397);
-//        Array<Integer> swamps = new Array<Integer>();// Swamp locations
-//        swamps.add(22, 25, 52, 55);
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
+// <<<<<<< debug-new
+// //        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
+// //        obstacles.add(43, 50, 57, 383);
+// //        obstacles.add(390, 397);
+// //        Array<Integer> swamps = new Array<Integer>();// Swamp locations
+// //        swamps.add(22, 25, 52, 55);
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+// //        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
+// =======
+//         Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
+//         obstacles.add(43, 50, 57, 383);
+//         obstacles.add(390, 397);
+//         createHouse(4, 4, obstacles);
+//         createHouse(12, 4, obstacles);
+//         createHouse(4, 10, obstacles);
+//         createHouse(12, 10, obstacles);
+//         Array<Integer> swamps = new Array<Integer>();// Swamp locations
+//         swamps.add(22, 25, 52, 55);
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+//         envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
+// >>>>>>> new-temp-main
 
         inputController = new InputController();
 
@@ -115,7 +137,11 @@ public class GameMode implements Screen {
 
         populateTileGraph();
 
-//        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
+// <<<<<<< debug-new
+// //        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
+// =======
+//         playerModel = new PlayerModel(new Vector2(10,10),0, directory);
+// >>>>>>> new-temp-main
         playerController = new PlayerController(playerModel);
         System.out.println(playerModel.getPosition());
 
@@ -234,6 +260,14 @@ public class GameMode implements Screen {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void createHouse(int start_x, int start_y, Array<Integer> houseArray){
+        for(int i = 1; i <= 4; i++){
+            for(int j = 0; j <= 4; j++){
+                houseArray.add(start_x * 20 + start_y + i + j*20);
             }
         }
     }

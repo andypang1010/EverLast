@@ -62,20 +62,27 @@ public class PlayerModel extends CharactersModel {
         body = world.createBody(bodyDef);
         body.setUserData(this);
         body.setSleepingAllowed(false);
+        body.setFixedRotation(true);
+        body.setLinearDamping(0);
 
         PolygonShape shape = new PolygonShape();
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() /2,
 //                (float) this.getTexture().getHeight() / 2);
+// <<<<<<< debug-new
         shape.setAsBox(50f, 50f);
 
         this.shape = shape;
 
+// =======
+//         shape.setAsBox(0.1f, 0.1f);
+// >>>>>>> new-temp-main
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
+        fixtureDef.density = 0.67f;
         fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.25f;
 
         // Setting category and mask bits for the player
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;
@@ -88,6 +95,10 @@ public class PlayerModel extends CharactersModel {
         shape.dispose(); // Always dispose shapes after use
     }
 
+    public void movePlayer(Vector2 strength){
+        body.applyForceToCenter(strength, true);
+    }
+
     public void drawFire(GameCanvas canvas, boolean flip){
         if (flip){
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
@@ -95,6 +106,10 @@ public class PlayerModel extends CharactersModel {
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),.5f,.5f,false);
         }
 
+    }
+
+    public void drawBody(GameCanvas canvas){
+        canvas.draw(fire, Color.GREEN, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, body.getPosition().x , body.getPosition().y, 0,.5f,.5f,false);
     }
 }
 

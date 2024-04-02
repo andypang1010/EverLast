@@ -74,10 +74,30 @@ public class MapModel {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
         house_texture = new TextureRegion(directory.getEntry( "House", Texture.class )).getTexture();
         plant_texture = new TextureRegion(directory.getEntry( "Plant", Texture.class )).getTexture();
+// <<<<<<< debug-new
         this.width = base.length;
         this.height = base[0].length;
         this.base = base;
         this.extra = extra;
+// =======
+//         this.width = width;
+//         this.height = height;
+//         tiles = new TileModel[width * height];
+//         this.objects = objects;
+//         System.out.println(obstacle_pos);
+
+//         float scale = (float) TILE_WIDTH / tile_texture.getWidth();
+//         for (int ii = 0; ii < tiles.length; ii++) {
+//             if(obstacle_pos.contains(ii, false)) {
+//                 tiles[ii] = new ObstacleTile(tile_texture, getTileCoordinateIn2D(ii), scale);
+//             }
+//             else if(swamp_pos.contains(ii, false)){
+//                 tiles[ii] = new SwampTile(tile_texture, getTileCoordinateIn2D(ii), scale);
+//             }else{
+//                 tiles[ii] = new EmptyTile(tile_texture, getTileCoordinateIn2D(ii));
+//             }
+//         }
+// >>>>>>> new-temp-main
     }
 
     /**
@@ -110,18 +130,6 @@ public class MapModel {
 //            }
 //        }
 //    }
-
-    /**
-     * Returns the (x, y) coordinates from tiles indices.
-     *
-     * @return the (x, y) coordinates of tile[i]
-     */
-    public Vector2 getTileCoordinate(int index) {
-        int x = index / height;
-        int y = index % height;
-        return new Vector2(boardToScreen(x),boardToScreen(y));
-    }
-
 
     /**
      * Returns the tile object for the given position
@@ -279,6 +287,17 @@ public class MapModel {
     }
 
     /**
+     * Returns the map tile index for a screen position.
+     *
+     * @param pos Screen position coordinate in vector form
+     *
+     * @return the map tile index for a screen position.
+     */
+    public Vector2 screenToBoard(Vector2 pos) {
+        return new Vector2 ((int)pos.x / getTileSize(), (int)pos.y / getTileSize());
+    }
+
+    /**
      * Returns the screen position coordinate for a map tile index(bottom left corner of the tile).
      *
      * @param n Tile index
@@ -287,6 +306,29 @@ public class MapModel {
      */
     public float boardToScreen(int n) {
         return (float) (n) * (getTileSize());
+    }
+
+    /**
+     * Returns the screen position coordinate for a map tile index in vector form(bottom left corner of the tile).
+     *
+     * @param pos Tile index in vector form
+     *
+     * @return the screen position coordinate for a tile index.
+     */
+    public Vector2 boardToScreen(Vector2 pos) {
+        return new Vector2(pos.x * getTileSize(), pos.y * getTileSize());
+    }
+
+    /**
+     * Returns the (x, y) coordinates from 1D tiles indices.
+     *
+     * @param index the 1D index of the tile in the map's array of tiles
+     * @return the (x, y) coordinates of tile[i]
+     */
+    public Vector2 getTileCoordinateIn2D(int index) {
+        int x = index / height;
+        int y = index % height;
+        return new Vector2(boardToScreen(x),boardToScreen(y));
     }
 
     /**
