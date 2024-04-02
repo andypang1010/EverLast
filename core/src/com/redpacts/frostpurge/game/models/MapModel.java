@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.models;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -14,7 +15,7 @@ import org.w3c.dom.Text;
 
 public class MapModel {
     /** The dimensions of a single tile */
-    private static final int TILE_WIDTH = 128;
+    private static final int TILE_WIDTH = 64;
     /** Color of a regular tile */
     private static final Color BASIC_COLOR = new Color(1f, 1f, 1f, 1f);
     /** Highlight color for power tiles */
@@ -32,8 +33,10 @@ public class MapModel {
     private int width;
     /** The map height (in number of tiles) */
     private int height;
-    /** The tile grid (with above dimensions) */
-    private TileModel[] tiles;
+    /** The base tile grid (with above dimensions) */
+    private TileModel[][] base;
+    /** The extra tile grid (with above dimensions) */
+    private TileModel[][] extra;
 
     /** The items in the level */
     private Array<EnvironmentalObject> objects;
@@ -44,19 +47,19 @@ public class MapModel {
      * @param width Map width in tiles
      * @param height Map height in tiles
      */
-    public MapModel(int width, int height) {
-        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
-        Pixmap pixmap = new Pixmap(fileHandle);
-        this.tile_texture = new Texture(pixmap);
-        pixmap.dispose();
-
-        this.width = width;
-        this.height = height;
-        tiles = new TileModel[width * height];
-        for (int ii = 0; ii < tiles.length; ii++) {
-            tiles[ii] = new EmptyTile(tile_texture);
-        }
-    }
+//    public MapModel(int width, int height) {
+//        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
+//        Pixmap pixmap = new Pixmap(fileHandle);
+//        this.tile_texture = new Texture(pixmap);
+//        pixmap.dispose();
+//
+//        this.width = width;
+//        this.height = height;
+//        tiles = new TileModel[width * height];
+//        for (int ii = 0; ii < tiles.length; ii++) {
+//            tiles[ii] = new EmptyTile(tile_texture);
+//        }
+//    }
 
     /**
      * Creates a new map of the given size with obstacles at specified positions
@@ -67,27 +70,16 @@ public class MapModel {
      * @param swamp_pos Indices of swamp tiles
      * @param objects An array of environmental objects
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos, Array<EnvironmentalObject> objects, AssetDirectory directory) {
+    public MapModel(TileModel[][] base, TileModel[][] extra, AssetDirectory directory) {
         tile_texture = new TextureRegion(directory.getEntry( "Tile", Texture.class )).getTexture();
         house_texture = new TextureRegion(directory.getEntry( "House", Texture.class )).getTexture();
         plant_texture = new TextureRegion(directory.getEntry( "Plant", Texture.class )).getTexture();
-        this.width = width;
-        this.height = height;
-        tiles = new TileModel[width * height];
-        this.objects = objects;
-        System.out.println(obstacle_pos);
 
-        float scale = (float) TILE_WIDTH / tile_texture.getWidth();
-        for (int ii = 0; ii < tiles.length; ii++) {
-            if(obstacle_pos.contains(ii, false)) {
-                tiles[ii] = new ObstacleTile(tile_texture, getTileCoordinateIn2D(ii), scale);
-            }
-            else if(swamp_pos.contains(ii, false)){
-                tiles[ii] = new SwampTile(tile_texture, getTileCoordinateIn2D(ii), scale);
-            }else{
-                tiles[ii] = new EmptyTile(tile_texture, getTileCoordinateIn2D(ii));
-            }
-        }
+        this.width = base.length;
+        this.height = base[0].length;
+        this.base = base;
+        this.extra = extra;
+
     }
 
     /**
@@ -98,28 +90,28 @@ public class MapModel {
      * @param obstacle_pos Indices of obstacle tiles
      * @param swamp_pos Indices of swamp tiles
      */
-    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos) {
-        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
-        Pixmap pixmap = new Pixmap(fileHandle);
-        this.tile_texture = new Texture(pixmap);
-        pixmap.dispose();
-
-        this.width = width;
-        this.height = height;
-        tiles = new TileModel[width * height];
-        for (int ii = 0; ii < tiles.length; ii++) {
-
-            if(obstacle_pos.contains(ii, true)){
-//                System.out.println("OBSTACLE");
-//                System.out.println(getTileCoordinate(ii));
-                tiles[ii] = new ObstacleTile(tile_texture);
-            } else if(swamp_pos.contains(ii, true)){
-                tiles[ii] = new SwampTile(tile_texture);
-            } else{
-                tiles[ii] = new EmptyTile(tile_texture);
-            }
-        }
-    }
+//    public MapModel(int width, int height, Array<Integer> obstacle_pos, Array<Integer> swamp_pos) {
+//        FileHandle fileHandle = Gdx.files.internal("tile.jpg");
+//        Pixmap pixmap = new Pixmap(fileHandle);
+//        this.tile_texture = new Texture(pixmap);
+//        pixmap.dispose();
+//
+//        this.width = width;
+//        this.height = height;
+//        tiles = new TileModel[width * height];
+//        for (int ii = 0; ii < tiles.length; ii++) {
+//
+//            if(obstacle_pos.contains(ii, true)){
+////                System.out.println("OBSTACLE");
+////                System.out.println(getTileCoordinate(ii));
+//                tiles[ii] = new ObstacleTile(tile_texture);
+//            } else if(swamp_pos.contains(ii, true)){
+//                tiles[ii] = new SwampTile(tile_texture);
+//            } else{
+//                tiles[ii] = new EmptyTile(tile_texture);
+//            }
+//        }
+//    }
 
     /**
      * Returns the tile object for the given position
@@ -132,16 +124,28 @@ public class MapModel {
         if (!inBounds(x, y)) {
             return null;
         }
-        return tiles[x * height + y];
+        if (extra[x][y]==null){
+            return base[x][y];
+        }else{
+            return extra[x][y];
+        }
     }
 
+    /**
+     * Returns the base tiles
+     *
+     * @return the tiles array
+     */
+    public TileModel[][] getBase() {
+        return base;
+    }
     /**
      * Returns the tiles
      *
      * @return the tiles array
      */
-    public TileModel[] getTiles() {
-        return tiles;
+    public TileModel[][] getExtra() {
+        return extra;
     }
 
     /**
@@ -375,6 +379,12 @@ public class MapModel {
         }else{
             canvas.draw(tile.getTexture(), BASIC_COLOR, 0, 0, sx, sy, 0, scale, scale, false);
         }
+    }
+    public void drawTile(TileModel object, GameCanvas canvas){
+        if (object.getTextureRegion() == null){
+            System.out.println("NULL");
+        }
+        canvas.draw(object.getTextureRegion(), object.getPosition().x, object.getPosition().y);
     }
 
     public void drawObject(EnvironmentalObject object, GameCanvas canvas){

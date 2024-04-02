@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
@@ -73,16 +74,17 @@ public class SwampTile extends TileModel{
      *
      * @param texture The texture of the tile
      */
-    public SwampTile(Texture texture){
-        this.texture = texture;
+    public SwampTile(TextureRegion texture){
+        this.textureRegion = texture;
         this.type = TileType.SWAMP;
     }
 
-    public SwampTile(Texture texture, Vector2 position, float scale){
-        this.texture = texture;
+    public SwampTile(TextureRegion texture, Vector2 position, float scale, int base){
+        this.textureRegion = texture;
         this.type = TileType.SWAMP;
         this.position = position;
         this.scale = scale;
+        this.base = base;
     }
 
     @Override
@@ -106,6 +108,8 @@ public class SwampTile extends TileModel{
 //        System.out.println(this.getPosition());
 //        System.out.println(this.getTexture().getWidth());
 //        System.out.println(this.getTexture().getHeight());
+
+        this.shape = shape;
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

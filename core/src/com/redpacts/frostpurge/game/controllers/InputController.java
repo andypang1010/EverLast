@@ -42,6 +42,8 @@ public class InputController {
     private boolean vacuumPressed;
     /** Whether the decelerate button was pressed. */
     private boolean deceleratePressed;
+    /** Whether the debug button was pressed. */
+    private boolean debugPressed;
     /** Whether the exit button was pressed. */
     private boolean exitPressed;
 
@@ -105,6 +107,15 @@ public class InputController {
     }
 
     /**
+     * Returns true if the decelerate action button was pressed.
+     *
+     * @return true if the debug action button was pressed.
+     */
+    public boolean didDebug() {
+        return debugPressed;
+    }
+
+    /**
      * Creates a new input controller for the specified player.
      *
      * The game supports two players working against each other in hot seat mode.
@@ -149,6 +160,7 @@ public class InputController {
             deceleratePressed = xbox.getA();
             boostPressed = xbox.getRBumper();
             vacuumPressed = xbox.getLBumper();
+            debugPressed = xbox.getDPadDown();
         }else{
             float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
             float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
@@ -170,6 +182,7 @@ public class InputController {
             vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.V);
             deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
             exitPressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+            debugPressed = Gdx.input.isKeyPressed(Input.Keys.D);
         }
     }
 
