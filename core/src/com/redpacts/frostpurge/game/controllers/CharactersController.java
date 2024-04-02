@@ -17,13 +17,6 @@ public abstract class CharactersController {
         model.setVelocity(vel.x, vel.y);
     }
 
-    public void accelerate(float x, float y, float scale) {
-        Vector2 vel = model.getVelocity();
-        vel.x += .5f * scale * x;
-        vel.y -= .5f * scale * y;
-        model.setVelocity(vel.x, vel.y);
-    }
-
     public void stop() {
         Vector2 vel = model.getVelocity();
         float x = -.05f* model.getVelocity().x;
