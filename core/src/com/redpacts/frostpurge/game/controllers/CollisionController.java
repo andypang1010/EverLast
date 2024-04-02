@@ -250,22 +250,35 @@ public class CollisionController{
         }
     }
 
+    // TODO: Fix logic check of vision cone
     private static class VisionConeCallback implements RayCastCallback {
         public boolean hitObstacle = false;
         public boolean canSeeTarget = false;
+        public Vector2 hitPoint = null;
 
+        public void clearHitPoint() {
+            hitPoint = null;
+        }
+        public Vector2 getHitPoint() {
+            if (hitPoint != null) return hitPoint.cpy();
+            else return null;
+        }
         // Returning 1 continues the ray cast to the end of its path
         // Returning 0 would terminate the ray cast here
         @Override
         public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+            System.out.println("CONTACT POINT");
+            System.out.println(point);
             GameObject userData = (GameObject) fixture.getBody().getUserData();
             if (userData instanceof EnemyModel || userData instanceof SwampTile){
                 return 1; // Ray cast continues
             } else if (userData instanceof ObstacleTile) {
                 hitObstacle = true;
-                return 0;
+                hitPoint = point.cpy();
+                return fraction;
             } else if (userData instanceof PlayerModel) {
                 canSeeTarget = true;
+                hitPoint = point.cpy();
                 return 1;
             }
             return 1;
@@ -299,7 +312,17 @@ public class CollisionController{
         Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
         Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(400f)); // Calculate end point of the ray
         world.rayCast(callback, rayStart, rayEnd);
-        Vector2 rayPrevious = rayEnd;
+
+        if (callback.getHitPoint() != null) {
+//            System.out.println("HIT POINT");
+//            System.out.println(rayEnd);
+
+            rayEnd = callback.getHitPoint();
+            callback.clearHitPoint();
+
+//            System.out.println(rayEnd);
+        }
+        Vector2 rayPrevious = rayEnd.cpy();
 
         for (int i = 1; i < numRays; i++) {
             angle = -fov / 2 + deltaAngle * i;
@@ -307,8 +330,17 @@ public class CollisionController{
             rayEnd = rayStart.cpy().add(rayDirection.scl(400f));
             world.rayCast(callback, rayStart, rayEnd);
 
+            if (callback.getHitPoint() != null) {
+//                System.out.println("HIT POINT 2");
+//                System.out.println(rayEnd);
+
+                rayEnd = callback.getHitPoint();
+                callback.clearHitPoint();
+
+//                System.out.println(rayEnd);
+            }
             enemy.setTriangle(rayStart, rayPrevious, rayEnd); // Add triangle to draw vision cone.
-            rayPrevious = rayEnd;
+            rayPrevious = rayEnd.cpy();
         }
 
         if (callback.canSeeTarget) {
