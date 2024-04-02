@@ -114,8 +114,9 @@ public class GameMode implements Screen {
         currentLevel = level1;
 
         populateTileGraph();
-
+      
 //        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
+
         playerController = new PlayerController(playerModel);
         System.out.println(playerModel.getPosition());
 
@@ -234,6 +235,14 @@ public class GameMode implements Screen {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void createHouse(int start_x, int start_y, Array<Integer> houseArray){
+        for(int i = 1; i <= 4; i++){
+            for(int j = 0; j <= 4; j++){
+                houseArray.add(start_x * 20 + start_y + i + j*20);
             }
         }
     }
