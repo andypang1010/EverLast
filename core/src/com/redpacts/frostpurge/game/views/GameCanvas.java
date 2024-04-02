@@ -77,8 +77,6 @@ public class GameCanvas {
      * Eliminate any resources that should be garbage collected manually.
      */
     public void dispose() {
-        active = DrawPass.INACTIVE;
-
         if (active != DrawPass.INACTIVE) {
             Gdx.app.error("GameCanvas", "Cannot dispose while drawing active", new IllegalStateException());
             return;
