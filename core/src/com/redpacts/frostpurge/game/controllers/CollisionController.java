@@ -20,7 +20,7 @@ public class CollisionController{
         public static final short CATEGORY_DESTRUCTIBLE = 0x0016;
     }
     /** Reference to the game board */
-    public LevelModel board;
+    public MapModel board;
     /** Reference to the player in the game */
     public PlayerModel player;
     /** Reference to all the enemies in the game */
@@ -87,7 +87,7 @@ public class CollisionController{
      * @param player  The player
      * @param enemies List of enemies
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies) {
+    protected CollisionController(MapModel board, PlayerModel player, Array<EnemyModel> enemies) {
         this(board, player, enemies, new Rectangle(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT));
     }
 
@@ -104,7 +104,7 @@ public class CollisionController{
      * @param width  	The width in Box2d coordinates
      * @param height	The height in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, float width, float height) {
+    protected CollisionController(MapModel board, PlayerModel player, Array<EnemyModel> enemies, float width, float height) {
         this(board, player, enemies, new Rectangle(0,0,width,height));
     }
 
@@ -120,7 +120,7 @@ public class CollisionController{
      * @param enemies List of enemies
      * @param bounds  The game bounds in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Rectangle bounds) {
+    protected CollisionController(MapModel board, PlayerModel player, Array<EnemyModel> enemies, Rectangle bounds) {
         this.board = board;
         this.player = player;
         this.enemies = enemies;
@@ -143,11 +143,10 @@ public class CollisionController{
 //                System.out.println(e.getPosition());
             }
         }
-        for (TileModel[] t : board.getExtraLayer()) {
-            for (TileModel tile : t)
-                if (tile != null){
-                    tile.createBody(world);
-                    addObject(tile);
+        for (TileModel t : board.getTiles()) {
+            if (t != null){
+                t.createBody(world);
+                addObject(t);
 //                System.out.println(t.getPosition());
 //                System.out.println(t.getType());
             }
@@ -218,8 +217,8 @@ public class CollisionController{
      * @param player Player to check
      */
     private void pickPowerUp(PlayerModel player){
-        if(board.isSwampTile(player.getPosition().x, player.getPosition().y)){
-            board.removeExtra(player.getPosition().x, player.getPosition().y);
+        if(board.isSwampTileAtScreen(player.getPosition().x, player.getPosition().y)){
+            board.removePowerAt(board.screenToBoard(player.getPosition().x), board.screenToBoard(player.getPosition().y));
             player.setCanBoost(true);
         }
     }
@@ -298,10 +297,10 @@ public class CollisionController{
 
         if (callback.canSeeTarget && !callback.hitObstacle) {
             // Enemy can see the target
-            //System.out.println("Target spotted!");
+            System.out.println("Target spotted!");
         } else {
             // Vision blocked or target not in sight
-            //System.out.println("Can't see the target.");
+            System.out.println("Can't see the target.");
         }
     }
 

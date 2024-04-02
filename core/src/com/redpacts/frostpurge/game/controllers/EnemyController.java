@@ -12,8 +12,6 @@ import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-import java.util.logging.Level;
-
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
@@ -31,16 +29,16 @@ public class EnemyController extends CharactersController implements StateMachin
     /*
     PATHFINDING
     */
-    LevelModel board;
+    MapModel board;
     TileGraph tileGraph;
     TileModel previousTile, targetTile;
     Queue<TileModel> pathQueue = new Queue<>();
 
-    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board) {
+    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, TileModel startPatrolTile, TileModel endPatrolTile, EnemyStates initState, TileGraph tileGraph, MapModel board) {
         this.model = enemy;
         playerModel = targetPlayerModel;
-        this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
-        this.endPatrolTile = board.getTileState(enemy.getEndPatrol()[0],enemy.getEndPatrol()[1]);
+        this.startPatrolTile = startPatrolTile;
+        this.endPatrolTile = endPatrolTile;
         setInitialState(initState);
         this.tileGraph = tileGraph;
         model.setPosition(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y);
@@ -89,14 +87,14 @@ public class EnemyController extends CharactersController implements StateMachin
         }
     }
 
-    public void draw(GameCanvas canvas, EnemyModel enemy){
-        if (enemy.getVelocity().x<0){
+    public void draw(GameCanvas canvas){
+        if (model.getVelocity().x<0){
             flip = true;
-        }else if (enemy.getVelocity().x >0){
+        }else if (model.getVelocity().x >0){
             flip = false;
         }
         processRun();
-        enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
+        model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
 
     }
 
@@ -108,15 +106,15 @@ public class EnemyController extends CharactersController implements StateMachin
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
             moveDirection = new Vector2(nextTile.getPosition().x - model.getPosition().x, nextTile.getPosition().y - model.getPosition().y).nor();
-            //System.out.println(moveDirection.toString());
+            System.out.println(moveDirection.toString());
         }
     }
 
 
     @Override
     public void update() {
-        //System.out.println("Target location: " + targetTile.getPosition().toString());
-        //System.out.println("Current location: " + model.getPosition().toString());
+        System.out.println("Target location: " + targetTile.getPosition().toString());
+        System.out.println("Current location: " + model.getPosition().toString());
         switch (currentState) {
             case PATROL:
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
@@ -134,10 +132,10 @@ public class EnemyController extends CharactersController implements StateMachin
                 }
                 break;
             case CHASE:
-                //System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
+                System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
                 setGoal(modelPositionToTile(playerModel));
                 break;
-        }
+        };
 
         if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
             stop();
@@ -158,7 +156,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
-        return board.getTileState(model.getPosition().x, model.getPosition().y);
+        return board.getTileState(board.screenToBoard(model.getPosition().x), board.screenToBoard(model.getPosition().y));
     }
 
     @Override

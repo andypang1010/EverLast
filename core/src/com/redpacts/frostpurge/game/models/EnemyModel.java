@@ -1,7 +1,6 @@
 package com.redpacts.frostpurge.game.models;
 
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -10,18 +9,9 @@ import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 import com.redpacts.frostpurge.game.controllers.CollisionController;
 import com.redpacts.frostpurge.game.util.FilmStrip;
-import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class EnemyModel extends CharactersModel{
-    private int[] startpatrol;
-    private int[] endpatrol;
-    public int[] getStartPatrol(){
-        return startpatrol;
-    }
-    public int[] getEndPatrol(){
-        return endpatrol;
-    }
 
     @Override
     public void activatePhysics(World world) {
@@ -37,15 +27,13 @@ public class EnemyModel extends CharactersModel{
      * @param position vector2 representing the starting location
      * @param rotation float representing angle the player is facing
      */
-    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, int[] endpatrol){
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory){
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
         texture = new TextureRegion(directory.getEntry( "Enemy", Texture.class )).getTexture();
         running = new FilmStrip(texture, 1, 8, 8);
         running.setFrame(4);
-        this.startpatrol = startpatrol;
-        this.endpatrol = endpatrol;
     }
 
     public void createBody(World world) {
@@ -64,8 +52,6 @@ public class EnemyModel extends CharactersModel{
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,
 //                (float) this.getTexture().getHeight() / 2);
         shape.setAsBox(50f, 50f);
-
-        this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
