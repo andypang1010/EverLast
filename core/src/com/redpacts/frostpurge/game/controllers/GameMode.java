@@ -298,7 +298,7 @@ public class GameMode implements Screen {
             for (int ii = 0; ii<currentLevel.getHeight(); ii++){
                 for (int j = 0; j<currentLevel.getWidth(); j++){
                     if (currentLevel.getExtraLayer()[ii][j] != null) {
-//                        System.out.println(currentLevel.getExtraLayer()[i][j].getPosition().toString());
+                        System.out.println(currentLevel.getExtraLayer()[i][j].getPosition().toString());
                         currentLevel.drawDebug(currentLevel.getExtraLayer()[ii][j], canvas);
                     }
                 }
