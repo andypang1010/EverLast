@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
@@ -64,10 +65,24 @@ public class EmptyTile extends TileModel{
      * @param texture The texture of the tile
      * @param position The texture of the tile
      */
-    public EmptyTile(Texture texture, Vector2 position){
-        this.texture = texture;
+    public EmptyTile(TextureRegion texture, Vector2 position){
+        this.textureRegion = texture;
         this.type = TileType.EMPTY;
         this.position = position;
+        this.base = 0;
+    }
+    /**
+     * Create a tile with the specified texture
+     *
+     * @param texture The texture of the tile
+     * @param position The texture of the tile
+     * @param base The index of the base of the object in relation to this one
+     */
+    public EmptyTile(TextureRegion texture, Vector2 position, int base){
+        this.textureRegion = texture;
+        this.type = TileType.EMPTY;
+        this.position = position;
+        this.base =base;
     }
 
     public void createBody(World world) {

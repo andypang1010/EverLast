@@ -15,16 +15,16 @@ public class GameContactListener implements ContactListener {
      */
     @Override
     public void beginContact(Contact contact) {
-        System.out.println("CONTACTED");
+        //System.out.println("CONTACTED");
         Body body1 = contact.getFixtureA().getBody();
         Body body2 = contact.getFixtureB().getBody();
         GameObject obj1 = (GameObject)body1.getUserData();
         GameObject obj2 = (GameObject)body2.getUserData();
 
         // If either object is the avatar, change color
-        if (obj1 != null && obj2 != null) {
-            processCollision(obj1, obj2);
-        }
+//        if (obj1 != null && obj2 != null) {
+//            processCollision(obj1, obj2);
+//        }
     }
 
     /**

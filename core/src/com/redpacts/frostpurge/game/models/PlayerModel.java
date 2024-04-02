@@ -69,7 +69,11 @@ public class PlayerModel extends CharactersModel {
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() /2,
 //                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(0.1f, 0.1f);
+
+        shape.setAsBox(50f, 50f);
+
+        this.shape = shape;
+
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
