@@ -98,7 +98,7 @@ public class GameMode implements Screen {
 
         populateTileGraph();
 
-        playerModel = new PlayerModel(new Vector2(10,10),0, directory);
+        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
 
         //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
