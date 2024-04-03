@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.physics.box2d.*;
 
 import com.redpacts.frostpurge.game.models.*;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.GameContactListener;
 import com.redpacts.frostpurge.game.util.PooledList;
 
@@ -130,8 +131,6 @@ public class CollisionController{
         this.bounds = new Rectangle(bounds);
         this.scale = new Vector2(1,1);
 
-        // TODO: Add iteration for tiles in board
-
         if (player != null) {
             player.createBody(world);
             addObject(player);
@@ -201,7 +200,6 @@ public class CollisionController{
      */
     public void update() {
         // TODO: Implement dt here
-        // TODO: Not hard code check bound...
         pickPowerUp((PlayerModel) player);
         for (EnemyModel e : enemies){
             checkEnemyVision(e, player);
@@ -264,18 +262,16 @@ public class CollisionController{
             else return null;
         }
         // Returning 1 continues the ray cast to the end of its path
-        // Returning 0 would terminate the ray cast here
+        // Returning fraction or 0 would terminate the ray cast here
         @Override
         public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-            System.out.println("CONTACT POINT");
-            System.out.println(point);
             GameObject userData = (GameObject) fixture.getBody().getUserData();
             if (userData instanceof EnemyModel || userData instanceof SwampTile){
                 return 1; // Ray cast continues
             } else if (userData instanceof ObstacleTile) {
                 hitObstacle = true;
                 hitPoint = point.cpy();
-                return fraction;
+                return fraction; // Ray cast ends here
             } else if (userData instanceof PlayerModel) {
                 canSeeTarget = true;
                 hitPoint = point.cpy();
@@ -313,14 +309,9 @@ public class CollisionController{
         Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(400f)); // Calculate end point of the ray
         world.rayCast(callback, rayStart, rayEnd);
 
-        if (callback.getHitPoint() != null) {
-//            System.out.println("HIT POINT");
-//            System.out.println(rayEnd);
-
+        if (callback.getHitPoint() != null) { // Record where the ray cast end/collided with obstacle
             rayEnd = callback.getHitPoint();
             callback.clearHitPoint();
-
-//            System.out.println(rayEnd);
         }
         Vector2 rayPrevious = rayEnd.cpy();
 
@@ -331,13 +322,8 @@ public class CollisionController{
             world.rayCast(callback, rayStart, rayEnd);
 
             if (callback.getHitPoint() != null) {
-//                System.out.println("HIT POINT 2");
-//                System.out.println(rayEnd);
-
                 rayEnd = callback.getHitPoint();
                 callback.clearHitPoint();
-
-//                System.out.println(rayEnd);
             }
             enemy.setTriangle(rayStart, rayPrevious, rayEnd); // Add triangle to draw vision cone.
             rayPrevious = rayEnd.cpy();
@@ -346,11 +332,13 @@ public class CollisionController{
         if (callback.canSeeTarget) {
             // Enemy can see the target
             System.out.println("Target spotted!");
+            enemy.setCurrentState(EnemyStates.CHASE);
         } else if (callback.hitObstacle){
             // Vision blocked or target not in sight
             System.out.println("Obstacle hit.");
         } else{
             System.out.println("Target not spotted :(");
+            enemy.setCurrentState(EnemyStates.PATROL);
         }
     }
 

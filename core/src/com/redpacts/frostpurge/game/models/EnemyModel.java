@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 import com.redpacts.frostpurge.game.controllers.CollisionController;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -15,6 +16,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnemyModel extends CharactersModel{
+
+    /*
+    FSM
+     */
+    EnemyStates initState, currentState, prevState;
+
+    /**
+     * Instantiates the player with their starting location and angle and with their texture
+     * @param position vector2 representing the starting location
+     * @param rotation float representing angle the player is facing
+     */
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory){
+        this.position = position;
+        this.rotation = rotation;
+        this.velocity = new Vector2(0,0);
+        texture = new TextureRegion(directory.getEntry( "Enemy", Texture.class )).getTexture();
+        running = new FilmStrip(texture, 1, 8, 8);
+        running.setFrame(4);
+
+        initState = EnemyStates.PATROL;
+        currentState = EnemyStates.PATROL;
+        prevState = null;
+    }
+    public EnemyStates getInitState() {return initState;}
+    public void setInitState(EnemyStates initState) {this.initState = initState;}
+    public EnemyStates getCurrentState() {return currentState;}
+    public void setCurrentState(EnemyStates currentState) {
+        this.prevState = this.currentState;
+        this.currentState = currentState;
+    }
+    public EnemyStates getPrevState() {return prevState;}
+
 
     /*
     VISION CONE
@@ -35,6 +68,10 @@ public class EnemyModel extends CharactersModel{
         triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
     }
     public List<Vector2Triple> getTriangles() {return triangles;}
+
+    /*
+    PHYSICS
+     */
     @Override
     public void activatePhysics(World world) {
         // Create and configure the enemy's physics body and fixtures
@@ -43,19 +80,6 @@ public class EnemyModel extends CharactersModel{
     @Override
     public void deactivatePhysics(World world) {
         // Destroy the enemy's physics body from the world
-    }
-    /**
-     * Instantiates the player with their starting location and angle and with their texture
-     * @param position vector2 representing the starting location
-     * @param rotation float representing angle the player is facing
-     */
-    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory){
-        this.position = position;
-        this.rotation = rotation;
-        this.velocity = new Vector2(0,0);
-        texture = new TextureRegion(directory.getEntry( "Enemy", Texture.class )).getTexture();
-        running = new FilmStrip(texture, 1, 8, 8);
-        running.setFrame(4);
     }
 
     public void createBody(World world) {

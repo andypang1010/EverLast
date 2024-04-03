@@ -17,8 +17,10 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.redpacts.frostpurge.game.util.EnemyStates;
 
-public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
+
+public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
     private float speedMultiplier = 0.5f;
@@ -27,9 +29,6 @@ public class EnemyController extends CharactersController implements StateMachin
     */
     PlayerModel playerModel;
     TileModel startPatrolTile, endPatrolTile;
-    EnemyStates initState;
-    EnemyStates currentState;
-    EnemyStates prevState = null;
 
     /*
     PATHFINDING
@@ -131,20 +130,13 @@ public class EnemyController extends CharactersController implements StateMachin
     public void update() {
         System.out.println("Target location: " + targetTile.getPosition().toString());
         System.out.println("Current location: " + model.getPosition().toString());
-        switch (currentState) {
+        switch (((EnemyModel) model).getCurrentState()) {
             case PATROL:
-//                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
-                // Naive check for state transitions (If within certain distance, transition to chase state)
-                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 400) {
-                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
-                        setGoal(endPatrolTile);
-                    }
-                    else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
-                        setGoal(startPatrolTile);
-                    }
+                if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
+                    setGoal(endPatrolTile);
                 }
-                else {
-                    changeState(EnemyStates.CHASE);
+                else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
+                    setGoal(startPatrolTile);
                 }
                 break;
             case CHASE:
@@ -177,23 +169,22 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public void changeState(EnemyStates enemyState) {
-        prevState = currentState;
-        currentState = enemyState;
+        ((EnemyModel) model).setCurrentState(enemyState);
     }
 
     public boolean revertToPreviousState() {
-        if (prevState == null) {
+        if (((EnemyModel) model).getPrevState() == null) {
             return false;
         }
 
-        currentState = prevState;
+        ((EnemyModel) model).setCurrentState(((EnemyModel) model).getPrevState());
         return true;
     }
 
     @Override
     public void setInitialState(EnemyStates enemyState) {
-        initState = enemyState;
-        currentState = enemyState;
+        ((EnemyModel) model).setInitState(enemyState);
+        ((EnemyModel) model).setCurrentState(enemyState);
     }
 
     public void setGlobalState(EnemyStates enemyState) {
@@ -202,7 +193,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public EnemyStates getCurrentState() {
-        return currentState;
+        return ((EnemyModel) model).getCurrentState();
     }
 
     public EnemyStates getGlobalState() {
@@ -211,12 +202,12 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public EnemyStates getPreviousState() {
-        return prevState;
+        return ((EnemyModel) model).getPrevState();
     }
 
     @Override
     public boolean isInState(EnemyStates enemyState) {
-        return currentState == enemyState;
+        return getCurrentState() == enemyState;
     }
 
     public boolean handleMessage(Telegram telegram) {

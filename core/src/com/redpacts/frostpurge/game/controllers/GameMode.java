@@ -189,7 +189,7 @@ public class GameMode implements Screen {
 
         inputController.readInput(null,null);
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-        //enemyController.update();
+        enemyController.update();
         collisionController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
