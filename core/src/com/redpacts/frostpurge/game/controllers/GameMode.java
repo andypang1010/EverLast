@@ -63,54 +63,54 @@ public class GameMode implements Screen {
         // Null out all pointers, 0 out all ints, etc.
         gameState = GameState.INTRO;
 
-        directory = new AssetDirectory("assets.json");
-        directory.loadAssets();
-        directory.finishLoading();
-        enemies = new Array<EnemyModel>();
-        // Create the controllers.
-
-        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
-        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
-
-        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-        obstacles.add(43, 50, 57, 383);
-        obstacles.add(390, 397);
-        createHouse(4, 4, obstacles);
-        createHouse(12, 4, obstacles);
-        createHouse(4, 10, obstacles);
-        createHouse(12, 10, obstacles);
-        Array<Integer> swamps = new Array<Integer>();// Swamp locations
-        swamps.add(22, 25, 52, 55);
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
-        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
-
-        inputController = new InputController();
-
-        board = new MapModel(20,20, obstacles, swamps, envObjects, directory);
-
-        populateTileGraph();
-
-        playerModel = new PlayerModel(new Vector2(10,10),0, directory);
-        playerController = new PlayerController(playerModel);
-
-        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
-
-        //enemies.add(enemy);
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        HUDcamera = new OrthographicCamera();
-        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+//        directory = new AssetDirectory("assets.json");
+//        directory.loadAssets();
+//        directory.finishLoading();
+//        enemies = new Array<EnemyModel>();
+//        // Create the controllers.
+//
+//        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
+//        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
+//
+//        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
+//        obstacles.add(43, 50, 57, 383);
+//        obstacles.add(390, 397);
+//        createHouse(4, 4, obstacles);
+//        createHouse(12, 4, obstacles);
+//        createHouse(4, 10, obstacles);
+//        createHouse(12, 10, obstacles);
+//        Array<Integer> swamps = new Array<Integer>();// Swamp locations
+//        swamps.add(22, 25, 52, 55);
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
+//
+//        inputController = new InputController();
+//
+//        board = new MapModel(20,20, obstacles, swamps, envObjects, directory);
+//
+//        populateTileGraph();
+//
+//        playerModel = new PlayerModel(new Vector2(10,10),0, directory);
+//        playerController = new PlayerController(playerModel);
+//
+//        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+//        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+//
+//        //enemies.add(enemy);
+//        camera = new OrthographicCamera();
+//        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        HUDcamera = new OrthographicCamera();
+//        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        // YOU WILL NEED TO MODIFY THIS NEXT LINE
+//        collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
     }
 
     @Override
@@ -227,6 +227,62 @@ public class GameMode implements Screen {
             canvas.drawUI(statusBarTexture,Color.WHITE, 250, 1300, 0, .5f,.5f, HUDcamera);
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, 1300, 0, .5f,.5f, HUDcamera);
         }
+    }
+
+    public void setScreenListener(ScreenListener listener) {
+        this.listener = listener;
+    }
+    public void populate(AssetDirectory directory){
+        this.directory = directory;
+        this.directory.finishLoading();
+        //        directory = new AssetDirectory("assets.json");
+//        directory.loadAssets();
+//        directory.finishLoading();
+        enemies = new Array<EnemyModel>();
+        // Create the controllers.
+
+        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
+        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
+
+        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
+        obstacles.add(43, 50, 57, 383);
+        obstacles.add(390, 397);
+        createHouse(4, 4, obstacles);
+        createHouse(12, 4, obstacles);
+        createHouse(4, 10, obstacles);
+        createHouse(12, 10, obstacles);
+        Array<Integer> swamps = new Array<Integer>();// Swamp locations
+        swamps.add(22, 25, 52, 55);
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
+        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
+
+        inputController = new InputController();
+
+        board = new MapModel(20,20, obstacles, swamps, envObjects, directory);
+
+        populateTileGraph();
+
+        playerModel = new PlayerModel(new Vector2(10,10),0, directory);
+        playerController = new PlayerController(playerModel);
+
+        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+
+        //enemies.add(enemy);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        HUDcamera = new OrthographicCamera();
+        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // YOU WILL NEED TO MODIFY THIS NEXT LINE
+        collisionController = new CollisionController(board, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
     }
 
     public enum GameState {

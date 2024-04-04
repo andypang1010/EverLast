@@ -17,6 +17,9 @@
 
   },
   "fonts": {
-
+    "font": {
+      "file": "ui/gamefont.ttf",
+      "size": 64
+    }
   }
 }
