@@ -1,8 +1,10 @@
 package com.redpacts.frostpurge.game.models;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -184,6 +186,12 @@ public class LevelModel {
 
     public void drawTile(TileModel object, GameCanvas canvas){
         canvas.draw(object.getTextureRegion(), object.getPosition().x, object.getPosition().y);
+    }
+
+    public void drawDebug(TileModel object, GameCanvas canvas) {
+        if (object.shape != null) {
+            canvas.drawPhysics(object.shape, Color.BLUE, object.getPosition().x, object.getPosition().y, 0, 1, 1);
+        }
     }
 
     public boolean isSwampTile(float x, float y){
