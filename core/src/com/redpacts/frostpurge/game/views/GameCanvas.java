@@ -643,6 +643,33 @@ public class GameCanvas {
     }
 
     /**
+     * Draws the tinted texture at the given position.
+     *
+     * The texture colors will be multiplied by the given color.  This will turn
+     * any white into the given color.  Other colors will be similarly affected.
+     *
+     * Unless otherwise transformed by the global transform (@see begin(Affine2)),
+     * the texture will be unscaled.  The bottom left of the texture will be positioned
+     * at the given coordinates.
+     *region
+     * @param image The texture to draw
+     * @param tint  The color tint
+     * @param x 	The x-coordinate of the bottom left corner
+     * @param y 	The y-coordinate of the bottom left corner
+     * @param width	The texture width
+     * @param height The texture height
+     */
+    public void draw(TextureRegion region, Color tint, float x, float y, float width, float height) {
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+            return;
+        }
+
+        // Unlike Lab 1, we can shortcut without a master drawing method
+        spriteBatch.setColor(tint);
+        spriteBatch.draw(region, x,  y, width, height);
+    }
+    /**
      * Enumeration of supported BlendStates.
      *
      * For reasons of convenience, we do not allow user-defined blend functions.

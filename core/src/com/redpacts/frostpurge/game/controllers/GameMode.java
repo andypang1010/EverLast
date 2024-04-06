@@ -67,75 +67,7 @@ public class GameMode implements Screen {
         this.canvas = canvas;
         active = false;
         // Null out all pointers, 0 out all ints, etc.
-        gameState = GameState.INTRO;
 
-        directory = new AssetDirectory("assets.json");
-        directory.loadAssets();
-        directory.finishLoading();
-
-        int tilewidth = 64;
-        int tileheight = 64;
-        JsonValue leveljson = directory.getEntry("playgroundlevel", JsonValue.class);
-        JsonValue tilesetjson = directory.getEntry("tileset", JsonValue.class);
-        TextureRegion tilesetregion = new TextureRegion(directory.getEntry("tileset",Texture.class));
-        TextureRegion[][] tileset = tilesetregion.split(tilewidth, tileheight);
-        TextureRegion white = new TextureRegion(directory.getEntry("baselayer",Texture.class));
-        TextureRegion[][] whitetile = white.split(tilewidth, tileheight);
-        LevelController levelController = new LevelController();
-
-        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
-        enemies = level1.getEnemies();
-        System.out.println(enemies);
-        baseLayer = level1.getBaseLayer();
-        extraLayer = level1.getExtraLayer();
-        playerModel = level1.getPlayer();
-
-        // Create the controllers.
-
-        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
-        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
-
-//        Array<Integer> obstacles = new Array<Integer>();// Obstacle locations
-//        obstacles.add(43, 50, 57, 383);
-//        obstacles.add(390, 397);
-//        Array<Integer> swamps = new Array<Integer>();// Swamp locations
-//        swamps.add(22, 25, 52, 55);
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 3));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 10));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 1, 17));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 3));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 10));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.PLANT, 18, 17));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 4));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 4));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 4, 10));
-//        envObjects.add(new EnvironmentalObject(EnvironmentalObject.ObjectType.HOUSE, 12, 10));
-
-        inputController = new InputController();
-
-        currentLevel = level1;
-
-        populateTileGraph();
-
-//        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
-        playerController = new PlayerController(playerModel);
-        System.out.println(playerModel.getPosition());
-
-        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
-        enemyControllers = new Array<>();
-        for (int i = 0; i < enemies.size; i++){
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel));
-        }
-//        enemies.add(enemy);
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        HUDcamera = new OrthographicCamera();
-        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        collisionController = new CollisionController(level1, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
-
-        //Testing
     }
 
     /**
@@ -318,6 +250,64 @@ public class GameMode implements Screen {
             canvas.drawUI(statusBarTexture,Color.WHITE, 250, 1300, 0, .5f,.5f, HUDcamera);
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, 1300, 0, .5f,.5f, HUDcamera);
         }
+    }
+
+    public void setScreenListener(ScreenListener listener) {
+        this.listener = listener;
+    }
+
+    public void populate(AssetDirectory directory){
+        directory.finishLoading();
+        this.directory = directory;
+        gameState = GameState.INTRO;
+
+        int tilewidth = 64;
+        int tileheight = 64;
+        JsonValue leveljson = directory.getEntry("playgroundlevel", JsonValue.class);
+        JsonValue tilesetjson = directory.getEntry("tileset", JsonValue.class);
+        TextureRegion tilesetregion = new TextureRegion(directory.getEntry("tileset",Texture.class));
+        TextureRegion[][] tileset = tilesetregion.split(tilewidth, tileheight);
+        TextureRegion white = new TextureRegion(directory.getEntry("baselayer",Texture.class));
+        TextureRegion[][] whitetile = white.split(tilewidth, tileheight);
+        LevelController levelController = new LevelController();
+
+        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
+        enemies = level1.getEnemies();
+//        System.out.println(enemies);
+        baseLayer = level1.getBaseLayer();
+        extraLayer = level1.getExtraLayer();
+        playerModel = level1.getPlayer();
+
+        // Create the controllers.
+
+        statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
+        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
+
+        inputController = new InputController();
+
+        currentLevel = level1;
+
+        populateTileGraph();
+
+//        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
+        playerController = new PlayerController(playerModel);
+        System.out.println(playerModel.getPosition());
+
+        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
+        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+        enemyControllers = new Array<>();
+        for (int i = 0; i < enemies.size; i++){
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel));
+        }
+//        enemies.add(enemy);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        HUDcamera = new OrthographicCamera();
+        HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // YOU WILL NEED TO MODIFY THIS NEXT LINE
+        collisionController = new CollisionController(level1, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+
+        //Testing
     }
 
     public enum GameState {

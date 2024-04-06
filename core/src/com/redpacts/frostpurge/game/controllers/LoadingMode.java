@@ -413,7 +413,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	public void setScreenListener(ScreenListener listener) {
 		this.listener = listener;
 	}
-	
+	public void populate(AssetDirectory directory){
+
+	}
 	// PROCESSING PLAYER INPUT
 	/** 
 	 * Called when the screen was touched or a mouse button was pressed.
