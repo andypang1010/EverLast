@@ -15,7 +15,7 @@ public class GameContactListener implements ContactListener {
      */
     @Override
     public void beginContact(Contact contact) {
-        System.out.println("CONTACTED");
+        //System.out.println("CONTACTED");
         Body body1 = contact.getFixtureA().getBody();
         Body body2 = contact.getFixtureB().getBody();
         GameObject obj1 = (GameObject)body1.getUserData();
@@ -95,6 +95,7 @@ public class GameContactListener implements ContactListener {
         // TODO: Update so that we dampen the velocity of player
         System.out.println("Contact with obstacle");
         System.out.println();
+
 //        float vx1 = player.getVelocity().x;
 //        float vy1 = player.getVelocity().y;
 //

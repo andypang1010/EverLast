@@ -6,6 +6,12 @@ import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerController extends CharactersController {
+
+    static final float MAX_OFFSET = 500f;
+    static final float OFFSET_MULTIPLIER = 5f;
+
+
+
     PlayerController(PlayerModel player){
         model = player;
         flip = false;
@@ -48,26 +54,25 @@ public class PlayerController extends CharactersController {
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
         setAngle(horizontal,vertical);
         if (!decelerate){
-            accelerate(horizontal,vertical);
+            model.getBody().applyForceToCenter(horizontal, -vertical, true);
         }else{
-            stop();
+            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
         if (boost && ((PlayerModel) model).getCanBoost()){
-            model.getVelocity().scl(1.5f);
+            model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).setCanBoost(false);
-        }
-        if (vacuum){
-            //Check if there is goop then vacuum
         }
         if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
         }
-        friction();
-        Vector2 newLocation = model.getPosition().add(model.getVelocity());
-        //System.out.println(model.getVelocity());
-        model.getBody().setLinearVelocity(model.getVelocity());
+        model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.99f));//friction
         model.setPosition(model.getBody().getPosition().scl(10));
     }
+
+    public float cameraOffset(float speed) {
+        return Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, speed * OFFSET_MULTIPLIER));
+    }
+
     public void draw(GameCanvas canvas, float horizontal, float vertical){
 
         if (horizontal<0){
@@ -79,7 +84,6 @@ public class PlayerController extends CharactersController {
             processRun();
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
             ((PlayerModel) model).drawFire(canvas, flip);
-            //((PlayerModel) model).drawBody(canvas);
         }else{
             model.resetFilmStrip(model.getFilmStrip());
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
