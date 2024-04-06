@@ -199,6 +199,7 @@ public class GameMode implements Screen {
 
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         //enemyController.update();
+        System.out.println(playerModel.getPosition());
         collisionController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
@@ -277,6 +278,7 @@ public class GameMode implements Screen {
         baseLayer = level1.getBaseLayer();
         extraLayer = level1.getExtraLayer();
         playerModel = level1.getPlayer();
+
 
         // Create the controllers.
 
