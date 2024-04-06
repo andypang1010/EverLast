@@ -39,7 +39,7 @@ public class LevelModel {
     }
 
     /**
-     * Used to populate the array for the base layer by creating an empty tile in the appropriate index
+     * Used to populate the array for the base layer by creating a emptytile in the appropriate index
      * @param i row that the tile is on
      * @param j column that the tile is in
      * @param texture the texture for the empty tile
@@ -189,9 +189,11 @@ public class LevelModel {
     }
 
     public void drawDebug(TileModel object, GameCanvas canvas) {
-//        System.out.println("Shape: " + object.shape.getVertexCount());
-        if (object.shape != null) {
-            canvas.drawPhysics(object.shape, Color.BLUE, object.getPosition().x, object.getPosition().y, 0, 1, 1);
+        if (object != null && object.shape != null) {
+            System.out.println(object.shape.getVertexCount());
+            System.out.println(object.getPosition());
+            System.out.println("\n");
+            canvas.drawPhysics(object.shape, Color.BLACK, object.getPosition().x, object.getPosition().y, 0, 1, 1);
         }
     }
 

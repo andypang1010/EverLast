@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -22,7 +23,9 @@ public class GDXRoot extends Game implements ScreenListener {
 //	private LoadingMode loading;
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
 	private GameMode playing;
-
+	private LoadingMode loading;
+	private AssetDirectory directory;
+	private String mode;
 	/**
 	 * Creates a new game from the configuration settings.
 	 *
@@ -39,20 +42,26 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void create() {
 		canvas  = new GameCanvas();
-//		loading = new LoadingMode("assets.json",canvas,1);
+		loading = new LoadingMode("assets.json", canvas);
 		playing = new GameMode(canvas);
 
-//		loading.setScreenListener(this);
-//		setScreen(loading);
-		setScreen(playing);
+		mode = "loading";
+		loading.setScreenListener(this);
+		setScreen(loading);
+//		setScreen(playing);
 	}
 
 	@Override
 	public void render(){
 
 		// Update the game state
-		playing.update(60);
-
+		switch (mode){
+			case "loading":
+				loading.render(60);
+				break;
+			case "playing":
+				playing.update(60);
+		}
 		// Draw the game
 
 	}
@@ -105,14 +114,15 @@ public class GDXRoot extends Game implements ScreenListener {
 		if (exitCode != 0) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
-//		} else if (screen == loading) {
-//			playing.setScreenListener(this);
-//			directory = loading.getAssets();
-//			playing.populate(directory);
-//			setScreen(playing);
-//
-//			loading.dispose();
-//			loading = null;
+		} else if (screen == loading) {
+			playing.setScreenListener(this);
+			directory = loading.getAssets();
+			playing.populate(directory);
+			setScreen(playing);
+			mode = "playing";
+
+			loading.dispose();
+			loading = null;
 		} else {
 			// We quit the main application
 			Gdx.app.exit();

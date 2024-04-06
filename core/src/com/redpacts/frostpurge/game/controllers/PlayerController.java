@@ -52,26 +52,8 @@ public class PlayerController extends CharactersController {
      * Right now the input controller isn't done yet, so I am using booleans for buttons presses.
      */
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
-//        if (!decelerate){
-//            accelerate(horizontal,vertical);
-//        }else{
-//            stop();
-//        }
-//        if (boost && ((PlayerModel) model).getCanBoost()){
-//            model.getVelocity().scl(1.5f);
-//            ((PlayerModel) model).setCanBoost(false);
-//        }
-//        if (vacuum){
-//            //Check if there is goop then vacuum
-//        }
-//        if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
-//            model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
-//        }
-//        friction();
-//        Vector2 newLocation = model.getPosition().add(model.getVelocity());
-        //System.out.println(model.getVelocity());
         setAngle(horizontal,vertical);
-        if(!decelerate) {
+        if (!decelerate){
             model.getBody().applyForceToCenter(horizontal, -vertical, true);
         }else{
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
@@ -102,7 +84,6 @@ public class PlayerController extends CharactersController {
             processRun();
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
             ((PlayerModel) model).drawFire(canvas, flip);
-            //((PlayerModel) model).drawBody(canvas);
         }else{
             model.resetFilmStrip(model.getFilmStrip());
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);

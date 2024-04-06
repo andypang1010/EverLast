@@ -69,8 +69,7 @@ public class PlayerModel extends CharactersModel {
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() /2,
 //                (float) this.getTexture().getHeight() / 2);
-
-        shape.setAsBox(50f, 50f);
+        shape.setAsBox(0.1f, 0.1f);
 
         this.shape = shape;
 
@@ -103,10 +102,6 @@ public class PlayerModel extends CharactersModel {
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),.5f,.5f,false);
         }
 
-    }
-
-    public void drawBody(GameCanvas canvas){
-        canvas.draw(fire, Color.GREEN, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, body.getPosition().x , body.getPosition().y, 0,.5f,.5f,false);
     }
 }
 
