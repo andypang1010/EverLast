@@ -79,7 +79,7 @@ public class ObstacleTile extends TileModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.StaticBody;
         // Set the position of the obstacle
-        bodyDef.position.set(this.getPosition().cpy().add(128f / 2, 128f / 2));
+        bodyDef.position.set(this.getPosition().cpy().add(128f / 2, 128f / 2).scl(0.1f));
 
         Body body = world.createBody(bodyDef);
         body.setUserData(this);
@@ -89,7 +89,7 @@ public class ObstacleTile extends TileModel{
         PolygonShape shape = new PolygonShape();
 //        shape.setAsBox((float) this.getTexture().getWidth() / (2 * scale),
 //                (float) this.getTexture().getHeight() / (2 * scale));
-        shape.setAsBox(128f / 2, 128f / 2);
+        shape.setAsBox(12.8f / 2, 12.8f / 2);
 //        System.out.println("Obstacle");
 //        System.out.println(this.getPosition());
 //        System.out.println(this.getTexture().getWidth());

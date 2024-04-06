@@ -10,10 +10,10 @@ public abstract class CharactersController {
     private Float time;
     protected boolean flip;
 
-    public void accelerate(float x, float y) {
+    public void accelerate(float x, float y, float scale) {
         Vector2 vel = model.getVelocity();
-        vel.x += .5f * x;
-        vel.y -= .5f * y;
+        vel.x += .5f * scale * x;
+        vel.y -= .5f * scale * y;
         model.setVelocity(vel.x, vel.y);
     }
 

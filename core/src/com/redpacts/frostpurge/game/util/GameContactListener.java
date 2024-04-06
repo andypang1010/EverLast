@@ -93,10 +93,13 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(PlayerModel player, ObstacleTile tile) {
         // TODO: Update so that we dampen the velocity of player
-        float vx1 = player.getVelocity().x;
-        float vy1 = player.getVelocity().y;
+        System.out.println("Contact with obstacle");
+        System.out.println();
 
-        player.setVelocity(-vx1, -vy1);
+//        float vx1 = player.getVelocity().x;
+//        float vy1 = player.getVelocity().y;
+//
+//        player.setVelocity(-vx1, -vy1);
     }
 
     /**

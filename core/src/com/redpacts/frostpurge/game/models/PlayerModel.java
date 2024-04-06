@@ -62,20 +62,23 @@ public class PlayerModel extends CharactersModel {
         body = world.createBody(bodyDef);
         body.setUserData(this);
         body.setSleepingAllowed(false);
+        body.setFixedRotation(true);
+        body.setLinearDamping(0);
 
         PolygonShape shape = new PolygonShape();
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() /2,
 //                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(50f, 50f);
+        shape.setAsBox(0.1f, 0.1f);
 
         this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
+        fixtureDef.density = 0.67f;
         fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.25f;
 
         // Setting category and mask bits for the player
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;
@@ -86,6 +89,10 @@ public class PlayerModel extends CharactersModel {
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
+    }
+
+    public void movePlayer(Vector2 strength){
+        body.applyForceToCenter(strength, true);
     }
 
     public void drawFire(GameCanvas canvas, boolean flip){

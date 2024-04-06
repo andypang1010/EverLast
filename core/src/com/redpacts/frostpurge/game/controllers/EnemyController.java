@@ -151,7 +151,7 @@ public class EnemyController extends CharactersController implements StateMachin
     private void moveToNextTile() {
         Vector2 vel = moveDirection;
         vel.scl(speedMultiplier);
-        accelerate(vel.x, -vel.y);
+        accelerate(vel.x, -vel.y, 1);
 
         Vector2 newLocation = model.getPosition().add(model.getVelocity());
         model.setPosition(newLocation.x, newLocation.y);
