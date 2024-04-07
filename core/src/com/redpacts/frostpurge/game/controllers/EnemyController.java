@@ -120,10 +120,10 @@ public class EnemyController extends CharactersController implements StateMachin
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
                 // Naive check for state transitions (If within certain distance, transition to chase state)
                 if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 400) {
-                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
+                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
                         setGoal(endPatrolTile);
                     }
-                    else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
+                    else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
                         setGoal(startPatrolTile);
                     }
                 }
