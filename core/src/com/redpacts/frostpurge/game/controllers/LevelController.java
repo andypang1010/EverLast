@@ -139,7 +139,7 @@ public class LevelController {
             type = properties.getString("value");
             switch (type){
                 case "player":
-                    level.createPlayer(x/10,(height*64-y)/10,rotation,directory);
+                    level.createPlayer(x,(height*64-y),rotation,directory);
                     break;
                 default:
                     properties = properties.next();
