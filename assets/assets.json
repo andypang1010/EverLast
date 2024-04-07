@@ -31,6 +31,6 @@
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/PlaygroundTilesetCorrect.json",
-    "playgroundlevel": "levels/Playgroundmap.json"
+    "playgroundlevel": "levels/level1.json"
   }
 }

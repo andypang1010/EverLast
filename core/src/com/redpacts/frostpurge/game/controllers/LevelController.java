@@ -58,7 +58,7 @@ public class LevelController {
         for (int i = 0; i<data.length;i++){
             int index = data[i];
             if (index!=0){
-                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                index-=1401; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
                 level.populateBase(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
@@ -81,12 +81,13 @@ public class LevelController {
         for (int i = 0; i<data.length;i++){
             JsonValue properties = tileProperties.get("tiles").child();
             int index = data[i];
+            System.out.println(index);
             if (index == 0){
                 done = true;
                 type = "none";
             }else{
                 done = false;
-                index-=1401; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
             }
             while(!done){
                 if (properties.getInt("id") == index){
