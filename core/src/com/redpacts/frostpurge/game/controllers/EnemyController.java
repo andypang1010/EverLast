@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 0.01f;
+    private float speedMultiplier = 0.8f;
     /*
     FSM
     */
@@ -150,9 +150,9 @@ public class EnemyController extends CharactersController implements StateMachin
             stop();
         }
         else {
-//        moveToNextTile();
+        moveToNextTile();
         }
-//        checkCollision();
+        checkCollision();
     }
 
     private void moveToNextTile() {

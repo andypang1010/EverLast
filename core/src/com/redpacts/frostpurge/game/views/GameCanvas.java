@@ -615,7 +615,7 @@ public class GameCanvas {
         }
         int BLANK_SIZE = 1;
         Pixmap map = new Pixmap(BLANK_SIZE,BLANK_SIZE,Pixmap.Format.RGBA4444);
-        map.setColor(Color.WHITE);
+        map.setColor(Color.RED);
         map.fillRectangle(0, 0, BLANK_SIZE, BLANK_SIZE);
         Texture blank = new Texture(map);
         region.setTexture(blank);
@@ -626,6 +626,7 @@ public class GameCanvas {
         if (orig != null) {
             region.setRegion(rx,ry,rw,rh);
         }
+        map.dispose();
     }
     /**
      * Start the debug drawing sequence.
