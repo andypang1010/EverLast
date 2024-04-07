@@ -3,12 +3,14 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.models.CharactersModel;
+import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.FilmStrip;
 
 public abstract class CharactersController {
     protected CharactersModel model;
     private Float time;
     protected boolean flip;
+    protected String previousDirection = "right";
 
     public void accelerate(float x, float y, float scale) {
         Vector2 vel = model.getVelocity();
@@ -58,20 +60,20 @@ public abstract class CharactersController {
      * a hard bank.  This method also updates the field dang cumulatively.
      *
      */
-    protected void processRun() {
+    protected void processRun(String type) {
         if (time == null){
             time = 0f;
         }
         else{
             time += Gdx.graphics.getDeltaTime();
         }
-        FilmStrip running = model.getFilmStrip();
+        FilmStrip running = model.getFilmStrip(type);
         int frame = (running == null ? 11 : running.getFrame());
         if (running != null) {
-            if (time >= .08){
+            if (time >= .125){
                 frame++;
                 time = 0f;
-                if (frame >= model.getFilmStrip().getSize())
+                if (frame >= model.getFilmStrip(type).getSize())
                     frame = 0;
                 running.setFrame(frame);
             }
@@ -79,5 +81,30 @@ public abstract class CharactersController {
     }
     public CharactersModel getModel() {
         return model;
+    }
+
+    /**
+     * helper to find which animation to draw
+     * @param x
+     * @param y
+     * @return the direction that the animtion should face
+     */
+    public String getDirection(float x, float y, String previous) {
+        float angle = (float) Math.toDegrees(Math.atan2(x,y));
+//        if (model instanceof PlayerModel){
+//            System.out.println(angle);
+//        }
+        if (x==0 && y==0 && model instanceof PlayerModel){
+            return previous;
+        }
+        if (angle >= 45 && angle <= 135){
+            return "right";
+        } else if (angle>=135 || angle<=-135) {
+            return "up";
+        } else if (angle >= -135 && angle <=-45) {
+            return "left";
+        }else{
+            return "down";
+        }
     }
 }

@@ -11,7 +11,6 @@ public class PlayerController extends CharactersController {
     static final float OFFSET_MULTIPLIER = 5f;
 
 
-
     PlayerController(PlayerModel player){
         model = player;
         flip = false;
@@ -75,22 +74,17 @@ public class PlayerController extends CharactersController {
 
     public void draw(GameCanvas canvas, float horizontal, float vertical){
 
-        if (horizontal<0){
-            flip = true;
-        }else if (horizontal >0){
-            flip = false;
-        }
-        if (Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x) > 0 || Math.abs(horizontal) + Math.abs(vertical)>0) {
-            processRun();
-            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
+        String direction = getDirection(horizontal,vertical,previousDirection);
+        if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
+            processRun(direction);
+            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
             ((PlayerModel) model).drawFire(canvas, flip);
         }else{
-            model.resetFilmStrip(model.getFilmStrip());
-            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", flip);
+            //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
+            model.resetFilmStrip(model.getFilmStrip(direction));
+            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
         }
-
-
-
+        previousDirection = direction;
 
     }
 }
