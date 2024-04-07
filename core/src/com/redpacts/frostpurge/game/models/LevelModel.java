@@ -190,9 +190,9 @@ public class LevelModel {
 
     public void drawDebug(TileModel object, GameCanvas canvas) {
         if (object != null && object.shape != null) {
-            System.out.println(object.shape.getVertexCount());
-            System.out.println(object.getPosition());
-            System.out.println("\n");
+//            System.out.println(object.shape.getVertexCount());
+//            System.out.println(object.getPosition());
+//            System.out.println("\n");
             canvas.drawPhysics(object.shape, Color.BLACK, object.getPosition().x, object.getPosition().y, 0, 1, 1);
         }
     }

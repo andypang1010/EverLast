@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -225,10 +226,10 @@ public class GameMode implements Screen {
                 currentLevel.drawTile((TileModel) object, canvas);
             }
         }
-
         canvas.end();
 
         if (debug) {
+            System.out.println(delta);
             canvas.beginDebug();
             for (int ii = 0; ii < currentLevel.getHeight(); ii++){
                 for (int jj = 0; jj < currentLevel.getWidth(); jj++){
@@ -240,7 +241,6 @@ public class GameMode implements Screen {
                 enemy.drawDebug(canvas);
             }
             playerModel.drawDebug(canvas);
-
             canvas.endDebug();
         }
 

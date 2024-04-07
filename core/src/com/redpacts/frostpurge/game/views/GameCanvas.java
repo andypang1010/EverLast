@@ -617,8 +617,8 @@ public class GameCanvas {
             return;
         }
 
-        local.setToScaling(sx,sy);
-        local.translate(x,y);
+        local.setToScaling(sx * 10,sy * 10);
+        local.translate(x / 10,y / 10);
         local.rotateRad(angle);
 
         float x0, y0, x1, y1;
