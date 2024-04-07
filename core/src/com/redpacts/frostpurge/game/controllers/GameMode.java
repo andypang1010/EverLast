@@ -199,7 +199,6 @@ public class GameMode implements Screen {
 
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         //enemyController.update();
-        System.out.println(playerModel.getPosition());
         collisionController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
@@ -293,7 +292,6 @@ public class GameMode implements Screen {
 
 //        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
-        System.out.println(playerModel.getPosition());
 
         //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
         //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);

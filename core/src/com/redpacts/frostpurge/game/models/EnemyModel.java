@@ -41,9 +41,23 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
-        texture = new TextureRegion(directory.getEntry( "Enemy", Texture.class )).getTexture();
-        running = new FilmStrip(texture, 1, 8, 8);
-        running.setFrame(4);
+        //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
+
+        Texture duck = new TextureRegion(directory.getEntry("EnemyLR", Texture.class)).getTexture();
+        idle = new FilmStrip(duck, 1, 8, 8);
+        idle.setFrame(3);
+
+        run_right = new FilmStrip(duck, 1, 8, 8);
+        run_right.setFrame(4);
+        TextureRegion left = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class ));
+        left.flip(false,true);
+        run_left = new FilmStrip(left.getTexture(),1,8,8);
+        run_left.setFrame(4);
+        Texture up= new TextureRegion(directory.getEntry( "EnemyUp", Texture.class )).getTexture();
+        run_up = new FilmStrip(up, 1, 8, 8);
+        Texture down = new TextureRegion(directory.getEntry( "EnemyDown", Texture.class )).getTexture();
+        run_down = new FilmStrip(down, 1, 8, 8);
+
         this.startpatrol = startpatrol;
         this.endpatrol = endpatrol;
     }
