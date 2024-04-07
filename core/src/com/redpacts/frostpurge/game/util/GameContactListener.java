@@ -3,7 +3,17 @@ package com.redpacts.frostpurge.game.util;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.models.*;
 
+import java.util.logging.Level;
+
 public class GameContactListener implements ContactListener {
+    private World world;
+    private LevelModel board;
+
+    public GameContactListener(World world, LevelModel board){
+        this.world = world;
+        this.board = board;
+    }
+
     /**
      * Callback method for the start of a collision
      *
@@ -15,7 +25,7 @@ public class GameContactListener implements ContactListener {
      */
     @Override
     public void beginContact(Contact contact) {
-        System.out.println("CONTACTED");
+        //System.out.println("CONTACTED");
         Body body1 = contact.getFixtureA().getBody();
         Body body2 = contact.getFixtureB().getBody();
         GameObject obj1 = (GameObject)body1.getUserData();
@@ -51,6 +61,8 @@ public class GameContactListener implements ContactListener {
             handleCollision((PlayerModel) obj1, (EnemyModel) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof ObstacleTile) {
             handleCollision((PlayerModel) obj1, (ObstacleTile) obj2);
+        } else if (obj1 instanceof PlayerModel && obj2 instanceof SwampTile) {
+            handleCollision((PlayerModel) obj1, (SwampTile) obj2);
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
@@ -76,13 +88,13 @@ public class GameContactListener implements ContactListener {
      * @param enemy  The enemy
      */
     private void handleCollision(PlayerModel player, EnemyModel enemy) {
-        float vx1 = player.getVelocity().x;
-        float vy1 = player.getVelocity().y;
-        float vx2 = enemy.getVelocity().x;
-        float vy2 = enemy.getVelocity().y;
-
-        player.setVelocity(-vx1, -vy1);
-        enemy.setVelocity(-vx2, -vy2);
+//        float vx1 = player.getVelocity().x;
+//        float vy1 = player.getVelocity().y;
+//        float vx2 = enemy.getVelocity().x;
+//        float vy2 = enemy.getVelocity().y;
+//
+//        player.setVelocity(-vx1, -vy1);
+//        enemy.setVelocity(-vx2, -vy2);
     }
 
     /**
@@ -93,10 +105,29 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(PlayerModel player, ObstacleTile tile) {
         // TODO: Update so that we dampen the velocity of player
-        float vx1 = player.getVelocity().x;
-        float vy1 = player.getVelocity().y;
+//        System.out.println("Contact with obstacle");
+//        System.out.println();
 
-        player.setVelocity(-vx1, -vy1);
+//        float vx1 = player.getVelocity().x;
+//        float vy1 = player.getVelocity().y;
+//
+//        player.setVelocity(-vx1, -vy1);
+    }
+
+    /**
+     * Handles collisions between a player and an enemy
+     *
+     * @param player The player
+     * @param tile   The tile
+     */
+    private void handleCollision(PlayerModel player, SwampTile tile) {
+        // TODO: Update so that we dampen the velocity of player
+//        System.out.println("Contact with swamp");
+//        System.out.println("player position:" + player.getPosition());
+//        System.out.println("tile position:" + tile.getPosition());
+//        world.destroyBody(tile.getBody());
+//        board.removeExtra(tile.getPosition().x, tile.getPosition().y);
+//        player.setCanBoost(true);
     }
 
     /**
@@ -107,13 +138,13 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(EnemyModel enemy, EnemyModel enemy2) {
         // TODO: Update so that we handle bounce correctly
-        float vx1 = enemy.getVelocity().x;
-        float vy1 = enemy.getVelocity().y;
-        float vx2 = enemy2.getVelocity().x;
-        float vy2 = enemy2.getVelocity().y;
-
-        enemy.setVelocity(-vx1, -vy1);
-        enemy2.setVelocity(-vx2, -vy2);
+//        float vx1 = enemy.getVelocity().x;
+//        float vy1 = enemy.getVelocity().y;
+//        float vx2 = enemy2.getVelocity().x;
+//        float vy2 = enemy2.getVelocity().y;
+//
+//        enemy.setVelocity(-vx1, -vy1);
+//        enemy2.setVelocity(-vx2, -vy2);
     }
 
     /**
@@ -124,9 +155,9 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(EnemyModel enemy, ObstacleTile tile) {
         // TODO: Update so that we dampen the velocity of enemy
-        float vx1 = enemy.getVelocity().x;
-        float vy1 = enemy.getVelocity().y;
-
-        enemy.setVelocity(-vx1, -vy1);
+//        float vx1 = enemy.getVelocity().x;
+//        float vy1 = enemy.getVelocity().y;
+//
+//        enemy.setVelocity(-vx1, -vy1);
     }
 }

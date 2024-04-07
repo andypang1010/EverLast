@@ -8,15 +8,25 @@
     "StatusBar_BG": "ui/StatusBar_staticBackground.png",
     "StatusBar_Bar": "ui/StatusBar_dynamicBar.png",
     "Enemy": "enemies/enemyLRfilmstripEDIT1.png",
-    "Fire" : "characters/fire.png"
-  },
-  "animations"  : {
-
+    "Fire" : "characters/fire.png",
+    "baselayer": "Tilesets/PlaygroundTileset.png",
+    "extralayer": "Tilesets/Testhouse.png",
+    "tileset": "Tilesets/PlaygroundTilesetCorrect.png"
   },
   "sounds" : {
 
   },
   "fonts": {
-
+    "font": {
+      "file": "ui/gamefont.ttf",
+      "size": 64
+    }
+  },
+  "jsons": {
+    "level1": "levels/level1.json",
+    "baselayer": "Tilesets/PlaygroundTileset.json",
+    "extralayer": "Tilesets/TestHouse.json",
+    "tileset": "Tilesets/PlaygroundTilesetCorrect.json",
+    "playgroundlevel": "levels/Playgroundmap.json"
   }
 }
