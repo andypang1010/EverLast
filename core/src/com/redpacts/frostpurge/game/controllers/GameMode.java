@@ -61,12 +61,15 @@ public class GameMode implements Screen {
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
-
+    private BitmapFont font;
+    private float currentTime;
+    private float levelTime = 60f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         active = false;
+
         // Null out all pointers, 0 out all ints, etc.
 
     }
@@ -193,84 +196,100 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
-        Array<GameObject> drawble = new Array<GameObject>();
-        for (int i = 0; i<currentLevel.getHeight();i++){
-            for (int j = 0; j<currentLevel.getWidth();j++){
-                if (currentLevel.getAccentLayer()[i][j]!=null){
-                    drawble.add(currentLevel.getAccentLayer()[i][j]);
-                }
-                if (currentLevel.getExtraLayer()[i][j]!=null){
-                    drawble.add(currentLevel.getExtraLayer()[i][j]);
+        currentTime -= Gdx.graphics.getDeltaTime();
+
+        if (currentTime <= 55) {
+            gameState = GameState.OVER;
+        }
+
+        else {
+            Array<GameObject> drawble = new Array<GameObject>();
+            for (int i = 0; i<currentLevel.getHeight();i++){
+                for (int j = 0; j<currentLevel.getWidth();j++){
+                    if (currentLevel.getAccentLayer()[i][j]!=null){
+                        drawble.add(currentLevel.getAccentLayer()[i][j]);
+                    }
+                    if (currentLevel.getExtraLayer()[i][j]!=null){
+                        drawble.add(currentLevel.getExtraLayer()[i][j]);
+                    }
                 }
             }
-        }
 
-        drawble.add(playerModel);
-        drawble.addAll(enemies);
-        sort_by_y(drawble);
-        drawble.reverse();
+            drawble.add(playerModel);
+            drawble.addAll(enemies);
+            sort_by_y(drawble);
+            drawble.reverse();
 
-        inputController.readInput(null,null);
+            inputController.readInput(null,null);
 
-        // Toggle debug mode
-        if (inputController.didDebug()) {
-            debug = !debug;
-        }
+            // Toggle debug mode
+            if (inputController.didDebug()) {
+                debug = !debug;
+            }
 
-        playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-        for (EnemyController enemyController : enemyControllers) {
-            enemyController.update();
-        }
-        collisionController.update();
+            playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
+            for (EnemyController enemyController : enemyControllers) {
+                enemyController.update();
+            }
+            collisionController.update();
 
-        Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        canvas.begin();
+            Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            canvas.begin();
+
 //        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
-        canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
+            canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
-        for (int i = 0; i<currentLevel.getHeight();i++){
-            for (int j = 0; j<currentLevel.getWidth();j++){
-                currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
+            for (int i = 0; i<currentLevel.getHeight();i++){
+                for (int j = 0; j<currentLevel.getWidth();j++){
+                    currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
+                }
             }
-        }
-        int i = 0;
-        for(GameObject object: drawble){
-            if(object instanceof PlayerModel){
-                playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
-            }else if(object instanceof EnemyModel){
-                enemyControllers.get(i).draw(canvas,(EnemyModel) object);
-                i++;
-            }else if (object instanceof TileModel){
-                currentLevel.drawTile((TileModel) object, canvas);
-            }
-        }
-        canvas.end();
-
-        if (debug) {
-            System.out.println(delta);
-            canvas.beginDebug();
-            for (int ii = 0; ii < currentLevel.getHeight(); ii++){
-                for (int jj = 0; jj < currentLevel.getWidth(); jj++){
-                    currentLevel.drawDebug(currentLevel.getExtraLayer()[ii][jj], canvas);
+            int i = 0;
+            for(GameObject object: drawble){
+                if(object instanceof PlayerModel){
+                    playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
+                }else if(object instanceof EnemyModel){
+                    enemyControllers.get(i).draw(canvas,(EnemyModel) object);
+                    i++;
+                }else if (object instanceof TileModel){
+                    currentLevel.drawTile((TileModel) object, canvas);
                 }
             }
 
-            for (EnemyModel enemy : enemies) {
-                enemy.drawDebug(canvas);
+            font.getData().setScale(1);
+            font.setColor(Color.BLACK);
+            canvas.drawTextCentered("Time: " + (int) currentTime, font, 500);
+
+            canvas.end();
+
+            if (debug) {
+                System.out.println(delta);
+                canvas.beginDebug();
+                for (int ii = 0; ii < currentLevel.getHeight(); ii++){
+                    for (int jj = 0; jj < currentLevel.getWidth(); jj++){
+                        currentLevel.drawDebug(currentLevel.getExtraLayer()[ii][jj], canvas);
+                    }
+                }
+
+                for (EnemyModel enemy : enemies) {
+                    enemy.drawDebug(canvas);
+                }
+                playerModel.drawDebug(canvas);
+                canvas.endDebug();
             }
-            playerModel.drawDebug(canvas);
-            canvas.endDebug();
+
+            canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
+            if (playerController.hasResources()){
+                canvas.drawUI(statusBarTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
+                canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
+                canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
+            }
         }
 
-        canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
-        if (playerController.hasResources()){
-            canvas.drawUI(statusBarTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
-            canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
-            canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
-        }
+
     }
 
     public void setScreenListener(ScreenListener listener) {
@@ -281,6 +300,10 @@ public class GameMode implements Screen {
         directory.finishLoading();
         this.directory = directory;
         gameState = GameState.INTRO;
+
+        font = directory.getEntry("font", BitmapFont.class);
+
+        currentTime = levelTime;
 
         int tilewidth = 64;
         int tileheight = 64;
