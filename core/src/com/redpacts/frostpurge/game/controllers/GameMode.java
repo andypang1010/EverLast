@@ -300,6 +300,7 @@ public class GameMode implements Screen {
         extraLayer = level1.getExtraLayer();
         playerModel = level1.getPlayer();
 
+
         // Create the controllers.
 
         statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
@@ -313,7 +314,6 @@ public class GameMode implements Screen {
 
 //        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
-        System.out.println(playerModel.getPosition());
 
         //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
         //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
