@@ -148,7 +148,6 @@ public class CollisionController{
                     addObject(tile);
             }
         }
-
         GameContactListener contactListener = new GameContactListener(world, board);
         world.setContactListener(contactListener);
     }
@@ -275,7 +274,6 @@ public class CollisionController{
                 return fraction; // Ray cast ends here
             } else if (userData instanceof PlayerModel) {
                 canSeeTarget = true;
-                hitPoint = point.cpy();
                 return 1;
             }
             return 1;
@@ -296,7 +294,8 @@ public class CollisionController{
         VisionConeCallback callback = new VisionConeCallback();
 
         // Calculate the end point of the vision cone based on the enemy's direction and range
-        Vector2 rayStart = enemy.getBody().getPosition().cpy().add(-8f, -7f);
+        Vector2 rayStart = enemy.getBody().getPosition().cpy();
+        System.out.println(rayStart);
         float fov = 45f; // Field of view angle in degrees
         int numRays = 20; // Number of rays to cast within the fov
         float deltaAngle = fov / (numRays - 1); // Angle between each ray
@@ -304,10 +303,6 @@ public class CollisionController{
         // Calculate the direction vector based on enemy's rotation
         Vector2 direction = new Vector2((float) Math.cos(Math.toRadians(enemy.getRotation())),
                 (float) Math.sin(Math.toRadians(enemy.getRotation()))).nor(); // Normalize the direction vector
-
-        System.out.println(enemy.getBody().getPosition());
-        System.out.println(player.getBody().getPosition());
-        System.out.println("POSITION");
 
         float angle = -fov / 2; // Calculate current angle
         Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
@@ -330,7 +325,9 @@ public class CollisionController{
                 rayEnd = callback.getHitPoint();
                 callback.clearHitPoint();
             }
-            enemy.setTriangle(rayStart.cpy().scl(10), rayPrevious.cpy().scl(10), rayEnd.cpy().scl(10)); // Add triangle to draw vision cone.
+            enemy.setTriangle(rayStart.cpy().scl(10).add(-130, -130),
+                    rayPrevious.cpy().scl(10).add(-130, -130),
+                    rayEnd.cpy().scl(10).add(-130, -130)); // Add triangle to draw vision cone.
             rayPrevious = rayEnd.cpy();
         }
 
