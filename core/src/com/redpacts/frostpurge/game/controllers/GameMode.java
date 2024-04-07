@@ -63,7 +63,7 @@ public class GameMode implements Screen {
     private ScreenListener listener;
     private BitmapFont font;
     private float currentTime;
-    private float levelTime = 60f;
+    private float levelTime = 5f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
@@ -196,13 +196,17 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
-        currentTime -= Gdx.graphics.getDeltaTime();
+        if (gameState != GameState.OVER){
+            currentTime -= Gdx.graphics.getDeltaTime();
+        }
 
         if (currentTime <= 0) {
             gameState = GameState.OVER;
         }
+        if (!playerModel.isAlive()){
+            gameState = GameState.OVER;
+        }
 
-        else {
             Array<GameObject> drawble = new Array<GameObject>();
             for (int i = 0; i<currentLevel.getHeight();i++){
                 for (int j = 0; j<currentLevel.getWidth();j++){
@@ -286,8 +290,10 @@ public class GameMode implements Screen {
             font.getData().setScale(1);
             font.setColor(Color.BLACK);
             canvas.drawText("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
-        }
-
+            if (gameState == GameState.OVER){
+                font.setColor(Color.BLACK);
+                canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
+            }
 
     }
 

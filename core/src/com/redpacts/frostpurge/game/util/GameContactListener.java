@@ -95,6 +95,7 @@ public class GameContactListener implements ContactListener {
 //
 //        player.setVelocity(-vx1, -vy1);
 //        enemy.setVelocity(-vx2, -vy2);
+        player.die();
     }
 
     /**

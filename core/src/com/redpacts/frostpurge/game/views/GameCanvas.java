@@ -555,6 +555,22 @@ public class GameCanvas {
         font.setColor(Color.WHITE);
         font.draw(spriteBatch, layout, x, y+offset);
     }
+    public void drawTextCenteredHUD(String text, BitmapFont font, float offset, OrthographicCamera camera) {
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+
+        GlyphLayout layout = new GlyphLayout(font,text);
+        float x = (getWidth()  - layout.width) / 2.0f;
+        float y = (getHeight() + layout.height) / 2.0f;
+        font.setColor(Color.WHITE);
+        font.draw(spriteBatch, layout, x, y+offset);
+        active = DrawPass.STANDARD;
+        spriteBatch.end();
+    }
 
     /**Draw the UI for the game which is different because it needs to follow the player.
      *
