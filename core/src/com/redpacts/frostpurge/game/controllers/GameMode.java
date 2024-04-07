@@ -220,7 +220,6 @@ public class GameMode implements Screen {
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
         for (EnemyController enemyController : enemyControllers) {
             enemyController.update();
-            System.out.println(enemyController.model.getPosition().toString());
         }
         collisionController.update();
 
