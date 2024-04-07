@@ -113,7 +113,7 @@ public class EnemyModel extends CharactersModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the position of the enemy body
-        bodyDef.position.set(this.getPosition().scl(0.1f));
+        bodyDef.position.set(this.getPosition().cpy().scl(0.1f));
 
         body = world.createBody(bodyDef);
         body.setUserData(this);

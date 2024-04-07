@@ -129,8 +129,8 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public void update() {
-        System.out.println("Target location: " + targetTile.getPosition().toString());
-        System.out.println("Current location: " + model.getPosition().toString());
+//        System.out.println("Target location: " + targetTile.getPosition().toString());
+//        System.out.println("Current location: " + model.getPosition().toString());
         switch (((EnemyModel) model).getCurrentState()) {
             case PATROL:
                 if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
@@ -150,7 +150,7 @@ public class EnemyController extends CharactersController implements StateMachin
             stop();
         }
         else {
-        moveToNextTile();
+//            moveToNextTile();
         }
         checkCollision();
     }
