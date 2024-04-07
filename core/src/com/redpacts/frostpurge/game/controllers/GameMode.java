@@ -19,6 +19,7 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -56,6 +57,7 @@ public class GameMode implements Screen {
     private Texture statusBarTexture;
     private TileModel[][] baseLayer;
     private TileModel[][] extraLayer;
+    private BitmapFont font;
 
     private boolean debug;
 
@@ -193,6 +195,9 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
+        if(playerModel.isDead()){
+            gameState = GameState.OVER;
+        }
         Array<GameObject> drawble = new Array<GameObject>();
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
@@ -247,6 +252,12 @@ public class GameMode implements Screen {
                 currentLevel.drawTile((TileModel) object, canvas);
             }
         }
+
+        if (gameState == GameState.OVER) {
+            System.out.println("called");
+            font.setColor(Color.BLACK);
+            canvas.drawText("Game Over!", font, 0, 0);
+        }
         canvas.end();
 
         if (debug) {
@@ -298,6 +309,9 @@ public class GameMode implements Screen {
         baseLayer = level1.getBaseLayer();
         extraLayer = level1.getExtraLayer();
         playerModel = level1.getPlayer();
+
+        font = directory.getEntry("font", BitmapFont.class);
+        font.getData().setScale(1f);
 
 
         // Create the controllers.

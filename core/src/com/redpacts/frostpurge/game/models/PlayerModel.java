@@ -14,6 +14,7 @@ public class PlayerModel extends CharactersModel {
 
     private boolean canBoost;
     private Texture fire;
+    private boolean alive;
     @Override
     public void activatePhysics(World world) {
         // Create and configure the player's physics body and fixtures
@@ -33,6 +34,7 @@ public class PlayerModel extends CharactersModel {
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
+        this.alive = true;
 
         Texture liv = new TextureRegion(directory.getEntry("Liv_Run_Right", Texture.class)).getTexture();
         idle = new FilmStrip(liv, 1, 8, 8);
@@ -52,6 +54,10 @@ public class PlayerModel extends CharactersModel {
         canBoost = false;
     }
 
+    public void die(){ this.alive = false; }
+    public boolean isDead(){
+        return !this.alive;
+    }
     public float getPositionY(){
         return this.position.y - 250;
     }
