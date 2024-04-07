@@ -69,7 +69,7 @@ public class EnemyModel extends CharactersModel{
         // Set the position of the enemy body
         bodyDef.position.set(this.getPosition().scl(0.1f));
 
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
         body.setUserData(this);
         body.setSleepingAllowed(false);
 

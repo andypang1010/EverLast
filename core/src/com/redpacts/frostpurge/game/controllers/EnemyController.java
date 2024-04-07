@@ -12,8 +12,6 @@ import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-import java.util.logging.Level;
-
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
@@ -145,16 +143,15 @@ public class EnemyController extends CharactersController implements StateMachin
         else {
         moveToNextTile();
         }
+        model.getBody().setLinearVelocity(model.getVelocity());
         checkCollision();
+        model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
     }
 
     private void moveToNextTile() {
         Vector2 vel = moveDirection;
         vel.scl(speedMultiplier);
         accelerate(vel.x, -vel.y, 1);
-
-        Vector2 newLocation = model.getPosition().add(model.getVelocity());
-        model.setPosition(newLocation.x, newLocation.y);
     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
