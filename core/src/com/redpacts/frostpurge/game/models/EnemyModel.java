@@ -63,7 +63,7 @@ public class EnemyModel extends CharactersModel{
         PolygonShape shape = new PolygonShape();
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,
 //                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(50f, 50f);
+        shape.setAsBox(0.1f, 0.1f);
 
         this.shape = shape;
 
