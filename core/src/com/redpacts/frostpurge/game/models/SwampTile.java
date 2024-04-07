@@ -93,7 +93,7 @@ public class SwampTile extends TileModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.StaticBody;
         // Set the position of the obstacle
-        bodyDef.position.set(this.getPosition().cpy().add(128f / 2, 128f / 2));
+        bodyDef.position.set(this.getPosition().cpy().add(128f / 2, 128f / 2).scl(0.1f));
 
         Body body = world.createBody(bodyDef);
         body.setUserData(this);

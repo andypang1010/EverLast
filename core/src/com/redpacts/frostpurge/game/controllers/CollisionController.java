@@ -153,7 +153,7 @@ public class CollisionController{
             }
         }
 
-        GameContactListener contactListener = new GameContactListener();
+        GameContactListener contactListener = new GameContactListener(world, board);
         world.setContactListener(contactListener);
     }
 

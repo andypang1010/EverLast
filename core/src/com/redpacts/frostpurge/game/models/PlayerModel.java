@@ -57,7 +57,7 @@ public class PlayerModel extends CharactersModel {
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the position of the player body
-        bodyDef.position.set(this.getPosition());
+        bodyDef.position.set(this.getPosition().scl(0.1f));
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
