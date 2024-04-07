@@ -259,10 +259,6 @@ public class GameMode implements Screen {
                 }
             }
 
-            font.getData().setScale(1);
-            font.setColor(Color.BLACK);
-            canvas.drawTextCentered("Time: " + (int) currentTime, font, 500);
-
             canvas.end();
 
             if (debug) {
@@ -287,6 +283,9 @@ public class GameMode implements Screen {
                 canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
                 canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
             }
+            font.getData().setScale(1);
+            font.setColor(Color.BLACK);
+            canvas.drawText("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
         }
 
 
