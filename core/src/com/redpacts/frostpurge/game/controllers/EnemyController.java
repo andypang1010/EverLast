@@ -23,8 +23,7 @@ import java.util.logging.Level;
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 0.5f;
-
+    private float speedMultiplier = 0.01f;
     /*
     FSM
     */
@@ -75,7 +74,7 @@ public class EnemyController extends CharactersController implements StateMachin
     private void checkCollision() {
         if (pathQueue.size > 0) {
             TileModel targetTile = pathQueue.first();
-            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.getPosition().x, targetTile.getPosition().y) < targetTile.getTexture().getWidth()) {
+            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.getOrigin().x, targetTile.getPosition().y) < 3) {
                 reachNextTile();
             }
         }
@@ -93,13 +92,14 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas, EnemyModel enemy){
-        if (enemy.getVelocity().x<0){
-            flip = true;
-        }else if (enemy.getVelocity().x >0){
-            flip = false;
+        String direction = getDirection(enemy.getVelocity().x,enemy.getVelocity().y, previousDirection);
+        processRun(direction);
+        if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
+            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+        } else{
+            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
         }
-        processRun();
-        enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", flip);
+        previousDirection = direction;
 
         // Draw vision cones
         for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {

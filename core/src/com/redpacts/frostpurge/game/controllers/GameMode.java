@@ -157,13 +157,32 @@ public class GameMode implements Screen {
     private void populateTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
+                TileModel currentTile = null;
 
-                if (currentLevel.getTileState(i, j).getType() != TileModel.TileType.OBSTACLE) {
-                    tileGraph.addTile(currentLevel.getTileState(i, j));
+                if (currentLevel.getExtraLayer()[i][j] == null) {
+                    tileGraph.addTile(currentLevel.getBaseLayer()[i][j]);
+                    currentTile = currentLevel.getBaseLayer()[i][j];
+                }
+                else if (currentLevel.getExtraLayer()[i][j].getType() == TileModel.TileType.SWAMP) {
+                    tileGraph.addTile(currentLevel.getExtraLayer()[i][j]);
+                    currentTile = currentLevel.getExtraLayer()[i][j];
+                }
 
-                    for (TileModel neighbor : currentLevel.getTileNeighbors(i, j)) {
-                        if (neighbor.getType() != TileModel.TileType.OBSTACLE) {
-                            tileGraph.connectTiles(currentLevel.getTileState(i, j), neighbor);
+                else {
+                    continue;
+                }
+
+                for(int x = i - 1; x <= i + 1; x++) {
+                    for(int y = j-1; y <= j+1; y++) {
+                        if (i == x && j == y) {
+                            continue;
+                        }
+                        if (currentLevel.inBounds(x, y)) {
+                            if (currentLevel.getExtraLayer()[x][y] == null) {
+                                tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[x][y]);
+                            } else if (currentLevel.getExtraLayer()[x][y].getType() == TileModel.TileType.SWAMP) {
+                                tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[x][y]);
+                            }
                         }
                     }
                 }
@@ -197,8 +216,9 @@ public class GameMode implements Screen {
         }
 
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-        for (EnemyController enemyController: enemyControllers){
+        for (EnemyController enemyController : enemyControllers) {
             enemyController.update();
+            System.out.println(enemyController.model.getPosition().toString());
         }
         collisionController.update();
 
@@ -277,6 +297,7 @@ public class GameMode implements Screen {
         extraLayer = level1.getExtraLayer();
         playerModel = level1.getPlayer();
 
+
         // Create the controllers.
 
         statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
@@ -290,7 +311,6 @@ public class GameMode implements Screen {
 
 //        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
-        System.out.println(playerModel.getPosition());
 
         //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
         //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);

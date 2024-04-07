@@ -33,9 +33,21 @@ public class PlayerModel extends CharactersModel {
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
-        texture = new TextureRegion(directory.getEntry("Liv", Texture.class)).getTexture();
-        Texture run = new TextureRegion(directory.getEntry("Liv_Run", Texture.class)).getTexture();
-        running = new FilmStrip(run, 1, 12, 12);
+
+        Texture liv = new TextureRegion(directory.getEntry("Liv_Run_Right", Texture.class)).getTexture();
+        idle = new FilmStrip(liv, 1, 8, 8);
+        idle.setFrame(3);
+//        texture = new TextureRegion(directory.getEntry("Liv", Texture.class)).getTexture();
+
+        Texture run_left_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture();
+        run_left = new FilmStrip(run_left_text, 1, 8, 8);
+        Texture run_right_text = new TextureRegion(directory.getEntry("Liv_Run_Right", Texture.class)).getTexture();
+        run_right = new FilmStrip(run_right_text, 1, 8, 8);
+        Texture run_down_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture(); // NOT THE CORRECT ONE YET
+        run_down = new FilmStrip(run_down_text, 1, 8, 8);
+        Texture run_up_text = new TextureRegion(directory.getEntry("Liv_Run_Up", Texture.class)).getTexture();
+        run_up = new FilmStrip(run_up_text, 1, 8, 8);
+
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         canBoost = false;
     }
@@ -69,14 +81,14 @@ public class PlayerModel extends CharactersModel {
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() /2,
 //                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(0.1f, 0.1f);
+        shape.setAsBox(1f, 1f);
 
         this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.67f;
+        fixtureDef.density = 0.0067f;
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.25f;
 
