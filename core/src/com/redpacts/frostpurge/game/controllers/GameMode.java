@@ -63,7 +63,7 @@ public class GameMode implements Screen {
     private ScreenListener listener;
     private BitmapFont font;
     private float currentTime;
-    private float levelTime = 5f;
+    private float levelTime = 20f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
@@ -206,7 +206,9 @@ public class GameMode implements Screen {
         if (!playerModel.isAlive()){
             gameState = GameState.OVER;
         }
-
+        if (playerModel.getPosition().x > 600 && playerModel.getPosition().x < 1000 && playerModel.getPosition().y > 3600 && playerModel.getPosition().y < 3900){
+            gameState = GameState.WIN;
+        }
             Array<GameObject> drawble = new Array<GameObject>();
             for (int i = 0; i<currentLevel.getHeight();i++){
                 for (int j = 0; j<currentLevel.getWidth();j++){
@@ -231,11 +233,13 @@ public class GameMode implements Screen {
                 debug = !debug;
             }
 
-            playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-            for (EnemyController enemyController : enemyControllers) {
-                enemyController.update();
+            if (gameState == GameState.INTRO){
+                playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
+                for (EnemyController enemyController : enemyControllers) {
+                    enemyController.update();
+                }
+                collisionController.update();
             }
-            collisionController.update();
 
             Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -294,7 +298,10 @@ public class GameMode implements Screen {
                 font.setColor(Color.BLACK);
                 canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
             }
-
+            if (gameState == GameState.WIN){
+                font.setColor(Color.BLACK);
+                canvas.drawTextCenteredHUD("YOU WIN!", font, 0, HUDcamera);
+            }
     }
 
     public void setScreenListener(ScreenListener listener) {
@@ -365,7 +372,8 @@ public class GameMode implements Screen {
         /** While we are playing the game */
         PLAY,
         /** When the ships is dead (but shells still work) */
-        OVER
+        OVER,
+        WIN
     }
 
 }
