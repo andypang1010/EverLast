@@ -53,7 +53,7 @@ public class PlayerController extends CharactersController {
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
         setAngle(horizontal,vertical);
         if (!decelerate){
-            model.getBody().applyForceToCenter(horizontal, -vertical, true);
+            model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
         }else{
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
@@ -65,8 +65,7 @@ public class PlayerController extends CharactersController {
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
         }
         model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.99f));//friction
-        model.setPosition(model.getBody().getPosition().scl(10));
-        //model.setVelocity(model.getBody().getLinearVelocity().x, model.getBody().getLinearVelocity().y);
+        model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
     }
 
     public float cameraOffset(float speed) {
@@ -74,13 +73,14 @@ public class PlayerController extends CharactersController {
     }
 
     public void draw(GameCanvas canvas, float horizontal, float vertical){
+
         String direction = getDirection(horizontal,vertical,previousDirection);
         if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
             processRun(direction);
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
             ((PlayerModel) model).drawFire(canvas, flip);
         }else{
-            System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
+            //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
             model.resetFilmStrip(model.getFilmStrip(direction));
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
         }

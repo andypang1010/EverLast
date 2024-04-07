@@ -67,7 +67,7 @@ public class EnemyModel extends CharactersModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the position of the enemy body
-        bodyDef.position.set(this.getPosition());
+        bodyDef.position.set(this.getPosition().scl(0.1f));
 
         Body body = world.createBody(bodyDef);
         body.setUserData(this);
@@ -77,14 +77,14 @@ public class EnemyModel extends CharactersModel{
         PolygonShape shape = new PolygonShape();
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,
 //                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(0.1f, 0.1f);
+        shape.setAsBox(1f, 1f);
 
         this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
+        fixtureDef.density = 0.01f;
         fixtureDef.friction = 0.3f;
 
         // Setting category and mask bits for the enemy

@@ -154,8 +154,8 @@ public class LevelModel {
         }
     }
     public TileModel getTileState(float x, float y) {
-        int intx = (int) Math.floor(x/60);
-        int inty = (int) Math.floor(y/60);
+        int intx = (int) Math.floor(x/64);
+        int inty = (int) Math.floor(y/64);
         if (!inBounds(inty, intx)) {
             return null;
         }
@@ -193,21 +193,21 @@ public class LevelModel {
 //            System.out.println(object.shape.getVertexCount());
 //            System.out.println(object.getPosition());
 //            System.out.println("\n");
-            canvas.drawPhysics(object.shape, Color.BLACK, object.getPosition().x, object.getPosition().y, 0, 1, 1);
+            canvas.drawPhysics(object.shape, Color.BLACK, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
         }
     }
 
     public boolean isSwampTile(float x, float y){
-        int indexx = (int) Math.floor(x/60);
-        int indexy = (int) Math.floor(y/60);
+        int indexx = (int) Math.floor(x/64);
+        int indexy = (int) Math.floor(y/64);
         if (!inBounds(indexx,indexy)){
             return false;
         }
         return extraLayer[indexy][indexx] instanceof SwampTile;
     }
     public void removeExtra(float x, float y){
-        int indexx = (int) Math.floor(x/60);
-        int indexy = (int) Math.floor(y/60);
+        int indexx = (int) Math.floor(x/64);
+        int indexy = (int) Math.floor(y/64);
         extraLayer[indexy][indexx] = null;
     }
 }
