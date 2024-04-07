@@ -18,7 +18,7 @@ import java.util.logging.Level;
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 0.5f;
+    private float speedMultiplier = 0.01f;
     /*
     FSM
     */
@@ -72,7 +72,7 @@ public class EnemyController extends CharactersController implements StateMachin
     private void checkCollision() {
         if (pathQueue.size > 0) {
             TileModel targetTile = pathQueue.first();
-            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.getPosition().x, targetTile.getPosition().y) < targetTile.getTexture().getWidth()) {
+            if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.getOrigin().x, targetTile.getPosition().y) < 3) {
                 reachNextTile();
             }
         }

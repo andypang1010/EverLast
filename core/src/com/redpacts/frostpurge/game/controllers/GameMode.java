@@ -159,13 +159,32 @@ public class GameMode implements Screen {
     private void populateTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
+                TileModel currentTile = null;
 
-                if (currentLevel.getTileState(i, j).getType() != TileModel.TileType.OBSTACLE) {
-                    tileGraph.addTile(currentLevel.getTileState(i, j));
+                if (currentLevel.getExtraLayer()[i][j] == null) {
+                    tileGraph.addTile(currentLevel.getBaseLayer()[i][j]);
+                    currentTile = currentLevel.getBaseLayer()[i][j];
+                }
+                else if (currentLevel.getExtraLayer()[i][j].getType() == TileModel.TileType.SWAMP) {
+                    tileGraph.addTile(currentLevel.getExtraLayer()[i][j]);
+                    currentTile = currentLevel.getExtraLayer()[i][j];
+                }
 
-                    for (TileModel neighbor : currentLevel.getTileNeighbors(i, j)) {
-                        if (neighbor.getType() != TileModel.TileType.OBSTACLE) {
-                            tileGraph.connectTiles(currentLevel.getTileState(i, j), neighbor);
+                else {
+                    continue;
+                }
+
+                for(int x = i - 1; x <= i + 1; x++) {
+                    for(int y = j-1; y <= j+1; y++) {
+                        if (i == x && j == y) {
+                            continue;
+                        }
+                        if (currentLevel.inBounds(x, y)) {
+                            if (currentLevel.getExtraLayer()[x][y] == null) {
+                                tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[x][y]);
+                            } else if (currentLevel.getExtraLayer()[x][y].getType() == TileModel.TileType.SWAMP) {
+                                tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[x][y]);
+                            }
                         }
                     }
                 }
@@ -199,7 +218,10 @@ public class GameMode implements Screen {
         }
 
         playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-        //enemyController.update();
+        for (EnemyController enemyController : enemyControllers) {
+            enemyController.update();
+            System.out.println(enemyController.model.getPosition().toString());
+        }
         collisionController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
