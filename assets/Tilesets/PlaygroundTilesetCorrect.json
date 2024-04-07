@@ -1,5 +1,5 @@
 { "columns":50,
- "image":"TileSetV1_kcx_03282024 (1).png",
+ "image":"PlaygroundTilesetCorrect.png",
  "imageheight":1800,
  "imagewidth":3200,
  "margin":0,
@@ -17619,7 +17619,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":""
+                 "value":"obstacle"
                 }]
         }, 
         {
@@ -17638,7 +17638,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":""
+                 "value":"obstacle"
                 }]
         }, 
         {
@@ -17657,7 +17657,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":""
+                 "value":"obstacle"
                 }]
         }, 
         {
