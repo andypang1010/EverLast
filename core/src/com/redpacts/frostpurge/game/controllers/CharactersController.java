@@ -105,7 +105,7 @@ public abstract class CharactersController {
             return "right";
         } else if (angle>=135 || angle<=-135) {
             if (model instanceof  EnemyModel){
-                model.setRotation(90);
+                model.setRotation(270);
             }
             return "up";
         } else if (angle >= -135 && angle <=-45) {
@@ -115,7 +115,7 @@ public abstract class CharactersController {
             return "left";
         }else{
             if (model instanceof  EnemyModel){
-                model.setRotation(270);
+                model.setRotation(90);
             }
             return "down";
         }
