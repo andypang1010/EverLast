@@ -44,7 +44,7 @@ public class GameContactListener implements ContactListener {
      */
     @Override
     public void endContact(Contact contact) {
-        System.out.println("NOT CONTACTED");
+//        System.out.println("NOT CONTACTED");
     }
 
     /** Unused ContactListener method */

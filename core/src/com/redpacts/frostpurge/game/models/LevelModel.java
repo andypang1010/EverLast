@@ -154,8 +154,8 @@ public class LevelModel {
         }
     }
     public TileModel getTileState(float x, float y) {
-        int intx = (int) Math.floor(x/64);
-        int inty = (int) Math.floor(y/64);
+        int intx = (int) Math.floor(x/64)+1;
+        int inty = (int) Math.floor(y/64)+1;
         if (!inBounds(inty, intx)) {
             return null;
         }
