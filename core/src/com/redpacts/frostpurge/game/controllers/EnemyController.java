@@ -17,7 +17,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 20f;
+    private float speedMultiplier = 40f;
     /*
     FSM
     */

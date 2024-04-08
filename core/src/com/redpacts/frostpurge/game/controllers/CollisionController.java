@@ -340,7 +340,7 @@ public class CollisionController{
 //            System.out.println("Obstacle hit.");
         } else{
 //            System.out.println("Target not spotted :(");
-            enemy.setCurrentState(EnemyStates.PATROL);
+            enemy.setCurrentState(enemy.getCurrentState());
         }
     }
 
