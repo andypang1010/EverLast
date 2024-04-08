@@ -3,6 +3,7 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.models.CharactersModel;
+import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.FilmStrip;
 
@@ -96,6 +97,8 @@ public abstract class CharactersController {
 //        }
         if (x==0 && y==0 && model instanceof PlayerModel){
             return previous;
+        } else{
+            model.setRotation(angle);
         }
         if (angle >= 45 && angle <= 135){
             return "right";
