@@ -53,6 +53,7 @@ public class PlayerModel extends CharactersModel {
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         canBoost = false;
         alive = true;
+        type = "player";
     }
 
 
