@@ -97,16 +97,26 @@ public abstract class CharactersController {
 //        }
         if (x==0 && y==0 && model instanceof PlayerModel){
             return previous;
-        } else{
-            model.setRotation(angle);
         }
         if (angle >= 45 && angle <= 135){
+            if (model instanceof  EnemyModel){
+                model.setRotation(0);
+            }
             return "right";
         } else if (angle>=135 || angle<=-135) {
+            if (model instanceof  EnemyModel){
+                model.setRotation(90);
+            }
             return "up";
         } else if (angle >= -135 && angle <=-45) {
+            if (model instanceof  EnemyModel){
+                model.setRotation(180);
+            }
             return "left";
         }else{
+            if (model instanceof  EnemyModel){
+                model.setRotation(270);
+            }
             return "down";
         }
     }
