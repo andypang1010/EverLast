@@ -61,12 +61,15 @@ public class GameMode implements Screen {
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
-
+    private BitmapFont font;
+    private float currentTime;
+    private float levelTime = 20f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         active = false;
+
         // Null out all pointers, 0 out all ints, etc.
     }
     /**
@@ -191,6 +194,19 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
+        if (gameState != GameState.OVER){
+            currentTime -= Gdx.graphics.getDeltaTime();
+        }
+
+        if (currentTime <= 0) {
+            gameState = GameState.OVER;
+        }
+        if (!playerModel.isAlive()){
+            gameState = GameState.OVER;
+        }
+        if (playerModel.getPosition().x > 600 && playerModel.getPosition().x < 1000 && playerModel.getPosition().y > 3600 && playerModel.getPosition().y < 3900){
+            gameState = GameState.WIN;
+        }
         Array<GameObject> drawble = new Array<GameObject>();
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
@@ -215,15 +231,18 @@ public class GameMode implements Screen {
             debug = !debug;
         }
 
-        playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
-        for (EnemyController enemyController : enemyControllers) {
-            enemyController.update();
+        if (gameState == GameState.INTRO){
+            playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
+            for (EnemyController enemyController : enemyControllers) {
+                enemyController.update();
+            }
+            collisionController.update();
         }
-        collisionController.update();
 
         Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
+
 //        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
         canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
 //        board.draw(canvas);
@@ -245,6 +264,7 @@ public class GameMode implements Screen {
                 currentLevel.drawTile((TileModel) object, canvas);
             }
         }
+
         canvas.end();
 
         if (debug) {
@@ -269,6 +289,17 @@ public class GameMode implements Screen {
             canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
         }
+        font.getData().setScale(1);
+        font.setColor(Color.BLACK);
+        canvas.drawText("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
+        if (gameState == GameState.OVER){
+            font.setColor(Color.BLACK);
+            canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
+        }
+        if (gameState == GameState.WIN){
+            font.setColor(Color.BLACK);
+            canvas.drawTextCenteredHUD("YOU WIN!", font, 0, HUDcamera);
+        }
     }
 
     public void setScreenListener(ScreenListener listener) {
@@ -279,6 +310,10 @@ public class GameMode implements Screen {
         directory.finishLoading();
         this.directory = directory;
         gameState = GameState.INTRO;
+
+        font = directory.getEntry("font", BitmapFont.class);
+
+        currentTime = levelTime;
 
         int tilewidth = 64;
         int tileheight = 64;
@@ -334,7 +369,8 @@ public class GameMode implements Screen {
         /** While we are playing the game */
         PLAY,
         /** When the ships is dead (but shells still work) */
-        OVER
+        OVER,
+        WIN
     }
 
 }

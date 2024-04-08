@@ -144,7 +144,7 @@ public class EnemyController extends CharactersController implements StateMachin
             stop();
         }
         else {
-//            moveToNextTile();
+            moveToNextTile();
         }
         model.getBody().setLinearVelocity(model.getVelocity());
         checkCollision();

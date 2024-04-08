@@ -13,6 +13,7 @@ public abstract class CharactersModel extends GameObject {
     protected FilmStrip run_down;
     protected FilmStrip run_up;
     protected FilmStrip idle;
+    protected String type;
 
     public Vector2 getVelocity(){
         return velocity;
@@ -46,7 +47,7 @@ public abstract class CharactersModel extends GameObject {
             case "running":
                 switch(direction){
                     case "left":
-                        canvas.draw(run_left, tint, (float) run_left.getRegionWidth() / 2, (float) run_left.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f,false);
+                        canvas.draw(run_left, tint, (float) run_left.getRegionWidth() / 2, (float) run_left.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f, type.equals("enemy"));
                         break;
                     case "right":
                         canvas.draw(run_right, tint, (float) run_right.getRegionWidth() / 2, (float) run_right.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f,false);

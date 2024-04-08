@@ -81,7 +81,6 @@ public class LevelController {
         for (int i = 0; i<data.length;i++){
             JsonValue properties = tileProperties.get("tiles").child();
             int index = data[i];
-            System.out.println(index);
             if (index == 0){
                 done = true;
                 type = "none";
