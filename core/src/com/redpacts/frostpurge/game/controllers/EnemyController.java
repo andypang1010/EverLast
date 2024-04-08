@@ -17,13 +17,15 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 10f;
+    private float speedMultiplier = 20f;
     /*
     FSM
     */
     PlayerModel playerModel;
     TileModel startPatrolTile, endPatrolTile;
-
+    EnemyStates initState;
+    EnemyStates currentState;
+    EnemyStates prevState = null;
     /*
     PATHFINDING
     */
@@ -35,12 +37,8 @@ public class EnemyController extends CharactersController implements StateMachin
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board) {
         this.model = enemy;
         playerModel = targetPlayerModel;
-//        this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
-//        this.endPatrolTile = board.getTileState(enemy.getEndPatrol()[0],enemy.getEndPatrol()[1]);
-        this.startPatrolTile = board.getTileState(10,10);
-        this.endPatrolTile = board.getTileState(15,10);
-        System.out.println(startPatrolTile.getPosition());
-        System.out.println(endPatrolTile.getPosition());
+        this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
+        this.endPatrolTile = board.getTileState(enemy.getEndPatrol()[0],enemy.getEndPatrol()[1]);
         setInitialState(initState);
         this.tileGraph = tileGraph;
         model.setPosition(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y);
@@ -123,25 +121,28 @@ public class EnemyController extends CharactersController implements StateMachin
             Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
 //            System.out.println("Current Tile");
 //            System.out.println(currentTile);
-            moveDirection = new Vector2(nextTile.getPosition().x - model.getPosition().x, nextTile.getPosition().y - model.getPosition().y).nor();
-            System.out.println("Direction");
-            System.out.println(moveDirection.toString());
+            moveDirection = new Vector2(nextTile.getPosition().x -32 - model.getPosition().x, nextTile.getPosition().y -32 - model.getPosition().y).nor();
+//            System.out.println("Direction");
+//            System.out.println(moveDirection.toString());
         }else{
-            System.out.println("SKIP");
+//            System.out.println("SKIP");
         }
     }
 
 
     @Override
     public void update() {
-//        System.out.println("Target location: " + targetTile.getPosition().toString());
-//        System.out.println("Current location: " + model.getPosition().toString());
-        switch (((EnemyModel) model).getCurrentState()) {
+        //System.out.println("Target location: " + targetTile.getPosition().toString());
+        //System.out.println("Current location: " + model.getPosition().toString());
+        Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
+        if (currentTile == pathQueue.first().getPosition()){
+            reachNextTile();
+        }
+        setMoveDirection();
+        switch (currentState) {
             case PATROL:
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
                 // Naive check for state transitions (If within certain distance, transition to chase state)
-                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 10) {
-                    Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
 //                    System.out.println("Position:");
 //                    System.out.println(currentTile);
 //                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
@@ -158,10 +159,6 @@ public class EnemyController extends CharactersController implements StateMachin
                         previousTile = endPatrolTile;
                         setGoal(startPatrolTile);
                     }
-                }
-                else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 100) {
-                    setGoal(startPatrolTile);
-                }
                 break;
             case CHASE:
                 //System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
@@ -177,6 +174,7 @@ public class EnemyController extends CharactersController implements StateMachin
         }
         checkCollision();
         model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
+        currentState = ((EnemyModel) model).getCurrentState();
 //        System.out.println("Position:");
 //        System.out.println(model.getPosition());
 //        System.out.println(targetTile.getPosition());
@@ -208,10 +206,9 @@ public class EnemyController extends CharactersController implements StateMachin
         return true;
     }
 
-    @Override
     public void setInitialState(EnemyStates enemyState) {
-        ((EnemyModel) model).setInitState(enemyState);
-        ((EnemyModel) model).setCurrentState(enemyState);
+        initState = enemyState;
+        currentState = enemyState;
     }
 
     public void setGlobalState(EnemyStates enemyState) {
