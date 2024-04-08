@@ -114,6 +114,7 @@ public class InputController {
     public boolean didDebug() {
         return debugPressed;
     }
+    public boolean didExit(){return exitPressed;}
 
     /**
      * Creates a new input controller for the specified player.
@@ -181,7 +182,7 @@ public class InputController {
             boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
             vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.V);
             deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
-            exitPressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+            exitPressed = Gdx.input.isKeyPressed(Input.Keys.R);
             debugPressed = Gdx.input.isKeyPressed(Input.Keys.D);
         }
     }

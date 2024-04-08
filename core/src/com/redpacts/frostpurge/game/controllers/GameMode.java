@@ -63,7 +63,7 @@ public class GameMode implements Screen {
     private ScreenListener listener;
     private BitmapFont font;
     private float currentTime;
-    private float levelTime = 100f;
+    private float levelTime = 46f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
@@ -229,6 +229,12 @@ public class GameMode implements Screen {
         // Toggle debug mode
         if (inputController.didDebug()) {
             debug = !debug;
+        }
+
+        if (gameState == GameState.WIN || gameState == GameState.OVER){
+            if (inputController.didExit()){
+                populate(directory);
+            }
         }
 
         if (gameState == GameState.INTRO){

@@ -295,7 +295,7 @@ public class CollisionController{
 
         // Calculate the end point of the vision cone based on the enemy's direction and range
         Vector2 rayStart = enemy.getBody().getPosition().cpy();
-        System.out.println(rayStart);
+//        System.out.println(rayStart);
         float fov = 45f; // Field of view angle in degrees
         int numRays = 20; // Number of rays to cast within the fov
         float deltaAngle = fov / (numRays - 1); // Angle between each ray
@@ -333,13 +333,13 @@ public class CollisionController{
 
         if (callback.canSeeTarget) {
             // Enemy can see the target
-            System.out.println("Target spotted!");
+//            System.out.println("Target spotted!");
             enemy.setCurrentState(EnemyStates.CHASE);
         } else if (callback.hitObstacle){
             // Vision blocked or target not in sight
-            System.out.println("Obstacle hit.");
+//            System.out.println("Obstacle hit.");
         } else{
-            System.out.println("Target not spotted :(");
+//            System.out.println("Target not spotted :(");
             enemy.setCurrentState(EnemyStates.PATROL);
         }
     }

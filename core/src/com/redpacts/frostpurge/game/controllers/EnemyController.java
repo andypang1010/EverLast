@@ -135,9 +135,14 @@ public class EnemyController extends CharactersController implements StateMachin
         //System.out.println("Target location: " + targetTile.getPosition().toString());
         //System.out.println("Current location: " + model.getPosition().toString());
         Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
-        if (currentTile == pathQueue.first().getPosition()){
-            reachNextTile();
+        try{
+            if (currentTile == pathQueue.first().getPosition()){
+                reachNextTile();
+            }
+        } catch (Exception e){
+            setGoal(startPatrolTile);
         }
+
         setMoveDirection();
         switch (currentState) {
             case PATROL:
