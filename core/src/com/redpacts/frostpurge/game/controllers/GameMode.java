@@ -196,7 +196,7 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
-        if (gameState != GameState.OVER){
+        if (gameState == GameState.INTRO){
             currentTime -= Gdx.graphics.getDeltaTime();
         }
 
