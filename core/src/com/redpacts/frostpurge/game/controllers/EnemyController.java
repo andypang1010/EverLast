@@ -4,6 +4,8 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.ai.fsm.*;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Queue;
 
 import com.badlogic.gdx.math.Vector2;
@@ -12,8 +14,7 @@ import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-
-public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
+public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
     private float speedMultiplier = 20f;
@@ -25,7 +26,6 @@ public class EnemyController extends CharactersController implements StateMachin
     EnemyStates initState;
     EnemyStates currentState;
     EnemyStates prevState = null;
-
     /*
     PATHFINDING
     */
@@ -96,6 +96,18 @@ public class EnemyController extends CharactersController implements StateMachin
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
         }
         previousDirection = direction;
+
+        // Draw vision cones
+        for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
+            float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
+            short[] indices = new short[3];
+            indices[0] = 0;
+            indices[1] = 1;
+            indices[2] = 2;
+            PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
+            canvas.draw(cone, new Color(1f, 1f, 1f, 0.5f), 100, 100 ,0);
+        }
+        ((EnemyModel) model).getTriangles().clear();
     }
 
     private void reachDestination() {
@@ -131,7 +143,6 @@ public class EnemyController extends CharactersController implements StateMachin
             case PATROL:
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
                 // Naive check for state transitions (If within certain distance, transition to chase state)
-                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 10) {
 //                    System.out.println("Position:");
 //                    System.out.println(currentTile);
 //                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
@@ -148,10 +159,6 @@ public class EnemyController extends CharactersController implements StateMachin
                         previousTile = endPatrolTile;
                         setGoal(startPatrolTile);
                     }
-                }
-                else {
-                    changeState(EnemyStates.CHASE);
-                }
                 break;
             case CHASE:
                 //System.out.println("CHASING: " + modelPositionToTile(playerModel).getPosition().toString());
@@ -163,10 +170,11 @@ public class EnemyController extends CharactersController implements StateMachin
             stop();
         }
         else {
-        moveToNextTile();
+            moveToNextTile();
         }
         checkCollision();
         model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
+        currentState = ((EnemyModel) model).getCurrentState();
 //        System.out.println("Position:");
 //        System.out.println(model.getPosition());
 //        System.out.println(targetTile.getPosition());
@@ -186,20 +194,18 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public void changeState(EnemyStates enemyState) {
-        prevState = currentState;
-        currentState = enemyState;
+        ((EnemyModel) model).setCurrentState(enemyState);
     }
 
     public boolean revertToPreviousState() {
-        if (prevState == null) {
+        if (((EnemyModel) model).getPrevState() == null) {
             return false;
         }
 
-        currentState = prevState;
+        ((EnemyModel) model).setCurrentState(((EnemyModel) model).getPrevState());
         return true;
     }
 
-    @Override
     public void setInitialState(EnemyStates enemyState) {
         initState = enemyState;
         currentState = enemyState;
@@ -211,7 +217,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public EnemyStates getCurrentState() {
-        return currentState;
+        return ((EnemyModel) model).getCurrentState();
     }
 
     public EnemyStates getGlobalState() {
@@ -220,12 +226,12 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public EnemyStates getPreviousState() {
-        return prevState;
+        return ((EnemyModel) model).getPrevState();
     }
 
     @Override
     public boolean isInState(EnemyStates enemyState) {
-        return currentState == enemyState;
+        return getCurrentState() == enemyState;
     }
 
     public boolean handleMessage(Telegram telegram) {

@@ -71,9 +71,7 @@ public class GameMode implements Screen {
         active = false;
 
         // Null out all pointers, 0 out all ints, etc.
-
     }
-
     /**
      * Returns true if debug mode is active.
      *
@@ -329,7 +327,6 @@ public class GameMode implements Screen {
 
         LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
         enemies = level1.getEnemies();
-//        System.out.println(enemies);
         baseLayer = level1.getBaseLayer();
         extraLayer = level1.getExtraLayer();
         playerModel = level1.getPlayer();

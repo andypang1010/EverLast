@@ -36,7 +36,7 @@ public class PlayerController extends CharactersController {
      */
     private void setAngle(float x, float y){
         if (x != 0 && y!= 0){
-            model.setRotation((float) Math.atan2(-y,x));
+            model.setRotation((float) Math.toDegrees(Math.atan2(-y,x)));
         }
     }
     /**

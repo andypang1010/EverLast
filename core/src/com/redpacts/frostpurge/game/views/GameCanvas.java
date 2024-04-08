@@ -1,10 +1,7 @@
 package com.redpacts.frostpurge.game.views;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
@@ -35,6 +32,8 @@ public class GameCanvas {
     private Affine2 local;
     /** Cache object to unify everything under a master draw method */
     private TextureRegion holder;
+    /** Cache object to render shape for geometric shape (like vision cone). */
+    private ShapeRenderer renderer;
 
     private Vector2 vertex;
 
@@ -58,8 +57,10 @@ public class GameCanvas {
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
         debugRender.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
         // Initialize the cache objects
-        holder = new TextureRegion();
         local  = new Affine2();
+        holder = new TextureRegion();
+        renderer = new ShapeRenderer();
+
         screen = new Vector3();
         world = new Vector3();
         vertex = new Vector2();
@@ -603,6 +604,57 @@ public class GameCanvas {
     }
 
     /**
+     * Draws the tinted polygon with the given transformations
+     *
+     * The texture of the polygon will be ignored.  This method will always use
+     * a blank texture.
+     *
+     * The resulting polygon will be scaled (both position and size) by the global
+     * scaling factor.
+     *
+     * @param poly  The polygon to draw
+     * @param tint  The color tint
+     * @param x 	The x-coordinate of the screen location
+     * @param y 	The y-coordinate of the screen location
+     * @param angle The rotation angle (in radians) about the origin.
+     */
+    public void draw(PolygonRegion poly, Color tint, float x, float y, float angle) {
+        if (active == DrawPass.INACTIVE) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+
+        // Vision cone
+
+        // Convert angle to degrees
+        float rotate = angle*180.0f/(float)Math.PI;
+
+        // Put in a blank texture
+        // TO DO: In future years I will write my own PolygonBatch to fix these issues.
+        TextureRegion region = poly.getRegion();
+        Texture orig = region.getTexture();
+        int rx = 0; int ry = 0;
+        int rw = 0; int rh = 0;
+        if (orig != null) {
+            rx = region.getRegionX(); ry = region.getRegionY();
+            rw = region.getRegionWidth(); rh = region.getRegionHeight();
+        }
+        int BLANK_SIZE = 1;
+        Pixmap map = new Pixmap(BLANK_SIZE,BLANK_SIZE,Pixmap.Format.RGBA4444);
+        map.setColor(Color.RED);
+        map.fillRectangle(0, 0, BLANK_SIZE, BLANK_SIZE);
+        Texture blank = new Texture(map);
+        region.setTexture(blank);
+        region.setRegion(0, 0, BLANK_SIZE, BLANK_SIZE);
+        spriteBatch.setColor(tint);
+        spriteBatch.draw(poly, x, y, 0.0f, 0.0f, BLANK_SIZE, BLANK_SIZE, 1, 1, rotate);
+        region.setTexture(orig);
+        if (orig != null) {
+            region.setRegion(rx,ry,rw,rh);
+        }
+        map.dispose();
+    }
+    /**
      * Start the debug drawing sequence.
      *
      * Nothing is flushed to the graphics card until the method end() is called.
@@ -678,7 +730,6 @@ public class GameCanvas {
      * the texture will be unscaled.  The bottom left of the texture will be positioned
      * at the given coordinates.
      *region
-     * @param image The texture to draw
      * @param tint  The color tint
      * @param x 	The x-coordinate of the bottom left corner
      * @param y 	The y-coordinate of the bottom left corner

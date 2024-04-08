@@ -9,11 +9,20 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 import com.redpacts.frostpurge.game.controllers.CollisionController;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EnemyModel extends CharactersModel{
+
+    /*
+    FSM
+     */
+    EnemyStates initState, currentState, prevState;
     private int[] startpatrol;
     private int[] endpatrol;
     public int[] getStartPatrol(){
@@ -23,15 +32,6 @@ public class EnemyModel extends CharactersModel{
         return endpatrol;
     }
 
-    @Override
-    public void activatePhysics(World world) {
-        // Create and configure the enemy's physics body and fixtures
-    }
-
-    @Override
-    public void deactivatePhysics(World world) {
-        // Destroy the enemy's physics body from the world
-    }
     /**
      * Instantiates the player with their starting location and angle and with their texture
      * @param position vector2 representing the starting location
@@ -41,6 +41,7 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
+
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
         Texture duck = new TextureRegion(directory.getEntry("EnemyLR", Texture.class)).getTexture();
@@ -49,18 +50,69 @@ public class EnemyModel extends CharactersModel{
 
         run_right = new FilmStrip(duck, 1, 8, 8);
         run_right.setFrame(4);
+
         TextureRegion left = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class ));
         left.flip(false,true);
+
         run_left = new FilmStrip(left.getTexture(),1,8,8);
         run_left.setFrame(4);
+
         Texture up= new TextureRegion(directory.getEntry( "EnemyUp", Texture.class )).getTexture();
         run_down = new FilmStrip(up, 1, 7, 7);
+
         Texture down = new TextureRegion(directory.getEntry( "EnemyDown", Texture.class )).getTexture();
         run_up = new FilmStrip(down, 1, 8, 8);
+
 
         this.startpatrol = startpatrol;
         this.endpatrol = endpatrol;
         type = "enemy";
+
+        initState = EnemyStates.PATROL;
+        currentState = EnemyStates.PATROL;
+        prevState = null;
+    }
+    public EnemyStates getInitState() {return initState;}
+    public void setInitState(EnemyStates initState) {this.initState = initState;}
+    public EnemyStates getCurrentState() {return currentState;}
+    public void setCurrentState(EnemyStates currentState) {
+        this.prevState = this.currentState;
+        this.currentState = currentState;
+    }
+    public EnemyStates getPrevState() {return prevState;}
+
+
+    /*
+    VISION CONE
+     */
+    public class Vector2Triple {
+        public Vector2 first;
+        public Vector2 second;
+        public Vector2 third;
+
+        public Vector2Triple(Vector2 first, Vector2 second, Vector2 third) {
+            this.first = first;
+            this.second = second;
+            this.third = third;
+        }
+    }
+    List<Vector2Triple> triangles = new ArrayList<>();
+    public void setTriangle(Vector2 v1, Vector2 v2, Vector2 v3) {
+        triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
+    }
+    public List<Vector2Triple> getTriangles() {return triangles;}
+
+    /*
+    PHYSICS
+     */
+    @Override
+    public void activatePhysics(World world) {
+        // Create and configure the enemy's physics body and fixtures
+    }
+
+    @Override
+    public void deactivatePhysics(World world) {
+        // Destroy the enemy's physics body from the world
     }
 
     public void createBody(World world) {
@@ -68,7 +120,7 @@ public class EnemyModel extends CharactersModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the position of the enemy body
-        bodyDef.position.set(this.getPosition().scl(0.1f));
+        bodyDef.position.set(this.getPosition().cpy().scl(0.1f));
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
@@ -91,6 +143,7 @@ public class EnemyModel extends CharactersModel{
         // Setting category and mask bits for the enemy
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY;
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY |
                 CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
                 CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE);
 
