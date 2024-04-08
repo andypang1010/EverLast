@@ -63,7 +63,7 @@ public class GameMode implements Screen {
     private ScreenListener listener;
     private BitmapFont font;
     private float currentTime;
-    private float levelTime = 20f;
+    private float levelTime = 100f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {

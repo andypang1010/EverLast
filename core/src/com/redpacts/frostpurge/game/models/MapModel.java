@@ -134,10 +134,10 @@ public class MapModel {
         if (!inBounds(x, y)) {
             return null;
         }
-        if (extra[x][y]==null){
-            return base[x][y];
+        if (extra[y][x]==null){
+            return base[y][x];
         }else{
-            return extra[x][y];
+            return extra[y][x];
         }
     }
 

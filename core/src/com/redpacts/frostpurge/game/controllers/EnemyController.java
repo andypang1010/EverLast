@@ -16,7 +16,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 1.1f;
+    private float speedMultiplier = 10f;
     /*
     FSM
     */
@@ -37,8 +37,12 @@ public class EnemyController extends CharactersController implements StateMachin
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board) {
         this.model = enemy;
         playerModel = targetPlayerModel;
-        this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
-        this.endPatrolTile = board.getTileState(enemy.getEndPatrol()[0],enemy.getEndPatrol()[1]);
+//        this.startPatrolTile = board.getTileState(enemy.getStartPatrol()[0],enemy.getStartPatrol()[1]);
+//        this.endPatrolTile = board.getTileState(enemy.getEndPatrol()[0],enemy.getEndPatrol()[1]);
+        this.startPatrolTile = board.getTileState(10,10);
+        this.endPatrolTile = board.getTileState(15,12);
+        System.out.println(startPatrolTile.getPosition());
+        System.out.println(endPatrolTile.getPosition());
         setInitialState(initState);
         this.tileGraph = tileGraph;
         model.setPosition(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y);
@@ -105,8 +109,15 @@ public class EnemyController extends CharactersController implements StateMachin
     private void setMoveDirection() {
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
+
+            Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
+//            System.out.println("Current Tile");
+//            System.out.println(currentTile);
             moveDirection = new Vector2(nextTile.getPosition().x - model.getPosition().x, nextTile.getPosition().y - model.getPosition().y).nor();
-            //System.out.println(moveDirection.toString());
+            System.out.println("Direction");
+            System.out.println(moveDirection.toString());
+        }else{
+            System.out.println("SKIP");
         }
     }
 
@@ -119,11 +130,22 @@ public class EnemyController extends CharactersController implements StateMachin
             case PATROL:
 //                System.out.println("PATROLLING: " + pathQueue.last().getPosition().toString());
                 // Naive check for state transitions (If within certain distance, transition to chase state)
-                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 400) {
-                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
+                if (Vector2.dst(playerModel.getPosition().x, playerModel.getPosition().y, model.getPosition().x, model.getPosition().y) > 10) {
+                    Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
+//                    System.out.println("Position:");
+//                    System.out.println(currentTile);
+//                    if (Vector2.dst(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
+//                        setGoal(endPatrolTile);
+//                    }
+//                    else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
+//                        setGoal(startPatrolTile);
+//                    }
+                    if (currentTile == startPatrolTile.getPosition()) {
+                        previousTile = startPatrolTile;
                         setGoal(endPatrolTile);
                     }
-                    else if (Vector2.dst(endPatrolTile.getPosition().x, endPatrolTile.getPosition().y, model.getPosition().x, model.getPosition().y) < 50) {
+                    else if (currentTile == endPatrolTile.getPosition()) {
+                        previousTile = endPatrolTile;
                         setGoal(startPatrolTile);
                     }
                 }
@@ -145,10 +167,14 @@ public class EnemyController extends CharactersController implements StateMachin
         }
         checkCollision();
         model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
+//        System.out.println("Position:");
+//        System.out.println(model.getPosition());
+//        System.out.println(targetTile.getPosition());
+
     }
 
     private void moveToNextTile() {
-        Vector2 vel = moveDirection;
+        Vector2 vel = moveDirection.cpy();
         vel.scl(speedMultiplier);
         model.getBody().setLinearVelocity(vel);
         model.setVelocity(vel.x,vel.y);
