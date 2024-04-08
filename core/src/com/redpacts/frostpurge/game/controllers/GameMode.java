@@ -292,14 +292,14 @@ public class GameMode implements Screen {
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
         }
         font.getData().setScale(1);
-        font.setColor(Color.BLACK);
+        font.setColor(Color.GRAY);
         canvas.drawText("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
         if (gameState == GameState.OVER){
-            font.setColor(Color.BLACK);
+            font.setColor(Color.RED);
             canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
         }
         if (gameState == GameState.WIN){
-            font.setColor(Color.BLACK);
+            font.setColor(Color.GREEN);
             canvas.drawTextCenteredHUD("YOU WIN!", font, 0, HUDcamera);
         }
     }
