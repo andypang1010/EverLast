@@ -16,7 +16,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyController, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 0.5f;
+    private float speedMultiplier = 1.1f;
     /*
     FSM
     */
@@ -143,7 +143,6 @@ public class EnemyController extends CharactersController implements StateMachin
         else {
         moveToNextTile();
         }
-        model.getBody().setLinearVelocity(model.getVelocity());
         checkCollision();
         model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
     }
@@ -151,7 +150,8 @@ public class EnemyController extends CharactersController implements StateMachin
     private void moveToNextTile() {
         Vector2 vel = moveDirection;
         vel.scl(speedMultiplier);
-        accelerate(vel.x, -vel.y, 1);
+        model.getBody().setLinearVelocity(vel);
+        model.setVelocity(vel.x,vel.y);
     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
