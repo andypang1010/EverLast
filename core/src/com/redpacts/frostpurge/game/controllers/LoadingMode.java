@@ -289,6 +289,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 //					 centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale,false);
 			hoveringStart();
 			font.getData().setScale(fontscale);
+			font.setColor(pressState == 1? Color.GRAY: font.getColor());
 			canvas.drawTextCentered("-Start-", font, -200);
 		}
 		canvas.end();
