@@ -157,7 +157,7 @@ public class InputController {
             }
             horizontal = x;
             vertical = y;
-            exitPressed = xbox.getStart();
+            exitPressed = xbox.getB();
             deceleratePressed = xbox.getA();
             boostPressed = xbox.getRBumper();
             vacuumPressed = xbox.getLBumper();

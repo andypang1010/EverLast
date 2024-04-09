@@ -119,7 +119,7 @@ public class PlayerModel extends CharactersModel {
         if (flip){
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
         }else{
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 150 , (float) fire.getHeight() / 2, position.x - 40 , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 300 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }
 
     }
