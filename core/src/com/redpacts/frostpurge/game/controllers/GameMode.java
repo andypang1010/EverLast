@@ -250,7 +250,7 @@ public class GameMode implements Screen {
         canvas.begin();
 
 //        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
-        canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getVelocity().y));
+        canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getBody().getLinearVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getBody().getLinearVelocity().y));
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
