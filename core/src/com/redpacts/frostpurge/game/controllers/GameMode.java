@@ -19,8 +19,6 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 
 public class GameMode implements Screen {
@@ -249,8 +247,8 @@ public class GameMode implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
-//        System.out.println("Offset: " + playerController.cameraOffset(playerController.getModel().getVelocity().x));
-        canvas.center(camera, playerController.getModel().getPosition().x + playerController.cameraOffset(playerController.getModel().getBody().getLinearVelocity().x), playerController.getModel().getPosition().y + playerController.cameraOffset(playerController.getModel().getBody().getLinearVelocity().y));
+        Vector2 cameraPos = playerController.cameraOffsetPos();
+        canvas.center(camera, cameraPos.x, cameraPos.y);
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);

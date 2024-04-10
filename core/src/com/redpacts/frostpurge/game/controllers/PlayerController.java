@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Color;
 import com.redpacts.frostpurge.game.models.PlayerModel;
@@ -68,8 +69,10 @@ public class PlayerController extends CharactersController {
         model.setPosition(model.getBody().getPosition().scl(10));
     }
 
-    public float cameraOffset(float speed) {
-        return Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, speed * OFFSET_MULTIPLIER));
+    public Vector2 cameraOffsetPos() {
+        Vector2 pos = model.getPosition().cpy();
+        Vector2 dir = model.getBody().getLinearVelocity().nor();
+        return pos.interpolate(new Vector2(dir.x * MAX_OFFSET + pos.x, dir.y * MAX_OFFSET + pos.y), model.getBody().getLinearVelocity().len() / 100f, Interpolation.smooth);
     }
 
     public void draw(GameCanvas canvas, float horizontal, float vertical){
