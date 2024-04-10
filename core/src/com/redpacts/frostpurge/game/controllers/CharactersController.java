@@ -92,15 +92,20 @@ public abstract class CharactersController {
      */
     public String getDirection(float x, float y, String previous) {
         float angle = (float) Math.toDegrees(Math.atan2(x,y));
-//        if (model instanceof PlayerModel){
-//            System.out.println(angle);
-//        }
-        if (x==0 && y==0 && model instanceof PlayerModel){
-            return previous;
+
+        if (model instanceof PlayerModel){
+            if (x==0 && y==0){
+                return previous;
+            }
+            if (angle >= 0 && angle <= 135){
+                return "right";
+            } else if (angle>=135 || angle<=-135) {
+                return "up";
+            } else if (angle >= -135 && angle <=0) {
+                return "left";
+            }
         }
-//        if (model instanceof EnemyModel){
-//            model.setRotation(90-angle);
-//        }
+
         if (angle >= 45 && angle <= 135){
             if (model instanceof  EnemyModel){
                 model.setRotation(0);
