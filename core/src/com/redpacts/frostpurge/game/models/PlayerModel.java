@@ -14,6 +14,7 @@ public class PlayerModel extends CharactersModel {
 
     private boolean canBoost;
     private Texture fire;
+    private Texture fireBoost;
     private boolean alive;
     @Override
     public void activatePhysics(World world) {
@@ -53,6 +54,7 @@ public class PlayerModel extends CharactersModel {
         run_up = new FilmStrip(run_up_text, 1, 8, 8);
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
+        fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
         canBoost = false;
         alive = true;
         type = "player";
@@ -117,9 +119,10 @@ public class PlayerModel extends CharactersModel {
         body.applyForceToCenter(strength, true);
     }
 
-    public void drawFire(GameCanvas canvas, boolean flip){
-        if (flip){
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
+    public void drawFire(GameCanvas canvas){
+        System.out.println(body.getLinearVelocity().len());
+        if (body.getLinearVelocity().len() > 65){
+            canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }else{
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }

@@ -15,6 +15,7 @@
     "EnemyUp": "enemies/enemyUpfilmstripEDIT1.png",
     "EnemyDown": "enemies/enemyDownfilmstripEDIT1.png",
     "Fire" : "characters/firenoaxis.png",
+    "FireBoost": "characters/fireboostnoaxis.png",
     "baselayer": "Tilesets/PlaygroundTileset.png",
     "extralayer": "Tilesets/Testhouse.png",
     "tileset": "Tilesets/PlaygroundTilesetCorrect.png"

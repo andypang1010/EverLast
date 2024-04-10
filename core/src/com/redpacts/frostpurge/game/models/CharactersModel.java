@@ -50,7 +50,6 @@ public abstract class CharactersModel extends GameObject {
     public void drawCharacter(GameCanvas canvas, float rotation, Color tint, String state, String direction){
         switch(state){
             case "idle":
-                System.out.println(direction);
                 switch (direction){
                     case "left":
                         canvas.draw(idleleft, tint, (float) idleleft.getRegionHeight() / 2, (float) idleleft.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f, false);

@@ -247,8 +247,8 @@ public class GameMode implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
-        Vector2 cameraPos = playerController.cameraOffsetPos();
-        canvas.center(camera, cameraPos.x, cameraPos.y);
+        //Vector2 cameraPos = playerController.cameraOffsetPos();
+        canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
