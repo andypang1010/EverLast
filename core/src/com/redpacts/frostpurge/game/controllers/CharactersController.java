@@ -71,12 +71,22 @@ public abstract class CharactersController {
         FilmStrip running = model.getFilmStrip(type);
         int frame = (running == null ? 11 : running.getFrame());
         if (running != null) {
-            if (time >= .125){
-                frame++;
-                time = 0f;
-                if (frame >= model.getFilmStrip(type).getSize())
-                    frame = 0;
-                running.setFrame(frame);
+            if (type.startsWith("idle")){
+                if (time >= .25){
+                    frame++;
+                    time = 0f;
+                    if (frame >= model.getFilmStrip(type).getSize())
+                        frame = 0;
+                    running.setFrame(frame);
+                }
+            }else{
+                if (time >= .125){
+                    frame++;
+                    time = 0f;
+                    if (frame >= model.getFilmStrip(type).getSize())
+                        frame = 0;
+                    running.setFrame(frame);
+                }
             }
         }
     }
@@ -92,15 +102,20 @@ public abstract class CharactersController {
      */
     public String getDirection(float x, float y, String previous) {
         float angle = (float) Math.toDegrees(Math.atan2(x,y));
-//        if (model instanceof PlayerModel){
-//            System.out.println(angle);
-//        }
-        if (x==0 && y==0 && model instanceof PlayerModel){
-            return previous;
+
+        if (model instanceof PlayerModel){
+            if (x==0 && y==0){
+                return previous;
+            }
+            if (angle >= 0 && angle <= 135){
+                return "right";
+            } else if (angle>=135 || angle<=-135) {
+                return "up";
+            } else if (angle >= -135 && angle <=0) {
+                return "left";
+            }
         }
-//        if (model instanceof EnemyModel){
-//            model.setRotation(90-angle);
-//        }
+
         if (angle >= 45 && angle <= 135){
             if (model instanceof  EnemyModel){
                 model.setRotation(0);

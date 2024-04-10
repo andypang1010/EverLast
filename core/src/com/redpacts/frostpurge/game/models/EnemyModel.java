@@ -45,8 +45,9 @@ public class EnemyModel extends CharactersModel{
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
         Texture duck = new TextureRegion(directory.getEntry("EnemyLR", Texture.class)).getTexture();
-        idle = new FilmStrip(duck, 1, 8, 8);
-        idle.setFrame(3);
+        idleright = new FilmStrip(duck, 1, 8, 8);
+        idleleft = idleright;
+        idleup = idleright;
 
         run_right = new FilmStrip(duck, 1, 8, 8);
         run_right.setFrame(4);

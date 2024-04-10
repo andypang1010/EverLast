@@ -79,12 +79,14 @@ public class PlayerController extends CharactersController {
 
         String direction = getDirection(horizontal,vertical,previousDirection);
         if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
+            model.resetFilmStrip(model.getFilmStrip("idle"+direction));
             processRun(direction);
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
             ((PlayerModel) model).drawFire(canvas, flip);
         }else{
             //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
             model.resetFilmStrip(model.getFilmStrip(direction));
+            processRun("idle"+direction);
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
         }
         previousDirection = direction;

@@ -36,10 +36,12 @@ public class PlayerModel extends CharactersModel {
         this.velocity = new Vector2(0, 0);
         this.alive = true;
 
-        Texture liv = new TextureRegion(directory.getEntry("Liv_Run_Right", Texture.class)).getTexture();
-        idle = new FilmStrip(liv, 1, 8, 8);
-        idle.setFrame(3);
-//        texture = new TextureRegion(directory.getEntry("Liv", Texture.class)).getTexture();
+        Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
+        idleright = new FilmStrip(idle_right, 1, 3, 3);
+        Texture idle_left = new TextureRegion(directory.getEntry("Liv_Idle_Left", Texture.class)).getTexture();
+        idleleft = new FilmStrip(idle_left, 1, 3, 3);
+        Texture idle_up = new TextureRegion(directory.getEntry("Liv_Idle_Up", Texture.class)).getTexture();
+        idleup = new FilmStrip(idle_up, 1, 3, 3);
 
         Texture run_left_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture();
         run_left = new FilmStrip(run_left_text, 1, 8, 8);
@@ -119,7 +121,7 @@ public class PlayerModel extends CharactersModel {
         if (flip){
             canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
         }else{
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 300 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }
 
     }
