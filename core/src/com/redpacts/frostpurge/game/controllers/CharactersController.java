@@ -71,12 +71,22 @@ public abstract class CharactersController {
         FilmStrip running = model.getFilmStrip(type);
         int frame = (running == null ? 11 : running.getFrame());
         if (running != null) {
-            if (time >= .125){
-                frame++;
-                time = 0f;
-                if (frame >= model.getFilmStrip(type).getSize())
-                    frame = 0;
-                running.setFrame(frame);
+            if (type.startsWith("idle")){
+                if (time >= .25){
+                    frame++;
+                    time = 0f;
+                    if (frame >= model.getFilmStrip(type).getSize())
+                        frame = 0;
+                    running.setFrame(frame);
+                }
+            }else{
+                if (time >= .125){
+                    frame++;
+                    time = 0f;
+                    if (frame >= model.getFilmStrip(type).getSize())
+                        frame = 0;
+                    running.setFrame(frame);
+                }
             }
         }
     }
