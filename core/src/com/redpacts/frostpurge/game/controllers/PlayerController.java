@@ -65,7 +65,7 @@ public class PlayerController extends CharactersController {
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
         }
         model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.99f));//friction
-        model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
+        model.setPosition(model.getBody().getPosition().scl(10));
     }
 
     public float cameraOffset(float speed) {
