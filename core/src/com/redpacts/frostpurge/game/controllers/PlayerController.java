@@ -8,7 +8,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerController extends CharactersController {
 
     static final float MAX_OFFSET = 500f;
-    static final float OFFSET_MULTIPLIER = 5f;
+    static final float OFFSET_MULTIPLIER = 2f;
 
 
     PlayerController(PlayerModel player){
