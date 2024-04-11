@@ -11,10 +11,13 @@ import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
+    private static final int MAX_BOOST = 3;
+    private static final int BOOST_COOL_DOWN = 60;
 
-    private boolean canBoost;
     private Texture fire;
     private boolean alive;
+    private int boostNum;
+    private int boostCoolDown;
     @Override
     public void activatePhysics(World world) {
         // Create and configure the player's physics body and fixtures
@@ -51,8 +54,9 @@ public class PlayerModel extends CharactersModel {
         run_up = new FilmStrip(run_up_text, 1, 8, 8);
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
-        canBoost = false;
         alive = true;
+        this.boostNum = 0;
+        this.boostCoolDown = 0;
         type = "player";
     }
 
@@ -64,12 +68,34 @@ public class PlayerModel extends CharactersModel {
         return this.position.y - 250;
     }
 
-    public boolean getCanBoost() {
-        return canBoost;
+    public int getBoostNum() {
+        return boostNum;
     }
 
-    public void setCanBoost(boolean b) {
-        canBoost = b;
+    public void addCanBoost(int b) {
+        boostNum += b;
+        if(boostNum > MAX_BOOST){
+            boostNum = MAX_BOOST;
+        }else if(boostNum < 0){
+            boostNum = 0;
+        }
+    }
+
+    public int getBoostCoolDown(){
+        return boostCoolDown;
+    }
+
+    public void addBoostCoolDown(int t){
+        boostCoolDown += t;
+        if(boostCoolDown > BOOST_COOL_DOWN){
+            boostCoolDown = BOOST_COOL_DOWN;
+        }else if(boostCoolDown < 0){
+            boostCoolDown = 0;
+        }
+    }
+
+    public void resetBoostCoolDown(){
+        boostCoolDown = BOOST_COOL_DOWN;
     }
 
     public void createBody(World world) {

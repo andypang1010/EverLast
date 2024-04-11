@@ -214,7 +214,7 @@ public class CollisionController{
     private void pickPowerUp(PlayerModel player){
         if(board.isSwampTile(player.getPosition().x, player.getPosition().y)){
             board.removeExtra(player.getPosition().x, player.getPosition().y);
-            player.setCanBoost(true);
+            player.addCanBoost(1);
         }
     }
     /**

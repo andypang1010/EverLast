@@ -288,9 +288,13 @@ public class GameMode implements Screen {
         }
 
         canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
-        if (playerController.hasResources()){
+        if(playerModel.getBoostNum() >= 1){
             canvas.drawUI(statusBarTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
+        }
+        if(playerModel.getBoostNum() >= 2){
             canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
+        }
+        if(playerModel.getBoostNum() >= 3){
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
         }
         font.getData().setScale(1);

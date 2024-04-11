@@ -44,7 +44,7 @@ public class PlayerController extends CharactersController {
      * Checks if the player has any resources
      */
     public boolean hasResources(){
-        return ((PlayerModel) model).getCanBoost();
+        return ((PlayerModel) model).getBoostNum() > 0;
     }
 
     /**
@@ -52,15 +52,17 @@ public class PlayerController extends CharactersController {
      * Right now the input controller isn't done yet, so I am using booleans for buttons presses.
      */
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
+        ((PlayerModel) model).addBoostCoolDown(-1);
         setAngle(horizontal,vertical);
         if (!decelerate){
             model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
         }else{
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
-        if (boost && ((PlayerModel) model).getCanBoost()){
+        if (boost && ((PlayerModel) model).getBoostNum() > 0 && ((PlayerModel) model).getBoostCoolDown() == 0){
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
-            ((PlayerModel) model).setCanBoost(false);
+            ((PlayerModel) model).addCanBoost(-1);
+            ((PlayerModel) model).resetBoostCoolDown();
         }
         if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
