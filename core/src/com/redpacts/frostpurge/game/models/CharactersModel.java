@@ -52,28 +52,28 @@ public abstract class CharactersModel extends GameObject {
             case "idle":
                 switch (direction){
                     case "left":
-                        canvas.draw(idleleft, tint, (float) idleleft.getRegionHeight() / 2, 0, position.x, position.y, 0,.25f,.25f, false);
+                        canvas.draw(idleleft, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
                         break;
                     case "right":
-                        canvas.draw(idleright, tint, (float) idleright.getRegionHeight() / 2, 0, position.x, position.y, 0,.25f,.25f, false);
+                        canvas.draw(idleright, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
                         break;
                     default:
-                        canvas.draw(idleup, tint, (float) idleup.getRegionHeight() / 2, 0, position.x, position.y, 0,.25f,.25f, false);
+                        canvas.draw(idleup, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
                 }
                 break;
             case "running":
                 switch(direction){
                     case "left":
-                        canvas.draw(run_left, tint, (float) run_left.getRegionWidth() / 2, 0, position.x, position.y, 0,.25f,.25f, type.equals("enemy"));
+                        canvas.draw(run_left, tint, (float) run_left.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f, type.equals("enemy"));
                         break;
                     case "right":
-                        canvas.draw(run_right, tint, (float) run_right.getRegionWidth() / 2, 0, position.x, position.y, 0,.25f,.25f,false);
+                        canvas.draw(run_right, tint, (float) run_right.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
                         break;
                     case "up":
-                        canvas.draw(run_up, tint, (float) run_up.getRegionWidth() / 2, 0, position.x, position.y, 0,.25f,.25f,false);
+                        canvas.draw(run_up, tint, (float) run_up.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
                         break;
                     case "down":
-                        canvas.draw(run_down, tint, (float) run_down.getRegionWidth() / 2, 0, position.x, position.y, 0,.25f,.25f,false);
+                        canvas.draw(run_down, tint, (float) run_down.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
                         break;
                     default:
                         throw new IllegalArgumentException("Character animation fail");

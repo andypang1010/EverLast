@@ -89,22 +89,15 @@ public class PlayerModel extends CharactersModel {
         body.setFixedRotation(true);
         body.setLinearDamping(0);
 
+        float radius = 3;
         CircleShape shape = new CircleShape();
-        shape.setRadius(3f);
+        shape.setRadius(radius);
         this.shape = shape;
-
-//        PolygonShape shape = new PolygonShape();
-//        // TODO: getTexture is not scaled...
-////        shape.setAsBox((float) this.getTexture().getWidth() /2,
-////                (float) this.getTexture().getHeight() / 2);
-//        shape.setAsBox(1f, 1f);
-////
-//        this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0022f;
+        fixtureDef.density = 0.0067f / (radius * radius);
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.25f;
 
