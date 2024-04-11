@@ -16,6 +16,8 @@ public class PlayerModel extends CharactersModel {
     private Texture fire;
     private Texture fireBoost;
     private boolean alive;
+
+    float radius;
     @Override
     public void activatePhysics(World world) {
         // Create and configure the player's physics body and fixtures
@@ -36,6 +38,7 @@ public class PlayerModel extends CharactersModel {
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
         this.alive = true;
+        this.radius = 3.3f;
 
         Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
         idleright = new FilmStrip(idle_right, 1, 3, 3);
@@ -75,6 +78,7 @@ public class PlayerModel extends CharactersModel {
     public void setCanBoost(boolean b) {
         canBoost = b;
     }
+    public float getRadius() {return this.radius;}
 
     public void createBody(World world) {
         BodyDef bodyDef = new BodyDef();
@@ -89,7 +93,6 @@ public class PlayerModel extends CharactersModel {
         body.setFixedRotation(true);
         body.setLinearDamping(0);
 
-        float radius = 3;
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
         this.shape = shape;
