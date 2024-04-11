@@ -283,7 +283,7 @@ public class GameCanvas {
         active = DrawPass.STANDARD;
 
         // Clear the screen
-        Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
