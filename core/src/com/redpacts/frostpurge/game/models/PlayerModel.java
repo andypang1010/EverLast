@@ -41,7 +41,7 @@ public class PlayerModel extends CharactersModel {
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
         this.alive = true;
-        this.radius = 3.3f;
+        this.radius = 3.19f;
 
         Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
         idleright = new FilmStrip(idle_right, 1, 3, 3);

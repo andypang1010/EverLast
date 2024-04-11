@@ -46,6 +46,8 @@ public class GameMode implements Screen {
 
     private Array<EnemyController> enemyControllers;
 
+    private Comparator<GameObject> comparator;
+
     private Array<EnemyModel> enemies;
 
     private TileGraph tileGraph = new TileGraph();
@@ -66,6 +68,30 @@ public class GameMode implements Screen {
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
+        this.comparator = new Comparator<GameObject>() {
+            public int compare(GameObject o1, GameObject o2) {
+                float o1y;
+                float o2y;
+                if (o1 instanceof TileModel){
+                    o1y = o1.getPositionY() + (((TileModel) o1).base-3) *64;
+                } else{
+                    o1y = o1.getPositionY();
+                }
+                if (o2 instanceof TileModel){
+                    o2y = o2.getPositionY() + (((TileModel) o2).base-3) *64;
+                } else{
+                    o2y = o2.getPositionY();
+                }
+                float diff = o1y - o2y;
+                if(diff > 0){
+                    return 1;
+                }else if(diff == 0){
+                    return 0;
+                }else{
+                    return -1;
+                }
+            }
+        };
         active = false;
 
         // Null out all pointers, 0 out all ints, etc.
@@ -128,30 +154,6 @@ public class GameMode implements Screen {
     }
 
     public void sort_by_y(Array<GameObject> obj_list) {
-        Comparator<GameObject> comparator = new Comparator<GameObject>() {
-            public int compare(GameObject o1, GameObject o2) {
-                float o1y;
-                float o2y;
-                if (o1 instanceof TileModel){
-                    o1y = o1.getPositionY() + (((TileModel) o1).base-3) *64;
-                } else{
-                    o1y = o1.getPositionY();
-                }
-                if (o2 instanceof TileModel){
-                    o2y = o2.getPositionY() + (((TileModel) o2).base-3) *64;
-                } else{
-                    o2y = o2.getPositionY();
-                }
-                float diff = o1y - o2y;
-                if(diff > 0){
-                    return 1;
-                }else if(diff == 0){
-                    return 0;
-                }else{
-                    return -1;
-                }
-            }
-        };
         obj_list.sort(comparator);
     }
 
