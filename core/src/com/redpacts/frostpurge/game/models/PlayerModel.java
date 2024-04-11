@@ -126,7 +126,7 @@ public class PlayerModel extends CharactersModel {
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0067f / (radius * radius);
+        fixtureDef.density = 0.0067f / (radius * radius * 3.14f);
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.25f;
 
@@ -146,7 +146,7 @@ public class PlayerModel extends CharactersModel {
     }
 
     public void drawFire(GameCanvas canvas){
-        System.out.println(body.getLinearVelocity().len());
+//        System.out.println(body.getLinearVelocity().len());
         if (body.getLinearVelocity().len() > 65){
             canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+ 125, getRotation(),.5f,.5f,false);
         }else{
