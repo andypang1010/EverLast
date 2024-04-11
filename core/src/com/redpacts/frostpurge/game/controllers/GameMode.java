@@ -133,12 +133,12 @@ public class GameMode implements Screen {
                 float o1y;
                 float o2y;
                 if (o1 instanceof TileModel){
-                    o1y = o1.getPositionY() + (((TileModel) o1).base-2) *64;
+                    o1y = o1.getPositionY() + (((TileModel) o1).base-3) *64;
                 } else{
                     o1y = o1.getPositionY();
                 }
                 if (o2 instanceof TileModel){
-                    o2y = o2.getPositionY() + (((TileModel) o2).base-2) *64;
+                    o2y = o2.getPositionY() + (((TileModel) o2).base-3) *64;
                 } else{
                     o2y = o2.getPositionY();
                 }
