@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 
 public class GameCanvas {
     /** While we are not drawing polygons (yet), this spritebatch is more reliable */
@@ -689,7 +691,7 @@ public class GameCanvas {
      * @param sx The amount to scale the x-axis
      * @param sx The amount to scale the y-axis
      */
-    public void drawPhysics(PolygonShape shape, Color color, float x, float y, float angle, float sx, float sy) {
+    public void drawPhysics(Shape shape, Color color, float x, float y, float angle, float sx, float sy) {
         if (active != DrawPass.DEBUG) {
             Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
             return;
@@ -698,26 +700,35 @@ public class GameCanvas {
         local.setToScaling(sx * 10,sy * 10);
         local.translate(x/10,y/10);
         local.rotateRad(angle);
-
-        float x0, y0, x1, y1;
         debugRender.setColor(color);
-        for(int ii = 0; ii < shape.getVertexCount() - 1; ii++) {
-            shape.getVertex(ii  ,vertex);
+
+        if (shape instanceof PolygonShape) {
+            float x0, y0, x1, y1;
+            PolygonShape polyShape = (PolygonShape) shape;
+            for (int ii = 0; ii < polyShape.getVertexCount() - 1; ii++) {
+                polyShape.getVertex(ii, vertex);
+                local.applyTo(vertex);
+                x0 = vertex.x; y0 = vertex.y;
+                polyShape.getVertex(ii + 1, vertex);
+                local.applyTo(vertex);
+                x1 = vertex.x; y1 = vertex.y;
+                debugRender.line(x0, y0, x1, y1);
+            }
+            // Close the loop
+            polyShape.getVertex(polyShape.getVertexCount() - 1, vertex);
             local.applyTo(vertex);
             x0 = vertex.x; y0 = vertex.y;
-            shape.getVertex(ii+1,vertex);
+            polyShape.getVertex(0, vertex);
             local.applyTo(vertex);
             x1 = vertex.x; y1 = vertex.y;
             debugRender.line(x0, y0, x1, y1);
+        } else if (shape instanceof CircleShape) {
+            CircleShape circleShape = (CircleShape) shape;
+            float radius = circleShape.getRadius();
+            Vector2 vertex = circleShape.getPosition();
+            local.applyTo(vertex);
+            debugRender.circle(vertex.x, vertex.y, radius * 10, 30);
         }
-        // Close the loop
-        shape.getVertex(shape.getVertexCount()-1,vertex);
-        local.applyTo(vertex);
-        x0 = vertex.x; y0 = vertex.y;
-        shape.getVertex(0,vertex);
-        local.applyTo(vertex);
-        x1 = vertex.x; y1 = vertex.y;
-        debugRender.line(x0, y0, x1, y1);
     }
 
     /**
