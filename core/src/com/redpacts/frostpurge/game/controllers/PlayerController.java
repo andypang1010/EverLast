@@ -107,7 +107,7 @@ public class PlayerController extends CharactersController {
 
             float[] vertices = {ray1.x, ray1.y, ray2.x, ray2.y, ray3.x, ray3.y};
             PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
-            canvas.draw(cone, Color.BLACK, 100, 100 ,0);
+            canvas.draw(cone, new Color(0f, 0f, 0f, 0.5f), 100, 100 ,0);
 
             rayPrevious = rayEnd.cpy();
         }
