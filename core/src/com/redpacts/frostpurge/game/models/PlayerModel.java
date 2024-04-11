@@ -15,6 +15,7 @@ public class PlayerModel extends CharactersModel {
     private static final int BOOST_COOL_DOWN = 60;
 
     private Texture fire;
+    private Texture fireBoost;
     private boolean alive;
     private int boostNum;
     private int boostCoolDown;
@@ -39,10 +40,12 @@ public class PlayerModel extends CharactersModel {
         this.velocity = new Vector2(0, 0);
         this.alive = true;
 
-        Texture liv = new TextureRegion(directory.getEntry("Liv_Run_Right", Texture.class)).getTexture();
-        idle = new FilmStrip(liv, 1, 8, 8);
-        idle.setFrame(3);
-//        texture = new TextureRegion(directory.getEntry("Liv", Texture.class)).getTexture();
+        Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
+        idleright = new FilmStrip(idle_right, 1, 3, 3);
+        Texture idle_left = new TextureRegion(directory.getEntry("Liv_Idle_Left", Texture.class)).getTexture();
+        idleleft = new FilmStrip(idle_left, 1, 3, 3);
+        Texture idle_up = new TextureRegion(directory.getEntry("Liv_Idle_Up", Texture.class)).getTexture();
+        idleup = new FilmStrip(idle_up, 1, 3, 3);
 
         Texture run_left_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture();
         run_left = new FilmStrip(run_left_text, 1, 8, 8);
@@ -54,6 +57,7 @@ public class PlayerModel extends CharactersModel {
         run_up = new FilmStrip(run_up_text, 1, 8, 8);
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
+        fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
         alive = true;
         this.boostNum = 0;
         this.boostCoolDown = 0;
@@ -141,11 +145,12 @@ public class PlayerModel extends CharactersModel {
         body.applyForceToCenter(strength, true);
     }
 
-    public void drawFire(GameCanvas canvas, boolean flip){
-        if (flip){
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 - 150 , (float) fire.getHeight() / 2, position.x + 40 , position.y+25, getRotation()-180,.5f,.5f,true);
+    public void drawFire(GameCanvas canvas){
+        System.out.println(body.getLinearVelocity().len());
+        if (body.getLinearVelocity().len() > 65){
+            canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }else{
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 300 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }
 
     }

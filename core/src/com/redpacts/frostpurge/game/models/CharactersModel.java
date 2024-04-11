@@ -12,7 +12,9 @@ public abstract class CharactersModel extends GameObject {
     protected FilmStrip run_right;
     protected FilmStrip run_down;
     protected FilmStrip run_up;
-    protected FilmStrip idle;
+    protected FilmStrip idleright;
+    protected FilmStrip idleleft;
+    protected FilmStrip idleup;
     protected String type;
 
     public Vector2 getVelocity(){
@@ -31,18 +33,33 @@ public abstract class CharactersModel extends GameObject {
                 return run_up;
             case "down":
                 return run_down;
+            case "idleright":
+                return idleright;
+            case "idleleft":
+                return idleleft;
+            case "idleup":
+                return idleup;
             default:
                 return null;
         }
     }
     public void resetFilmStrip(FilmStrip value) {
-        value.setFrame(4);
+        value.setFrame(0);
     }
 
     public void drawCharacter(GameCanvas canvas, float rotation, Color tint, String state, String direction){
         switch(state){
             case "idle":
-                canvas.draw(idle, tint, (float) idle.getRegionHeight() / 2, (float) idle.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f, false);
+                switch (direction){
+                    case "left":
+                        canvas.draw(idleleft, tint, (float) idleleft.getRegionHeight() / 2, (float) idleleft.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    case "right":
+                        canvas.draw(idleright, tint, (float) idleright.getRegionHeight() / 2, (float) idleright.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    default:
+                        canvas.draw(idleup, tint, (float) idleup.getRegionHeight() / 2, (float) idleup.getRegionHeight() / 2, position.x, position.y, 0,.25f,.25f, false);
+                }
                 break;
             case "running":
                 switch(direction){
