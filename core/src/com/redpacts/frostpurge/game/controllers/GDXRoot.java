@@ -24,6 +24,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
 	private GameMode playing;
 	private LoadingMode loading;
+	private LevelSelectMode levelselect;
 	private AssetDirectory directory;
 	private String mode;
 	/**
@@ -58,6 +59,9 @@ public class GDXRoot extends Game implements ScreenListener {
 		switch (mode){
 			case "loading":
 				loading.render(60);
+				break;
+			case "levelselect":
+				levelselect.render(60);
 				break;
 			case "playing":
 				playing.update(60);
@@ -115,14 +119,21 @@ public class GDXRoot extends Game implements ScreenListener {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
 		} else if (screen == loading) {
-			playing.setScreenListener(this);
 			directory = loading.getAssets();
 			playing.populate(directory);
-			setScreen(playing);
-			mode = "playing";
 
 			loading.dispose();
 			loading = null;
+
+			levelselect = new LevelSelectMode(canvas);
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
+
+		} else if (screen == levelselect) {
+			playing.setScreenListener(this);
+			setScreen(playing);
+			mode = "playing";
 		} else {
 			// We quit the main application
 			Gdx.app.exit();

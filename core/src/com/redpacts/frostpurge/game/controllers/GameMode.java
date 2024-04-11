@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.*;
@@ -19,6 +20,7 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.sql.Time;
 import java.util.Comparator;
 
 public class GameMode implements Screen {
@@ -31,13 +33,13 @@ public class GameMode implements Screen {
     private InputController inputController;
     /** Handle collision and physics (CONTROLLER CLASS) */
     private CollisionController collisionController;
+    private LevelController levelController;
+    private JsonValue tilesetjson;
+    private TextureRegion[][] tileset;
+    private TextureRegion[][] whitetile; //TO BE REMOVED
 
-    /** Whether or not this player mode is still active */
-    private boolean active;
     /** Board for the game*/
     private LevelModel currentLevel;
-    /** Environmental objects for the game*/
-    private Array<EnvironmentalObject> envObjects = new Array<EnvironmentalObject>();
     /** Player for the game*/
     private PlayerModel playerModel;
 
@@ -52,21 +54,16 @@ public class GameMode implements Screen {
 
     private Texture statusBarBGTexture;
     private Texture statusBarTexture;
-    private TileModel[][] baseLayer;
-    private TileModel[][] extraLayer;
-
     private boolean debug;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
     private BitmapFont font;
     private float currentTime;
-    private float levelTime = 46f;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
-        active = false;
 
         // Null out all pointers, 0 out all ints, etc.
     }
@@ -295,7 +292,7 @@ public class GameMode implements Screen {
         }
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
-        canvas.drawText("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
+        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
         if (gameState == GameState.OVER){
             font.setColor(Color.RED);
             canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
@@ -317,23 +314,17 @@ public class GameMode implements Screen {
 
         font = directory.getEntry("font", BitmapFont.class);
 
-        currentTime = levelTime;
 
         int tilewidth = 64;
         int tileheight = 64;
-        JsonValue leveljson = directory.getEntry("playgroundlevel", JsonValue.class);
-        JsonValue tilesetjson = directory.getEntry("tileset", JsonValue.class);
+        tilesetjson = directory.getEntry("tileset", JsonValue.class);
         TextureRegion tilesetregion = new TextureRegion(directory.getEntry("tileset",Texture.class));
-        TextureRegion[][] tileset = tilesetregion.split(tilewidth, tileheight);
+        tileset = tilesetregion.split(tilewidth, tileheight);
         TextureRegion white = new TextureRegion(directory.getEntry("baselayer",Texture.class));
-        TextureRegion[][] whitetile = white.split(tilewidth, tileheight);
-        LevelController levelController = new LevelController();
+        whitetile = white.split(tilewidth, tileheight);
+        levelController = new LevelController();
 
-        LevelModel level1 = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
-        enemies = level1.getEnemies();
-        baseLayer = level1.getBaseLayer();
-        extraLayer = level1.getExtraLayer();
-        playerModel = level1.getPlayer();
+        loadLevel("level1");
 
 
         // Create the controllers.
@@ -343,28 +334,29 @@ public class GameMode implements Screen {
 
         inputController = new InputController();
 
-        currentLevel = level1;
+    }
+
+    private void loadLevel(String level){
+        JsonValue leveljson = directory.getEntry(level, JsonValue.class);
+        currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
+        enemies = currentLevel.getEnemies();
+        playerModel = currentLevel.getPlayer();
+        currentTime = 46;
 
         populateTileGraph();
 
-//        playerModel = new PlayerModel(new Vector2(100,100),0, directory);
         playerController = new PlayerController(playerModel);
 
-        //EnemyModel enemy = new EnemyModel(new Vector2(600, 300), 90, directory);
-        //enemyController = new EnemyController(enemy, playerModel, board.getTileState(0, 7), board.getTileState(4, 7), EnemyStates.PATROL, tileGraph, board);
+
         enemyControllers = new Array<>();
         for (int i = 0; i < enemies.size; i++){
             enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel));
         }
-//        enemies.add(enemy);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // YOU WILL NEED TO MODIFY THIS NEXT LINE
-        collisionController = new CollisionController(level1, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
-
-        //Testing
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
     }
 
     public enum GameState {

@@ -516,7 +516,24 @@ public class GameCanvas {
      * @param x The x-coordinate of the lower-left corner
      * @param y The y-coordinate of the lower-left corner
      */
-    public void drawText(String text, BitmapFont font, float x, float y, OrthographicCamera camera) {
+    public void drawText(String text, BitmapFont font, float x, float y) {
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        GlyphLayout layout = new GlyphLayout(font,text);
+        font.setColor(Color.WHITE);
+        font.draw(spriteBatch, layout, x, y);
+    }
+    /**
+     * Draws text on the screen.
+     *
+     * @param text The string to draw
+     * @param font The font to use
+     * @param x The x-coordinate of the lower-left corner
+     * @param y The y-coordinate of the lower-left corner
+     */
+    public void drawTextHUD(String text, BitmapFont font, float x, float y, OrthographicCamera camera) {
         spriteBatch.begin();
         active = DrawPass.STANDARD;
         if (active != DrawPass.STANDARD) {
