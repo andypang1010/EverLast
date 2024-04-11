@@ -133,12 +133,12 @@ public class GameMode implements Screen {
                 float o1y;
                 float o2y;
                 if (o1 instanceof TileModel){
-                    o1y = o1.getPositionY() + (((TileModel) o1).base-2) *64;
+                    o1y = o1.getPositionY() + (((TileModel) o1).base-3) *64;
                 } else{
                     o1y = o1.getPositionY();
                 }
                 if (o2 instanceof TileModel){
-                    o2y = o2.getPositionY() + (((TileModel) o2).base-2) *64;
+                    o2y = o2.getPositionY() + (((TileModel) o2).base-3) *64;
                 } else{
                     o2y = o2.getPositionY();
                 }
@@ -202,7 +202,7 @@ public class GameMode implements Screen {
         if (!playerModel.isAlive()){
             gameState = GameState.OVER;
         }
-        if (playerModel.getPosition().x > 600 && playerModel.getPosition().x < 1000 && playerModel.getPosition().y > 3600 && playerModel.getPosition().y < 3900){
+        if (playerModel.getPosition().x > 1700 && playerModel.getPosition().x < 2000 && playerModel.getPosition().y > 2500 && playerModel.getPosition().y < 2800){
             gameState = GameState.WIN;
         }
         Array<GameObject> drawble = new Array<GameObject>();
@@ -243,7 +243,7 @@ public class GameMode implements Screen {
             collisionController.update();
         }
 
-        Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 

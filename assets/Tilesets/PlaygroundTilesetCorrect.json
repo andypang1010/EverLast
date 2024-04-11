@@ -1,5 +1,5 @@
 { "columns":50,
- "image":"PlaygroundTilesetCorrect.png",
+ "image":"whiteTileSet.png",
  "imageheight":1800,
  "imagewidth":3200,
  "margin":0,
@@ -17619,7 +17619,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
@@ -17638,7 +17638,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
@@ -17657,7 +17657,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
