@@ -41,7 +41,7 @@ public class PlayerModel extends CharactersModel {
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
         this.alive = true;
-        this.radius = 3.3f;
+        this.radius = 3.19f;
 
         Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
         idleright = new FilmStrip(idle_right, 1, 3, 3);
@@ -126,7 +126,7 @@ public class PlayerModel extends CharactersModel {
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0067f / (radius * radius);
+        fixtureDef.density = 0.0067f / (radius * radius * 3.14f);
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.25f;
 
@@ -146,7 +146,7 @@ public class PlayerModel extends CharactersModel {
     }
 
     public void drawFire(GameCanvas canvas){
-        System.out.println(body.getLinearVelocity().len());
+//        System.out.println(body.getLinearVelocity().len());
         if (body.getLinearVelocity().len() > 65){
             canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+ 125, getRotation(),.5f,.5f,false);
         }else{
