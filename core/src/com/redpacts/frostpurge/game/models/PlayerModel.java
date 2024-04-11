@@ -89,19 +89,23 @@ public class PlayerModel extends CharactersModel {
         body.setFixedRotation(true);
         body.setLinearDamping(0);
 
-        PolygonShape shape = new PolygonShape();
-        // TODO: getTexture is not scaled...
-//        shape.setAsBox((float) this.getTexture().getWidth() /2,
-//                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(1f, 1f);
-
+        CircleShape shape = new CircleShape();
+        shape.setRadius(3f);
         this.shape = shape;
+
+//        PolygonShape shape = new PolygonShape();
+//        // TODO: getTexture is not scaled...
+////        shape.setAsBox((float) this.getTexture().getWidth() /2,
+////                (float) this.getTexture().getHeight() / 2);
+//        shape.setAsBox(1f, 1f);
+////
+//        this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0067f;
-        fixtureDef.friction = 0.3f;
+        fixtureDef.density = 0.0022f;
+        fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.25f;
 
         // Setting category and mask bits for the player
@@ -122,9 +126,9 @@ public class PlayerModel extends CharactersModel {
     public void drawFire(GameCanvas canvas){
         System.out.println(body.getLinearVelocity().len());
         if (body.getLinearVelocity().len() > 65){
-            canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+ 125, getRotation(),.5f,.5f,false);
         }else{
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+ 125, getRotation(),.5f,.5f,false);
         }
 
     }
