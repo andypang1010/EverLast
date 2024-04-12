@@ -32,7 +32,12 @@ public class EnemyController extends CharactersController implements StateMachin
     LevelModel board;
     TileGraph tileGraph;
     TileModel previousTile, targetTile;
+    Vector2 currentTile;
     Queue<TileModel> pathQueue = new Queue<>();
+    GraphPath<TileModel> graphPath;
+    PolygonRegion cone;
+    TextureRegion textureRegion;
+    Color coneColor;
 
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board) {
         this.model = enemy;
@@ -53,11 +58,15 @@ public class EnemyController extends CharactersController implements StateMachin
         }
 
         setGoal(targetTile);
+
+        textureRegion = new TextureRegion();
+        coneColor = new Color(1f,1f,1f,.5f);
+//        cone = new PolygonRegion(new TextureRegion(), null,null);
     }
 
     public void setGoal(TileModel goalTile) {
         pathQueue.clear();
-        GraphPath<TileModel> graphPath = tileGraph.findPath(previousTile, goalTile);
+        graphPath = tileGraph.findPath(previousTile, goalTile);
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
 //            System.out.println(graphPath.get(i).getCenter());
@@ -69,7 +78,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     private void checkCollision() {
         if (pathQueue.size > 0) {
-            TileModel targetTile = pathQueue.first();
+            targetTile = pathQueue.first();
             if (Vector2.dst(model.getPosition().x, model.getPosition().y, targetTile.getOrigin().x, targetTile.getPosition().y) < 3) {
                 reachNextTile();
             }
@@ -95,8 +104,8 @@ public class EnemyController extends CharactersController implements StateMachin
             indices[0] = 0;
             indices[1] = 1;
             indices[2] = 2;
-            PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
-            canvas.draw(cone, new Color(1f, 1f, 1f, 0.5f), 100, 100 ,0);
+            cone = new PolygonRegion(textureRegion, vertices, indices);
+            canvas.draw(cone, coneColor, 100, 100 ,0);
         }
         ((EnemyModel) model).getTriangles().clear();
 
@@ -135,7 +144,7 @@ public class EnemyController extends CharactersController implements StateMachin
     public void update() {
         //System.out.println("Target location: " + targetTile.getPosition().toString());
         //System.out.println("Current location: " + model.getPosition().toString());
-        Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
+        currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
         try{
             if (currentTile == pathQueue.first().getPosition()){
                 reachNextTile();
