@@ -484,7 +484,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	public boolean buttonDown (Controller controller, int buttonCode) {
 		if (pressState == 0) {
 			ControllerMapping mapping = controller.getMapping();
-			if (mapping != null && buttonCode == mapping.buttonStart ) {
+			if (mapping != null && buttonCode == mapping.buttonStart) {
 				pressState = 1;
 				return false;
 			}
