@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -21,6 +22,7 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class GameMode implements Screen {
@@ -49,6 +51,7 @@ public class GameMode implements Screen {
     private Array<EnemyController> enemyControllers;
 
     private Comparator<GameObject> comparator;
+    private Array<GameObject> drawble;
 
     private Array<EnemyModel> enemies;
 
@@ -66,6 +69,7 @@ public class GameMode implements Screen {
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
+        this.drawble = new Array<GameObject>();
         this.comparator = new Comparator<GameObject>() {
             public int compare(GameObject o1, GameObject o2) {
                 float o1y;
@@ -203,7 +207,7 @@ public class GameMode implements Screen {
         if (playerModel.getPosition().x > 1700 && playerModel.getPosition().x < 2000 && playerModel.getPosition().y > 2500 && playerModel.getPosition().y < 2800){
             gameState = GameState.WIN;
         }
-        Array<GameObject> drawble = new Array<GameObject>();
+        drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 if (currentLevel.getAccentLayer()[i][j]!=null){
