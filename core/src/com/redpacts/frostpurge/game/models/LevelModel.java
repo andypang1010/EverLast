@@ -24,6 +24,7 @@ public class LevelModel {
     private Array<EnemyModel> enemies;
     private PlayerModel player;
     private boolean altered;
+    private String name;
     private AssetDirectory directory;
     /** The dimensions of a single tile */
     private static final int TILE_WIDTH = 64;
@@ -133,8 +134,10 @@ public class LevelModel {
     public PlayerModel getPlayer(){
         return player;
     }
-    public boolean getAltered(){return altered;}
-    public void Alter(){altered = true;}
+    public String getName(){return name;}
+    public void setName(String name){this.name = name;}
+
+
 
     /**
      * Returns the tile object for the given position

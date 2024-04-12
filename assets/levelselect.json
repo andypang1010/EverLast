@@ -1,0 +1,11 @@
+{
+	"textures": {
+        "background": "loading/startscreen.png"
+	},
+  "fonts": {
+      "font": {
+        "file": "ui/gamefont.ttf",
+        "size": 64
+    }
+  }
+}
