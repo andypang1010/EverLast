@@ -120,7 +120,6 @@ public class PlayerModel extends CharactersModel {
     }
 
     public void drawFire(GameCanvas canvas){
-        System.out.println(body.getLinearVelocity().len());
         if (body.getLinearVelocity().len() > 65){
             canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
         }else{

@@ -46,6 +46,7 @@ public class InputController {
     private boolean debugPressed;
     /** Whether the exit button was pressed. */
     private boolean exitPressed;
+    private boolean replayPressed;
 
     /** The player position */
     private Vector2 position;
@@ -115,6 +116,7 @@ public class InputController {
         return debugPressed;
     }
     public boolean didExit(){return exitPressed;}
+    public boolean didReplay(){return replayPressed;}
 
     /**
      * Creates a new input controller for the specified player.
@@ -157,11 +159,12 @@ public class InputController {
             }
             horizontal = x;
             vertical = y;
-            exitPressed = xbox.getB();
+            exitPressed = xbox.getBack();
             deceleratePressed = xbox.getA();
             boostPressed = xbox.getRBumper();
             vacuumPressed = xbox.getLBumper();
             debugPressed = xbox.getDPadDown();
+            replayPressed = xbox.getB();
         }else{
             float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
             float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
@@ -182,8 +185,9 @@ public class InputController {
             boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
             vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.V);
             deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
-            exitPressed = Gdx.input.isKeyPressed(Input.Keys.R);
+            exitPressed = Gdx.input.isKeyPressed(Input.Keys.BACKSPACE);
             debugPressed = Gdx.input.isKeyPressed(Input.Keys.D);
+            replayPressed = Gdx.input.isKeyPressed(Input.Keys.R);
         }
     }
 

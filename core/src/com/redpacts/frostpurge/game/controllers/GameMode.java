@@ -228,7 +228,10 @@ public class GameMode implements Screen {
 
         if (gameState == GameState.WIN || gameState == GameState.OVER){
             if (inputController.didExit()){
-                populate(directory);
+                listener.exitScreen(this, 0);
+            }
+            if (inputController.didReplay()){
+                loadLevel(currentLevel.getName());
             }
         }
 
@@ -310,7 +313,6 @@ public class GameMode implements Screen {
     public void populate(AssetDirectory directory){
         directory.finishLoading();
         this.directory = directory;
-        gameState = GameState.INTRO;
 
         font = directory.getEntry("font", BitmapFont.class);
 
@@ -324,8 +326,6 @@ public class GameMode implements Screen {
         whitetile = white.split(tilewidth, tileheight);
         levelController = new LevelController();
 
-        loadLevel("level1");
-
 
         // Create the controllers.
 
@@ -336,12 +336,14 @@ public class GameMode implements Screen {
 
     }
 
-    private void loadLevel(String level){
+    public void loadLevel(String level){
+        gameState = GameState.INTRO;
         JsonValue leveljson = directory.getEntry(level, JsonValue.class);
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
         currentTime = 46;
+        currentLevel.setName(level);
 
         populateTileGraph();
 

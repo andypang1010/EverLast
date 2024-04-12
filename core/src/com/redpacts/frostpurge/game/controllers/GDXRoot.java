@@ -131,9 +131,15 @@ public class GDXRoot extends Game implements ScreenListener {
 			mode = "levelselect";
 
 		} else if (screen == levelselect) {
+			levelselect.resetPressState();
+			playing.loadLevel(levelselect.getLevel());
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
+		} else if (screen == playing) {
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
 		} else {
 			// We quit the main application
 			Gdx.app.exit();

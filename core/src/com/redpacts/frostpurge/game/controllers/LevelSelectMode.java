@@ -97,6 +97,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private float fontscale;
 	private GlyphLayout glyph;
 	private List<LevelBox> levelBoxes;
+	private String selectedLevel;
+
+	public String getLevel(){
+		return selectedLevel;
+	}
+	public void resetPressState(){pressState = 0;}
 
 
 	/**
@@ -344,6 +350,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (pressState % 2 == 1) {
 			pressState += 1;
+			selectedLevel = "level" + Integer.toString(pressState/2);
 			return false;
 		}
 		return true;
@@ -516,7 +523,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				levelBox.enlarged = true;
 				levelBox.resize("up");
 			}
-		}else if (levelBox.enlarged){
+		}else if (levelBox.enlarged && !levelBox.bounds.contains(x, y)){
 			levelBox.enlarged = false;
 			levelBox.resize("down");
 		}
