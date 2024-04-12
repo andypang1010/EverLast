@@ -88,15 +88,6 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas, EnemyModel enemy){
-        String direction = getDirection(enemy.getVelocity().x,enemy.getVelocity().y, previousDirection);
-        processRun(direction);
-        if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
-            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
-        } else{
-            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
-        }
-        previousDirection = direction;
-
         // Draw vision cones
         for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
             float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
@@ -108,6 +99,16 @@ public class EnemyController extends CharactersController implements StateMachin
             canvas.draw(cone, new Color(1f, 1f, 1f, 0.5f), 100, 100 ,0);
         }
         ((EnemyModel) model).getTriangles().clear();
+
+        // Draw enemy
+        String direction = getDirection(enemy.getVelocity().x,enemy.getVelocity().y, previousDirection);
+        processRun(direction);
+        if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
+            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+        } else{
+            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+        }
+        previousDirection = direction;
     }
 
     private void reachDestination() {

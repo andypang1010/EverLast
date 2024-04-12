@@ -18,7 +18,7 @@
     "FireBoost": "characters/fireboostnoaxis.png",
     "baselayer": "Tilesets/PlaygroundTileset.png",
     "extralayer": "Tilesets/Testhouse.png",
-    "tileset": "Tilesets/PlaygroundTilesetCorrect.png"
+    "tileset": "Tilesets/whiteTileSet.png"
   },
   "sounds" : {
 
@@ -30,10 +30,10 @@
     }
   },
   "jsons": {
-    "level1": "levels/level1.json",
+    "level1": "levels/AlphaLevel.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/PlaygroundTilesetCorrect.json",
-    "playgroundlevel": "levels/level1.json"
+    "playgroundlevel": "levels/AlphaLevel.json"
   }
 }

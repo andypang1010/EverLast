@@ -11,11 +11,16 @@ import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
+    private static final int MAX_BOOST = 3;
+    private static final int BOOST_COOL_DOWN = 60;
 
-    private boolean canBoost;
     private Texture fire;
     private Texture fireBoost;
     private boolean alive;
+    private int boostNum;
+    private int boostCoolDown;
+    float radius;
+
     @Override
     public void activatePhysics(World world) {
         // Create and configure the player's physics body and fixtures
@@ -36,6 +41,7 @@ public class PlayerModel extends CharactersModel {
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
         this.alive = true;
+        this.radius = 3.19f;
 
         Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
         idleright = new FilmStrip(idle_right, 1, 3, 3);
@@ -55,8 +61,9 @@ public class PlayerModel extends CharactersModel {
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
-        canBoost = false;
         alive = true;
+        this.boostNum = 0;
+        this.boostCoolDown = 0;
         type = "player";
     }
 
@@ -68,13 +75,36 @@ public class PlayerModel extends CharactersModel {
         return this.position.y - 250;
     }
 
-    public boolean getCanBoost() {
-        return canBoost;
+    public int getBoostNum() {
+        return boostNum;
     }
 
-    public void setCanBoost(boolean b) {
-        canBoost = b;
+    public void addCanBoost(int b) {
+        boostNum += b;
+        if(boostNum > MAX_BOOST){
+            boostNum = MAX_BOOST;
+        }else if(boostNum < 0){
+            boostNum = 0;
+        }
     }
+
+    public int getBoostCoolDown(){
+        return boostCoolDown;
+    }
+
+    public void addBoostCoolDown(int t){
+        boostCoolDown += t;
+        if(boostCoolDown > BOOST_COOL_DOWN){
+            boostCoolDown = BOOST_COOL_DOWN;
+        }else if(boostCoolDown < 0){
+            boostCoolDown = 0;
+        }
+    }
+
+    public void resetBoostCoolDown(){
+        boostCoolDown = BOOST_COOL_DOWN;
+    }
+    public float getRadius() {return this.radius;}
 
     public void createBody(World world) {
         BodyDef bodyDef = new BodyDef();
@@ -89,19 +119,15 @@ public class PlayerModel extends CharactersModel {
         body.setFixedRotation(true);
         body.setLinearDamping(0);
 
-        PolygonShape shape = new PolygonShape();
-        // TODO: getTexture is not scaled...
-//        shape.setAsBox((float) this.getTexture().getWidth() /2,
-//                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(1f, 1f);
-
+        CircleShape shape = new CircleShape();
+        shape.setRadius(radius);
         this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0067f;
-        fixtureDef.friction = 0.3f;
+        fixtureDef.density = 0.0067f / (radius * radius * 3.14f);
+        fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.25f;
 
         // Setting category and mask bits for the player
@@ -121,9 +147,9 @@ public class PlayerModel extends CharactersModel {
 
     public void drawFire(GameCanvas canvas){
         if (body.getLinearVelocity().len() > 65){
-            canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fireBoost, Color.WHITE, (float) fireBoost.getWidth() / 2 + 275 , (float) fireBoost.getHeight() / 2, position.x , position.y+ 125, getRotation(),.5f,.5f,false);
         }else{
-            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+25, getRotation(),.5f,.5f,false);
+            canvas.draw(fire, Color.WHITE, (float) fire.getWidth() / 2 + 250 , (float) fire.getHeight() / 2, position.x , position.y+ 125, getRotation(),.5f,.5f,false);
         }
 
     }

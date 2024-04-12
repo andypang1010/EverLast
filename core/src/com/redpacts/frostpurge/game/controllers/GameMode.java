@@ -48,6 +48,8 @@ public class GameMode implements Screen {
 
     private Array<EnemyController> enemyControllers;
 
+    private Comparator<GameObject> comparator;
+
     private Array<EnemyModel> enemies;
 
     private TileGraph tileGraph = new TileGraph();
@@ -64,7 +66,30 @@ public class GameMode implements Screen {
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
-
+        this.comparator = new Comparator<GameObject>() {
+            public int compare(GameObject o1, GameObject o2) {
+                float o1y;
+                float o2y;
+                if (o1 instanceof TileModel){
+                    o1y = o1.getPositionY() + (((TileModel) o1).base-3) *64;
+                } else{
+                    o1y = o1.getPositionY();
+                }
+                if (o2 instanceof TileModel){
+                    o2y = o2.getPositionY() + (((TileModel) o2).base-3) *64;
+                } else{
+                    o2y = o2.getPositionY();
+                }
+                float diff = o1y - o2y;
+                if(diff > 0){
+                    return 1;
+                }else if(diff == 0){
+                    return 0;
+                }else{
+                    return -1;
+                }
+            }
+        };
         // Null out all pointers, 0 out all ints, etc.
     }
     /**
@@ -125,30 +150,6 @@ public class GameMode implements Screen {
     }
 
     public void sort_by_y(Array<GameObject> obj_list) {
-        Comparator<GameObject> comparator = new Comparator<GameObject>() {
-            public int compare(GameObject o1, GameObject o2) {
-                float o1y;
-                float o2y;
-                if (o1 instanceof TileModel){
-                    o1y = o1.getPositionY() + (((TileModel) o1).base-2) *64;
-                } else{
-                    o1y = o1.getPositionY();
-                }
-                if (o2 instanceof TileModel){
-                    o2y = o2.getPositionY() + (((TileModel) o2).base-2) *64;
-                } else{
-                    o2y = o2.getPositionY();
-                }
-                float diff = o1y - o2y;
-                if(diff > 0){
-                    return 1;
-                }else if(diff == 0){
-                    return 0;
-                }else{
-                    return -1;
-                }
-            }
-        };
         obj_list.sort(comparator);
     }
 
@@ -199,7 +200,7 @@ public class GameMode implements Screen {
         if (!playerModel.isAlive()){
             gameState = GameState.OVER;
         }
-        if (playerModel.getPosition().x > 600 && playerModel.getPosition().x < 1000 && playerModel.getPosition().y > 3600 && playerModel.getPosition().y < 3900){
+        if (playerModel.getPosition().x > 1700 && playerModel.getPosition().x < 2000 && playerModel.getPosition().y > 2500 && playerModel.getPosition().y < 2800){
             gameState = GameState.WIN;
         }
         Array<GameObject> drawble = new Array<GameObject>();
@@ -243,7 +244,7 @@ public class GameMode implements Screen {
             collisionController.update();
         }
 
-        Gdx.gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);  // Homage to the XNA years
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
@@ -288,9 +289,13 @@ public class GameMode implements Screen {
         }
 
         canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
-        if (playerController.hasResources()){
+        if(playerModel.getBoostNum() >= 1){
             canvas.drawUI(statusBarTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
+        }
+        if(playerModel.getBoostNum() >= 2){
             canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
+        }
+        if(playerModel.getBoostNum() >= 3){
             canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
         }
         font.getData().setScale(1);

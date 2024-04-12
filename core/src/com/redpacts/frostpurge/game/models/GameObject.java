@@ -13,7 +13,7 @@ public abstract class GameObject {
     protected float rotation;
     protected Texture texture;
     protected TextureRegion textureRegion;
-    protected PolygonShape shape;
+    protected Shape shape;
     protected Body body;
 
     public void activatePhysics(World world) {};
