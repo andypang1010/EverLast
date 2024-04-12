@@ -12,16 +12,17 @@ public abstract class CharactersController {
     private Float time;
     protected boolean flip;
     protected String previousDirection = "right";
+    protected Vector2 vel;
 
     public void accelerate(float x, float y, float scale) {
-        Vector2 vel = model.getVelocity();
+        vel = model.getVelocity();
         vel.x += .5f * scale * x;
         vel.y -= .5f * scale * y;
         model.setVelocity(vel.x, vel.y);
     }
 
     public void stop() {
-        Vector2 vel = model.getVelocity();
+        vel = model.getVelocity();
         float x = -.05f* model.getVelocity().x;
         float y = -.05f* model.getVelocity().y;
         vel.x = stopHelper(vel.x,x);
@@ -29,7 +30,7 @@ public abstract class CharactersController {
         model.setVelocity(vel.x, vel.y);
     }
     public void friction(){
-        Vector2 vel = model.getVelocity();
+        vel = model.getVelocity();
         float x = -.15f* model.getVelocity().x/ Math.abs(model.getVelocity().x);
         float y = -.15f* model.getVelocity().y/ Math.abs(model.getVelocity().y);
         vel.x = stopHelper(vel.x,x);

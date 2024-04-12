@@ -43,6 +43,7 @@ public class GameCanvas {
     private Vector3 world;
 
     private Affine2 global;
+    private Texture coneTexture;
     /**
      * Creates a new GameCanvas determined by the application configuration.
      *
@@ -66,6 +67,12 @@ public class GameCanvas {
         screen = new Vector3();
         world = new Vector3();
         vertex = new Vector2();
+
+        int BLANK_SIZE = 1;
+        Pixmap map = new Pixmap(BLANK_SIZE,BLANK_SIZE,Pixmap.Format.RGBA4444);
+        map.setColor(Color.RED);
+        map.fillRectangle(0, 0, BLANK_SIZE, BLANK_SIZE);
+        coneTexture = new Texture(map);
     }
     /**
      * Center the camera around the player
@@ -659,11 +666,7 @@ public class GameCanvas {
             rw = region.getRegionWidth(); rh = region.getRegionHeight();
         }
         int BLANK_SIZE = 1;
-        Pixmap map = new Pixmap(BLANK_SIZE,BLANK_SIZE,Pixmap.Format.RGBA4444);
-        map.setColor(Color.RED);
-        map.fillRectangle(0, 0, BLANK_SIZE, BLANK_SIZE);
-        Texture blank = new Texture(map);
-        region.setTexture(blank);
+        region.setTexture(coneTexture);
         region.setRegion(0, 0, BLANK_SIZE, BLANK_SIZE);
         spriteBatch.setColor(tint);
         spriteBatch.draw(poly, x, y, 0.0f, 0.0f, BLANK_SIZE, BLANK_SIZE, 1, 1, rotate);
@@ -671,7 +674,6 @@ public class GameCanvas {
         if (orig != null) {
             region.setRegion(rx,ry,rw,rh);
         }
-        map.dispose();
     }
     /**
      * Start the debug drawing sequence.
