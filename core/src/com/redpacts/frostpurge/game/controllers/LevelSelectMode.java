@@ -225,14 +225,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private void draw() {
 		canvas.begin();
 		canvas.drawBackground(background, 0, 0, true);
-
-		for (LevelBox levelBox: levelBoxes){
-			hoveringBox(levelBox);
-		}
-		for (LevelBox levelBox: levelBoxes){
-			levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-			levelBox.font.getData().setScale(levelBox.fontScale);
-			canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
+		if (xbox==null){
+			for (LevelBox levelBox: levelBoxes){
+				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
+				hoveringBox(levelBox);
+				if (levelBox.enlarged){
+					font.getData().setScale(1.25f);
+				}
+				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
+			}
+		} else{
+			for (LevelBox levelBox: levelBoxes){
+				hoveringBox(levelBox);
+			}
+			for (LevelBox levelBox: levelBoxes){
+				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
+				levelBox.font.getData().setScale(levelBox.fontScale);
+				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
+			}
 		}
 		canvas.end();
 	}
