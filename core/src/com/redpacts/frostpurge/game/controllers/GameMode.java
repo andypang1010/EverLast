@@ -199,10 +199,10 @@ public class GameMode implements Screen {
         // Handle pausing the game
         if (inputController.didPause()) {
             System.out.println(gameState);
-            if (gameState == GameState.INTRO) {
+            if (gameState == GameState.PLAY) {
                 gameState = GameState.PAUSE;
             } else if (gameState == GameState.PAUSE) {
-                gameState = GameState.INTRO;
+                gameState = GameState.PLAY;
             }
             inputController.clearPausePressed();
         }
@@ -214,7 +214,7 @@ public class GameMode implements Screen {
             return; // Skip the rest of the update loop
         }
 
-        if (gameState == GameState.INTRO){
+        if (gameState == GameState.PLAY){
             currentTime -= Gdx.graphics.getDeltaTime();
         }
 
@@ -258,7 +258,7 @@ public class GameMode implements Screen {
             }
         }
 
-        if (gameState == GameState.INTRO){
+        if (gameState == GameState.PLAY){
             playerController.update(inputController.getHorizontal(), inputController.getVertical(), inputController.didDecelerate(), inputController.didBoost(), inputController.didVacuum());
             for (EnemyController enemyController : enemyControllers) {
                 enemyController.update();
@@ -364,7 +364,7 @@ public class GameMode implements Screen {
     }
 
     public void loadLevel(String level){
-        gameState = GameState.INTRO;
+        gameState = GameState.PLAY;
         JsonValue leveljson = directory.getEntry(level, JsonValue.class);
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
         enemies = currentLevel.getEnemies();
@@ -389,8 +389,6 @@ public class GameMode implements Screen {
     }
 
     public enum GameState {
-        /** Before the game has started */
-        INTRO,
         /** While we are playing the game */
         PLAY,
         /** When pausing the game */
