@@ -209,6 +209,8 @@ public class GameMode implements Screen {
 
         if (gameState == GameState.PAUSE) {
             // Implementing pause screen
+            font.setColor(Color.GREEN);
+            canvas.drawTextCenteredHUD("GAME PAUSED!", font, 0, HUDcamera);
             return; // Skip the rest of the update loop
         }
 
