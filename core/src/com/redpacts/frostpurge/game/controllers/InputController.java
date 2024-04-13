@@ -213,7 +213,6 @@ public class InputController {
             }
             // Remember the current state for the next frame
             previousPausePressed = currentPausePressed;
-            System.out.println();
         }
     }
 

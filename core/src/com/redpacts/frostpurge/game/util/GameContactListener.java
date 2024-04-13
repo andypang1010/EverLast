@@ -63,6 +63,8 @@ public class GameContactListener implements ContactListener {
             handleCollision((PlayerModel) obj1, (ObstacleTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof SwampTile) {
             handleCollision((PlayerModel) obj1, (SwampTile) obj2);
+        }else if (obj1 instanceof PlayerModel && obj2 instanceof GoalTile) {
+            handleCollision((PlayerModel) obj1, (GoalTile) obj2);
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
@@ -122,6 +124,21 @@ public class GameContactListener implements ContactListener {
      * @param tile   The tile
      */
     private void handleCollision(PlayerModel player, SwampTile tile) {
+        // TODO: Update so that we dampen the velocity of player
+//        System.out.println("Contact with swamp");
+//        System.out.println("player position:" + player.getPosition());
+//        System.out.println("tile position:" + tile.getPosition());
+//        world.destroyBody(tile.getBody());
+//        board.removeExtra(tile.getPosition().x, tile.getPosition().y);
+//        player.setCanBoost(true);
+    }
+    /**
+     * Handles collisions between a player and an enemy
+     *
+     * @param player The player
+     * @param tile   The tile
+     */
+    private void handleCollision(PlayerModel player, GoalTile tile) {
         // TODO: Update so that we dampen the velocity of player
 //        System.out.println("Contact with swamp");
 //        System.out.println("player position:" + player.getPosition());

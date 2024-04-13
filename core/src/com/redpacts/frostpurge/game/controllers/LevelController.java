@@ -26,7 +26,7 @@ public class LevelController {
      * @param twidth This is the width of the tileset in tiles
      * @param theight This is the height of the tileset in tiles
      */
-    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] tileset, int twidth, int theight, AssetDirectory directory, TextureRegion[][] background){
+    public LevelModel initializeLevel (JsonValue leveljson, JsonValue tileProperties, TextureRegion[][] tileset, int twidth, int theight, AssetDirectory directory){
         tilesetWidth = twidth;
         tilesetHeight = theight;
         height = leveljson.getInt("height");
@@ -38,7 +38,7 @@ public class LevelController {
         JsonValue layer3 = layer2.next();
         JsonValue characters = layer3.next();
 
-        initializeBaseTileLayer(level, layer1, background);
+        initializeBaseTileLayer(level, layer1, tileset);
         initializeExtraTileLayer(level, layer2, tileset,tileProperties);
         initializeAccentTileLayer(level, layer3, tileset);
         initializeCharacterLayer(level, characters, directory);
@@ -110,6 +110,9 @@ public class LevelController {
                     break;
                 case "empty tile":
                     level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
+                    break;
+                case "goal":
+                    level.populateGoal(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
                     break;
                 default:
                     if (index!=0){

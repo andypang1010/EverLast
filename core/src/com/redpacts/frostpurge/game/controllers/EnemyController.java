@@ -128,7 +128,7 @@ public class EnemyController extends CharactersController implements StateMachin
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
 
-            Vector2 currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
+            currentTile =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
 //            System.out.println("Current Tile");
 //            System.out.println(currentTile);
             moveDirection = new Vector2(nextTile.getPosition().x -32 - model.getPosition().x, nextTile.getPosition().y -32 - model.getPosition().y).nor();

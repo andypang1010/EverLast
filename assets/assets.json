@@ -16,9 +16,7 @@
     "EnemyDown": "enemies/enemyDownfilmstripEDIT1.png",
     "Fire" : "characters/firenoaxis.png",
     "FireBoost": "characters/fireboostnoaxis.png",
-    "baselayer": "Tilesets/PlaygroundTileset.png",
-    "extralayer": "Tilesets/Testhouse.png",
-    "tileset": "Tilesets/whiteTileSet.png"
+    "tileset": "Tilesets/TileSet.png"
   },
   "sounds" : {
 
@@ -31,9 +29,10 @@
   },
   "jsons": {
     "level1": "levels/AlphaLevel.json",
+    "level2": "levels/level3.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
-    "tileset": "Tilesets/PlaygroundTilesetCorrect.json",
+    "tileset": "Tilesets/TileSet.json",
     "playgroundlevel": "levels/AlphaLevel.json"
   }
 }

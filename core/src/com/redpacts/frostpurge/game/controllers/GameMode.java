@@ -162,13 +162,13 @@ public class GameMode implements Screen {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
                 TileModel currentTile = null;
 
-                if (currentLevel.getExtraLayer()[i][j] == null) {
-                    tileGraph.addTile(currentLevel.getBaseLayer()[i][j]);
-                    currentTile = currentLevel.getBaseLayer()[i][j];
+                if (currentLevel.getExtraLayer()[j][i] == null) {
+                    tileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    currentTile = currentLevel.getBaseLayer()[j][i];
                 }
-                else if (currentLevel.getExtraLayer()[i][j].getType() == TileModel.TileType.SWAMP) {
-                    tileGraph.addTile(currentLevel.getExtraLayer()[i][j]);
-                    currentTile = currentLevel.getExtraLayer()[i][j];
+                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP) {
+                    tileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+                    currentTile = currentLevel.getExtraLayer()[j][i];
                 }
 
                 else {
@@ -181,10 +181,10 @@ public class GameMode implements Screen {
                             continue;
                         }
                         if (currentLevel.inBounds(x, y)) {
-                            if (currentLevel.getExtraLayer()[x][y] == null) {
-                                tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[x][y]);
-                            } else if (currentLevel.getExtraLayer()[x][y].getType() == TileModel.TileType.SWAMP) {
-                                tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[x][y]);
+                            if (currentLevel.getExtraLayer()[y][x] == null) {
+                                tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                            } else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP) {
+                                tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
                         }
                     }
@@ -224,7 +224,7 @@ public class GameMode implements Screen {
         if (!playerModel.isAlive()){
             gameState = GameState.OVER;
         }
-        if (playerModel.getPosition().x > 1700 && playerModel.getPosition().x < 2000 && playerModel.getPosition().y > 2500 && playerModel.getPosition().y < 2800){
+        if (playerModel.didwin()){
             gameState = GameState.WIN;
         }
         drawble.clear();
@@ -349,8 +349,6 @@ public class GameMode implements Screen {
         tilesetjson = directory.getEntry("tileset", JsonValue.class);
         TextureRegion tilesetregion = new TextureRegion(directory.getEntry("tileset",Texture.class));
         tileset = tilesetregion.split(tilewidth, tileheight);
-        TextureRegion white = new TextureRegion(directory.getEntry("baselayer",Texture.class));
-        whitetile = white.split(tilewidth, tileheight);
         levelController = new LevelController();
 
 
@@ -366,7 +364,7 @@ public class GameMode implements Screen {
     public void loadLevel(String level){
         gameState = GameState.PLAY;
         JsonValue leveljson = directory.getEntry(level, JsonValue.class);
-        currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
+        currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
         currentTime = 46;

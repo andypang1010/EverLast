@@ -142,10 +142,11 @@ public class CollisionController{
             }
         }
         for (TileModel[] t : board.getExtraLayer()) {
-            for (TileModel tile : t)
-                if (tile != null){
+            for (TileModel tile : t){
+                if (tile != null) {
                     tile.createBody(world);
                     addObject(tile);
+                }
             }
         }
         GameContactListener contactListener = new GameContactListener(world, board);
@@ -201,6 +202,7 @@ public class CollisionController{
     public void update() {
         // TODO: Implement dt here
         pickPowerUp((PlayerModel) player);
+        win((PlayerModel) player);
         for (EnemyModel e : enemies){
             checkEnemyVision(e, player);
         }
@@ -215,6 +217,16 @@ public class CollisionController{
         if(board.isSwampTile(player.getPosition().x, player.getPosition().y)){
             board.removeExtra(player.getPosition().x, player.getPosition().y);
             player.addCanBoost(1);
+        }
+    }
+    /**
+     * Check if the player is on a swamp tile, and pick up the power up if true
+     *
+     * @param player Player to check
+     */
+    private void win(PlayerModel player){
+        if(board.isGoalTile(player.getPosition().x, player.getPosition().y)){
+            player.win();
         }
     }
     /**

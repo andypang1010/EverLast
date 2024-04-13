@@ -20,6 +20,7 @@ public class PlayerModel extends CharactersModel {
     private int boostNum;
     private int boostCoolDown;
     float radius;
+    boolean won = false;
 
     @Override
     public void activatePhysics(World world) {
@@ -70,6 +71,10 @@ public class PlayerModel extends CharactersModel {
 
     public boolean isAlive(){return alive;}
     public void die(){alive = false;}
+    public void win(){won = true;}
+    public boolean didwin(){
+        return won;
+    }
 
     public float getPositionY(){
         return this.position.y - 250;

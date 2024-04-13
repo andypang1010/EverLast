@@ -88,6 +88,15 @@ public class LevelModel {
     public void populateEmpty(int i, int j, TextureRegion texture, int base){
         extraLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64), base);
     }
+    /**
+     * Function to add an goal to the extra layer at the appropriate index
+     * @param i row that the swamp tile is on
+     * @param j row that the swamp tile is in
+     * @param texture texture of the swamp tile
+     */
+    public void populateGoal(int i, int j, TextureRegion texture, int base){
+        extraLayer[i][j] = new GoalTile(texture, new Vector2(j*64,i*64), base);
+    }
 
     /**
      * Creates the player in the scene so that they are instantiated correctly
@@ -159,7 +168,7 @@ public class LevelModel {
     public TileModel getTileState(float x, float y) {
         int intx = (int) Math.floor(x/64)+1;
         int inty = (int) Math.floor(y/64)+1;
-        if (!inBounds(inty, intx)) {
+        if (!inBounds(intx, inty)) {
             return null;
         }
         if (extraLayer[inty][intx]==null){
@@ -196,6 +205,7 @@ public class LevelModel {
 //            System.out.println(object.shape.getVertexCount());
 //            System.out.println(object.getPosition());
 //            System.out.println("\n");
+            System.out.println(object.getType());
             canvas.drawPhysics(object.shape, Color.BLUE, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
         }
     }
@@ -207,6 +217,14 @@ public class LevelModel {
             return false;
         }
         return extraLayer[indexy][indexx] instanceof SwampTile;
+    }
+    public boolean isGoalTile(float x, float y){
+        int indexx = (int) Math.floor(x/64);
+        int indexy = (int) Math.floor(y/64);
+        if (!inBounds(indexx,indexy)){
+            return false;
+        }
+        return extraLayer[indexy][indexx] instanceof GoalTile;
     }
     public void removeExtra(float x, float y){
         int indexx = (int) Math.floor(x/64);
