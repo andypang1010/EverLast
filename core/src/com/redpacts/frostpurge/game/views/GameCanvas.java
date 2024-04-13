@@ -624,7 +624,7 @@ public class GameCanvas {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         holder.setRegion(image);
-        draw(holder,tint,x,height-y,x,height- y,angle,sx,sy, false);
+        draw(holder,tint,0,0,x,height- y,angle,sx,sy, false);
         active = DrawPass.STANDARD;
         spriteBatch.end();
     }

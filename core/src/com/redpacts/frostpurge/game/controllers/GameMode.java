@@ -58,12 +58,14 @@ public class GameMode implements Screen {
     private TileGraph tileGraph = new TileGraph();
 
     private Texture statusBarBGTexture;
-    private Texture statusBarTexture;
+    private Texture boostBarTexture;
+    private Texture healthBarTexture;
     private boolean debug;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
     private BitmapFont font;
+    private float maxTime;
     private float currentTime;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
@@ -310,16 +312,20 @@ public class GameMode implements Screen {
             canvas.endDebug();
         }
 
-        canvas.drawUI(statusBarBGTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
+        canvas.drawUI(statusBarBGTexture,Color.WHITE, 50, -800, 0f, 1.2f,1.2f, HUDcamera);
         if(playerModel.getBoostNum() >= 1){
-            canvas.drawUI(statusBarTexture,Color.WHITE, -100, -1400, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 50, -800, 0, 1.2f,1.2f, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 2){
-            canvas.drawUI(statusBarTexture,Color.WHITE, 250, -1400, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 150, -800, 0, 1.2f,1.2f, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 3){
-            canvas.drawUI(statusBarTexture,Color.WHITE, 300, -1400, 0, .5f,.5f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 250, -800, 0, 1.2f,1.2f, HUDcamera);
         }
+        if(playerModel.getBoostNum() >= 4){
+            canvas.drawUI(boostBarTexture,Color.WHITE, 350, -800, 0, 1.2f,1.2f, HUDcamera);
+        }
+        canvas.drawUI(healthBarTexture, Color.WHITE, 50+(193.2f/maxTime)*(maxTime-currentTime), -800, 0, 1.2f*currentTime/maxTime, 1.2f, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
         canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
@@ -357,7 +363,8 @@ public class GameMode implements Screen {
         // Create the controllers.
 
         statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
-        statusBarTexture = new TextureRegion(directory.getEntry("StatusBar_Bar", Texture.class)).getTexture();
+        boostBarTexture = new TextureRegion(directory.getEntry("StatusBar_Boost", Texture.class)).getTexture();
+        healthBarTexture = new TextureRegion(directory.getEntry("StatusBar_Health", Texture.class)).getTexture();
 
         inputController = new InputController();
 
@@ -369,7 +376,8 @@ public class GameMode implements Screen {
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory, whitetile);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
-        currentTime = 46;
+        maxTime = 3;
+        currentTime = maxTime;
         currentLevel.setName(level);
 
         populateTileGraph();
