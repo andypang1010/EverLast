@@ -47,6 +47,8 @@ public class InputController {
     /** Whether the exit button was pressed. */
     private boolean exitPressed;
     private boolean replayPressed;
+    private boolean pausePressed;
+    private boolean previousPausePressed = false;
 
     /** The player position */
     private Vector2 position;
@@ -117,6 +119,13 @@ public class InputController {
     }
     public boolean didExit(){return exitPressed;}
     public boolean didReplay(){return replayPressed;}
+    /**
+     * Return pausePressed. Pause must be cleared using InputController.clearPausePressed() */
+    public boolean didPause(){return pausePressed;}
+    public void clearPausePressed() {
+        pausePressed = false;
+        previousPausePressed = true; // Prevents pause from being triggered again immediately
+    }
 
     /**
      * Creates a new input controller for the specified player.
@@ -165,6 +174,14 @@ public class InputController {
             vacuumPressed = xbox.getLBumper();
             debugPressed = xbox.getDPadDown();
             replayPressed = xbox.getB();
+            boolean currentPausePressed = xbox.getStart();
+            if (currentPausePressed && !previousPausePressed) {
+                pausePressed = true;
+            } else {
+                pausePressed = false;
+            }
+            // Remember the current state for the next frame
+            previousPausePressed = currentPausePressed;
         }else{
             float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
             float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
@@ -188,6 +205,15 @@ public class InputController {
             exitPressed = Gdx.input.isKeyPressed(Input.Keys.BACKSPACE);
             debugPressed = Gdx.input.isKeyPressed(Input.Keys.D);
             replayPressed = Gdx.input.isKeyPressed(Input.Keys.R);
+            boolean currentPausePressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+            if (currentPausePressed && !previousPausePressed) {
+                pausePressed = true;
+            } else {
+                pausePressed = false;
+            }
+            // Remember the current state for the next frame
+            previousPausePressed = currentPausePressed;
+            System.out.println();
         }
     }
 

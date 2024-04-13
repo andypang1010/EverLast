@@ -194,6 +194,24 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
+        inputController.readInput(null,null);
+
+        // Handle pausing the game
+        if (inputController.didPause()) {
+            System.out.println(gameState);
+            if (gameState == GameState.INTRO) {
+                gameState = GameState.PAUSE;
+            } else if (gameState == GameState.PAUSE) {
+                gameState = GameState.INTRO;
+            }
+            inputController.clearPausePressed();
+        }
+
+        if (gameState == GameState.PAUSE) {
+            // Implementing pause screen
+            return; // Skip the rest of the update loop
+        }
+
         if (gameState == GameState.INTRO){
             currentTime -= Gdx.graphics.getDeltaTime();
         }
@@ -223,8 +241,6 @@ public class GameMode implements Screen {
         drawble.addAll(enemies);
         sort_by_y(drawble);
         drawble.reverse();
-
-        inputController.readInput(null,null);
 
         // Toggle debug mode
         if (inputController.didDebug()) {
@@ -375,6 +391,8 @@ public class GameMode implements Screen {
         INTRO,
         /** While we are playing the game */
         PLAY,
+        /** When pausing the game */
+        PAUSE,
         /** When the ships is dead (but shells still work) */
         OVER,
         WIN
