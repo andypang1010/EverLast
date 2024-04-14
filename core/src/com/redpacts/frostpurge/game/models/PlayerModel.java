@@ -11,7 +11,7 @@ import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
-    private static final int MAX_BOOST = 3;
+    private static final int MAX_BOOST = 4;
     private static final int BOOST_COOL_DOWN = 60;
 
     private Texture fire;
