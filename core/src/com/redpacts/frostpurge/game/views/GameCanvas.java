@@ -532,6 +532,8 @@ public class GameCanvas {
         }
         GlyphLayout layout = new GlyphLayout(font,text);
         font.setColor(Color.WHITE);
+        x *= (float) getWidth() /1920;
+        y *= (float) getHeight() /1080;
         font.draw(spriteBatch, layout, x, y);
     }
     /**

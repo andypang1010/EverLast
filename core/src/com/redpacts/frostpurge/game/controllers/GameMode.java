@@ -374,7 +374,20 @@ public class GameMode implements Screen {
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
-        maxTime = 46;
+        switch (level){
+            case "level1":
+                maxTime = 46;
+                break;
+            case "level2":
+                maxTime = 31;
+                break;
+            case "level3":
+                maxTime = 46;
+                break;
+            default:
+                maxTime = 61;
+        }
+
         currentTime = maxTime;
         currentLevel.setName(level);
 
