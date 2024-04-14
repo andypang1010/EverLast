@@ -31294,12 +31294,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":"square"
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"square"
+                 "value":"obstacle"
                 }]
         }, 
         {
@@ -31313,12 +31313,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":"square"
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"square"
+                 "value":"obstacle"
                 }]
         }, 
         {
@@ -31332,12 +31332,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":"square"
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"square"
+                 "value":"obstacle"
                 }]
         }, 
         {

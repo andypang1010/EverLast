@@ -328,7 +328,7 @@ public class GameMode implements Screen {
         canvas.drawUI(healthBarTexture, Color.WHITE, 50+(193.2f/maxTime)*(maxTime-currentTime), -800, 0, 1.2f*currentTime/maxTime, 1.2f, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
-        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
+//        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
         if (gameState == GameState.OVER){
             font.setColor(Color.RED);
             canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);

@@ -176,10 +176,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		LevelBox level1 = new LevelBox(1, (float) canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph1.width, glyph1.height,assets.getEntry("font", BitmapFont.class), glyph1);
 		GlyphLayout glyph2 = new GlyphLayout();
 		glyph2.setText(font, "level 2");
-		LevelBox level2 = new LevelBox(2, (float) 3*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph2.width, glyph2.height,assets.getEntry("font", BitmapFont.class), glyph2);
+		LevelBox level2 = new LevelBox(2, (float) 2*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph2.width, glyph2.height,assets.getEntry("font", BitmapFont.class), glyph2);
+		GlyphLayout glyph3 = new GlyphLayout();
+		glyph3.setText(font, "level 3");
+		LevelBox level3 = new LevelBox(3, (float) 3*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph3.width, glyph3.height,assets.getEntry("font", BitmapFont.class), glyph3);
 		levelBoxes = new ArrayList<LevelBox>();
 		levelBoxes.add(level1);
 		levelBoxes.add(level2);
+		levelBoxes.add(level3);
+		System.out.println(levelBoxes.get(1).bounds);
+		System.out.println(levelBoxes.get(2).bounds);
 		active = true;
 		if (xbox != null){
 			level1.enlarged=true;

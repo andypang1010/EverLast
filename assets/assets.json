@@ -29,8 +29,9 @@
     }
   },
   "jsons": {
-    "level1": "levels/AlphaLevel.json",
-    "level2": "levels/level3.json",
+    "level1": "levels/level1.json",
+    "level2": "levels/level2.json",
+    "level3": "levels/level3.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
