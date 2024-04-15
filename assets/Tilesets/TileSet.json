@@ -8950,12 +8950,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"square"
+                 "value":""
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
@@ -8969,12 +8969,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"square"
+                 "value":""
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
@@ -8988,12 +8988,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"square"
+                 "value":""
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
@@ -9007,12 +9007,12 @@
                 {
                  "name":"shape",
                  "type":"string",
-                 "value":"square"
+                 "value":""
                 }, 
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"obstacle"
+                 "value":""
                 }]
         }, 
         {
