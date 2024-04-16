@@ -158,8 +158,6 @@ public class LevelController {
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
                     x += 32;
-                    System.out.println(x);
-                    System.out.println(y);
                     level.addWaypoint(x,height*64 - y,enemyID,pointNumber);
                     break;
             }
