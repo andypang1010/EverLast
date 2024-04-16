@@ -185,8 +185,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		levelBoxes.add(level1);
 		levelBoxes.add(level2);
 		levelBoxes.add(level3);
-		System.out.println(levelBoxes.get(1).bounds);
-		System.out.println(levelBoxes.get(2).bounds);
 		active = true;
 		if (xbox != null){
 			level1.enlarged=true;

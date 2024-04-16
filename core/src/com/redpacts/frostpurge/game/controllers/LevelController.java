@@ -2,6 +2,7 @@ package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.LevelModel;
@@ -40,7 +41,7 @@ public class LevelController {
 
         initializeBaseTileLayer(level, layer1, tileset);
         initializeExtraTileLayer(level, layer2, tileset,tileProperties);
-        initializeAccentTileLayer(level, layer3, tileset);
+        initializeAccentTileLayer(level, layer3, tileset, tileProperties);
         initializeCharacterLayer(level, characters, directory);
 
         return level;
@@ -164,13 +165,25 @@ public class LevelController {
      * @param layer This is the layer Json that we will be reading from to get all of the tiles
      * @param tileset This is the tileset that the tiles are pulling their textures from
      */
-    public void initializeAccentTileLayer(LevelModel level, JsonValue layer, TextureRegion[][] tileset){
+    public void initializeAccentTileLayer(LevelModel level, JsonValue layer, TextureRegion[][] tileset, JsonValue tileProperties){
         int[] data = layer.get("data").asIntArray();
+        int base = 0;
         for (int i = 0; i<data.length;i++){
+            JsonValue properties = tileProperties.get("tiles").child();
             int index = data[i];
             if (index!=0){
                 index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILESET SIZE AND ORDER
-                level.populateAccent(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+                boolean done = false;
+                while(!done){
+                    if (properties.getInt("id") == index){
+                        JsonValue variables = properties.get("properties").child();
+                        base = variables.getInt("value");
+                        done = true;
+                    } else{
+                        properties = properties.next();
+                    }
+                }
+                level.populateAccent(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
             }
         }
     }

@@ -54,8 +54,8 @@ public class LevelModel {
      * @param j column that the tile is in
      * @param texture the texture for the empty tile
      */
-    public void populateAccent(int i, int j, TextureRegion texture){
-        accentLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
+    public void populateAccent(int i, int j, TextureRegion texture, int base){
+        accentLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64), base);
     }
 
     /**
