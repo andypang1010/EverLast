@@ -143,19 +143,24 @@ public class LevelController {
             type = properties.getString("value");
             switch (type){
                 case "player":
+                    x+= 140;
                     level.createPlayer(x,(height*64-y),rotation,directory);
                     break;
                 case "enemy":
                     properties = properties.next();
+                    x+= 75;
                     enemyID = properties.getInt("value");
-                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), (int)Math.floor((double) y /64)}, enemyID);
+                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, enemyID);
                     break;
                 case "waypoint":
                     properties = properties.next();
                     enemyID = properties.getInt("value");
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
-                    level.addWaypoint(x,y,enemyID,pointNumber);
+                    x += 32;
+                    System.out.println(x);
+                    System.out.println(y);
+                    level.addWaypoint(x,height*64 - y,enemyID,pointNumber);
                     break;
             }
             objects = objects.next();

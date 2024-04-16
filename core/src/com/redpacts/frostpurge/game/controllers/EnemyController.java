@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.ai.fsm.*;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +14,9 @@ import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
@@ -66,19 +70,21 @@ public class EnemyController extends CharactersController implements StateMachin
 //        cone = new PolygonRegion(new TextureRegion(), null,null);
     }
 
-    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board, TileModel[] waypoints) {
+    EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board, ArrayList<int[]> waypoints) {
         this.model = enemy;
         playerModel = targetPlayerModel;
-        this.waypoints = waypoints;
+        this.waypoints = new TileModel[waypoints.size()];
+        for (int i = 0; i<waypoints.size();i++){
+            this.waypoints[i] = board.getTileState(waypoints.get(i)[0],waypoints.get(i)[1]);
+        }
         this.nextWaypointIndex = 1;
         setInitialState(initState);
         this.tileGraph = tileGraph;
-        model.setPosition(startPatrolTile.getPosition().x, startPatrolTile.getPosition().y);
-        previousTile = startPatrolTile;
+        previousTile = this.waypoints[0];
         this.board = board;
 
         if (initState == EnemyStates.PATROL) {
-            targetTile = endPatrolTile;
+            targetTile = this.waypoints[this.nextWaypointIndex];
         }
         else {
             targetTile = modelPositionToTile(playerModel);
@@ -163,7 +169,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public void update() {
-        System.out.println(model.getPosition());
+//        System.out.println(model.getPosition());
         currentTilePosition =  board.getTileState(model.getPosition().x, model.getPosition().y).getPosition();
 
         try{
@@ -171,7 +177,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 reachNextTile();
             }
         } catch (Exception e){
-            setGoal(startPatrolTile);
+            setGoal(waypoints[0]);
         }
 
         switch (currentState) {

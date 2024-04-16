@@ -401,7 +401,7 @@ public class GameMode implements Screen {
 
         enemyControllers = new Array<>();
         for (int i = 0; i < enemies.size; i++){
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel));
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel,enemies.get(i).getWaypoints()));
         }
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

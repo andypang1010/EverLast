@@ -78,6 +78,15 @@ public class EnemyModel extends CharactersModel{
     public void addWaypoint(int[] newPoint, int id){
         this.waypoints.add(id,newPoint);
     }
+    public ArrayList<int[]> getWaypoints(){
+        waypoints.trimToSize();
+        System.out.println("Waypoints");
+        for (int i = 0; i<waypoints.size();i++){
+            System.out.println(waypoints.get(i)[0]);
+            System.out.println(waypoints.get(i)[1]);
+        }
+        return waypoints;
+    }
     public EnemyStates getInitState() {return initState;}
     public void setInitState(EnemyStates initState) {this.initState = initState;}
     public EnemyStates getCurrentState() {return currentState;}
