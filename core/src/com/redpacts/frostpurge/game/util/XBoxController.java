@@ -128,7 +128,7 @@ public class XBoxController implements Controller, ControllerListener {
      */
     public boolean getStart()  {
         if (controller != null) {
-            controller.getButton( mapping.buttonStart );
+            return controller.getButton( mapping.buttonStart );
         }
         return false;
     }
