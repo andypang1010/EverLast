@@ -185,6 +185,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		levelBoxes.add(level1);
 		levelBoxes.add(level2);
 		levelBoxes.add(level3);
+		levelBoxes.add(level3);
 		active = true;
 		if (xbox != null){
 			level1.enlarged=true;
@@ -395,7 +396,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		if (pressState == 0) {
-			if (xbox != null && xbox.getB()) {
+			if (xbox != null && xbox.getA()) {
 				for (LevelBox levelBox : levelBoxes){
 					if (levelBox.enlarged){
 						pressState = levelBox.label*2-1;
