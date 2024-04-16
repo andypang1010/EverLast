@@ -99,6 +99,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private List<LevelBox> levelBoxes;
 	private String selectedLevel;
 	private XBoxController xbox;
+	private float time;
 
 	public String getLevel(){
 		return selectedLevel;
@@ -176,15 +177,21 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		LevelBox level1 = new LevelBox(1, (float) canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph1.width, glyph1.height,assets.getEntry("font", BitmapFont.class), glyph1);
 		GlyphLayout glyph2 = new GlyphLayout();
 		glyph2.setText(font, "level 2");
-		LevelBox level2 = new LevelBox(2, (float) 3*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph2.width, glyph2.height,assets.getEntry("font", BitmapFont.class), glyph2);
+		LevelBox level2 = new LevelBox(2, (float) 2*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph2.width, glyph2.height,assets.getEntry("font", BitmapFont.class), glyph2);
+		GlyphLayout glyph3 = new GlyphLayout();
+		glyph3.setText(font, "level 3");
+		LevelBox level3 = new LevelBox(3, (float) 3*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph3.width, glyph3.height,assets.getEntry("font", BitmapFont.class), glyph3);
 		levelBoxes = new ArrayList<LevelBox>();
 		levelBoxes.add(level1);
 		levelBoxes.add(level2);
+		levelBoxes.add(level3);
+		levelBoxes.add(level3);
 		active = true;
 		if (xbox != null){
 			level1.enlarged=true;
 			level1.fontScale = 1.25f;
 		}
+		time = 0;
 	}
 
 	/**
@@ -260,6 +267,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	public void render(float delta) {
 		if (active) {
+			time += Gdx.graphics.getDeltaTime();
 //			update(delta);
 			draw();
 //			System.out.println(levelBoxes.get(0).enlarged);
@@ -388,7 +396,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		if (pressState == 0) {
-			if (xbox != null && xbox.getB()) {
+			if (xbox != null && xbox.getA()) {
 				for (LevelBox levelBox : levelBoxes){
 					if (levelBox.enlarged){
 						pressState = levelBox.label*2-1;
@@ -536,7 +544,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		return true;
 	}
 
-	public boolean hoveringBox(LevelBox levelBox) {
+	public void hoveringBox(LevelBox levelBox) {
 		if (xbox ==null){
 			int x = Gdx.input.getX();
 			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
@@ -552,7 +560,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 			levelBox.font.getData().setScale(levelBox.fontScale);
 		} else{
-			if (levelBox.enlarged){
+			if (levelBox.enlarged && time >.2f){
 				float x = xbox.getLeftX();
 				if (Math.abs(x)<.5){
 					x = 0;
@@ -566,25 +574,23 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						levelBoxes.get(levelBox.label).enlarged = true;
 						levelBoxes.get(levelBox.label).resize("up");
 						levelBoxes.get(levelBox.label).fontScale = 1.25f;
-						return true;
+						time =0;
 					}
 				} else if (x<0) {
 //					System.out.println("left");
 					if (levelBox.label > 1){
-						System.out.println("Switch");
 						levelBox.enlarged = false;
 						levelBox.resize("down");
 						levelBox.fontScale = 1;
 						levelBoxes.get(levelBox.label-2).enlarged = true;
 						levelBoxes.get(levelBox.label-2).resize("up");
 						levelBoxes.get(levelBox.label-2).fontScale = 1.25f;
-						return true;
+						time =0;
 					}
 				}
 				levelBox.font.getData().setScale(levelBox.fontScale);
 			}
 		}
-		return false;
 	}
 
 	private static class LevelBox {

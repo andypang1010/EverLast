@@ -213,6 +213,9 @@ public class GameMode implements Screen {
             // Implementing pause screen
             font.setColor(Color.GREEN);
             canvas.drawTextCenteredHUD("GAME PAUSED!", font, 0, HUDcamera);
+            if (inputController.didExit()){
+                listener.exitScreen(this, 0);
+            }
             return; // Skip the rest of the update loop
         }
 
@@ -331,7 +334,7 @@ public class GameMode implements Screen {
         canvas.drawUI(healthBarTexture, Color.WHITE, 50+(1.932f)*(100-playerModel.getHp()), -800, 0, 1.2f*playerModel.getHp()/100, 1.2f, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
-        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
+//        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
         if (gameState == GameState.OVER){
             font.setColor(Color.RED);
             canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
@@ -377,7 +380,20 @@ public class GameMode implements Screen {
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
-        maxTime = 46;
+        switch (level){
+            case "level1":
+                maxTime = 46;
+                break;
+            case "level2":
+                maxTime = 31;
+                break;
+            case "level3":
+                maxTime = 46;
+                break;
+            default:
+                maxTime = 61;
+        }
+
         currentTime = maxTime;
         currentLevel.setName(level);
 
