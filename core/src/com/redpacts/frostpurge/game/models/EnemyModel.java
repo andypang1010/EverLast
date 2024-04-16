@@ -25,6 +25,7 @@ public class EnemyModel extends CharactersModel{
     EnemyStates initState, currentState, prevState;
     private int[] startpatrol;
     private int[] endpatrol;
+    private ArrayList<int[]> waypoints;
     public int[] getStartPatrol(){
         return startpatrol;
     }
@@ -37,7 +38,7 @@ public class EnemyModel extends CharactersModel{
      * @param position vector2 representing the starting location
      * @param rotation float representing angle the player is facing
      */
-    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, int[] endpatrol){
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol){
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
@@ -66,12 +67,16 @@ public class EnemyModel extends CharactersModel{
 
 
         this.startpatrol = startpatrol;
-        this.endpatrol = endpatrol;
         type = "enemy";
 
         initState = EnemyStates.PATROL;
         currentState = EnemyStates.PATROL;
         prevState = null;
+        waypoints = new ArrayList<int[]>(6);
+        addWaypoint(this.startpatrol,0);
+    }
+    public void addWaypoint(int[] newPoint, int id){
+        this.waypoints.add(id,newPoint);
     }
     public EnemyStates getInitState() {return initState;}
     public void setInitState(EnemyStates initState) {this.initState = initState;}
