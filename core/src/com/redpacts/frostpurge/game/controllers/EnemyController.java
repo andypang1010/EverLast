@@ -175,6 +175,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
                 for (EnemyController enemy : GameMode.enemyControllers) {
                     Vector2 enemyPosition = enemy.model.getPosition();
+                    System.out.println(enemy.getModel().toString() + "'s distance to current enemy: " + Vector2.dst(model.getPosition().x, model.getPosition().y, enemyPosition.x, enemyPosition.y));
                     if (Vector2.dst(model.getPosition().x, model.getPosition().y, enemyPosition.x, enemyPosition.y) < alertRadius) {
                         enemy.changeState(EnemyStates.CHASE);
                     }
