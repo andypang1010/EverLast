@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.controllers.EnemyController;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -123,7 +124,7 @@ public class LevelModel {
     public void createEnemy(int x, int y, int rotation, AssetDirectory directory, String type, int[] start, int index){
         //TODO: Add different enemy types so that the types actually matter
         // NOTE: THIS ONLY SUPPORTS UP TO TWENTY ENEMIES
-        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start));
+        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL));
     }
     public void addWaypoint(int x, int y, int enemyID, int pointNumber){
         int[] coordinates = {(int) Math.floor((double) x /64), (int) Math.floor((double) y /64)};

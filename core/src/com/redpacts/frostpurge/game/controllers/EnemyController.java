@@ -15,6 +15,8 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
@@ -25,12 +27,10 @@ public class EnemyController extends CharactersController implements StateMachin
     FSM
     */
     PlayerModel playerModel;
-    TileModel startPatrolTile, endPatrolTile;
     int nextWaypointIndex;
     TileModel[] waypoints;
     EnemyStates initState;
     EnemyStates currentState;
-    EnemyStates prevState = null;
     /*
     PATHFINDING
     */
@@ -173,11 +173,16 @@ public class EnemyController extends CharactersController implements StateMachin
                 // Follow player
                 setGoal(modelPositionToTile(playerModel));
 
-                for (EnemyController enemy : GameMode.enemyControllers) {
-                    Vector2 enemyPosition = enemy.model.getPosition();
-                    System.out.println(enemy.getModel().toString() + "'s distance to current enemy: " + Vector2.dst(model.getPosition().x, model.getPosition().y, enemyPosition.x, enemyPosition.y));
-                    if (Vector2.dst(model.getPosition().x, model.getPosition().y, enemyPosition.x, enemyPosition.y) < alertRadius) {
+                for (int i = 0; i < GameMode.enemyControllers.size; i++) {
+                    EnemyController enemy = GameMode.enemyControllers.get(i);
+                    if (enemy == this) continue;
+
+                    Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
+                    System.out.println(enemy.getModel().toString() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
+                    if (enemy.getCurrentState() != EnemyStates.CHASE &&
+                    Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y) < alertRadius) {
                         enemy.changeState(EnemyStates.CHASE);
+                        System.out.println("Alerted!!!");
                     }
                 }
 
@@ -187,11 +192,11 @@ public class EnemyController extends CharactersController implements StateMachin
 
         System.out.println("Current position: " + model.getPosition());
         System.out.println("Current velocity: " + model.getVelocity());
-
-        System.out.println("Path Queue: ");
-        for (int i = 0; i < pathQueue.size; i++) {
-            System.out.println(pathQueue.get(i).getPosition());
-        }
+//
+//        System.out.println("Path Queue: ");
+//        for (int i = 0; i < pathQueue.size; i++) {
+//            System.out.println(pathQueue.get(i).getPosition());
+//        }
 
         System.out.println("\n");
 
@@ -215,8 +220,9 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     @Override
-    public void changeState(EnemyStates enemyState) {
-        ((EnemyModel) model).setCurrentState(enemyState);
+    public void changeState(EnemyStates newState) {
+        ((EnemyModel) model).setCurrentState(newState);
+        this.currentState = newState;
     }
 
     public boolean revertToPreviousState() {
@@ -230,7 +236,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     public void setInitialState(EnemyStates enemyState) {
         initState = enemyState;
-        currentState = enemyState;
+        this.currentState = enemyState;
     }
 
     public void setGlobalState(EnemyStates enemyState) {
