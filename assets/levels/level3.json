@@ -1336,6 +1336,108 @@
                  "width":64,
                  "x":1857,
                  "y":25015
+                }, 
+                {
+                 "gid":4012,
+                 "height":150,
+                 "id":14,
+                 "name":"Duck",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"enemy"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":150,
+                 "x":593.939393939394,
+                 "y":24345.4545454545
+                }, 
+                {
+                 "gid":4012,
+                 "height":150,
+                 "id":15,
+                 "name":"Duck",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"enemy"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":3
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":150,
+                 "x":1075.75757575758,
+                 "y":24203.0303030303
+                }, 
+                {
+                 "gid":4016,
+                 "height":64,
+                 "id":16,
+                 "name":"Waypoint",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"waypoint"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":3
+                        }, 
+                        {
+                         "name":"pointNumber",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":1536.36363636364,
+                 "y":24136.3636363636
+                }, 
+                {
+                 "gid":4016,
+                 "height":64,
+                 "id":17,
+                 "name":"Waypoint",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"waypoint"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"pointNumber",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":639.393939393939,
+                 "y":24672.7272727273
                 }],
          "opacity":1,
          "properties":[
@@ -1360,7 +1462,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":14,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-up",
  "tiledversion":"1.10.2",
