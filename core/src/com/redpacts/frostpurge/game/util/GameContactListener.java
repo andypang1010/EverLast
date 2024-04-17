@@ -98,11 +98,12 @@ public class GameContactListener implements ContactListener {
 //
 //        player.setVelocity(-vx1, -vy1);
 //        enemy.setVelocity(-vx2, -vy2);
-        Vector2 contactDirection = player.getPosition().sub(enemy.getPosition());
-        System.out.println(contactDirection);
+        Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
+//        System.out.println("Direction:"+contactDirection);
+//        System.out.println(enemy.getPosition());
         player.addHp(-25);
-        player.getBody().applyForceToCenter(contactDirection.scl(-10f), true);
-        enemy.getBody().applyForceToCenter(contactDirection.scl(10), true);
+        player.getBody().applyForceToCenter(contactDirection.scl(100), true);
+        enemy.getBody().applyForceToCenter(contactDirection.scl(-100), true);
     }
 
     /**

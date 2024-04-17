@@ -17,7 +17,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-    private float speedMultiplier = 40f;
+    private float speedMultiplier = 60f;
     /*
     FSM
     */
@@ -97,14 +97,46 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas, EnemyModel enemy){
+        // Draw shadow
+        short[] indices = new short[3];
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+
+        Vector2 rayStart = model.getBody().getPosition().cpy();
+        int numRays = 20; // Number of segments for circle
+        float deltaAngle = 360f / (numRays - 1); // Angle between each segment
+
+        float angle = 0;
+        Vector2 dir = new Vector2(1, 0);
+        Vector2 rayDirection = dir.cpy().rotateDeg(angle);
+        Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(((EnemyModel)model).getRadius())); // Calculate end point of the ray
+        Vector2 rayPrevious = rayEnd.cpy();
+        Vector2 ray1, ray2, ray3;
+
+        for (int i = 1; i < numRays; i++) {
+            angle += deltaAngle;
+            rayDirection = dir.cpy().rotateDeg(angle);
+            rayEnd = rayStart.cpy().add(rayDirection.scl(((EnemyModel)model).getRadius()));
+
+            ray1 = rayStart.cpy().scl(10).add(-100, -100);
+            ray2 = rayPrevious.cpy().scl(10).add(-100, -100);
+            ray3 = rayEnd.cpy().scl(10).add(-100, -100);
+
+            float[] vertices = {ray1.x, ray1.y, ray2.x, ray2.y, ray3.x, ray3.y};
+            PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
+            canvas.draw(cone, new Color(0f, 0f, 0f, 0.5f), 70, 50 ,0);
+
+            rayPrevious = rayEnd.cpy();
+        }
         // Draw vision cones
         for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
             float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
-            short[] indices = new short[3];
-            indices[0] = 0;
-            indices[1] = 1;
-            indices[2] = 2;
-            cone = new PolygonRegion(textureRegion, vertices, indices);
+            short[] indices_c = new short[3];
+            indices_c[0] = 0;
+            indices_c[1] = 1;
+            indices_c[2] = 2;
+            cone = new PolygonRegion(textureRegion, vertices, indices_c);
             canvas.draw(cone, coneColor, 100, 100 ,0);
         }
         ((EnemyModel) model).getTriangles().clear();

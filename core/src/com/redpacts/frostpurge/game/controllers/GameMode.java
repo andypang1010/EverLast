@@ -221,9 +221,7 @@ public class GameMode implements Screen {
 
         if (gameState == GameState.PLAY){
             currentTime -= Gdx.graphics.getDeltaTime();
-            if(playerModel.getHp()/100 > currentTime / maxTime){
-                playerModel.setHp(100 * currentTime / maxTime);
-            }
+            playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
         }
 
         if (currentTime <= 0) {
@@ -279,6 +277,7 @@ public class GameMode implements Screen {
         canvas.begin();
 
         //Vector2 cameraPos = playerController.cameraOffsetPos();
+//        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
         canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
