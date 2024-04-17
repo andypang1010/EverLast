@@ -20,6 +20,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     private Vector2 moveDirection = new Vector2();
     private float speedMultiplier = 40f;
+    private float alertRadius = 50f;
     /*
     FSM
     */
@@ -35,7 +36,6 @@ public class EnemyController extends CharactersController implements StateMachin
     */
     LevelModel board;
     TileGraph tileGraph;
-    TileModel previousTile;
     TileModel targetTile;
     TileModel currentTile;
     Queue<TileModel> pathQueue = new Queue<>();
@@ -56,17 +56,15 @@ public class EnemyController extends CharactersController implements StateMachin
         this.nextWaypointIndex = 1;
         setInitialState(initState);
         this.tileGraph = tileGraph;
-        previousTile = this.waypoints[0];
+        currentTile = this.waypoints[0];
         this.board = board;
 
         if (initState == EnemyStates.PATROL) {
-            targetTile = this.waypoints[this.nextWaypointIndex];
+            setGoal(this.waypoints[this.nextWaypointIndex]);
         }
         else {
-            targetTile = modelPositionToTile(playerModel);
+            setGoal(modelPositionToTile(playerModel));
         }
-
-        setGoal(targetTile);
 
         textureRegion = new TextureRegion();
         coneColor = new Color(1f,1f,1f,.5f);
@@ -76,7 +74,7 @@ public class EnemyController extends CharactersController implements StateMachin
     public void setGoal(TileModel goalTile) {
         pathQueue.clear();
         System.out.println("!!!Path Queue Cleared!!!");
-        graphPath = tileGraph.findPath(previousTile, goalTile);
+        graphPath = tileGraph.findPath(currentTile, goalTile);
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
         }
@@ -88,19 +86,14 @@ public class EnemyController extends CharactersController implements StateMachin
     private void checkCollision() {
         if (pathQueue.size > 0) {
             if (currentTile == pathQueue.first()) {
-                reachNextTile();
+                pathQueue.removeFirst();
+
+                if (pathQueue.size == 0) {
+                    reachDestination();
+                } else {
+                    setMoveDirection();
+                }
             }
-        }
-    }
-
-    private void reachNextTile() {
-        this.previousTile = pathQueue.first();
-        pathQueue.removeFirst();
-
-        if (pathQueue.size == 0) {
-            reachDestination();
-        } else {
-            setMoveDirection();
         }
     }
 
@@ -137,7 +130,6 @@ public class EnemyController extends CharactersController implements StateMachin
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
 
-            currentTile = board.getTileState(model.getPosition().x, model.getPosition().y);
             moveDirection = new Vector2(nextTile.getPosition().x - 32 - model.getPosition().x, nextTile.getPosition().y - 32 - model.getPosition().y).nor();
         }
     }
@@ -145,41 +137,55 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public void update() {
+
+        // Update enemy's current tile
         currentTile = board.getTileState(model.getPosition().x, model.getPosition().y);
 
-        try{
-            if (currentTile == pathQueue.first()){
-                reachNextTile();
-            }
-
-        } catch (Exception e){
-            setGoal(waypoints[0]);
-        }
+//        try{
+//            if (currentTile == pathQueue.first()){
+//                reachNextTile();
+//            }
+//
+//        } catch (Exception e){
+//            setGoal(waypoints[0]);
+//        }
 
         switch (currentState) {
             case PATROL:
-                System.out.println("IN PATROL");
-                if (currentTile == waypoints[nextWaypointIndex]) {
-                    previousTile = waypoints[nextWaypointIndex];
+//                System.out.println("IN PATROL");
 
+                // When reaches next patrol waypoint
+                if (currentTile == waypoints[nextWaypointIndex]) {
+
+                    // Increment waypoint index and update targetTile
                     nextWaypointIndex = (nextWaypointIndex + 1) % waypoints.length;
                     setGoal(waypoints[nextWaypointIndex]);
 
-                    System.out.println("Next waypoint index: " + nextWaypointIndex);
-                    System.out.println("Next waypoint position: " + waypoints[nextWaypointIndex].getPosition());
+//                    System.out.println("Next waypoint index: " + nextWaypointIndex);
+//                    System.out.println("Next waypoint position: " + waypoints[nextWaypointIndex].getPosition());
                 }
 
                 break;
 
             case CHASE:
-                System.out.println("IN CHASE");
+//                System.out.println("IN CHASE");
+
+                // Follow player
                 setGoal(modelPositionToTile(playerModel));
 
-                System.out.println("Player position: " + modelPositionToTile(playerModel).getPosition());
+                for (EnemyController enemy : GameMode.enemyControllers) {
+                    Vector2 enemyPosition = enemy.model.getPosition();
+                    if (Vector2.dst(model.getPosition().x, model.getPosition().y, enemyPosition.x, enemyPosition.y) < alertRadius) {
+                        enemy.changeState(EnemyStates.CHASE);
+                    }
+                }
+
+//                System.out.println("Player position: " + modelPositionToTile(playerModel).getPosition());
                 break;
         }
 
         System.out.println("Current position: " + model.getPosition());
+        System.out.println("Current velocity: " + model.getVelocity());
 
         System.out.println("Path Queue: ");
         for (int i = 0; i < pathQueue.size; i++) {

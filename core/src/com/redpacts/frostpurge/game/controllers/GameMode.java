@@ -48,7 +48,7 @@ public class GameMode implements Screen {
     /** Player for the game*/
     private PlayerController playerController;
 
-    private Array<EnemyController> enemyControllers;
+    public static Array<EnemyController> enemyControllers;
 
     private Comparator<GameObject> comparator;
     private Array<GameObject> drawble;
@@ -300,7 +300,7 @@ public class GameMode implements Screen {
         canvas.end();
 
         if (debug) {
-            System.out.println(delta);
+//            System.out.println(delta);
             canvas.beginDebug();
             for (int ii = 0; ii < currentLevel.getHeight(); ii++){
                 for (int jj = 0; jj < currentLevel.getWidth(); jj++){

@@ -208,8 +208,8 @@ public class LevelModel {
 //            System.out.println(object.shape.getVertexCount());
 //            System.out.println(object.getPosition());
 //            System.out.println("\n");
-            System.out.println(object.getType());
-            canvas.drawPhysics(object.shape, Color.BLUE, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
+//            System.out.println(object.getType());
+            canvas.drawPhysics(object.shape, Color.RED, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
         }
     }
 
