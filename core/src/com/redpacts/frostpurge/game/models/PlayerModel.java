@@ -13,13 +13,14 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerModel extends CharactersModel {
     private static final int MAX_BOOST = 4;
     private static final int BOOST_COOL_DOWN = 60;
+    private float hp;
 
     private Texture fire;
     private Texture fireBoost;
     private boolean alive;
     private int boostNum;
     private int boostCoolDown;
-    float radius;
+    private int invincibility;
     boolean won = false;
 
     @Override
@@ -41,6 +42,8 @@ public class PlayerModel extends CharactersModel {
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0, 0);
+        this.hp = 100;
+        this.invincibility = 0;
         this.alive = true;
         this.radius = 3.19f;
 
@@ -68,8 +71,37 @@ public class PlayerModel extends CharactersModel {
         type = "player";
     }
 
-
-    public boolean isAlive(){return alive;}
+    public float getHp(){
+        return hp;
+    }
+    public void setHp(float hp){
+        this.hp = hp;
+        if(this.hp < 0){
+            this.hp = 0;
+        }
+    }
+    public void addHp(float hp){
+        this.hp += hp;
+        if(this.hp < 0){
+            this.hp = 0;
+        }
+    }
+    public float getInvincibility(){
+        return invincibility;
+    }
+    public void setInvincibility(int i){
+        this.invincibility = i;
+        if(this.invincibility < 0){
+            this.invincibility = 0;
+        }
+    }
+    public void addInvincibility(int i){
+        this.invincibility += i;
+        if(this.invincibility < 0){
+            this.invincibility = 0;
+        }
+    }
+    public boolean isAlive(){return alive && this.hp > 0;}
     public void die(){alive = false;}
     public void win(){won = true;}
     public boolean didwin(){
@@ -109,7 +141,6 @@ public class PlayerModel extends CharactersModel {
     public void resetBoostCoolDown(){
         boostCoolDown = BOOST_COOL_DOWN;
     }
-    public float getRadius() {return this.radius;}
 
     public void createBody(World world) {
         BodyDef bodyDef = new BodyDef();
@@ -131,7 +162,7 @@ public class PlayerModel extends CharactersModel {
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0067f / (radius * radius * 3.14f);
+        fixtureDef.density = 0.015f / (radius * radius * 3.14f);
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.25f;
 

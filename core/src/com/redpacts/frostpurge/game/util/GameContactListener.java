@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.util;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.models.*;
 
@@ -97,7 +98,12 @@ public class GameContactListener implements ContactListener {
 //
 //        player.setVelocity(-vx1, -vy1);
 //        enemy.setVelocity(-vx2, -vy2);
-        player.die();
+        Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
+//        System.out.println("Direction:"+contactDirection);
+//        System.out.println(enemy.getPosition());
+        player.addHp(-25);
+        player.getBody().applyForceToCenter(contactDirection.scl(100), true);
+        enemy.getBody().applyForceToCenter(contactDirection.scl(-100), true);
     }
 
     /**

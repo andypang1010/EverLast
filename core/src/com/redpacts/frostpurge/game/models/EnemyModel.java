@@ -46,6 +46,7 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
+        this.radius = 1.64f;
 
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
@@ -140,24 +141,24 @@ public class EnemyModel extends CharactersModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the position of the enemy body
-        bodyDef.position.set(this.getPosition().cpy().scl(0.1f));
+        bodyDef.position.set(this.getPosition().cpy().scl(0.1f).add(0, 16f));
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
         body.setSleepingAllowed(false);
 
         // TODO: getTexture is not scaled...
-        PolygonShape shape = new PolygonShape();
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,
 //                (float) this.getTexture().getHeight() / 2);
-        shape.setAsBox(1f, 1f);
 
+        CircleShape shape = new CircleShape();
+        shape.setRadius(radius);
         this.shape = shape;
 
         // TODO: Adjust parameters as necessary
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.01f;
+        fixtureDef.density = 0.015f / (radius * radius * 3.14f);
         fixtureDef.friction = 0.3f;
 
         // Setting category and mask bits for the enemy

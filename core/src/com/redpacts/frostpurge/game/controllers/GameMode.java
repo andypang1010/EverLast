@@ -221,6 +221,7 @@ public class GameMode implements Screen {
 
         if (gameState == GameState.PLAY){
             currentTime -= Gdx.graphics.getDeltaTime();
+            playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
         }
 
         if (currentTime <= 0) {
@@ -276,6 +277,7 @@ public class GameMode implements Screen {
         canvas.begin();
 
         //Vector2 cameraPos = playerController.cameraOffsetPos();
+//        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
         canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
@@ -328,7 +330,7 @@ public class GameMode implements Screen {
         if(playerModel.getBoostNum() >= 4){
             canvas.drawUI(boostBarTexture,Color.WHITE, 350, -800, 0, 1.2f,1.2f, HUDcamera);
         }
-        canvas.drawUI(healthBarTexture, Color.WHITE, 50+(193.2f/maxTime)*(maxTime-currentTime), -800, 0, 1.2f*currentTime/maxTime, 1.2f, HUDcamera);
+        canvas.drawUI(healthBarTexture, Color.WHITE, 50+(1.932f)*(100-playerModel.getHp()), -800, 0, 1.2f*playerModel.getHp()/100, 1.2f, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);

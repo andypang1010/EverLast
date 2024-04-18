@@ -8,6 +8,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public abstract class CharactersModel extends GameObject {
     protected Vector2 velocity;
+    float radius;
     protected FilmStrip run_left;
     protected FilmStrip run_right;
     protected FilmStrip run_down;
@@ -23,6 +24,7 @@ public abstract class CharactersModel extends GameObject {
     public void setVelocity(float x, float y){
         velocity = new Vector2(x, y);
     }
+    public float getRadius() {return this.radius;}
     public FilmStrip getFilmStrip(String type) {
         switch (type){
             case "left":
