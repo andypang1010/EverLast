@@ -221,10 +221,11 @@ public class EnemyController extends CharactersController implements StateMachin
 //                    }
 //                }
 
-                    System.out.println("Path Queue: ");
-                    for (int i = 0; i < pathQueue.size; i++) {
-                        System.out.println(pathQueue.get(i).getPosition());
-                    }
+//                    System.out.println("Path Queue: ");
+//                    for (int i = 0; i < pathQueue.size; i++) {
+//                        System.out.println(pathQueue.get(i).getPosition());
+//                    }
+                    System.out.println("Player Position");
                     System.out.println(modelPositionToTile(playerModel).getPosition());
 
 //                System.out.println("Player position: " + modelPositionToTile(playerModel).getPosition());
