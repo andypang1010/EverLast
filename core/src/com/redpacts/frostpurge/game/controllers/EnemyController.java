@@ -43,7 +43,6 @@ public class EnemyController extends CharactersController implements StateMachin
     PolygonRegion cone;
     TextureRegion textureRegion;
     Color coneColor;
-
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board, ArrayList<int[]> waypoints) {
         this.model = enemy;
         playerModel = targetPlayerModel;
@@ -90,8 +89,6 @@ public class EnemyController extends CharactersController implements StateMachin
 
                 if (pathQueue.size == 0) {
                     reachDestination();
-                } else {
-                    setMoveDirection();
                 }
             }
         }
@@ -129,8 +126,10 @@ public class EnemyController extends CharactersController implements StateMachin
     private void setMoveDirection() {
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
-
             moveDirection = new Vector2(nextTile.getPosition().x - 32 - model.getPosition().x, nextTile.getPosition().y - 32 - model.getPosition().y).nor();
+            if (((EnemyModel) model).getID() == 1){
+                System.out.println(moveDirection);
+            }
         }
     }
 
@@ -178,7 +177,7 @@ public class EnemyController extends CharactersController implements StateMachin
                     if (enemy == this) continue;
 
                     Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
-                    System.out.println(enemy.getModel().toString() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
+                    System.out.println(Integer.toString(((EnemyModel) enemy.getModel()).getID()) + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
                     if (enemy.getCurrentState() != EnemyStates.CHASE &&
                     Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y) < alertRadius) {
                         enemy.changeState(EnemyStates.CHASE);
@@ -186,26 +185,30 @@ public class EnemyController extends CharactersController implements StateMachin
                     }
                 }
 
+                    System.out.println("Path Queue: ");
+                    for (int i = 0; i < pathQueue.size; i++) {
+                        System.out.println(pathQueue.get(i).getPosition());
+                    }
+
 //                System.out.println("Player position: " + modelPositionToTile(playerModel).getPosition());
                 break;
         }
 
-        System.out.println("Current position: " + model.getPosition());
-        System.out.println("Current velocity: " + model.getVelocity());
-//
+//        System.out.println("Current position: " + model.getPosition());
+//        System.out.println("Current velocity: " + model.getVelocity());
+////
 //        System.out.println("Path Queue: ");
 //        for (int i = 0; i < pathQueue.size; i++) {
 //            System.out.println(pathQueue.get(i).getPosition());
 //        }
 
-        System.out.println("\n");
-
-        setMoveDirection();
-        moveToNextTile();
-
+//        System.out.println("\n");
         checkCollision();
+        setMoveDirection();
+
         model.setPosition(model.getBody().getPosition().scl(10).add(-32, -32));
         currentState = ((EnemyModel) model).getCurrentState();
+        moveToNextTile();
     }
 
     private void moveToNextTile() {

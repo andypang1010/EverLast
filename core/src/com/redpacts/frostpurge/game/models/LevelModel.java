@@ -124,7 +124,7 @@ public class LevelModel {
     public void createEnemy(int x, int y, int rotation, AssetDirectory directory, String type, int[] start, int index){
         //TODO: Add different enemy types so that the types actually matter
         // NOTE: THIS ONLY SUPPORTS UP TO TWENTY ENEMIES
-        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL));
+        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL, index));
     }
     public void addWaypoint(int x, int y, int enemyID, int pointNumber){
         int[] coordinates = {(int) Math.floor((double) x /64), (int) Math.floor((double) y /64)};
