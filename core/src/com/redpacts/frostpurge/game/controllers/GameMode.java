@@ -168,7 +168,7 @@ public class GameMode implements Screen {
                     tileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
                     currentTile = currentLevel.getBaseLayer()[j][i];
                 }
-                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP) {
+                else if (currentLevel.getExtraLayer()[j][i].getType() != TileModel.TileType.OBSTACLE) {
                     tileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
                     currentTile = currentLevel.getExtraLayer()[j][i];
                 }
@@ -185,7 +185,7 @@ public class GameMode implements Screen {
                         if (currentLevel.inBounds(x, y)) {
                             if (currentLevel.getExtraLayer()[y][x] == null) {
                                 tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                            } else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP) {
+                            } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
                                 tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
                         }
