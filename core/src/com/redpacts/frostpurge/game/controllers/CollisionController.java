@@ -45,9 +45,9 @@ public class CollisionController{
     /** The amount of time for a physics engine step. */
     public static final float WORLD_STEP = 1/60.0f;
     /** Number of velocity iterations for the constraint solvers */
-    public static final int WORLD_VELOC = 6;
+    public static final int WORLD_VELOC = 14;
     /** Number of position iterations for the constraint solvers */
-    public static final int WORLD_POSIT = 2;
+    public static final int WORLD_POSIT = 12;
 
     /** Width of the game world in Box2d units */
     protected static final float DEFAULT_WIDTH  = 32.0f;
@@ -204,7 +204,7 @@ public class CollisionController{
         pickPowerUp((PlayerModel) player);
         win((PlayerModel) player);
         for (EnemyModel e : enemies){
-            checkEnemyVision(e, player);
+            checkEnemyVision(e);
         }
         postUpdate(1/60f);
     }
@@ -298,10 +298,9 @@ public class CollisionController{
      * The vision cone will scan every object, and flags when it hits obstacle or player.
      *
      * @param enemy	    The vision cone of enemy
-     * @param player    The player
      */
     // TODO: Perhaps change parameters so that we can customize vision cone (length/fov).
-    public void checkEnemyVision(EnemyModel enemy, PlayerModel player) {
+    public void checkEnemyVision(EnemyModel enemy) {
         // Create the callback instance
         VisionConeCallback callback = new VisionConeCallback();
 
@@ -313,8 +312,7 @@ public class CollisionController{
         float deltaAngle = fov / (numRays - 1); // Angle between each ray
 
         // Calculate the direction vector based on enemy's rotation
-        Vector2 direction = new Vector2((float) Math.cos(Math.toRadians(enemy.getRotation())),
-                (float) Math.sin(Math.toRadians(enemy.getRotation()))).nor(); // Normalize the direction vector
+        Vector2 direction = enemy.getBody().getLinearVelocity().cpy().nor(); // Normalize the direction vector
 
         float angle = -fov / 2; // Calculate current angle
         Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
