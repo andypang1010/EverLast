@@ -62,7 +62,7 @@ public class PlayerController extends CharactersController {
                 model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
             }
         }else{
-            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
+            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.97f));
         }
         if (boost && ((PlayerModel) model).getBoostNum() > 0 && ((PlayerModel) model).getBoostCoolDown() == 0){
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
