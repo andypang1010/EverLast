@@ -102,7 +102,7 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[1] = 1;
         indices[2] = 2;
 
-        Vector2 rayStart = model.getBody().getPosition().cpy();
+        Vector2 rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
         int numRays = 20; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
 

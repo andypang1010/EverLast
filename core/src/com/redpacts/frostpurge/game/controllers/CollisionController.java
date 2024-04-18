@@ -335,9 +335,9 @@ public class CollisionController{
                 rayEnd = callback.getHitPoint();
                 callback.clearHitPoint();
             }
-            enemy.setTriangle(rayStart.cpy().scl(10).add(-130, -130),
-                    rayPrevious.cpy().scl(10).add(-130, -130),
-                    rayEnd.cpy().scl(10).add(-130, -130)); // Add triangle to draw vision cone.
+            enemy.setTriangle(rayStart.cpy().scl(10).add(-100, -100),
+                    rayPrevious.cpy().scl(10).add(-100, -100),
+                    rayEnd.cpy().scl(10).add(-100, -100)); // Add triangle to draw vision cone.
             rayPrevious = rayEnd.cpy();
         }
 

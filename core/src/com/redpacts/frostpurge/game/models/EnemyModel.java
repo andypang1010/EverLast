@@ -46,7 +46,7 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
-        this.radius = 1.64f;
+        this.radius = 3.19f;
 
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
