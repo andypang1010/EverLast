@@ -39,8 +39,8 @@ public class CollisionController{
     protected Rectangle bounds;
     /** The world scale */
     protected Vector2 scale;
-    /** Offset of bounds */
-    protected final int offset = 10;
+    /** Offset of vision cone */
+    protected Vector2 offsetVisionCone = new Vector2();
 
     /** The amount of time for a physics engine step. */
     public static final float WORLD_STEP = 1/60.0f;
@@ -304,8 +304,26 @@ public class CollisionController{
         // Create the callback instance
         VisionConeCallback callback = new VisionConeCallback();
 
+        // Calculating offset
+
+        switch(getDirection(enemy.getBody().getLinearVelocity())) {
+            case "right":
+                offsetVisionCone = new Vector2(3f, 6f);
+                break;
+            case "left":
+                offsetVisionCone = new Vector2(-3f, 6f);
+                break;
+            case "up":
+            case "down":
+                offsetVisionCone = new Vector2(0, 3f);
+                break;
+            default:
+                offsetVisionCone = new Vector2();
+                break;
+        }
+
         // Calculate the end point of the vision cone based on the enemy's direction and range
-        Vector2 rayStart = enemy.getBody().getPosition().cpy();
+        Vector2 rayStart = enemy.getBody().getPosition().cpy().add(offsetVisionCone);
 //        System.out.println(rayStart);
         float fov = 45f; // Field of view angle in degrees
         int numRays = 20; // Number of rays to cast within the fov
@@ -361,5 +379,25 @@ public class CollisionController{
      */
     private float manhattan(float x0, float y0, float x1, float y1) {
         return Math.abs(x1 - x0) + Math.abs(y1 - y0);
+    }
+
+    /**
+     * helper to find which animation to draw
+     * @param v
+     * @return the direction that the animtion should face
+     */
+    public String getDirection(Vector2 v) {
+        float x = v.x;
+        float y = v.y;
+        float angle = (float) Math.toDegrees(Math.atan2(y,x));
+        if (angle <= 45 && angle >= -45){
+            return "right";
+        } else if (angle>=45 && angle<=135) {
+            return "up";
+        } else if (angle >= 135 || angle <=-135) {
+            return "left";
+        }else{
+            return "down";
+        }
     }
 }
