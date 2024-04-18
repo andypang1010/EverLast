@@ -48,7 +48,7 @@ public class GameMode implements Screen {
     /** Player for the game*/
     private PlayerController playerController;
 
-    private Array<EnemyController> enemyControllers;
+    public static Array<EnemyController> enemyControllers;
 
     private Comparator<GameObject> comparator;
     private Array<GameObject> drawble;
@@ -168,7 +168,7 @@ public class GameMode implements Screen {
                     tileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
                     currentTile = currentLevel.getBaseLayer()[j][i];
                 }
-                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP) {
+                else if (currentLevel.getExtraLayer()[j][i].getType() != TileModel.TileType.OBSTACLE) {
                     tileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
                     currentTile = currentLevel.getExtraLayer()[j][i];
                 }
@@ -185,7 +185,7 @@ public class GameMode implements Screen {
                         if (currentLevel.inBounds(x, y)) {
                             if (currentLevel.getExtraLayer()[y][x] == null) {
                                 tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                            } else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP) {
+                            } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
                                 tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
                         }
@@ -302,7 +302,7 @@ public class GameMode implements Screen {
         canvas.end();
 
         if (debug) {
-            System.out.println(delta);
+//            System.out.println(delta);
             canvas.beginDebug();
             for (int ii = 0; ii < currentLevel.getHeight(); ii++){
                 for (int jj = 0; jj < currentLevel.getWidth(); jj++){
@@ -403,7 +403,9 @@ public class GameMode implements Screen {
 
         enemyControllers = new Array<>();
         for (int i = 0; i < enemies.size; i++){
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel));
+//            for (int j = 0; j<)
+//            enemies.get(i).getWaypoints()
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel,enemies.get(i).getWaypoints()));
         }
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -54,6 +54,6 @@ public abstract class GameObject {
 
 
     public void drawDebug(GameCanvas canvas) {
-        canvas.drawPhysics(shape, Color.BLUE, position.x*10, position.y*10, 0, 0.1f, 0.1f);
+        canvas.drawPhysics(shape, Color.RED, position.x*10, position.y*10, 0, 0.1f, 0.1f);
     }
 }

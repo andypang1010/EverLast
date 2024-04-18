@@ -25,11 +25,16 @@ public class EnemyModel extends CharactersModel{
     EnemyStates initState, currentState, prevState;
     private int[] startpatrol;
     private int[] endpatrol;
+    private int enemyID;
+    private ArrayList<int[]> waypoints;
     public int[] getStartPatrol(){
         return startpatrol;
     }
     public int[] getEndPatrol(){
         return endpatrol;
+    }
+    public int getID(){
+        return enemyID;
     }
 
     /**
@@ -37,7 +42,7 @@ public class EnemyModel extends CharactersModel{
      * @param position vector2 representing the starting location
      * @param rotation float representing angle the player is facing
      */
-    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, int[] endpatrol){
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, EnemyStates initState, int id){
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
@@ -67,12 +72,26 @@ public class EnemyModel extends CharactersModel{
 
 
         this.startpatrol = startpatrol;
-        this.endpatrol = endpatrol;
         type = "enemy";
 
-        initState = EnemyStates.PATROL;
-        currentState = EnemyStates.PATROL;
+        this.initState = initState;
+        currentState = initState;
         prevState = null;
+        waypoints = new ArrayList<int[]>(6);
+        addWaypoint(this.startpatrol,0);
+        enemyID = id;
+    }
+    public void addWaypoint(int[] newPoint, int id){
+        this.waypoints.add(id,newPoint);
+    }
+    public ArrayList<int[]> getWaypoints(){
+        waypoints.trimToSize();
+        System.out.println("Waypoints");
+        for (int i = 0; i<waypoints.size();i++){
+            System.out.println(waypoints.get(i)[0]);
+            System.out.println(waypoints.get(i)[1]);
+        }
+        return waypoints;
     }
     public EnemyStates getInitState() {return initState;}
     public void setInitState(EnemyStates initState) {this.initState = initState;}

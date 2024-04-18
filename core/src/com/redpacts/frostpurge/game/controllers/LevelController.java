@@ -132,7 +132,7 @@ public class LevelController {
      */
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
         int x,y,rotation;
-        int index = 0;
+        int enemyID;
         String type;
         JsonValue objects = layer.get("objects").child();
         while (objects != null){
@@ -143,17 +143,23 @@ public class LevelController {
             type = properties.getString("value");
             switch (type){
                 case "player":
+                    x+= 140;
                     level.createPlayer(x,(height*64-y),rotation,directory);
                     break;
-                default:
+                case "enemy":
                     properties = properties.next();
-                    String end = properties.getString("value");
-                    properties = properties.next();
-                    String start = properties.getString("value");
-                    level.createEnemy(x,height*64-y,rotation,directory,type, stringToCoordinate(start), stringToCoordinate(end), index);
-                    index +=1;
+                    x+= 75;
+                    enemyID = properties.getInt("value");
+                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, enemyID);
                     break;
-
+                case "waypoint":
+                    properties = properties.next();
+                    enemyID = properties.getInt("value");
+                    properties = properties.next();
+                    int pointNumber = properties.getInt("value");
+                    x += 32;
+                    level.addWaypoint(x,height*64 - y,enemyID,pointNumber);
+                    break;
             }
             objects = objects.next();
         }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.controllers.EnemyController;
+import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -117,14 +118,17 @@ public class LevelModel {
      * @param type the type of enemy that is being created
      * @param directory The directory so that the enemy can get it's animations
      * @param start starting patrol tile for enemy
-     * @param end ending patrol tile for the enemy
      * @param index number enemy on in the level
      * @return enemy to be put into an enemy controller
      */
-    public void createEnemy(int x, int y, int rotation, AssetDirectory directory, String type, int[] start, int[]end, int index){
+    public void createEnemy(int x, int y, int rotation, AssetDirectory directory, String type, int[] start, int index){
         //TODO: Add different enemy types so that the types actually matter
         // NOTE: THIS ONLY SUPPORTS UP TO TWENTY ENEMIES
-        enemies.add(new EnemyModel(new Vector2(x,y), rotation, directory, start,end));
+        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL, index));
+    }
+    public void addWaypoint(int x, int y, int enemyID, int pointNumber){
+        int[] coordinates = {(int) Math.floor((double) x /64), (int) Math.floor((double) y /64)};
+        enemies.get(enemyID-1).addWaypoint(coordinates,pointNumber);
     }
     public int getWidth(){return width;}
     public int getHeight(){return height;}
@@ -205,8 +209,8 @@ public class LevelModel {
 //            System.out.println(object.shape.getVertexCount());
 //            System.out.println(object.getPosition());
 //            System.out.println("\n");
-            System.out.println(object.getType());
-            canvas.drawPhysics(object.shape, Color.BLUE, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
+//            System.out.println(object.getType());
+            canvas.drawPhysics(object.shape, Color.RED, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
         }
     }
 
