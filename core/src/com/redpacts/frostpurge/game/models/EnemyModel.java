@@ -87,10 +87,10 @@ public class EnemyModel extends CharactersModel{
     public ArrayList<int[]> getWaypoints(){
         waypoints.trimToSize();
         System.out.println("Waypoints");
-        for (int i = 0; i<waypoints.size();i++){
-            System.out.println(waypoints.get(i)[0]);
-            System.out.println(waypoints.get(i)[1]);
-        }
+//        for (int i = 0; i<waypoints.size();i++){
+//            System.out.println(waypoints.get(i)[0]);
+//            System.out.println(waypoints.get(i)[1]);
+//        }
         return waypoints;
     }
     public EnemyStates getInitState() {return initState;}

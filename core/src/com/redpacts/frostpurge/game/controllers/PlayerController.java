@@ -58,7 +58,9 @@ public class PlayerController extends CharactersController {
         ((PlayerModel) model).addBoostCoolDown(-1);
         setAngle(horizontal,vertical);
         if (!decelerate){
-            model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
+            if (model.getBody().getLinearVelocity().len() < 70){
+                model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
+            }
         }else{
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
