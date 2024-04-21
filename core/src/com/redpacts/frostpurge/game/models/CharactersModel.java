@@ -16,6 +16,12 @@ public abstract class CharactersModel extends GameObject {
     protected FilmStrip idleright;
     protected FilmStrip idleleft;
     protected FilmStrip idleup;
+    protected FilmStrip vacuum_start_left;
+    protected FilmStrip vacuum_left;
+    protected FilmStrip vacuum_end_left;
+    protected FilmStrip vacuum_start_right;
+    protected FilmStrip vacuum_right;
+    protected FilmStrip vacuum_end_right;
     protected String type;
 
     public Vector2 getVelocity(){
@@ -41,6 +47,24 @@ public abstract class CharactersModel extends GameObject {
                 return idleleft;
             case "idleup":
                 return idleup;
+            case "vacuumstartleft":
+                return vacuum_start_left;
+            case "vacuumleft":
+                return vacuum_left;
+            case "vacuumendleft":
+                return vacuum_end_left;
+            case "vacuumstartright":
+                return vacuum_start_right;
+            case "vacuumright":
+                return vacuum_right;
+            case "vacuumendright":
+                return vacuum_end_right;
+            case "vacuumstartup":
+                return vacuum_start_right;
+            case "vacuumup":
+                return vacuum_right;
+            case "vacuumendup":
+                return vacuum_end_right;
             default:
                 return null;
         }
@@ -79,6 +103,42 @@ public abstract class CharactersModel extends GameObject {
                         break;
                     default:
                         throw new IllegalArgumentException("Character animation fail");
+                }
+                break;
+            case "vacuuming_start":
+                switch(direction){
+                    case "left":
+                        canvas.draw(vacuum_start_left, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    case "right":
+                        canvas.draw(vacuum_start_right, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    default:
+                        canvas.draw(vacuum_start_left, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                }
+                break;
+            case "vacuuming":
+                switch(direction){
+                    case "left":
+                        canvas.draw(vacuum_left, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    case "right":
+                        canvas.draw(vacuum_right, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    default:
+                        canvas.draw(vacuum_left, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                }
+                break;
+            case "vacuuming_end":
+                switch(direction){
+                    case "left":
+                        canvas.draw(vacuum_end_left, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    case "right":
+                        canvas.draw(vacuum_end_right, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
+                        break;
+                    default:
+                        canvas.draw(vacuum_end_left, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0,.25f,.25f, false);
                 }
                 break;
             default:

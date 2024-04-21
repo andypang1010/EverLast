@@ -11,13 +11,20 @@ import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
+    public enum VacuumingState{
+        NONE,
+        START,
+        VACUUM,
+        END
+    }
     private static final int MAX_BOOST = 4;
     private static final int BOOST_COOL_DOWN = 60;
     private float hp;
-
     private Texture fire;
     private Texture fireBoost;
     private boolean alive;
+    private int vacuumingProgression;
+    private VacuumingState vacuumingState;
     private int boostNum;
     private int boostCoolDown;
     private int invincibility;
@@ -44,6 +51,7 @@ public class PlayerModel extends CharactersModel {
         this.velocity = new Vector2(0, 0);
         this.hp = 100;
         this.invincibility = 0;
+        this.vacuumingProgression = 0;
         this.alive = true;
         this.radius = 3.19f;
 
@@ -62,6 +70,20 @@ public class PlayerModel extends CharactersModel {
         run_down = new FilmStrip(run_down_text, 1, 8, 8);
         Texture run_up_text = new TextureRegion(directory.getEntry("Liv_Run_Up", Texture.class)).getTexture();
         run_up = new FilmStrip(run_up_text, 1, 8, 8);
+
+        Texture vacuum_start_left_text = new TextureRegion(directory.getEntry("Liv_Vacuum_Start_Left", Texture.class)).getTexture();
+        vacuum_start_left = new FilmStrip(vacuum_start_left_text, 1, 4, 4);
+        Texture vacuum_left_text = new TextureRegion(directory.getEntry("Liv_Vacuum_Left", Texture.class)).getTexture();
+        vacuum_left = new FilmStrip(vacuum_left_text, 1, 3, 3);
+        Texture vacuum_end_left_text = new TextureRegion(directory.getEntry("Liv_Vacuum_End_Left", Texture.class)).getTexture();
+        vacuum_end_left = new FilmStrip(vacuum_end_left_text, 1, 4, 4);
+
+        Texture vacuum_start_right_text = new TextureRegion(directory.getEntry("Liv_Vacuum_Start_Right", Texture.class)).getTexture();
+        vacuum_start_right = new FilmStrip(vacuum_start_right_text, 1, 4, 4);
+        Texture vacuum_right_text = new TextureRegion(directory.getEntry("Liv_Vacuum_Right", Texture.class)).getTexture();
+        vacuum_right = new FilmStrip(vacuum_right_text, 1, 3, 3);
+        Texture vacuum_end_right_text = new TextureRegion(directory.getEntry("Liv_Vacuum_End_Right", Texture.class)).getTexture();
+        vacuum_end_right = new FilmStrip(vacuum_end_right_text, 1, 4, 4);
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
@@ -86,6 +108,37 @@ public class PlayerModel extends CharactersModel {
             this.hp = 0;
         }
     }
+
+    public int getVacuumingProgression(){
+        return this.vacuumingProgression;
+    }
+
+    public void addVacuumingProgression(int v){
+        this.vacuumingProgression += v;
+        if(this.vacuumingProgression > 82){
+            this.vacuumingProgression = 0;
+        }
+    }
+
+    public boolean isVacuuming(){
+        return this.vacuumingProgression >= 31 && this.vacuumingProgression <= 52;
+    }
+
+    public void setVacuumingProgression(int v){
+        this.vacuumingProgression = v;
+        if(this.vacuumingProgression > 82){
+            this.vacuumingProgression = 0;
+        }
+    }
+
+    public VacuumingState getVacuumingState(){
+        return this.vacuumingState;
+    }
+
+    public void setVacuumingState(VacuumingState state){
+        this.vacuumingState = state;
+    }
+
     public float getInvincibility(){
         return invincibility;
     }
