@@ -405,7 +405,6 @@
             1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1234, 1234, 1234, 1234, 1234, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696, 1696],
          "height":400,
          "id":1,
-         "locked":true,
          "name":"Background",
          "opacity":1,
          "type":"tilelayer",
@@ -831,7 +830,7 @@
          "name":"Interactable",
          "objects":[
                 {
-                 "gid":4023,
+                 "gid":4017,
                  "height":192,
                  "id":66,
                  "name":"",
@@ -852,7 +851,147 @@
                  "width":192,
                  "x":1920,
                  "y":24320
+                }, 
+                {
+                 "gid":8029,
+                 "height":64,
+                 "id":67,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"breakable"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"1"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":1920,
+                 "y":24960
+                }, 
+                {
+                 "gid":8029,
+                 "height":64,
+                 "id":68,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"breakable"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"2"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":1984,
+                 "y":24960
+                }, 
+                {
+                 "gid":8029,
+                 "height":64,
+                 "id":69,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"breakable"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"3"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2048,
+                 "y":24960
+                }, 
+                {
+                 "gid":8029,
+                 "height":64,
+                 "id":70,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"breakable"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"4"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2112,
+                 "y":24960
+                }, 
+                {
+                 "gid":8029,
+                 "height":64,
+                 "id":71,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"breakable"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"5"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2176,
+                 "y":24960
+                }, 
+                {
+                 "gid":8029,
+                 "height":64,
+                 "id":72,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"breakable"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"6"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2240,
+                 "y":24960
                 }],
+         "offsetx":896,
+         "offsety":-3008,
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -2291,8 +2430,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":67,
+ "nextlayerid":7,
+ "nextobjectid":73,
  "orientation":"orthogonal",
  "renderorder":"right-up",
  "tiledversion":"1.10.2",
@@ -2319,8 +2458,16 @@
          "source":"..\/..\/Tiled\/Tileset\/BouncyCropped.tsx"
         }, 
         {
-         "firstgid":4023,
+         "firstgid":4017,
          "source":"..\/..\/Tiled\/Tileset\/Bouncy.tsx"
+        }, 
+        {
+         "firstgid":4025,
+         "source":"..\/..\/Tiled\/Tileset\/TileSet.tsx"
+        }, 
+        {
+         "firstgid":8029,
+         "source":"..\/..\/Tiled\/Tileset\/Breakable.tsx"
         }],
  "tilewidth":64,
  "type":"map",

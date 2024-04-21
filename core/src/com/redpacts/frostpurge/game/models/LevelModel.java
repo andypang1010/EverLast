@@ -25,6 +25,7 @@ public class LevelModel {
     private TileModel[][] accentLayer;
     private Array<EnemyModel> enemies;
     private Array<BouncyTile> bouncy;
+    private Array<BreakableTile> breakables;
     private PlayerModel player;
     private boolean altered;
     private String name;
@@ -39,6 +40,7 @@ public class LevelModel {
         accentLayer = new TileModel[height][width];
         enemies = new Array<>();
         bouncy = new Array<>();
+        breakables = new Array<>();
         altered = false;
         this.directory = directory;
     }
@@ -153,6 +155,20 @@ public class LevelModel {
      * @param index number bouncy on in the level
      * @return enemy to be put into an enemy controller
      */
+    public void createBreakable(int x, int y, int rotation, AssetDirectory directory, int index){
+        // TODO: Right now only supports one type of breakable.
+        TextureRegion texture =  new TextureRegion(directory.getEntry("BreakableWoodBox", Texture.class));
+        breakables.insert(index-1, new BreakableTile(texture, new Vector2(x,y), 1,  1, 1, 2, 2));
+    }
+    /**
+     * Creates a bouncy object
+     * @param x x coordinate of spawn point
+     * @param y y coordinate of spawn point
+     * @param rotation initial rotation of player
+     * @param directory The directory so that the bouncy can get its animations
+     * @param index number bouncy on in the level
+     * @return enemy to be put into an enemy controller
+     */
     public void createBouncy(int x, int y, int rotation, AssetDirectory directory, int index){
         // TODO: Right now only supports one type of bouncy.
         TextureRegion idle = new TextureRegion(directory.getEntry("IdleBouncyMushroom", Texture.class));
@@ -177,6 +193,7 @@ public class LevelModel {
         return player;
     }
     public Array<BouncyTile> getBouncy() { return bouncy;}
+    public Array<BreakableTile> getBreakables() { return breakables;}
     public String getName(){return name;}
     public void setName(String name){this.name = name;}
 
@@ -231,6 +248,10 @@ public class LevelModel {
     }
 
     public void drawBouncy(BouncyTile object, GameCanvas canvas){
+        object.processFilmStrip();
+        canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);
+    }
+    public void drawBreakable(BreakableTile object, GameCanvas canvas){
         object.processFilmStrip();
         canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);
     }

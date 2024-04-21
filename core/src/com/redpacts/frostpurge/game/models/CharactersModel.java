@@ -24,6 +24,9 @@ public abstract class CharactersModel extends GameObject {
     public void setVelocity(float x, float y){
         velocity = new Vector2(x, y);
     }
+    public void setVelocity(Vector2 v){
+        velocity = new Vector2(v);
+    }
     public float getRadius() {return this.radius;}
     public FilmStrip getFilmStrip(String type) {
         switch (type){

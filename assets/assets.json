@@ -19,6 +19,7 @@
     "FireBoost": "characters/fireboostnoaxis.png",
     "IdleBouncyMushroom": "bouncy/bouncyMushroomIdle.png",
     "ActiveBouncyMushroom": "bouncy/bouncyMushroomFilmstrip.png",
+    "BreakableWoodBox": "breakable/breakableWoodBoxFilmstrip.png",
     "tileset": "Tilesets/TileSet.png"
   },
   "sounds" : {

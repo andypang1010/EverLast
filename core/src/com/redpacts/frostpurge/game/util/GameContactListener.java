@@ -68,6 +68,8 @@ public class GameContactListener implements ContactListener {
             handleCollision((PlayerModel) obj1, (GoalTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof BouncyTile) {
             handleCollision((PlayerModel) obj1, (BouncyTile) obj2);
+        } else if (obj1 instanceof PlayerModel && obj2 instanceof BreakableTile) {
+            handleCollision((PlayerModel) obj1, (BreakableTile) obj2);
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
@@ -98,6 +100,10 @@ public class GameContactListener implements ContactListener {
             handleCollision((PlayerModel) obj2, (BouncyTile) obj1);
         } else if (obj1 instanceof BouncyTile && obj2 instanceof EnemyModel) {
             handleCollision((EnemyModel) obj2, (BouncyTile) obj1);
+        }
+
+        else if (obj1 instanceof BreakableTile && obj2 instanceof PlayerModel) {
+            handleCollision((PlayerModel) obj2, (BreakableTile) obj1);
         }
     }
 
@@ -185,6 +191,18 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(PlayerModel player, BouncyTile tile) {
         tile.activate();
+    }
+    /**
+     * Handles collisions between a player and a breakable collides
+     *
+     * @param player The player
+     * @param tile   The tile
+     */
+    private void handleCollision(PlayerModel player, BreakableTile tile) {
+        // TODO: Implement actual break speed
+        if (player.getBody().getLinearVelocity().len() > 65) {
+            tile.deactivate();
+        }
     }
 
     /**

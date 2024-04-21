@@ -15,12 +15,13 @@ import com.redpacts.frostpurge.game.util.PooledList;
 
 public class CollisionController{
     public static class PhysicsConstants {
-        public static final short CATEGORY_PLAYER = 0x0001;
-        public static final short CATEGORY_ENEMY = 0x0002;
-        public static final short CATEGORY_OBSTACLE = 0x0004;
-        public static final short CATEGORY_SWAMP = 0x0008;
-        public static final short CATEGORY_DESTRUCTIBLE = 0x0016;
-        public static final short CATEGORY_BOUNCY = 0x0032;
+        public static final short CATEGORY_EMPTY = 0x0001;
+        public static final short CATEGORY_PLAYER = 0x0002;
+        public static final short CATEGORY_ENEMY = 0x0004;
+        public static final short CATEGORY_OBSTACLE = 0x0008;
+        public static final short CATEGORY_SWAMP = 0x0016;
+        public static final short CATEGORY_DESTRUCTIBLE = 0x0032;
+        public static final short CATEGORY_BOUNCY = 0x0064;
     }
     /** Reference to the game board */
     public LevelModel board;
@@ -30,6 +31,8 @@ public class CollisionController{
     public Array<EnemyModel> enemies;
     /** Reference to all the bouncies in the game */
     public Array<BouncyTile> bouncy;
+    /** Reference to all the breakables in the game */
+    public Array<BreakableTile> breakables;
     /** Width of the collision geometry */
     protected float width;
     /** Height of the collision geometry */
@@ -95,8 +98,9 @@ public class CollisionController{
      * @param width  	The width in Box2d coordinates
      * @param height	The height in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, float width, float height) {
-        this(board, player, enemies, bouncy, new Rectangle(0,0,width,height));
+    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy,
+                                  Array<BreakableTile> breakables, float width, float height) {
+        this(board, player, enemies, bouncy, breakables, new Rectangle(0,0,width,height));
     }
 
     /**
@@ -111,11 +115,12 @@ public class CollisionController{
      * @param enemies List of enemies
      * @param bounds  The game bounds in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Rectangle bounds) {
+    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Array<BreakableTile> breakables, Rectangle bounds) {
         this.board = board;
         this.player = player;
         this.enemies = enemies;
         this.bouncy = bouncy;
+        this.breakables = breakables;
 
         world = new World(new Vector2(),false);
         this.bounds = new Rectangle(bounds);
@@ -140,6 +145,12 @@ public class CollisionController{
             }
         }
         for (BouncyTile b: bouncy) {
+            if (b != null) {
+                b.createBody(world);
+                addObject(b);
+            }
+        }
+        for (BreakableTile b: breakables) {
             if (b != null) {
                 b.createBody(world);
                 addObject(b);

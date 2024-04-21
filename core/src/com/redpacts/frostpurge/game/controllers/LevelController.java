@@ -149,7 +149,9 @@ public class LevelController {
                     level.createBouncy(x,(height*64-y),rotation,directory, bouncyID);
                     break;
                 case "breakable":
-                    // TODO: Implement breakable
+                    properties = properties.next();
+                    int breakableID = properties.getInt("value");
+                    level.createBreakable(x,(height*64-y),rotation,directory, breakableID);
                     break;
             }
             objects = objects.next();
