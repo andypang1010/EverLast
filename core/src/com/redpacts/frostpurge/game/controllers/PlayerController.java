@@ -65,9 +65,23 @@ public class PlayerController extends CharactersController {
      */
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
         ((PlayerModel) model).addBoostCoolDown(-1);
+        // Switch vacuum state
         if(((PlayerModel) model).getVacuumingProgression() > 0){
+            int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
+            if(vacuumFrame >= 1 && vacuumFrame <= 30){
+                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.START);
+            }else if(vacuumFrame >= 31 && vacuumFrame <= 52){
+                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.VACUUM);
+                if(vacuum){
+                    ((PlayerModel) model).addVacuumingProgression(-1);
+                }
+            }else if(vacuumFrame >= 53 && vacuumFrame <= 82){
+                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.END);
+            }
             ((PlayerModel) model).addVacuumingProgression(1);
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
+        }else{
+            ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.NONE);
         }
         setAngle(horizontal,vertical);
         if (!decelerate){
@@ -134,7 +148,7 @@ public class PlayerController extends CharactersController {
         // Draw player
         String direction = getDirection(horizontal,vertical,previousDirection);
         int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
-        if(vacuumFrame >= 1 && vacuumFrame <= 30){
+        if(((PlayerModel) model).getVacuumingState() == PlayerModel.VacuumingState.START){
             model.resetFilmStrip(model.getFilmStrip("vacuum"+direction));
             model.resetFilmStrip(model.getFilmStrip("vacuumend"+direction));
             model.resetFilmStrip(model.getFilmStrip("idle"+direction));
@@ -142,7 +156,7 @@ public class PlayerController extends CharactersController {
             processRun("vacuumstart"+direction);
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "vacuuming_start", direction);
             ((PlayerModel) model).drawFire(canvas);
-        }else if(vacuumFrame >= 31 && vacuumFrame <= 52){
+        }else if(((PlayerModel) model).getVacuumingState() == PlayerModel.VacuumingState.VACUUM){
             model.resetFilmStrip(model.getFilmStrip("vacuumstart"+direction));
             model.resetFilmStrip(model.getFilmStrip("vacuumend"+direction));
             model.resetFilmStrip(model.getFilmStrip("idle"+direction));
@@ -150,7 +164,7 @@ public class PlayerController extends CharactersController {
             processRun("vacuum"+direction);
             model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "vacuuming", direction);
             ((PlayerModel) model).drawFire(canvas);
-        }else if(vacuumFrame >= 53 && vacuumFrame <= 82){
+        }else if(((PlayerModel) model).getVacuumingState() == PlayerModel.VacuumingState.END){
             model.resetFilmStrip(model.getFilmStrip("vacuumstart"+direction));
             model.resetFilmStrip(model.getFilmStrip("vacuum"+direction));
             model.resetFilmStrip(model.getFilmStrip("idle"+direction));

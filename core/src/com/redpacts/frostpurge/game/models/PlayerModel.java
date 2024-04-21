@@ -52,6 +52,7 @@ public class PlayerModel extends CharactersModel {
         this.hp = 100;
         this.invincibility = 0;
         this.vacuumingProgression = 0;
+        this.vacuumingState = VacuumingState.NONE;
         this.alive = true;
         this.radius = 3.19f;
 
