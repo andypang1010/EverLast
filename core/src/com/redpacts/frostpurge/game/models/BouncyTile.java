@@ -2,8 +2,10 @@ package com.redpacts.frostpurge.game.models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -23,6 +25,7 @@ public class BouncyTile extends TileModel{
     private float scale;
     protected FilmStrip activeTexture;
     boolean active;
+    float time;
 
     /**
      * Returns the texture of this tile
@@ -41,11 +44,13 @@ public class BouncyTile extends TileModel{
     public TileType getType(){
         return this.type;
     }
-    public FilmStrip getFilmStrip(String type) { return this.activeTexture;}
+    public FilmStrip getFilmStrip() { return this.activeTexture;}
     public void resetFilmStrip() {
         this.activeTexture.setFrame(0);
     }
     public boolean isActive() {return this.active;}
+    public void activate() {active = true;}
+    public void deactivate() {active = false;}
 
     /**
      * Create a tile with the specified texture
@@ -58,9 +63,24 @@ public class BouncyTile extends TileModel{
         this.textureRegion = textureIdle;
         this.activeTexture = new FilmStrip(textureActive.getTexture(), rows, cols, size);
         this.active = false;
+        this.time = 0;
         this.position = position;
         this.scale = scale;
         this.base  = base;
+    }
+    protected void processFilmStrip() {
+        if(!active) return;
+        time += Gdx.graphics.getDeltaTime();
+        int frame = activeTexture.getFrame();
+        if (time >= .125 / 3){
+            frame++;
+            time = 0f;
+            if (frame >= activeTexture.getSize()) {
+                deactivate();
+                frame = 0;
+            }
+            activeTexture.setFrame(frame);
+        }
     }
 
     @Override

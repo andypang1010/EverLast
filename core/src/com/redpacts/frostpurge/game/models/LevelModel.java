@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.controllers.EnemyController;
 import com.redpacts.frostpurge.game.util.EnemyStates;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -229,6 +230,10 @@ public class LevelModel {
         return neighbors;
     }
 
+    public void drawBouncy(BouncyTile object, GameCanvas canvas){
+        object.processFilmStrip();
+        canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);
+    }
     public void drawTile(TileModel object, GameCanvas canvas){
         canvas.draw(object.getTextureRegion(), object.getPosition().x, object.getPosition().y);
     }

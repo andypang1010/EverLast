@@ -297,11 +297,11 @@ public class GameMode implements Screen {
             }else if(object instanceof EnemyModel){
                 enemyControllers.get(i).draw(canvas,(EnemyModel) object);
                 i++;
-            }else if (object instanceof ObstacleTile){
-                currentLevel.drawTile((TileModel) object, canvas);
-            }else if (object instanceof BouncyTile){
+            } else if (object instanceof BouncyTile){
                 // TODO: create bouncy controller?
-                currentLevel.drawTile((BouncyTile) object, canvas);
+                currentLevel.drawBouncy((BouncyTile) object, canvas);
+            } else if (object instanceof ObstacleTile){
+                currentLevel.drawTile((TileModel) object, canvas);
             }
         }
 
