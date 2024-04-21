@@ -166,7 +166,8 @@ public class EnemyModel extends CharactersModel{
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
                 CollisionController.PhysicsConstants.CATEGORY_ENEMY |
                 CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
-                CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE);
+                CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |
+                CollisionController.PhysicsConstants.CATEGORY_BOUNCY);
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use

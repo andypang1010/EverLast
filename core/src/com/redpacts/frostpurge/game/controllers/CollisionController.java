@@ -20,6 +20,7 @@ public class CollisionController{
         public static final short CATEGORY_OBSTACLE = 0x0004;
         public static final short CATEGORY_SWAMP = 0x0008;
         public static final short CATEGORY_DESTRUCTIBLE = 0x0016;
+        public static final short CATEGORY_BOUNCY = 0x0032;
     }
     /** Reference to the game board */
     public LevelModel board;
