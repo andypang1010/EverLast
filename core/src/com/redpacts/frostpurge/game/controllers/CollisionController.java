@@ -28,6 +28,8 @@ public class CollisionController{
     public PlayerModel player;
     /** Reference to all the enemies in the game */
     public Array<EnemyModel> enemies;
+    /** Reference to all the bouncies in the game */
+    public Array<BouncyTile> bouncy;
     /** Width of the collision geometry */
     protected float width;
     /** Height of the collision geometry */
@@ -79,20 +81,6 @@ public class CollisionController{
 
     /// COLLISION CHECK
 
-    /**
-     * Creates a new game world with the default values.
-     *
-     * The game world is scaled so that the screen coordinates do not agree
-     * with the Box2d coordinates.  The bounds are in terms of the Box2d
-     * world, not the screen.
-     *
-     * @param board   The game board
-     * @param player  The player
-     * @param enemies List of enemies
-     */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies) {
-        this(board, player, enemies, new Rectangle(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT));
-    }
 
     /**
      * Creates a new game world
@@ -107,8 +95,8 @@ public class CollisionController{
      * @param width  	The width in Box2d coordinates
      * @param height	The height in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, float width, float height) {
-        this(board, player, enemies, new Rectangle(0,0,width,height));
+    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, float width, float height) {
+        this(board, player, enemies, bouncy, new Rectangle(0,0,width,height));
     }
 
     /**
@@ -123,10 +111,11 @@ public class CollisionController{
      * @param enemies List of enemies
      * @param bounds  The game bounds in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Rectangle bounds) {
+    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Rectangle bounds) {
         this.board = board;
         this.player = player;
         this.enemies = enemies;
+        this.bouncy = bouncy;
 
         world = new World(new Vector2(),false);
         this.bounds = new Rectangle(bounds);
@@ -148,6 +137,12 @@ public class CollisionController{
                     tile.createBody(world);
                     addObject(tile);
                 }
+            }
+        }
+        for (BouncyTile b: bouncy) {
+            if (b != null) {
+                b.createBody(world);
+                addObject(b);
             }
         }
         GameContactListener contactListener = new GameContactListener(world, board);

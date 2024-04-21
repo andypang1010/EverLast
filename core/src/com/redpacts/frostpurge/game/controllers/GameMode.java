@@ -54,6 +54,7 @@ public class GameMode implements Screen {
     private Array<GameObject> drawble;
 
     private Array<EnemyModel> enemies;
+    private Array<BouncyTile> bouncy;
 
     private TileGraph tileGraph = new TileGraph();
 
@@ -247,6 +248,8 @@ public class GameMode implements Screen {
 
         drawble.add(playerModel);
         drawble.addAll(enemies);
+        drawble.addAll(bouncy);
+        //TODO: add breakable
         sort_by_y(drawble);
         drawble.reverse();
 
@@ -294,8 +297,11 @@ public class GameMode implements Screen {
             }else if(object instanceof EnemyModel){
                 enemyControllers.get(i).draw(canvas,(EnemyModel) object);
                 i++;
-            }else if (object instanceof TileModel){
+            }else if (object instanceof ObstacleTile){
                 currentLevel.drawTile((TileModel) object, canvas);
+            }else if (object instanceof BouncyTile){
+                // TODO: create bouncy controller?
+                currentLevel.drawTile((BouncyTile) object, canvas);
             }
         }
 
@@ -314,6 +320,7 @@ public class GameMode implements Screen {
                 enemy.drawDebug(canvas);
             }
             playerModel.drawDebug(canvas);
+            // TODO: Implement bouncy/breakable debug
             canvas.endDebug();
         }
 
@@ -379,6 +386,7 @@ public class GameMode implements Screen {
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
+        bouncy = currentLevel.getBouncy();
         switch (level){
             case "level1":
                 maxTime = 46;
@@ -411,7 +419,7 @@ public class GameMode implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionController = new CollisionController(currentLevel, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, canvas.getWidth(), canvas.getHeight());
     }
 
     public enum GameState {

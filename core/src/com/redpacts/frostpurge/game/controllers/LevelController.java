@@ -36,11 +36,13 @@ public class LevelController {
 
         JsonValue layer1 = leveljson.get("layers").child();
         JsonValue layer2 = layer1.next();
-        JsonValue layer3 = layer2.next();
+        JsonValue interactable = layer2.next();
+        JsonValue layer3 = interactable.next();
         JsonValue characters = layer3.next();
 
         initializeBaseTileLayer(level, layer1, tileset);
         initializeExtraTileLayer(level, layer2, tileset,tileProperties);
+        initializeInteractableLayer(level, interactable, directory);
         initializeAccentTileLayer(level, layer3, tileset, tileProperties);
         initializeCharacterLayer(level, characters, directory);
 
@@ -121,6 +123,36 @@ public class LevelController {
                     }
                     break;
             }
+        }
+    }
+    /**
+     * This function initializes the third layer, which has all the information about the interactables like breakables and
+     * bouncy. Each object hsd different properties which will be broken down in later functions
+     * @param level This is the instance of the level that we are storing everything into
+     * @param layer This is the layer Json that we will be reading from to get all of the characters in the game
+     */
+    private void initializeInteractableLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
+        int x,y, rotation;
+        int id;
+        String type;
+        JsonValue objects = layer.get("objects").child();
+        while (objects != null){
+            x = objects.getInt("x");
+            y = objects.getInt("y");
+            rotation = objects.getInt("rotation");
+            JsonValue properties = objects.get("properties").child();
+            type = properties.getString("value");
+            switch (type){
+                case "bouncy":
+                    properties = properties.next();
+                    int bouncyID = properties.getInt("value");
+                    level.createBouncy(x,(height*64-y),rotation,directory, bouncyID);
+                    break;
+                case "breakable":
+                    // TODO: Implement breakable
+                    break;
+            }
+            objects = objects.next();
         }
     }
 

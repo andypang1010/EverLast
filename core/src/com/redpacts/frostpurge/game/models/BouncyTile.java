@@ -8,18 +8,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.redpacts.frostpurge.game.controllers.CollisionController;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 /**
  * Class representing tiles in the game scene
  * Each tile has certain attributes that affects the game
  */
-public class ObstacleTile extends TileModel{
+public class BouncyTile extends TileModel{
 
     /** Type of the tile */
     private TileType type;
     /** Scale from texture to screen */
     private float scale;
+    protected FilmStrip activeTexture;
+    boolean active;
 
     /**
      * Returns the texture of this tile
@@ -38,36 +41,23 @@ public class ObstacleTile extends TileModel{
     public TileType getType(){
         return this.type;
     }
-
-    /**
-     * Create a default tile with flat texture
-     */
-    public ObstacleTile(){
-        Pixmap pixmap = new Pixmap( 64, 64, Pixmap.Format.RGBA8888 );
-        pixmap.setColor( 1, 1, 1, 1f );
-        this.texture = new Texture( pixmap );
-        pixmap.dispose();
+    public FilmStrip getFilmStrip(String type) { return this.activeTexture;}
+    public void resetFilmStrip() {
+        this.activeTexture.setFrame(0);
     }
+    public boolean isActive() {return this.active;}
 
     /**
      * Create a tile with the specified texture
      *
-     * @param texture The texture of the tile
+     * @param textureIdle      The idle texture of the tile
+     * @param textureActive    The active texture of the tile
      */
-    public ObstacleTile(Texture texture){
-        this.texture = texture;
-        this.type = TileType.OBSTACLE;
-//        this.position = ;
-    }
-
-    /**
-     * Create a tile with the specified texture
-     *
-     * @param texture The texture of the tile
-     */
-    public ObstacleTile(TextureRegion texture, Vector2 position, float scale, int base){
-        this.textureRegion = texture;
-        this.type = TileType.OBSTACLE;
+    public BouncyTile(TextureRegion textureIdle, TextureRegion textureActive, Vector2 position, float scale, int base, int rows, int cols, int size){
+        this.type = TileType.BOUNCY;
+        this.textureRegion = textureIdle;
+        this.activeTexture = new FilmStrip(textureActive.getTexture(), rows, cols, size);
+        this.active = false;
         this.position = position;
         this.scale = scale;
         this.base  = base;
@@ -79,20 +69,21 @@ public class ObstacleTile extends TileModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.StaticBody;
         // Set the position of the obstacle
-        bodyDef.position.set(this.getPosition().cpy().add(64f / 2, 64f / 2).scl(0.1f));
+        bodyDef.position.set(this.getPosition().cpy().add(64f * 3 / 2, 64f * 2 / 2).scl(0.1f));
 
         Body body = world.createBody(bodyDef);
         body.setUserData(this);
+        body.setSleepingAllowed(false);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(6.4f / 2, 6.4f / 2);
+        shape.setAsBox(6.4f * 3 / 2, 6.4f * 2 / 2);
 
         this.shape = shape;
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.restitution = 0.25f;
-        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_OBSTACLE;
+        fixtureDef.restitution = 1f;
+        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_BOUNCY;
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
                 CollisionController.PhysicsConstants.CATEGORY_ENEMY);
 

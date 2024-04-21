@@ -23,6 +23,7 @@ public class LevelModel {
     private TileModel[][] extraLayer;
     private TileModel[][] accentLayer;
     private Array<EnemyModel> enemies;
+    private Array<BouncyTile> bouncy;
     private PlayerModel player;
     private boolean altered;
     private String name;
@@ -36,6 +37,7 @@ public class LevelModel {
         extraLayer = new TileModel[height][width];
         accentLayer = new TileModel[height][width];
         enemies = new Array<>();
+        bouncy = new Array<>();
         altered = false;
         this.directory = directory;
     }
@@ -98,6 +100,17 @@ public class LevelModel {
     public void populateGoal(int i, int j, TextureRegion texture, int base){
         extraLayer[i][j] = new GoalTile(texture, new Vector2(j*64,i*64), base);
     }
+    /**
+     * Function to add a bouncy to the board at the appropriate index
+     * @param i row that the tile is on
+     * @param j column that the tile is in
+     * @param texture the texture for the obstacle
+     * @param shape The shape that the obstacle is (circle, LRtriangle, square)
+     */
+    public void populateBouncy(int i, int j, TextureRegion texture, String shape, int base){
+        //TODO Make the obstacles have different types of hitboxes EX: Circle vs Full Tile vs Triangle
+        extraLayer[i][j] = new BouncyTile(texture, texture, new Vector2(j*64,i*64), 1, base, 1, 8, 8);
+    }
 
     /**
      * Creates the player in the scene so that they are instantiated correctly
@@ -130,6 +143,21 @@ public class LevelModel {
         int[] coordinates = {(int) Math.floor((double) x /64), (int) Math.floor((double) y /64)};
         enemies.get(enemyID-1).addWaypoint(coordinates,pointNumber);
     }
+    /**
+     * Creates a bouncy object
+     * @param x x coordinate of spawn point
+     * @param y y coordinate of spawn point
+     * @param rotation initial rotation of player
+     * @param directory The directory so that the bouncy can get its animations
+     * @param index number bouncy on in the level
+     * @return enemy to be put into an enemy controller
+     */
+    public void createBouncy(int x, int y, int rotation, AssetDirectory directory, int index){
+        // TODO: Right now only supports one type of bouncy.
+        TextureRegion idle = new TextureRegion(directory.getEntry("IdleBouncyMushroom", Texture.class));
+        TextureRegion active =  new TextureRegion(directory.getEntry("ActiveBouncyMushroom", Texture.class));
+        bouncy.insert(index-1, new BouncyTile(idle, active, new Vector2(x,y), 1, 1, 1, 8, 8));
+    }
     public int getWidth(){return width;}
     public int getHeight(){return height;}
     public TileModel[][] getBaseLayer(){
@@ -147,6 +175,7 @@ public class LevelModel {
     public PlayerModel getPlayer(){
         return player;
     }
+    public Array<BouncyTile> getBouncy() { return bouncy;}
     public String getName(){return name;}
     public void setName(String name){this.name = name;}
 
