@@ -22,17 +22,12 @@ public class EnemyModel extends CharactersModel{
     /*
     FSM
      */
-    EnemyStates initState, currentState, prevState;
+    EnemyStates initState;
+    EnemyStates currentState;
     private int[] startpatrol;
     private int[] endpatrol;
     private int enemyID;
     private ArrayList<int[]> waypoints;
-    public int[] getStartPatrol(){
-        return startpatrol;
-    }
-    public int[] getEndPatrol(){
-        return endpatrol;
-    }
     public int getID(){
         return enemyID;
     }
@@ -76,7 +71,6 @@ public class EnemyModel extends CharactersModel{
 
         this.initState = initState;
         currentState = initState;
-        prevState = null;
         waypoints = new ArrayList<int[]>(6);
         addWaypoint(this.startpatrol,0);
         enemyID = id;
@@ -97,11 +91,8 @@ public class EnemyModel extends CharactersModel{
     public void setInitState(EnemyStates initState) {this.initState = initState;}
     public EnemyStates getCurrentState() {return currentState;}
     public void setCurrentState(EnemyStates currentState) {
-        this.prevState = this.currentState;
         this.currentState = currentState;
     }
-    public EnemyStates getPrevState() {return prevState;}
-
 
     /*
     VISION CONE

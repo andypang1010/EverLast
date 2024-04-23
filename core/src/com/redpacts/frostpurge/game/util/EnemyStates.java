@@ -7,6 +7,8 @@ import com.redpacts.frostpurge.game.models.EnemyModel;
 
 public enum EnemyStates implements State<EnemyModel> {
     PATROL,
+    QUESTION,
+    SEARCH,
     CHASE;
     @Override
     public void enter(EnemyModel enemyModel) {
