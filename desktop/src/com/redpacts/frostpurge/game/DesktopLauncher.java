@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("EverLast");
 		config.setWindowedMode(1920, 1080);
+		config.setResizable(false);
 //		config.setFullscreenMode(config.getDisplayMode());
 		new Lwjgl3Application(new GDXRoot(), config);
 	}

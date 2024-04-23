@@ -105,7 +105,7 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[1] = 1;
         indices[2] = 2;
 
-        Vector2 rayStart = model.getBody().getPosition().cpy();
+        Vector2 rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
         int numRays = 20; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
 
@@ -144,7 +144,7 @@ public class EnemyController extends CharactersController implements StateMachin
         ((EnemyModel) model).getTriangles().clear();
 
         // Draw enemy
-        String direction = getDirection(enemy.getVelocity().x,enemy.getVelocity().y, previousDirection);
+        String direction = getDirection(enemy.getBody().getLinearVelocity().x,enemy.getBody().getLinearVelocity().y, previousDirection);
         processRun(direction);
         if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);

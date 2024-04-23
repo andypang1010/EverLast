@@ -115,28 +115,20 @@ public abstract class CharactersController {
             } else if (angle >= -135 && angle <=0) {
                 return "left";
             }
+        } else if (model instanceof EnemyModel){ // Assume model instanceof EnemyModel
+            angle = (float) Math.toDegrees(Math.atan2(y,x));
+            // setRotation is broken as of now, but also have found workaround that doesn't use setRotation
+//            model.setRotation(angle);
+            if (angle <= 45 && angle >= -45){
+                return "right";
+            } else if (angle>=45 && angle<=135) {
+                return "up";
+            } else if (angle >= 135 || angle <=-135) {
+                return "left";
+            }else{
+                return "down";
+            }
         }
-
-        if (angle >= 45 && angle <= 135){
-            if (model instanceof  EnemyModel){
-                model.setRotation(0);
-            }
-            return "right";
-        } else if (angle>=135 || angle<=-135) {
-            if (model instanceof  EnemyModel){
-                model.setRotation(270);
-            }
-            return "up";
-        } else if (angle >= -135 && angle <=-45) {
-            if (model instanceof  EnemyModel){
-                model.setRotation(180);
-            }
-            return "left";
-        }else{
-            if (model instanceof  EnemyModel){
-                model.setRotation(90);
-            }
-            return "down";
-        }
+        return previousDirection;
     }
 }

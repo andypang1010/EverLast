@@ -41,7 +41,7 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
-        this.radius = 1.64f;
+        this.radius = 3.19f;
 
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
@@ -60,10 +60,10 @@ public class EnemyModel extends CharactersModel{
         run_left.setFrame(4);
 
         Texture up= new TextureRegion(directory.getEntry( "EnemyUp", Texture.class )).getTexture();
-        run_down = new FilmStrip(up, 1, 7, 7);
+        run_up = new FilmStrip(up, 1, 7, 7);
 
         Texture down = new TextureRegion(directory.getEntry( "EnemyDown", Texture.class )).getTexture();
-        run_up = new FilmStrip(down, 1, 8, 8);
+        run_down = new FilmStrip(down, 1, 8, 8);
 
 
         this.startpatrol = startpatrol;

@@ -150,6 +150,7 @@ public class LevelController {
                     properties = properties.next();
                     x+= 75;
                     enemyID = properties.getInt("value");
+                    System.out.println(enemyID);
                     level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, enemyID);
                     break;
                 case "waypoint":
@@ -158,6 +159,7 @@ public class LevelController {
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
                     x += 32;
+                    System.out.println(enemyID);
                     level.addWaypoint(x,height*64 - y,enemyID,pointNumber);
                     break;
             }

@@ -39,15 +39,15 @@ public class CollisionController{
     protected Rectangle bounds;
     /** The world scale */
     protected Vector2 scale;
-    /** Offset of bounds */
-    protected final int offset = 10;
+    /** Offset of vision cone */
+    protected Vector2 offsetVisionCone = new Vector2();
 
     /** The amount of time for a physics engine step. */
     public static final float WORLD_STEP = 1/60.0f;
     /** Number of velocity iterations for the constraint solvers */
-    public static final int WORLD_VELOC = 6;
+    public static final int WORLD_VELOC = 14;
     /** Number of position iterations for the constraint solvers */
-    public static final int WORLD_POSIT = 2;
+    public static final int WORLD_POSIT = 12;
 
     /** Width of the game world in Box2d units */
     protected static final float DEFAULT_WIDTH  = 32.0f;
@@ -204,7 +204,7 @@ public class CollisionController{
         pickPowerUp((PlayerModel) player);
         win((PlayerModel) player);
         for (EnemyModel e : enemies){
-            checkEnemyVision(e, player);
+            checkEnemyVision(e);
         }
         postUpdate(1/60f);
     }
@@ -298,23 +298,39 @@ public class CollisionController{
      * The vision cone will scan every object, and flags when it hits obstacle or player.
      *
      * @param enemy	    The vision cone of enemy
-     * @param player    The player
      */
     // TODO: Perhaps change parameters so that we can customize vision cone (length/fov).
-    public void checkEnemyVision(EnemyModel enemy, PlayerModel player) {
+    public void checkEnemyVision(EnemyModel enemy) {
         // Create the callback instance
         VisionConeCallback callback = new VisionConeCallback();
 
+        // Calculating offset
+
+        switch(getDirection(enemy.getBody().getLinearVelocity())) {
+            case "right":
+                offsetVisionCone = new Vector2(3f, 6f);
+                break;
+            case "left":
+                offsetVisionCone = new Vector2(-3f, 6f);
+                break;
+            case "up":
+            case "down":
+                offsetVisionCone = new Vector2(0, 3f);
+                break;
+            default:
+                offsetVisionCone = new Vector2();
+                break;
+        }
+
         // Calculate the end point of the vision cone based on the enemy's direction and range
-        Vector2 rayStart = enemy.getBody().getPosition().cpy();
+        Vector2 rayStart = enemy.getBody().getPosition().cpy().add(offsetVisionCone);
 //        System.out.println(rayStart);
         float fov = 45f; // Field of view angle in degrees
         int numRays = 20; // Number of rays to cast within the fov
         float deltaAngle = fov / (numRays - 1); // Angle between each ray
 
         // Calculate the direction vector based on enemy's rotation
-        Vector2 direction = new Vector2((float) Math.cos(Math.toRadians(enemy.getRotation())),
-                (float) Math.sin(Math.toRadians(enemy.getRotation()))).nor(); // Normalize the direction vector
+        Vector2 direction = enemy.getBody().getLinearVelocity().cpy().nor(); // Normalize the direction vector
 
         float angle = -fov / 2; // Calculate current angle
         Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
@@ -337,9 +353,9 @@ public class CollisionController{
                 rayEnd = callback.getHitPoint();
                 callback.clearHitPoint();
             }
-            enemy.setTriangle(rayStart.cpy().scl(10).add(-130, -130),
-                    rayPrevious.cpy().scl(10).add(-130, -130),
-                    rayEnd.cpy().scl(10).add(-130, -130)); // Add triangle to draw vision cone.
+            enemy.setTriangle(rayStart.cpy().scl(10).add(-100, -100),
+                    rayPrevious.cpy().scl(10).add(-100, -100),
+                    rayEnd.cpy().scl(10).add(-100, -100)); // Add triangle to draw vision cone.
             rayPrevious = rayEnd.cpy();
         }
 
@@ -363,5 +379,25 @@ public class CollisionController{
      */
     private float manhattan(float x0, float y0, float x1, float y1) {
         return Math.abs(x1 - x0) + Math.abs(y1 - y0);
+    }
+
+    /**
+     * helper to find which animation to draw
+     * @param v
+     * @return the direction that the animtion should face
+     */
+    public String getDirection(Vector2 v) {
+        float x = v.x;
+        float y = v.y;
+        float angle = (float) Math.toDegrees(Math.atan2(y,x));
+        if (angle <= 45 && angle >= -45){
+            return "right";
+        } else if (angle>=45 && angle<=135) {
+            return "up";
+        } else if (angle >= 135 || angle <=-135) {
+            return "left";
+        }else{
+            return "down";
+        }
     }
 }
