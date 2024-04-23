@@ -22,9 +22,9 @@ public class EnemyController extends CharactersController implements StateMachin
     private Vector2 moveDirection = new Vector2();
 
     private float speedMultiplier = 40f;
-    private float listenRadius = 60f;
-    private float alertRadius = 60f;
-    private float listenInterval = 0f;
+    private float listenRadius = 20f;
+    private float alertRadius = 40f;
+    private float currentListenInterval = 0f;
     private final float notHeardToPatrolInterval = 3f;
 
     /*
@@ -209,7 +209,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 System.out.println("IN QUESTION STATE!");
 
                 if (isPlayerWithinListenRadius()) {
-                    listenInterval = notHeardToPatrolInterval;
+                    currentListenInterval = notHeardToPatrolInterval;
                     setGoal(modelPositionToTile(playerModel));
                 }
 
@@ -228,12 +228,12 @@ public class EnemyController extends CharactersController implements StateMachin
                 }
 
                 else {
-                    listenInterval -= Gdx.graphics.getDeltaTime();
+                    currentListenInterval -= Gdx.graphics.getDeltaTime();
 
                     lookAround();
 
                     // If player not found within x seconds, go back to patrol state
-                    if (listenInterval <= 0f) {
+                    if (currentListenInterval <= 0f) {
                         changeState(EnemyStates.PATROL);
                         nextWaypointIndex = 0;
                         setGoal(waypoints[0]);
