@@ -23,7 +23,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     private float speedMultiplier = 40f;
     private float listenRadius = 20f;
-    private float alertRadius = 40f;
+    private float alertRadius = 30f;
     private float currentListenInterval = 0f;
     private final float notHeardToPatrolInterval = 3f;
 
