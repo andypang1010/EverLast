@@ -2,14 +2,18 @@ package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -25,8 +29,50 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class GameMode implements Screen {
+public class GameMode implements Screen, InputProcessor {
+    /*
+    Pause Screen
+    */
+    private AssetDirectory pauseScreenAssets;
+    /**
+     * Background texture for pause screen
+     */
+    private Texture pauseScreenTexture;
+    /**
+     * Texture for pause button
+     */
+    private Texture pauseTexture;
+    private ButtonBox pauseButton;
+    /**
+     * Texture for resume button
+     */
+    private Texture resumeTexture;
+    private ButtonBox resumeButton;
+    /**
+     * Texture for home button
+     */
+    private Texture homeTexture;
+    private ButtonBox homeButton;
+    /**
+     * Texture for level select button
+     */
+    private Texture levelSelectTexture;
+    private ButtonBox levelSelectButton;
+    /**
+     * pressState = 0 means no click on resume button, 1 means clicking, 2 means clicked.
+     */
+    private int pressState = 0;
+
+    /*
+    Game Over Screen
+     */
+    private AssetDirectory gameOverAssets;
+
+    /*
+    Gameplay
+     */
     private GameCanvas canvas;
+
 
     private OrthographicCamera camera;
     private OrthographicCamera HUDcamera;
@@ -76,6 +122,22 @@ public class GameMode implements Screen {
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
+
+        // We need these files loaded immediately
+        pauseScreenAssets = new AssetDirectory( "pausescreen.json" );
+        pauseScreenAssets.loadAssets();
+        pauseScreenAssets.finishLoading();
+
+        // Load the pause screen assets
+        pauseScreenTexture = pauseScreenAssets.getEntry("background", Texture.class);
+        pauseScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        pauseTexture = pauseScreenAssets.getEntry("pauseButton", Texture.class);
+        pauseButton = new ButtonBox(0,
+                new Rectangle(canvas.getWidth() * 41 / 100, canvas.getHeight() * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
+        resumeTexture = pauseScreenAssets.getEntry("resumeButton", Texture.class);
+        resumeButton = new ButtonBox(0,
+                new Rectangle(canvas.getWidth() * 47 / 100, canvas.getHeight() * 24/100, resumeTexture.getWidth(), resumeTexture.getHeight()), resumeTexture);
+
         this.drawble = new Array<GameObject>();
         this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
         this.sy = (float) canvas.getHeight() / STANDARD_HEIGHT;
@@ -207,25 +269,23 @@ public class GameMode implements Screen {
     }
 
     public void update(float delta) {
+        Gdx.input.setInputProcessor(this);
         inputController.readInput(null,null);
 
         // Handle pausing the game
-        if (inputController.didPause()) {
+        if (inputController.didPause() || pressState == 2) {
             if (gameState == GameState.PLAY) {
                 gameState = GameState.PAUSE;
             } else if (gameState == GameState.PAUSE) {
+                pressState = 0;
                 gameState = GameState.PLAY;
             }
             inputController.clearPausePressed();
         }
 
         if (gameState == GameState.PAUSE) {
-            // Implementing pause screen
-            font.setColor(Color.GREEN);
-            canvas.drawTextCenteredHUD("GAME PAUSED!", font, 0, HUDcamera);
-            if (inputController.didExit()){
-                listener.exitScreen(this, 0);
-            }
+            // Draw pause screen
+            drawPauseScreen();
             return; // Skip the rest of the update loop
         }
 
@@ -355,6 +415,21 @@ public class GameMode implements Screen {
         }
     }
 
+    public void drawPauseScreen(){
+        canvas.begin();
+        canvas.drawBackground(pauseScreenTexture, 0, 0, true);
+        Rectangle bounds;
+
+        pauseButton.hoveringButton();
+        bounds = pauseButton.getBounds();
+        canvas.draw(pauseButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        resumeButton.hoveringButton();
+        bounds = resumeButton.getBounds();
+        canvas.draw(resumeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        canvas.end();
+    }
     public void setScreenListener(ScreenListener listener) {
         this.listener = listener;
     }
@@ -428,6 +503,219 @@ public class GameMode implements Screen {
         collisionController = new CollisionController(currentLevel, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
     }
 
+    // PROCESSING PLAYER INPUT
+
+    /**
+     * Called when the screen was touched or a mouse button was pressed.
+     * <p>
+     * This method checks to see if the play button is available and if the click
+     * is in the bounds of the play button.  If so, it signals the that the button
+     * has been pressed and is currently down. Any mouse button is accepted.
+     *
+     * @param screenX the x-coordinate of the mouse on the screen
+     * @param screenY the y-coordinate of the mouse on the screen
+     * @param pointer the button or touch finger number
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (pressState % 2 == 0 && pressState != 0) {
+            return true;
+        }
+        if (gameState == GameState.PAUSE) {
+            if (resumeButton.isPressed() || pauseButton.isPressed()) {
+                pressState = 1;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Called when a finger was lifted or a mouse button was released.
+     * <p>
+     * This method checks to see if the play button is currently pressed down. If so,
+     * it signals the that the player is ready to go.
+     *
+     * @param screenX the x-coordinate of the mouse on the screen
+     * @param screenY the y-coordinate of the mouse on the screen
+     * @param pointer the button or touch finger number
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (pressState % 2 == 1) {
+            switch (pressState){
+                case 1: // From pause to game
+                    pressState++;
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Called when a button on the Controller was pressed.
+     * <p>
+     * The buttonCode is controller specific. This listener only supports the start
+     * button on an X-Box controller.  This outcome of this method is identical to
+     * pressing (but not releasing) the play button.
+     *
+     * @param controller The game controller
+     * @param buttonCode The button pressed
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean buttonDown(Controller controller, int buttonCode) {
+        // TODO: Support XBox
+//		if (pressState == 0) {
+//			if (xbox != null && xbox.getA()) {
+//				for (LevelBox levelBox : levelBoxes){
+//					if (levelBox.enlarged){
+//						pressState = levelBox.label*2-1;
+//					}
+//				}
+//				return false;
+//			}
+//		}
+        return true;
+    }
+
+    /**
+     * Called when a button on the Controller was released.
+     * <p>
+     * The buttonCode is controller specific. This listener only supports the start
+     * button on an X-Box controller.  This outcome of this method is identical to
+     * releasing the the play button after pressing it.
+     *
+     * @param controller The game controller
+     * @param buttonCode The button pressed
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean buttonUp(Controller controller, int buttonCode) {
+//        if (pressState %2 ==1) {
+//            if (xbox != null && !xbox.getB()) {
+//                pressState +=1;
+//                selectedLevel = "level" + Integer.toString(pressState/2);
+//                return false;
+//            }
+//        }
+        return true;
+    }
+
+    // UNSUPPORTED METHODS FROM InputProcessor
+
+    /**
+     * Called when a key is pressed (UNSUPPORTED)
+     *
+     * @param keycode the key pressed
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean keyDown(int keycode) {
+        return true;
+    }
+
+    /**
+     * Called when a key is typed (UNSUPPORTED)
+     *
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean keyTyped(char character) {
+        return true;
+    }
+
+    /**
+     * Called when a key is released (UNSUPPORTED)
+     *
+     * @param keycode the key released
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean keyUp(int keycode) {
+        return true;
+    }
+
+    /**
+     * Called when the mouse was moved without any buttons being pressed. (UNSUPPORTED)
+     *
+     * @param screenX the x-coordinate of the mouse on the screen
+     * @param screenY the y-coordinate of the mouse on the screen
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean mouseMoved(int screenX, int screenY) {
+        return true;
+    }
+
+    /**
+     * Called when the mouse wheel was scrolled. (UNSUPPORTED)
+     *
+     * @param dx the amount of horizontal scroll
+     * @param dy the amount of vertical scroll
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean scrolled(float dx, float dy) {
+        return true;
+    }
+
+    /**
+     * Called when the touch gesture is cancelled (UNSUPPORTED)
+     * <p>
+     * Reason may be from OS interruption to touch becoming a large surface such
+     * as the user cheek. Relevant on Android and iOS only. The button parameter
+     * will be Input.Buttons.LEFT on iOS.
+     *
+     * @param screenX the x-coordinate of the mouse on the screen
+     * @param screenY the y-coordinate of the mouse on the screen
+     * @param pointer the button or touch finger number
+     * @param button  the button
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        return true;
+    }
+
+    /**
+     * Called when the mouse or finger was dragged. (UNSUPPORTED)
+     *
+     * @param screenX the x-coordinate of the mouse on the screen
+     * @param screenY the y-coordinate of the mouse on the screen
+     * @param pointer the button or touch finger number
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return true;
+    }
+
+    // UNSUPPORTED METHODS FROM ControllerListener
+
+    /**
+     * Called when a controller is connected. (UNSUPPORTED)
+     *
+     * @param controller The game controller
+     */
+    public void connected(Controller controller) {
+    }
+
+    /**
+     * Called when a controller is disconnected. (UNSUPPORTED)
+     *
+     * @param controller The game controller
+     */
+    public void disconnected(Controller controller) {
+    }
+
+    /**
+     * Called when an axis on the Controller moved. (UNSUPPORTED)
+     * <p>
+     * The axisCode is controller specific. The axis value is in the range [-1, 1].
+     *
+     * @param controller The game controller
+     * @param axisCode   The axis moved
+     * @param value      The axis value, -1 to 1
+     * @return whether to hand the event to other listeners.
+     */
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+        return true;
+    }
+
     public enum GameState {
         /** While we are playing the game */
         PLAY,
@@ -438,4 +726,45 @@ public class GameMode implements Screen {
         WIN
     }
 
+    private static class ButtonBox {
+        int label;
+        Rectangle bounds;
+        Texture texture;
+        boolean enlarged;
+
+        ButtonBox(int label, Rectangle bounds, Texture texture) {
+            this.label = label;
+            this.bounds = bounds;
+            this.texture = texture;
+            this.enlarged = false;
+        }
+
+        public Texture getTexture() {return this.texture;}
+        public Rectangle getBounds() {return this.bounds;}
+
+        public void hoveringButton(){
+            int x = Gdx.input.getX();
+            int y = Gdx.graphics.getHeight()- Gdx.input.getY();
+            float centerX = this.bounds.x + this.bounds.width/2;
+            float centerY = this.bounds.y + this.bounds.height/2;
+            if (bounds.contains(x, y) && !this.enlarged){
+                this.enlarged = true;
+                this.bounds.width = this.bounds.width * 8 / 7;
+                this.bounds.height = this.bounds.height * 8 / 7;
+                this.bounds.x = (int) centerX - this.bounds.width / 2;
+                this.bounds.y = (int) centerY - this.bounds.height / 2;
+            } else if(!bounds.contains(x,y) && this.enlarged){
+                this.enlarged = false;
+                this.bounds.width = this.bounds.width * 7 / 8;
+                this.bounds.height = this.bounds.height * 7 / 8;
+                this.bounds.x = (int) centerX - this.bounds.width / 2;
+                this.bounds.y = (int) centerY - this.bounds.height / 2;
+            }
+        }
+        public boolean isPressed(){
+            int x = Gdx.input.getX();
+            int y = Gdx.graphics.getHeight()- Gdx.input.getY();
+            return bounds.contains(x, y);
+        }
+    }
 }
