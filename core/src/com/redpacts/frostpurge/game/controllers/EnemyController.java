@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Color;
@@ -15,15 +16,15 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-
-    private float speedMultiplier = 60f;
-    private float alertRadius = 50f;
+    private float speedMultiplier = 40f;
+    private float listenRadius = 20f;
+    private float alertRadius = 30f;
+    private float currentListenInterval = 0f;
+    private final float notHeardToPatrolInterval = 3f;
 
     /*
     FSM
@@ -45,7 +46,8 @@ public class EnemyController extends CharactersController implements StateMachin
     PolygonRegion cone;
     TextureRegion textureRegion;
     Color coneColor;
-    int counter = 0;
+    boolean reachedDestination = false;
+    int updatePathCounter = 0;
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board, ArrayList<int[]> waypoints) {
         this.model = enemy;
         playerModel = targetPlayerModel;
@@ -151,18 +153,19 @@ public class EnemyController extends CharactersController implements StateMachin
         previousDirection = direction;
     }
 
-    private void reachDestination() {
-        model.getBody().setLinearVelocity(new Vector2(0, 0));
-        model.setVelocity(0, 0);
-    }
+//    private void reachDestination() {
+//        model.getBody().setLinearVelocity(new Vector2(0, 0));
+//        model.setVelocity(0, 0);
+//    }
 
     private void setMoveDirection() {
         if (pathQueue.notEmpty()) {
             TileModel nextTile = pathQueue.first();
             moveDirection = new Vector2(nextTile.getPosition().x - 32 - model.getPosition().x, nextTile.getPosition().y - 32 - model.getPosition().y).nor();
-            if (((EnemyModel) model).getID() == 1){
-//                System.out.println(moveDirection);
-            }
+        }
+
+        else {
+            reachedDestination = true;
         }
     }
 
@@ -172,15 +175,6 @@ public class EnemyController extends CharactersController implements StateMachin
 
         // Update enemy's current tile
         currentTile = board.getTileState(model.getPosition().x, model.getPosition().y);
-
-//        try{
-//            if (currentTile == pathQueue.first()){
-//                reachNextTile();
-//            }
-//
-//        } catch (Exception e){
-//            setGoal(waypoints[0]);
-//        }
 
         switch (currentState) {
             case PATROL:
@@ -197,56 +191,115 @@ public class EnemyController extends CharactersController implements StateMachin
 //                    System.out.println("Next waypoint position: " + waypoints[nextWaypointIndex].getPosition());
                 }
 
+//                System.out.println("ENEMY TO PLAYER DISTANCE: " + Vector2.dst(
+//                        model.getBody().getPosition().x,
+//                        model.getBody().getPosition().y,
+//                        playerModel.getBody().getPosition().x,
+//                        playerModel.getBody().getPosition().y));
+
+                // If the player is within listen radius, go to question state
+                if (isPlayerWithinListenRadius()) {
+                    changeState(EnemyStates.QUESTION);
+                }
+
+                break;
+
+            case QUESTION:
+                System.out.println("IN QUESTION STATE!");
+
+                if (isPlayerWithinListenRadius()) {
+                    currentListenInterval = notHeardToPatrolInterval;
+                    setGoal(modelPositionToTile(playerModel));
+                }
+
+                else if (reachedDestination) {
+                    changeState(EnemyStates.SEARCH);
+                }
+
+                break;
+
+            case SEARCH:
+                System.out.println("IN SEARCH STATE!");
+
+                // If the player is within listen radius, go to question state
+                if (isPlayerWithinListenRadius()) {
+                    changeState(EnemyStates.QUESTION);
+                }
+
+                else {
+                    currentListenInterval -= Gdx.graphics.getDeltaTime();
+
+                    lookAround();
+
+                    // If player not found within x seconds, go back to patrol state
+                    if (currentListenInterval <= 0f) {
+                        changeState(EnemyStates.PATROL);
+                        nextWaypointIndex = 0;
+                        setGoal(waypoints[0]);
+                    }
+                }
+
                 break;
 
             case CHASE:
-//                System.out.println("IN CHASE");
+                System.out.println("IN CHASE STATE!");
 
-                // Follow player
-                if (counter > 30){
+                // Update path to player every 0.5 seconds
+                if (updatePathCounter > 30){
                     setGoal(modelPositionToTile(playerModel));
-                    counter = 0;
+                    updatePathCounter = 0;
                 }
-                counter++;
-//                for (int i = 0; i < GameMode.enemyControllers.size; i++) {
-//                    EnemyController enemy = GameMode.enemyControllers.get(i);
-//                    if (enemy == this) continue;
-//
-//                    Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
-//                    System.out.println(Integer.toString(((EnemyModel) enemy.getModel()).getID()) + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
-//                    if (enemy.getCurrentState() != EnemyStates.CHASE &&
-//                    Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y) < alertRadius) {
-//                        enemy.changeState(EnemyStates.CHASE);
-//                        System.out.println("Alerted!!!");
-//                    }
-//                }
+                else {
+                    updatePathCounter++;
+                }
 
-//                    System.out.println("Path Queue: ");
-//                    for (int i = 0; i < pathQueue.size; i++) {
-//                        System.out.println(pathQueue.get(i).getPosition());
-//                    }
-                    System.out.println("Player Position");
-                    System.out.println(modelPositionToTile(playerModel).getPosition());
+                alertNeighborEnemies();
 
-//                System.out.println("Player position: " + modelPositionToTile(playerModel).getPosition());
                 break;
         }
 
-//        System.out.println("Current position: " + model.getPosition());
-//        System.out.println("Current velocity: " + model.getVelocity());
-////
-//        System.out.println("Path Queue: ");
-//        for (int i = 0; i < pathQueue.size; i++) {
-//            System.out.println(pathQueue.get(i).getPosition());
-//        }
-
-//        System.out.println("\n");
         checkCollision();
         setMoveDirection();
 
         model.setPosition(model.getBody().getPosition().scl(10));
         currentState = ((EnemyModel) model).getCurrentState();
         moveToNextTile();
+    }
+
+    private void alertNeighborEnemies() {
+        for (int i = 0; i < GameMode.enemyControllers.size; i++) {
+            EnemyController enemy = GameMode.enemyControllers.get(i);
+            if (enemy == this) continue;
+
+            Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
+//                    System.out.println(((EnemyModel) enemy.getModel()).getID() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
+            if (enemy.getCurrentState() != EnemyStates.CHASE &&
+            Vector2.dst(
+                    model.getBody().getPosition().x,
+                    model.getBody().getPosition().y,
+                    enemyPosition.x,
+                    enemyPosition.y)
+                < alertRadius) {
+
+                enemy.changeState(EnemyStates.CHASE);
+                System.out.println("Alerted!!!");
+            }
+        }
+    }
+
+    private boolean isPlayerWithinListenRadius() {
+        return Vector2.dst(
+                model.getBody().getPosition().x,
+                model.getBody().getPosition().y,
+                playerModel.getBody().getPosition().x,
+                playerModel.getBody().getPosition().y)
+                <= listenRadius
+
+                && playerModel.getBody().getLinearVelocity().len() >= 1f;
+    }
+
+    private void lookAround() {
+        // TODO: Look around at random directions
     }
 
     private void moveToNextTile() {
@@ -267,12 +320,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public boolean revertToPreviousState() {
-        if (((EnemyModel) model).getPrevState() == null) {
-            return false;
-        }
-
-        ((EnemyModel) model).setCurrentState(((EnemyModel) model).getPrevState());
-        return true;
+        return false;
     }
 
     public void setInitialState(EnemyStates enemyState) {
@@ -281,7 +329,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void setGlobalState(EnemyStates enemyState) {
-
+        return;
     }
 
     @Override
@@ -295,7 +343,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     @Override
     public EnemyStates getPreviousState() {
-        return ((EnemyModel) model).getPrevState();
+        return null;
     }
 
     @Override
