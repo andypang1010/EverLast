@@ -427,17 +427,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		if (playButton == null || pressState == 2) {
 			return true;
 		}
-		
 		// Flip to match graphics coordinates
 		screenY = heightY-screenY;
-		
-		// TODO: Fix scaling
-		// Play button is a circle.
-//		float radius = BUTTON_SCALE*scale*playButton.getWidth()/2.0f;
-//		float dist = (screenX-centerX)*(screenX-centerX)+(screenY-centerY)*(screenY-centerY);
-//		if (dist < radius*radius) {
-//			pressState = 1;
-//		}
+
 		if (isStartPressed()){
 			pressState = 1;
 		}
@@ -622,7 +614,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	}
 
 	public void hoveringStart(){
-		// TODO
 		int x = Gdx.input.getX();
 		int y = Gdx.graphics.getHeight()- Gdx.input.getY();
 		float centerX = this.bounds.x + this.bounds.width/2;
@@ -642,7 +633,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		}
 	}
 	public boolean isStartPressed(){
-		// TODO
 		int x = Gdx.input.getX();
 		int y = Gdx.graphics.getHeight()- Gdx.input.getY();
 		return bounds.contains(x, y);
