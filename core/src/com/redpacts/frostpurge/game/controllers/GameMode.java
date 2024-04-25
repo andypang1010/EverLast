@@ -200,7 +200,6 @@ public class GameMode implements Screen {
 
         // Handle pausing the game
         if (inputController.didPause()) {
-            System.out.println(gameState);
             if (gameState == GameState.PLAY) {
                 gameState = GameState.PAUSE;
             } else if (gameState == GameState.PAUSE) {
