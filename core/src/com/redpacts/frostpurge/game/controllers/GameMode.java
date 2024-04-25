@@ -223,6 +223,7 @@ public class GameMode implements Screen {
             // Implementing pause screen
             font.setColor(Color.GREEN);
             canvas.drawTextCenteredHUD("GAME PAUSED!", font, 0, HUDcamera);
+            Gdx.input.setCursorCatched(false);
             if (inputController.didExit()){
                 listener.exitScreen(this, 0);
             }
@@ -232,6 +233,7 @@ public class GameMode implements Screen {
         if (gameState == GameState.PLAY){
             currentTime -= Gdx.graphics.getDeltaTime();
             playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
+            Gdx.input.setCursorCatched(true);
         }
 
         if (currentTime <= 0) {
@@ -266,6 +268,7 @@ public class GameMode implements Screen {
         }
 
         if (gameState == GameState.WIN || gameState == GameState.OVER){
+            Gdx.input.setCursorCatched(false);
             if (inputController.didExit()){
                 listener.exitScreen(this, 0);
             }

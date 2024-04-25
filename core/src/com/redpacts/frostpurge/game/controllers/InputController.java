@@ -182,7 +182,8 @@ public class InputController {
             }
             // Remember the current state for the next frame
             previousPausePressed = currentPausePressed;
-        }else{
+        }
+        else {
             float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
             float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
             if (Math.abs(x) < 10f){
@@ -192,16 +193,16 @@ public class InputController {
                 y = 0;
             }
             normalize(x,y);
-            if (Gdx.input.isKeyPressed(Input.Keys.W)){
+            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
                 horizontal = normalization[0];
                 vertical = normalization[1];
             }else{
                 horizontal = 0;
                 vertical = 0;
             }
-            boostPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
-            vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.V);
-            deceleratePressed = Gdx.input.isKeyPressed(Input.Keys.S);
+            boostPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+            vacuumPressed = Gdx.input.isButtonPressed((Input.Buttons.MIDDLE));
+            deceleratePressed = !Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
             exitPressed = Gdx.input.isKeyPressed(Input.Keys.BACKSPACE);
             debugPressed = Gdx.input.isKeyPressed(Input.Keys.D);
             replayPressed = Gdx.input.isKeyPressed(Input.Keys.R);

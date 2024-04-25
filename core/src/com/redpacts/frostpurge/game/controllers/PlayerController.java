@@ -58,12 +58,12 @@ public class PlayerController extends CharactersController {
         ((PlayerModel) model).addBoostCoolDown(-1);
         setAngle(horizontal,vertical);
         if (!decelerate){
-            model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
+            model.getBody().applyForceToCenter(-horizontal*1.5f, vertical*1.5f, true);
         }else{
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
         if (boost && ((PlayerModel) model).getBoostNum() > 0 && ((PlayerModel) model).getBoostCoolDown() == 0){
-            model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
+            model.getBody().applyForceToCenter(-horizontal*100f, vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
         }
@@ -115,7 +115,7 @@ public class PlayerController extends CharactersController {
         }
 
         // Draw player
-        String direction = getDirection(horizontal,vertical,previousDirection);
+        String direction = getDirection(-horizontal, -vertical, previousDirection);
         if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
             model.resetFilmStrip(model.getFilmStrip("idle"+direction));
             processRun(direction);
