@@ -34,7 +34,7 @@ public class GameContactListener implements ContactListener {
 
         // If either object is the avatar, change color
         if (obj1 != null && obj2 != null) {
-            processCollision(obj1, obj2);
+            processCollision(contact, obj1, obj2);
         }
     }
 
@@ -55,7 +55,7 @@ public class GameContactListener implements ContactListener {
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
-    protected void processCollision(GameObject obj1, GameObject obj2) {
+    protected void processCollision(Contact contact, GameObject obj1, GameObject obj2) {
         if (obj1 instanceof PlayerModel && obj2 instanceof PlayerModel) {
             handleCollision((PlayerModel) obj1, (PlayerModel) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof EnemyModel) {
@@ -69,7 +69,7 @@ public class GameContactListener implements ContactListener {
         } else if (obj1 instanceof PlayerModel && obj2 instanceof BouncyTile) {
             handleCollision((PlayerModel) obj1, (BouncyTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof BreakableTile) {
-            handleCollision((PlayerModel) obj1, (BreakableTile) obj2);
+            handleCollision(contact, (PlayerModel) obj1, (BreakableTile) obj2);
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
@@ -103,7 +103,7 @@ public class GameContactListener implements ContactListener {
         }
 
         else if (obj1 instanceof BreakableTile && obj2 instanceof PlayerModel) {
-            handleCollision((PlayerModel) obj2, (BreakableTile) obj1);
+            handleCollision(contact, (PlayerModel) obj2, (BreakableTile) obj1);
         }
     }
 
@@ -198,9 +198,10 @@ public class GameContactListener implements ContactListener {
      * @param player The player
      * @param tile   The tile
      */
-    private void handleCollision(PlayerModel player, BreakableTile tile) {
+    private void handleCollision(Contact contact, PlayerModel player, BreakableTile tile) {
         // TODO: Implement actual break speed
         if (player.getBody().getLinearVelocity().len() > 65) {
+            contact.setEnabled(false);
             tile.deactivate();
         }
     }

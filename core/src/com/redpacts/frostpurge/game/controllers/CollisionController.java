@@ -288,6 +288,7 @@ public class CollisionController{
             if (userData instanceof EnemyModel || userData instanceof SwampTile){
                 return 1; // Ray cast continues
             } else if (userData instanceof ObstacleTile) {
+                // TODO: Change if want to modify behavior for hitting Bouncy and Breakable
                 hitObstacle = true;
                 hitPoint = point.cpy();
                 return fraction; // Ray cast ends here
