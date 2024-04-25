@@ -122,6 +122,8 @@ public class GameMode implements Screen, InputProcessor {
     private GameState gameState;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
+        // TODO: Change scale?
+        float scale = 8/7f;
 
         // We need these files loaded immediately
         pauseScreenAssets = new AssetDirectory( "pausescreen.json" );
@@ -132,10 +134,10 @@ public class GameMode implements Screen, InputProcessor {
         pauseScreenTexture = pauseScreenAssets.getEntry("background", Texture.class);
         pauseScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         pauseTexture = pauseScreenAssets.getEntry("pauseButton", Texture.class);
-        pauseButton = new ButtonBox(0,
+        pauseButton = new ButtonBox(0, scale,
                 new Rectangle(canvas.getWidth() * 41 / 100, canvas.getHeight() * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
         resumeTexture = pauseScreenAssets.getEntry("resumeButton", Texture.class);
-        resumeButton = new ButtonBox(0,
+        resumeButton = new ButtonBox(0, scale,
                 new Rectangle(canvas.getWidth() * 47 / 100, canvas.getHeight() * 24/100, resumeTexture.getWidth(), resumeTexture.getHeight()), resumeTexture);
 
         this.drawble = new Array<GameObject>();
@@ -724,47 +726,5 @@ public class GameMode implements Screen, InputProcessor {
         /** When the ships is dead (but shells still work) */
         OVER,
         WIN
-    }
-
-    private static class ButtonBox {
-        int label;
-        Rectangle bounds;
-        Texture texture;
-        boolean enlarged;
-
-        ButtonBox(int label, Rectangle bounds, Texture texture) {
-            this.label = label;
-            this.bounds = bounds;
-            this.texture = texture;
-            this.enlarged = false;
-        }
-
-        public Texture getTexture() {return this.texture;}
-        public Rectangle getBounds() {return this.bounds;}
-
-        public void hoveringButton(){
-            int x = Gdx.input.getX();
-            int y = Gdx.graphics.getHeight()- Gdx.input.getY();
-            float centerX = this.bounds.x + this.bounds.width/2;
-            float centerY = this.bounds.y + this.bounds.height/2;
-            if (bounds.contains(x, y) && !this.enlarged){
-                this.enlarged = true;
-                this.bounds.width = this.bounds.width * 8 / 7;
-                this.bounds.height = this.bounds.height * 8 / 7;
-                this.bounds.x = (int) centerX - this.bounds.width / 2;
-                this.bounds.y = (int) centerY - this.bounds.height / 2;
-            } else if(!bounds.contains(x,y) && this.enlarged){
-                this.enlarged = false;
-                this.bounds.width = this.bounds.width * 7 / 8;
-                this.bounds.height = this.bounds.height * 7 / 8;
-                this.bounds.x = (int) centerX - this.bounds.width / 2;
-                this.bounds.y = (int) centerY - this.bounds.height / 2;
-            }
-        }
-        public boolean isPressed(){
-            int x = Gdx.input.getX();
-            int y = Gdx.graphics.getHeight()- Gdx.input.getY();
-            return bounds.contains(x, y);
-        }
     }
 }
