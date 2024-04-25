@@ -36,13 +36,11 @@ public class LevelController {
 
         JsonValue layer1 = leveljson.get("layers").child();
         JsonValue layer2 = layer1.next();
-        JsonValue interactable = layer2.next();
-        JsonValue layer3 = interactable.next();
+        JsonValue layer3 = layer2.next();
         JsonValue characters = layer3.next();
 
         initializeBaseTileLayer(level, layer1, tileset);
         initializeExtraTileLayer(level, layer2, tileset,tileProperties);
-        initializeInteractableLayer(level, interactable, directory);
         initializeAccentTileLayer(level, layer3, tileset, tileProperties);
         initializeCharacterLayer(level, characters, directory);
 
@@ -125,38 +123,6 @@ public class LevelController {
             }
         }
     }
-    /**
-     * This function initializes the third layer, which has all the information about the interactables like breakables and
-     * bouncy. Each object hsd different properties which will be broken down in later functions
-     * @param level This is the instance of the level that we are storing everything into
-     * @param layer This is the layer Json that we will be reading from to get all of the characters in the game
-     */
-    private void initializeInteractableLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
-        int x,y, rotation;
-        int id;
-        String type;
-        JsonValue objects = layer.get("objects").child();
-        while (objects != null){
-            x = objects.getInt("x");
-            y = objects.getInt("y");
-            rotation = objects.getInt("rotation");
-            JsonValue properties = objects.get("properties").child();
-            type = properties.getString("value");
-            switch (type){
-                case "bouncy":
-                    properties = properties.next();
-                    int bouncyID = properties.getInt("value");
-                    level.createBouncy(x,(height*64-y),rotation,directory, bouncyID);
-                    break;
-                case "breakable":
-                    properties = properties.next();
-                    int breakableID = properties.getInt("value");
-                    level.createBreakable(x,(height*64-y),rotation,directory, breakableID);
-                    break;
-            }
-            objects = objects.next();
-        }
-    }
 
     /**
      * This function initializes the last layer, which has all the information about the player and the
@@ -166,7 +132,7 @@ public class LevelController {
      */
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
         int x,y,rotation;
-        int enemyID;
+        int id;
         String type;
         JsonValue objects = layer.get("objects").child();
         while (objects != null){
@@ -183,18 +149,28 @@ public class LevelController {
                 case "enemy":
                     properties = properties.next();
                     x+= 75;
-                    enemyID = properties.getInt("value");
-                    System.out.println(enemyID);
-                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, enemyID);
+                    id = properties.getInt("value");
+                    System.out.println(id);
+                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, id);
                     break;
                 case "waypoint":
                     properties = properties.next();
-                    enemyID = properties.getInt("value");
+                    id = properties.getInt("value");
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
                     x += 32;
-                    System.out.println(enemyID);
-                    level.addWaypoint(x,height*64 - y,enemyID,pointNumber);
+                    System.out.println(id);
+                    level.addWaypoint(x,height*64 - y,id,pointNumber);
+                    break;
+                case "bouncy":
+                    properties = properties.next();
+                    id = properties.getInt("value");
+                    level.createBouncy(x,(height*64-y),rotation,directory, id);
+                    break;
+                case "breakable":
+                    properties = properties.next();
+                    id = properties.getInt("value");
+                    level.createBreakable(x,(height*64-y),rotation,directory, id);
                     break;
             }
             objects = objects.next();
