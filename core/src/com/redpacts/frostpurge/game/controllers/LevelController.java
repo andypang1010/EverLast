@@ -133,6 +133,7 @@ public class LevelController {
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
         int x,y,rotation;
         int id;
+        int base = 0;
         String type;
         JsonValue objects = layer.get("objects").child();
         while (objects != null){
@@ -165,12 +166,12 @@ public class LevelController {
                 case "bouncy":
                     properties = properties.next();
                     id = properties.getInt("value");
-                    level.createBouncy(x,(height*64-y),rotation,directory, id);
+                    level.createBouncy(x,(height*64-y),rotation,directory, id, base);
                     break;
                 case "breakable":
                     properties = properties.next();
                     id = properties.getInt("value");
-                    level.createBreakable(x,(height*64-y),rotation,directory, id);
+                    level.createBreakable(x,(height*64-y),rotation,directory, id, base);
                     break;
             }
             objects = objects.next();
