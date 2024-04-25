@@ -7,5 +7,8 @@
         "file": "ui/gamefont.ttf",
         "size": 64
     }
+  },
+  "jsons": {
+      "savedata": "save_data.json"
   }
 }

@@ -27,6 +27,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LevelSelectMode levelselect;
 	private AssetDirectory directory;
 	private String mode;
+	SaveFileManager saveFileManager;
 	/**
 	 * Creates a new game from the configuration settings.
 	 *

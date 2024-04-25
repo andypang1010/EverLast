@@ -69,6 +69,7 @@ public class GameMode implements Screen {
     private float currentTime;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
+    private SaveFileManager saveFileManager;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         this.drawble = new Array<GameObject>();
@@ -232,6 +233,8 @@ public class GameMode implements Screen {
         }
         if (playerModel.didwin()){
             gameState = GameState.WIN;
+            saveFileManager.saveGame(currentLevel.getName(),true, true, 100);
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
         }
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){
@@ -352,6 +355,7 @@ public class GameMode implements Screen {
         directory.finishLoading();
         this.directory = directory;
 
+        saveFileManager = new SaveFileManager(directory.getEntry("savedata",JsonValue.class));
         font = directory.getEntry("font", BitmapFont.class);
 
 

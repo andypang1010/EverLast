@@ -148,6 +148,11 @@ public class LevelModel {
         return player;
     }
     public String getName(){return name;}
+    public String getNextLevelName(){
+        char num = name.charAt(name.length()-1);
+        int intValue = Character.getNumericValue(num);
+        return "level"+Integer.toString(intValue+1);
+    }
     public void setName(String name){this.name = name;}
 
 

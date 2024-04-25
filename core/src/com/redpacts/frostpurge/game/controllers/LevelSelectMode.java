@@ -23,6 +23,7 @@
 package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.ScreenListener;
@@ -100,7 +102,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private String selectedLevel;
 	private XBoxController xbox;
 	private float time;
-
+	private SaveFileManager game;
 	public String getLevel(){
 		return selectedLevel;
 	}
@@ -199,6 +201,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			level1.fontScale = 1.25f;
 		}
 		time = 0;
+
+		game = new SaveFileManager(assets.getEntry("savedata", JsonValue.class));
 	}
 
 	/**
@@ -242,9 +246,14 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		if (xbox==null){
 			for (LevelBox levelBox: levelBoxes){
 				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-				hoveringBox(levelBox);
-				if (levelBox.enlarged){
-					font.getData().setScale(1.25f);
+				if (levelBox.available){
+					hoveringBox(levelBox);
+					if (levelBox.enlarged){
+						font.getData().setScale(1.25f);
+					}
+				}else{
+					font.getData().setScale(1f);
+					levelBox.font.setColor(Color.RED);
 				}
 				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
 			}
@@ -282,6 +291,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			buttonDown(null, 0);
 			buttonUp(null,0);
 			// We are are ready, notify our listener
+
+			for (LevelBox levelBox : levelBoxes){
+				levelBox.available = game.getUnlockStatus("level"+Integer.toString(levelBox.label));
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.C)){
+				game.clearGame();
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.U)){
+				game.unlockAll();
+			}
 			if (isReady() && listener != null) {
 				listener.exitScreen(this, 0);
 			}
@@ -363,7 +382,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		screenY = canvas.getHeight() - screenY;
 		for (LevelBox levelBox : levelBoxes) {
-			if (levelBox.bounds.contains(screenX, screenY)) {
+			if (levelBox.bounds.contains(screenX, screenY) && levelBox.available) {
 				pressState = levelBox.label *2 -1;
 			}
 		}
@@ -607,6 +626,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		float fontScale;
 		GlyphLayout glyph;
 		boolean enlarged;
+		boolean available;
 
 		LevelBox(int label, float centerX, float centerY, float width, float height, BitmapFont font, GlyphLayout glyph) {
 			this.label = label;
@@ -617,6 +637,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			this.glyph = glyph;
 			this.fontScale = 1;
 			this.enlarged = false;
+			this.available = false;
 		}
 
 		void resize(String direction){
