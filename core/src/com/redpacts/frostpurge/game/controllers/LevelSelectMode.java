@@ -114,7 +114,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	/**
 	 * The scale for texts on the screen
 	 */
-	private float scale;
+	private static float scale;
 	/**
 	 * The scale of the screen relative to a standard size in x
 	 */
@@ -300,25 +300,25 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			if (levelPage == 0){
 				forward.hoveringButton();
 				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			} else if (levelPage == (numberOfLevels - 1)/3) {
 				backward.hoveringButton();
 				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			} else {
 				forward.hoveringButton();
 				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 				backward.hoveringButton();
 				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			}
 			for(ButtonBox button : levels) {
 				int level = button.label;
 				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
 					button.hoveringButton();
 					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 				}
 			}
 		} else{
@@ -326,18 +326,18 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			if (levelPage == 0){
 				forward.hoveringButton();
 				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			} else if (levelPage == (numberOfLevels - 1)/3) {
 				backward.hoveringButton();
 				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			} else {
 				forward.hoveringButton();
 				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 				backward.hoveringButton();
 				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			}
 //			for (LevelBox levelBox: levelBoxes){
 //				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
@@ -348,7 +348,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
 					button.hoveringButton();
 					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 				}
 			}
 		}
@@ -369,9 +369,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public void render(float delta) {
 		inputController.readInput(null,null);
 		if(inputController.didDecelerate()){
-			//Gdx.graphics.setWindowedMode(1280, 720);
+			Gdx.graphics.setWindowedMode(1280, 720);
 		}else if(inputController.didBoost()){
-			//Gdx.graphics.setWindowedMode(1920, 1080);
+			Gdx.graphics.setWindowedMode(1920, 1080);
 		}
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
@@ -718,7 +718,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //	}
 
 	//private static class LevelBox {
-	private static class ButtonBox {
+	public static class ButtonBox {
 		int label;
 		Rectangle bounds;
 		Texture texture;
@@ -735,8 +735,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		public Rectangle getBounds() {return this.bounds;}
 
 		public void hoveringButton(){
-			int x = Gdx.input.getX();
-			int y = Gdx.graphics.getHeight()- Gdx.input.getY();
+			int x = (int) (Gdx.input.getX()/scale);
+			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
 			float centerX = this.bounds.x + this.bounds.width/2;
 			float centerY = this.bounds.y + this.bounds.height/2;
 			if (bounds.contains(x, y) && !this.enlarged){
@@ -754,8 +754,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 		}
 		public boolean isPressed(){
-			int x = Gdx.input.getX();
-			int y = Gdx.graphics.getHeight()- Gdx.input.getY();
+			int x = (int) (Gdx.input.getX()/scale);
+			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
 			return bounds.contains(x, y);
 		}
 	}
