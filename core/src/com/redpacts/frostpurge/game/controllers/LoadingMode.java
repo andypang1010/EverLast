@@ -288,9 +288,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 //			canvas.draw(playButton, tint, playButton.getWidth()/2 ,  playButton.getHeight()/2,
 //					 centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale,false);
 			hoveringStart();
-			font.getData().setScale(fontscale);
+			font.getData().setScale(fontscale*scale);
 			font.setColor(pressState == 1? Color.GRAY: font.getColor());
-			canvas.drawTextCentered("-Start-", font, -200);
+			canvas.drawTextCentered("-Start-", font, -200*scale);
 		}
 		canvas.end();
 	}
@@ -633,8 +633,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		int y = Gdx.graphics.getHeight()- Gdx.input.getY();
 		float textWidth = glyph.width;
 		float textHeight = glyph.height;
-		if (x >= ((float) Gdx.graphics.getWidth() /2 - textWidth/2) && x <= ((float) Gdx.graphics.getWidth() /2 + textWidth/2)
-				&& y >= ((float) Gdx.graphics.getHeight() /2 - textHeight/2) -200 && y <= ((float) Gdx.graphics.getHeight() /2 + textHeight/2)-200) {
+		if (x >= ((float) Gdx.graphics.getWidth() /2 - textWidth*scale/2) && x <= ((float) Gdx.graphics.getWidth() /2 + textWidth*scale/2)
+				&& y >= ((float) Gdx.graphics.getHeight() /2 - textHeight*scale/2) -200*scale && y <= ((float) Gdx.graphics.getHeight() /2 + textHeight*scale/2)-200*scale) {
 			font.setColor(Color.BLACK); // Change color if hovering
 			fontscale = 1.25f;
 		} else {
@@ -647,7 +647,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		int y = Gdx.graphics.getHeight()- Gdx.input.getY();
 		float textWidth = glyph.width;
 		float textHeight = glyph.height;
-        return x >= ((float) Gdx.graphics.getWidth() / 2 - textWidth / 2) && x <= ((float) Gdx.graphics.getWidth() / 2 + textWidth / 2)
-                && y >= ((float) Gdx.graphics.getHeight() / 2 - textHeight / 2) - 200 && y <= ((float) Gdx.graphics.getHeight() / 2 + textHeight / 2) - 200;
+        return x >= ((float) Gdx.graphics.getWidth() / 2 - textWidth*scale / 2) && x <= ((float) Gdx.graphics.getWidth() / 2 + textWidth*scale / 2)
+                && y >= ((float) Gdx.graphics.getHeight() / 2 - textHeight*scale / 2) - 200*scale && y <= ((float) Gdx.graphics.getHeight() / 2 + textHeight*scale / 2) - 200*scale;
 	}
 }

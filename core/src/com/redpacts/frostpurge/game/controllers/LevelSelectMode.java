@@ -60,6 +60,10 @@ import java.util.List;
 public class LevelSelectMode implements Screen, InputProcessor, ControllerListener {
 	// There are TWO asset managers.  One to load the loading screen.  The other to load the assets
 	/** Internal assets for this loading screen */
+	/** Standard window size (for scaling) */
+	private int initialWidth  = 1280;
+	/** Standard window height (for scaling) */
+	private int initialHeight = 720;
 	/**
 	 * The actual assets to be loaded
 	 */
@@ -82,6 +86,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * Listener that will update the player mode when we are done
 	 */
 	private ScreenListener listener;
+	/** Reads input from keyboard or game pad (CONTROLLER CLASS) */
+	private InputController inputController;
 
 	/** The width of the progress bar */
 
@@ -93,6 +99,18 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * Whether or not this player mode is still active
 	 */
 	private boolean active;
+	/**
+	 * The scale for texts on the screen
+	 */
+	private float scale;
+	/**
+	 * The scale of the screen relative to a standard size in x
+	 */
+	private float sx;
+	/**
+	 * The scale of the screen relative to a standard size in y
+	 */
+	private float sy;
 	private BitmapFont font;
 	private float fontscale;
 	private GlyphLayout glyph;
@@ -142,9 +160,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	public LevelSelectMode(GameCanvas canvas) {
 		this.canvas = canvas;
+		inputController = new InputController();
 
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(), canvas.getHeight());
+		initialWidth = canvas.getWidth();
+		initialHeight = canvas.getHeight();
 
 		// We need these files loaded immediately
 		assets = new AssetDirectory( "levelselect.json" );
@@ -243,10 +264,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			for (LevelBox levelBox: levelBoxes){
 				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
 				hoveringBox(levelBox);
-				if (levelBox.enlarged){
-					font.getData().setScale(1.25f);
-				}
-				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
+				font.getData().setScale(levelBox.fontScale*scale);
+				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? levelBox.bounds.y*sy+levelBox.glyph.height*scale*1.25f : levelBox.bounds.y*sy+levelBox.glyph.height*scale);
 			}
 		} else{
 			for (LevelBox levelBox: levelBoxes){
@@ -254,8 +273,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 			for (LevelBox levelBox: levelBoxes){
 				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-				levelBox.font.getData().setScale(levelBox.fontScale);
-				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
+				levelBox.font.getData().setScale(levelBox.fontScale*scale);
+				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? (levelBox.bounds.y+levelBox.glyph.height *1.25f)*sy : (levelBox.bounds.y+levelBox.glyph.height)*sy );
 			}
 		}
 		canvas.end();
@@ -273,6 +292,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
+		inputController.readInput(null,null);
+		if(inputController.didDecelerate()){
+			Gdx.graphics.setWindowedMode(1280, 720);
+		}else if(inputController.didBoost()){
+			Gdx.graphics.setWindowedMode(1920, 1080);
+		}
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
 //			update(delta);
@@ -290,7 +315,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 	@Override
 	public void resize(int i, int i1) {
-
+		sx = ((float)canvas.getWidth())/initialWidth;
+		sy = ((float)canvas.getHeight())/initialHeight;
+		scale = (sx < sy ? sx : sy);
 	}
 
 
@@ -363,7 +390,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		screenY = canvas.getHeight() - screenY;
 		for (LevelBox levelBox : levelBoxes) {
-			if (levelBox.bounds.contains(screenX, screenY)) {
+			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
 				pressState = levelBox.label *2 -1;
 			}
 		}
@@ -555,14 +582,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		if (xbox ==null){
 			int x = Gdx.input.getX();
 			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
-			if (levelBox.bounds.contains(x, y) && pressState != levelBox.label*2-1){
+			if (levelBox.bounds.contains(x/sx, y/sy) && pressState != levelBox.label*2-1){
 				levelBox.font.setColor(Color.BLACK); // Change color if hovering
 				if (!levelBox.enlarged){
 					levelBox.enlarged = true;
+					levelBox.fontScale = 1.25f;
 					levelBox.resize("up");
 				}
-			}else if (levelBox.enlarged && !levelBox.bounds.contains(x, y)){
+			}else if (levelBox.enlarged && !levelBox.bounds.contains(x/sx, y/sy)){
 				levelBox.enlarged = false;
+				levelBox.fontScale = 1f;
 				levelBox.resize("down");
 			}
 			levelBox.font.getData().setScale(levelBox.fontScale);

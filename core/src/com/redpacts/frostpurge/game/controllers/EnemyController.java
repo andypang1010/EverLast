@@ -22,7 +22,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
     private Vector2 moveDirection = new Vector2();
 
-    private float speedMultiplier = 40f;
+    private float speedMultiplier = 60f;
     private float alertRadius = 50f;
 
     /*
