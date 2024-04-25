@@ -69,6 +69,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * Background texture for start-up
 	 */
 	private Texture background;
+	/**
+	 * Background texture for start button
+	 */
+	private Texture start;
 	/** Texture atlas to support a progress bar */
 
 	// statusBar is a "texture atlas." Break it up into parts.
@@ -164,6 +168,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		glyph.setText(font, "-Start-");
 		// No progress so far.
 		pressState = 0;
+
+		Texture play = assets.getEntry("play", Texture.class);
 
 		Gdx.input.setInputProcessor(this);
 
@@ -551,7 +557,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		return true;
 	}
 
-	public void hoveringBox(LevelBox levelBox) {
+	private void hoveringBox(LevelBox levelBox) {
 		if (xbox ==null){
 			int x = Gdx.input.getX();
 			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
@@ -596,6 +602,38 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					}
 				}
 				levelBox.font.getData().setScale(levelBox.fontScale);
+			}
+		}
+	}
+
+	private static class ButtonBox {
+		int label;
+		Rectangle bounds;
+		Texture buttonTexture;
+		boolean enlarged;
+
+		ButtonBox(int label, float centerX, float centerY, float width, float height, BitmapFont font, GlyphLayout glyph, Texture texture) {
+			this.label = label;
+			float x = centerX - width / 2;
+			float y = centerY - height / 2;
+			this.bounds = new Rectangle(x, y, width, height);
+			this.buttonTexture = texture;
+			this.enlarged = false;
+		}
+
+		void resize(String direction){
+			float centerX = this.bounds.x + this.bounds.width/2;
+			float centerY = this.bounds.y + this.bounds.height/2;
+			if (direction.equals("up")){
+				this.bounds.width *=1.25f;
+				this.bounds.height *=1.25f;
+				this.bounds.x = centerX - this.bounds.width / 2;
+				this.bounds.y = centerY - this.bounds.height / 2;
+			} else{
+				this.bounds.width *=.8f;
+				this.bounds.height *=.8f;
+				this.bounds.x = centerX - this.bounds.width / 2;
+				this.bounds.y = centerY - this.bounds.height / 2;
 			}
 		}
 	}
