@@ -23,27 +23,23 @@
 package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.XBoxController;
 import com.redpacts.frostpurge.game.views.GameCanvas;
-import com.badlogic.gdx.math.Rectangle;
 
-import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,13 +56,9 @@ import java.util.List;
  * the application.  That is why we try to have as few resources as possible for this
  * loading screen.
  */
-public class LevelSelectMode implements Screen, InputProcessor, ControllerListener {
+public class PauseScreen implements Screen, InputProcessor, ControllerListener {
 	// There are TWO asset managers.  One to load the loading screen.  The other to load the assets
 	/** Internal assets for this loading screen */
-	/** Standard window size (for scaling) */
-	private int initialWidth  = 1280;
-	/** Standard window height (for scaling) */
-	private int initialHeight = 720;
 	/**
 	 * The actual assets to be loaded
 	 */
@@ -100,8 +92,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * Listener that will update the player mode when we are done
 	 */
 	private ScreenListener listener;
-	/** Reads input from keyboard or game pad (CONTROLLER CLASS) */
-	private InputController inputController;
 
 	/** The width of the progress bar */
 
@@ -113,25 +103,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * Whether or not this player mode is still active
 	 */
 	private boolean active;
-	/**
-	 * The scale for texts on the screen
-	 */
-	private static float scale;
-	/**
-	 * The scale of the screen relative to a standard size in x
-	 */
-	private float sx;
-	/**
-	 * The scale of the screen relative to a standard size in y
-	 */
-	private float sy;
 	private BitmapFont font;
+	private List<LevelBox> levelBoxes;
 	private String selectedLevel;
 	private XBoxController xbox;
 	private float time;
-
-	private SaveFileManager game;
-
 	int numberOfLevels;
 	int levelPage;
 	/**
@@ -139,13 +115,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	int pageDirection;
 
-
 	public String getLevel(){
 		return selectedLevel;
 	}
 	public void resetPressState(){pressState = 0;}
-
-	public SaveFileManager getSaveFile(){return game;}
 
 
 	/**
@@ -181,14 +154,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 *
 	 * @param canvas The game canvas to draw to
 	 */
-	public LevelSelectMode(GameCanvas canvas) {
+	public PauseScreen(GameCanvas canvas) {
 		this.canvas = canvas;
-		inputController = new InputController();
 
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(), canvas.getHeight());
-		initialWidth = canvas.getWidth();
-		initialHeight = canvas.getHeight();
 
 		// We need these files loaded immediately
 		assets = new AssetDirectory( "levelselect.json" );
@@ -221,7 +191,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button2.getWidth(), button2.getHeight()), button2);
 
 		Texture button3 = assets.getEntry("level3", Texture.class);
-		ButtonBox level3Button = new ButtonBox(3,
+		ButtonBox level3Button = new ButtonBox(2,
 				new Rectangle(canvas.getWidth() * 58 / 100, canvas.getHeight() * 5/18, button3.getWidth(), button3.getHeight()), button3);
 
 		// TODO: Change scale when we have actual button for level 4, 5
@@ -245,21 +215,39 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pressState = 0;
 
 		Gdx.input.setInputProcessor(this);
-		active = true;
 
 		// Let ANY connected controller start the game.
 		for (XBoxController controller : Controllers.get().getXBoxControllers()) {
 			controller.addListener(this);
 			xbox = controller;
 		}
+		GlyphLayout glyph1 = new GlyphLayout();
+		glyph1.setText(font, "level 1");
+		LevelBox level1 = new LevelBox(1, (float) canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph1.width, glyph1.height,assets.getEntry("font", BitmapFont.class), glyph1);
+		GlyphLayout glyph2 = new GlyphLayout();
+		glyph2.setText(font, "level 2");
+		LevelBox level2 = new LevelBox(2, (float) 2*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph2.width, glyph2.height,assets.getEntry("font", BitmapFont.class), glyph2);
+		GlyphLayout glyph3 = new GlyphLayout();
+		glyph3.setText(font, "level 3");
+		LevelBox level3 = new LevelBox(3, (float) 3*canvas.getWidth() /4, (float) canvas.getHeight() /3, glyph3.width, glyph3.height,assets.getEntry("font", BitmapFont.class), glyph3);
+		GlyphLayout glyph4 = new GlyphLayout();
+		glyph4.setText(font, "level 4");
+		LevelBox level4 = new LevelBox(4, (float) 3*canvas.getWidth() /8, (float) canvas.getHeight() /4, glyph4.width, glyph4.height,assets.getEntry("font", BitmapFont.class), glyph4);
+		GlyphLayout glyph5 = new GlyphLayout();
+		glyph5.setText(font, "level 5");
+		LevelBox level5 = new LevelBox(5, (float) 5*canvas.getWidth() /8, (float) canvas.getHeight() /4, glyph5.width, glyph5.height,assets.getEntry("font", BitmapFont.class), glyph5);
+		levelBoxes = new ArrayList<LevelBox>();
+		levelBoxes.add(level1);
+		levelBoxes.add(level2);
+		levelBoxes.add(level3);
+		levelBoxes.add(level4);
+		levelBoxes.add(level5);
+		active = true;
 		if (xbox != null){
-			// TODO: Support XBox
-//			level1.enlarged=true;
-//			level1.fontScale = 1.25f;
+			level1.enlarged=true;
+			level1.fontScale = 1.25f;
 		}
 		time = 0;
-
-		game = new SaveFileManager(assets.getEntry("savedata", JsonValue.class));
 	}
 
 	/**
@@ -302,66 +290,47 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		canvas.drawBackground(background, 0, 0, true);
 		Rectangle bounds;
 		if (xbox==null){
-
-//			for (LevelBox levelBox: levelBoxes){
-//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-//				hoveringBox(levelBox);
-//				font.getData().setScale(levelBox.fontScale*scale);
-//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? levelBox.bounds.y*sy+levelBox.glyph.height*scale*1.25f : levelBox.bounds.y*sy+levelBox.glyph.height*scale);
+			// TODO: Add hovering xbox for direction button
 			if (levelPage == 0){
 				forward.hoveringButton();
 				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(forward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
 			} else if (levelPage == (numberOfLevels - 1)/3) {
 				backward.hoveringButton();
 				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(backward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
 			} else {
 				forward.hoveringButton();
 				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(forward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
 				backward.hoveringButton();
 				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(backward.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
 			}
 			for(ButtonBox button : levels) {
 				int level = button.label;
 				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
 					button.hoveringButton();
 					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-
+					canvas.draw(button.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
 				}
+			}
+			for (LevelBox levelBox: levelBoxes){
+				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
+				hoveringBox(levelBox);
+				if (levelBox.enlarged){
+					font.getData().setScale(1.25f);
+				}
+				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
 			}
 		} else{
-			// TODO: Support XBox
-			if (levelPage == 0){
-				forward.hoveringButton();
-				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else if (levelPage == (numberOfLevels - 1)/3) {
-				backward.hoveringButton();
-				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else {
-				forward.hoveringButton();
-				bounds = forward.getBounds();
-				canvas.draw(forward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-				backward.hoveringButton();
-				bounds = backward.getBounds();
-				canvas.draw(backward.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+			for (LevelBox levelBox: levelBoxes){
+				hoveringBox(levelBox);
 			}
-//			for (LevelBox levelBox: levelBoxes){
-//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-//				levelBox.font.getData().setScale(levelBox.fontScale*scale);
-//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? (levelBox.bounds.y+levelBox.glyph.height *1.25f)*sy : (levelBox.bounds.y+levelBox.glyph.height)*sy );
-			for(ButtonBox button : levels) {
-				int level = button.label;
-				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
-					button.hoveringButton();
-					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-				}
+			for (LevelBox levelBox: levelBoxes){
+				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
+				levelBox.font.getData().setScale(levelBox.fontScale);
+				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x,levelBox.enlarged ? levelBox.bounds.y+levelBox.glyph.height *1.25f : levelBox.bounds.y+levelBox.glyph.height );
 			}
 		}
 		canvas.end();
@@ -379,12 +348,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
-		inputController.readInput(null,null);
-		if(inputController.didDecelerate()){
-			Gdx.graphics.setWindowedMode(1280, 720);
-		}else if(inputController.didBoost()){
-			Gdx.graphics.setWindowedMode(1920, 1080);
-		}
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
 //			update(delta);
@@ -394,30 +357,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			buttonDown(null, 0);
 			buttonUp(null,0);
 			// We are are ready, notify our listener
-
-			if (Gdx.input.isKeyPressed(Input.Keys.C)){
-				game.clearGame();
-//				System.out.println("cleared");
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.U)){
-				game.unlockAll();
-			}
 			if (isReady() && listener != null) {
 				listener.exitScreen(this, 0);
 			}
 		}
-		game.update(assets.getEntry("savedata", JsonValue.class));
-		for (ButtonBox button: levels){
-			button.available = game.getUnlockStatus("level"+Integer.toString(button.label));
-		}
-
 	}
 
 	@Override
 	public void resize(int i, int i1) {
-		sx = ((float)canvas.getWidth())/initialWidth;
-		sy = ((float)canvas.getHeight())/initialHeight;
-		scale = (sx < sy ? sx : sy);
+
 	}
 
 
@@ -490,10 +438,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		screenY = canvas.getHeight() - screenY;
 
-//		for (LevelBox levelBox : levelBoxes) {
-//			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
-//				pressState = levelBox.label *2 -1;
-
 		if(forward.isPressed() && levelPage < (numberOfLevels - 1)/3 ){
 			pageDirection = 1;
 		} else if(backward.isPressed() && levelPage > 0){
@@ -501,8 +445,13 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		for(ButtonBox levelButton: levels){
 			int level = levelButton.label;
-			if(levelButton.isPressed() && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available){
+			if(levelButton.isPressed() && levelPage * 3 < level && level <= (levelPage + 1) * 3){
 				pressState = levelButton.label * 2 - 1;
+			}
+		}
+		for (LevelBox levelBox : levelBoxes) {
+			if (levelBox.bounds.contains(screenX, screenY)) {
+				pressState = levelBox.label *2 -1;
 			}
 		}
 		return false;
@@ -542,17 +491,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @return whether to hand the event to other listeners.
 	 */
 	public boolean buttonDown(Controller controller, int buttonCode) {
-		// TODO: Support XBox
-//		if (pressState == 0) {
-//			if (xbox != null && xbox.getA()) {
-//				for (LevelBox levelBox : levelBoxes){
-//					if (levelBox.enlarged){
-//						pressState = levelBox.label*2-1;
-//					}
-//				}
-//				return false;
-//			}
-//		}
+		if (pressState == 0) {
+			if (xbox != null && xbox.getA()) {
+				for (LevelBox levelBox : levelBoxes){
+					if (levelBox.enlarged){
+						pressState = levelBox.label*2-1;
+					}
+				}
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -692,82 +640,77 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		return true;
 	}
 
-//	public void hoveringBox(LevelBox levelBox) {
-//		if (xbox ==null){
-//			int x = Gdx.input.getX();
-//			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
-//			if (levelBox.bounds.contains(x/sx, y/sy) && pressState != levelBox.label*2-1){
-//				levelBox.font.setColor(Color.BLACK); // Change color if hovering
-//				if (!levelBox.enlarged){
-//					levelBox.enlarged = true;
-//					levelBox.fontScale = 1.25f;
-//					levelBox.resize("up");
-//				}
-//			}else if (levelBox.enlarged && !levelBox.bounds.contains(x/sx, y/sy)){
-//				levelBox.enlarged = false;
-//				levelBox.fontScale = 1f;
-//				levelBox.resize("down");
-//			}
-//			levelBox.font.getData().setScale(levelBox.fontScale);
-//		} else{
-//			if (levelBox.enlarged && time >.2f){
-//				float x = xbox.getLeftX();
-//				if (Math.abs(x)<.5){
-//					x = 0;
-//				}
-//				if (x>0){
-////					System.out.println("right");
-//					if (levelBox.label < levelBoxes.size()){
-//						levelBox.enlarged = false;
-//						levelBox.resize("down");
-//						levelBox.fontScale = 1;
-//						levelBoxes.get(levelBox.label).enlarged = true;
-//						levelBoxes.get(levelBox.label).resize("up");
-//						levelBoxes.get(levelBox.label).fontScale = 1.25f;
-//						time =0;
-//					}
-//				} else if (x<0) {
-////					System.out.println("left");
-//					if (levelBox.label > 1){
-//						levelBox.enlarged = false;
-//						levelBox.resize("down");
-//						levelBox.fontScale = 1;
-//						levelBoxes.get(levelBox.label-2).enlarged = true;
-//						levelBoxes.get(levelBox.label-2).resize("up");
-//						levelBoxes.get(levelBox.label-2).fontScale = 1.25f;
-//						time =0;
-//					}
-//				}
-//				levelBox.font.getData().setScale(levelBox.fontScale);
-//			}
-//		}
-//	}
+	private void hoveringBox(LevelBox levelBox) {
+		if (xbox ==null){
+			int x = Gdx.input.getX();
+			int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+			if (levelBox.bounds.contains(x, y) && pressState != levelBox.label*2-1){
+				levelBox.font.setColor(Color.BLACK); // Change color if hovering
+				if (!levelBox.enlarged){
+					levelBox.enlarged = true;
+					levelBox.resize("up");
+				}
+			}else if (levelBox.enlarged && !levelBox.bounds.contains(x, y)){
+				levelBox.enlarged = false;
+				levelBox.resize("down");
+			}
+			levelBox.font.getData().setScale(levelBox.fontScale);
+		} else{
+			if (levelBox.enlarged && time >.2f){
+				float x = xbox.getLeftX();
+				if (Math.abs(x)<.5){
+					x = 0;
+				}
+				if (x>0){
+//					System.out.println("right");
+					if (levelBox.label < levelBoxes.size()){
+						levelBox.enlarged = false;
+						levelBox.resize("down");
+						levelBox.fontScale = 1;
+						levelBoxes.get(levelBox.label).enlarged = true;
+						levelBoxes.get(levelBox.label).resize("up");
+						levelBoxes.get(levelBox.label).fontScale = 1.25f;
+						time =0;
+					}
+				} else if (x<0) {
+//					System.out.println("left");
+					if (levelBox.label > 1){
+						levelBox.enlarged = false;
+						levelBox.resize("down");
+						levelBox.fontScale = 1;
+						levelBoxes.get(levelBox.label-2).enlarged = true;
+						levelBoxes.get(levelBox.label-2).resize("up");
+						levelBoxes.get(levelBox.label-2).fontScale = 1.25f;
+						time =0;
+					}
+				}
+				levelBox.font.getData().setScale(levelBox.fontScale);
+			}
+		}
+	}
 
-	//private static class LevelBox {
-	public static class ButtonBox {
+	private static class ButtonBox {
 		int label;
 		Rectangle bounds;
 		Texture texture;
 		boolean enlarged;
-		boolean available;
 
 		ButtonBox(int label, Rectangle bounds, Texture texture) {
 			this.label = label;
 			this.bounds = bounds;
 			this.texture = texture;
 			this.enlarged = false;
-			this.available = false;
 		}
 
 		public Texture getTexture() {return this.texture;}
 		public Rectangle getBounds() {return this.bounds;}
 
 		public void hoveringButton(){
-			int x = (int) (Gdx.input.getX()/scale);
-			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
+			int x = Gdx.input.getX();
+			int y = Gdx.graphics.getHeight()- Gdx.input.getY();
 			float centerX = this.bounds.x + this.bounds.width/2;
 			float centerY = this.bounds.y + this.bounds.height/2;
-			if (bounds.contains(x, y) && !this.enlarged && this.available){
+			if (bounds.contains(x, y) && !this.enlarged){
 				this.enlarged = true;
 				this.bounds.width = this.bounds.width * 8 / 7;
 				this.bounds.height = this.bounds.height * 8 / 7;
@@ -782,9 +725,45 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 		}
 		public boolean isPressed(){
-			int x = (int) (Gdx.input.getX()/scale);
-			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
+			int x = Gdx.input.getX();
+			int y = Gdx.graphics.getHeight()- Gdx.input.getY();
 			return bounds.contains(x, y);
+		}
+	}
+
+	private static class LevelBox {
+		int label;
+		Rectangle bounds;
+		BitmapFont font;
+		float fontScale;
+		GlyphLayout glyph;
+		boolean enlarged;
+
+		LevelBox(int label, float centerX, float centerY, float width, float height, BitmapFont font, GlyphLayout glyph) {
+			this.label = label;
+			float x = centerX - width / 2;
+			float y = centerY - height / 2;
+			this.bounds = new Rectangle(x, y, width, height);
+			this.font = font;
+			this.glyph = glyph;
+			this.fontScale = 1;
+			this.enlarged = false;
+		}
+
+		void resize(String direction){
+			float centerX = this.bounds.x + this.bounds.width/2;
+			float centerY = this.bounds.y + this.bounds.height/2;
+			if (direction.equals("up")){
+				this.bounds.width *=1.25f;
+				this.bounds.height *=1.25f;
+				this.bounds.x = centerX - this.bounds.width / 2;
+				this.bounds.y = centerY - this.bounds.height / 2;
+			} else{
+				this.bounds.width *=.8f;
+				this.bounds.height *=.8f;
+				this.bounds.x = centerX - this.bounds.width / 2;
+				this.bounds.y = centerY - this.bounds.height / 2;
+			}
 		}
 	}
 }

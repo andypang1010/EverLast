@@ -64,6 +64,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private Texture background;
 	/** Play button to display when done */
 	private Texture playButton;
+	private Rectangle bounds;
 	/** Texture atlas to support a progress bar */
 	private final Texture statusBar;
 	
@@ -119,9 +120,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 	/** Whether or not this player mode is still active */
 	private boolean active;
-	private BitmapFont font;
-	private float fontscale;
-	private GlyphLayout glyph;
+	private boolean playEnlarged;
+
 
 	/**
 	 * Returns the budget for the asset loader.
@@ -207,8 +207,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		internal.loadAssets();
 		internal.finishLoading();
 
-		// Load the next two images immediately.
-		playButton = null;
+		// Load the next three images immediately.
+		playButton = internal.getEntry("play", Texture.class);
 		background = internal.getEntry( "background", Texture.class );
 		background.setFilter( TextureFilter.Linear, TextureFilter.Linear );
 		statusBar = internal.getEntry( "progress", Texture.class );
@@ -222,13 +222,11 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		statusFrgRight = internal.getEntry( "progress.foreright", TextureRegion.class );
 		statusFrgMiddle = internal.getEntry( "progress.foreground", TextureRegion.class );
 
-		font = internal.getEntry("font", BitmapFont.class);
-		fontscale = 1f;
-		glyph = new GlyphLayout();
-		glyph.setText(font,"-Start-");
+		bounds = new Rectangle(83*canvas.getWidth()/100, canvas.getHeight() /8, playButton.getWidth(), playButton.getHeight());
 		// No progress so far.
 		progress = 0;
 		pressState = 0;
+		playEnlarged = false;
 
 		Gdx.input.setInputProcessor( this );
 
@@ -284,13 +282,11 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {
-//			Color tint = (pressState == 1 ? Color.GRAY: Color.WHITE);
-//			canvas.draw(playButton, tint, playButton.getWidth()/2 ,  playButton.getHeight()/2,
-//					 centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale,false);
 			hoveringStart();
-			font.getData().setScale(fontscale);
-			font.setColor(pressState == 1? Color.GRAY: font.getColor());
-			canvas.drawTextCentered("-Start-", font, -200);
+//			font.getData().setScale(fontscale*scale);
+//			font.setColor(pressState == 1? Color.GRAY: font.getColor());
+//			canvas.drawTextCentered("-Start-", font, -200*scale);
+			canvas.draw(playButton, (float) bounds.x, (float) bounds.y, (float) bounds.getWidth(), (float) bounds.getHeight());
 		}
 		canvas.end();
 	}
@@ -434,17 +430,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		if (playButton == null || pressState == 2) {
 			return true;
 		}
-		
 		// Flip to match graphics coordinates
 		screenY = heightY-screenY;
-		
-		// TODO: Fix scaling
-		// Play button is a circle.
-//		float radius = BUTTON_SCALE*scale*playButton.getWidth()/2.0f;
-//		float dist = (screenX-centerX)*(screenX-centerX)+(screenY-centerY)*(screenY-centerY);
-//		if (dist < radius*radius) {
-//			pressState = 1;
-//		}
+
 		if (isStartPressed()){
 			pressState = 1;
 		}
@@ -529,7 +517,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** 
 	 * Called when a key is typed (UNSUPPORTED)
 	 *
-	 * @param keycode the key typed
+	 * @param character the key typed
 	 * @return whether to hand the event to other listeners. 
 	 */
 	public boolean keyTyped(char character) { 
@@ -631,23 +619,38 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	public void hoveringStart(){
 		int x = Gdx.input.getX();
 		int y = Gdx.graphics.getHeight()- Gdx.input.getY();
-		float textWidth = glyph.width;
-		float textHeight = glyph.height;
-		if (x >= ((float) Gdx.graphics.getWidth() /2 - textWidth/2) && x <= ((float) Gdx.graphics.getWidth() /2 + textWidth/2)
-				&& y >= ((float) Gdx.graphics.getHeight() /2 - textHeight/2) -200 && y <= ((float) Gdx.graphics.getHeight() /2 + textHeight/2)-200) {
-			font.setColor(Color.BLACK); // Change color if hovering
-			fontscale = 1.25f;
-		} else {
-			font.setColor(Color.DARK_GRAY);
-			fontscale =1f;
+//		float textWidth = glyph.width;
+//		float textHeight = glyph.height;
+//		if (x >= ((float) Gdx.graphics.getWidth() /2 - textWidth*scale/2) && x <= ((float) Gdx.graphics.getWidth() /2 + textWidth*scale/2)
+//				&& y >= ((float) Gdx.graphics.getHeight() /2 - textHeight*scale/2) -200*scale && y <= ((float) Gdx.graphics.getHeight() /2 + textHeight*scale/2)-200*scale) {
+//			font.setColor(Color.BLACK); // Change color if hovering
+//			fontscale = 1.25f;
+//		} else {
+//			font.setColor(Color.DARK_GRAY);
+//			fontscale =1f;
+		float centerX = this.bounds.x + this.bounds.width/2;
+		float centerY = this.bounds.y + this.bounds.height/2;
+		if (bounds.contains(x, y) && !this.playEnlarged){
+			this.playEnlarged = true;
+			this.bounds.width = this.bounds.width * 5 / 4;
+			this.bounds.height = this.bounds.height * 5 / 4;
+			this.bounds.x = (int) centerX - this.bounds.width / 2;
+			this.bounds.y = (int) centerY - this.bounds.height / 2;
+		} else if(!bounds.contains(x,y) && this.playEnlarged){
+			this.playEnlarged = false;
+			this.bounds.width = this.bounds.width * 4 / 5;
+			this.bounds.height = this.bounds.height * 4 / 5;
+			this.bounds.x = (int) centerX - this.bounds.width / 2;
+			this.bounds.y = (int) centerY - this.bounds.height / 2;
 		}
 	}
 	public boolean isStartPressed(){
 		int x = Gdx.input.getX();
 		int y = Gdx.graphics.getHeight()- Gdx.input.getY();
-		float textWidth = glyph.width;
-		float textHeight = glyph.height;
-        return x >= ((float) Gdx.graphics.getWidth() / 2 - textWidth / 2) && x <= ((float) Gdx.graphics.getWidth() / 2 + textWidth / 2)
-                && y >= ((float) Gdx.graphics.getHeight() / 2 - textHeight / 2) - 200 && y <= ((float) Gdx.graphics.getHeight() / 2 + textHeight / 2) - 200;
+//		float textWidth = glyph.width;
+//		float textHeight = glyph.height;
+//        return x >= ((float) Gdx.graphics.getWidth() / 2 - textWidth*scale / 2) && x <= ((float) Gdx.graphics.getWidth() / 2 + textWidth*scale / 2)
+//                && y >= ((float) Gdx.graphics.getHeight() / 2 - textHeight*scale / 2) - 200*scale && y <= ((float) Gdx.graphics.getHeight() / 2 + textHeight*scale / 2) - 200*scale;
+		return bounds.contains(x, y);
 	}
 }

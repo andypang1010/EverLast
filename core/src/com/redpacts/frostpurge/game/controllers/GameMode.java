@@ -61,6 +61,11 @@ public class GameMode implements Screen {
     private Texture boostBarTexture;
     private Texture healthBarTexture;
     private boolean debug;
+    private float scale;
+    private float sx;
+    private float sy;
+    private static int STANDARD_WIDTH = 1920;
+    private static int STANDARD_HEIGHT = 1080;
 
     /** Listener that will update the player mode when we are done */
     private ScreenListener listener;
@@ -73,6 +78,9 @@ public class GameMode implements Screen {
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         this.drawble = new Array<GameObject>();
+        this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
+        this.sy = (float) canvas.getHeight() / STANDARD_HEIGHT;
+        scale = (Math.min(sx, sy));
         this.comparator = new Comparator<GameObject>() {
             public int compare(GameObject o1, GameObject o2) {
                 float o1y;
@@ -133,6 +141,9 @@ public class GameMode implements Screen {
 
     @Override
     public void resize(int i, int i1) {
+        sx = ((float)canvas.getWidth())/STANDARD_WIDTH;
+        sy = ((float)canvas.getHeight())/STANDARD_HEIGHT;
+        scale = (sx < sy ? sx : sy);
 
     }
 
@@ -201,7 +212,6 @@ public class GameMode implements Screen {
 
         // Handle pausing the game
         if (inputController.didPause()) {
-            System.out.println(gameState);
             if (gameState == GameState.PLAY) {
                 gameState = GameState.PAUSE;
             } else if (gameState == GameState.PAUSE) {
@@ -282,6 +292,7 @@ public class GameMode implements Screen {
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
         canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
+        camera.zoom = 1/scale;
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
@@ -320,20 +331,20 @@ public class GameMode implements Screen {
             canvas.endDebug();
         }
 
-        canvas.drawUI(statusBarBGTexture,Color.WHITE, 50, -800, 0f, 1.2f,1.2f, HUDcamera);
+        canvas.drawUI(statusBarBGTexture,Color.WHITE, 50*sx, -800*sy, 0f, 1.2f*scale,1.2f*scale, HUDcamera);
         if(playerModel.getBoostNum() >= 1){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 50, -800, 0, 1.2f,1.2f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 50*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 2){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 150, -800, 0, 1.2f,1.2f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 150*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 3){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 250, -800, 0, 1.2f,1.2f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 250*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 4){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 350, -800, 0, 1.2f,1.2f, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 350*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
         }
-        canvas.drawUI(healthBarTexture, Color.WHITE, 50+(1.932f)*(100-playerModel.getHp()), -800, 0, 1.2f*playerModel.getHp()/100, 1.2f, HUDcamera);
+        canvas.drawUI(healthBarTexture, Color.WHITE, (50+(1.932f)*(100-playerModel.getHp()))*sx, -800*sy, 0, 1.2f*playerModel.getHp()/100*scale, 1.2f*scale, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
@@ -413,6 +424,9 @@ public class GameMode implements Screen {
         }
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        System.out.println(camera.zoom);
+//        System.out.println(camera.zoom);
+//        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         collisionController = new CollisionController(currentLevel, playerModel, enemies, canvas.getWidth(), canvas.getHeight());

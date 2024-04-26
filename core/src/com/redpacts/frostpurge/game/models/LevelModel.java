@@ -209,6 +209,10 @@ public class LevelModel {
         canvas.draw(object.getTextureRegion(), object.getPosition().x, object.getPosition().y);
     }
 
+    public void drawTile(TileModel object, GameCanvas canvas, float sx, float sy){
+        canvas.draw(object.getTextureRegion(), object.getPosition().x*sx, object.getPosition().y*sy);
+    }
+
     public void drawDebug(TileModel object, GameCanvas canvas) {
         if (object != null && object.shape != null) {
 //            System.out.println(object.shape.getVertexCount());

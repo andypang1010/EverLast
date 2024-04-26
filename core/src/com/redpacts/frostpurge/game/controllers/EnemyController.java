@@ -20,7 +20,6 @@ import java.util.ArrayList;
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
     private Vector2 moveDirection = new Vector2();
-
     private float speedMultiplier = 40f;
     private float listenRadius = 20f;
     private float alertRadius = 30f;

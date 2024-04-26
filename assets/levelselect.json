@@ -1,6 +1,13 @@
 {
 	"textures": {
-        "background": "loading/startscreen.png"
+        "background": "levelSelect/levelSelectScreen.png",
+        "backwardButton": "levelSelect/backButton.png",
+        "forwardButton": "levelSelect/forwardButton.png",
+        "level1": "levelSelect/level1.png",
+        "level2": "levelSelect/level2.png",
+        "level3": "levelSelect/level3.png",
+        "level4": "levelSelect/level1.png",
+        "level5": "levelSelect/level2.png"
 	},
   "fonts": {
       "font": {
