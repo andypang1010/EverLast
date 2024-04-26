@@ -28,6 +28,7 @@ public class SaveFileManager {
             if (levelValue.getString("name").equals(level)) {
                 levelValue.get("unlocked").set(String.valueOf(new JsonValue(unlocked)));
                 levelValue.get("completed").set(String.valueOf(new JsonValue(completed)));
+                levelValue.get("score").set(String.valueOf(new JsonValue(score)));
                 // Optionally update score if needed
                 // levelValue.get("score").setInt(score);
                 break;
@@ -39,6 +40,7 @@ public class SaveFileManager {
         } catch (IOException e) {
             System.out.println("Error creating JSON file: " + e.getMessage());
         }
+        System.out.println(saveFile);
     }
 
     public void clearGame() {
@@ -51,6 +53,7 @@ public class SaveFileManager {
                 levelValue.get("unlocked").set(String.valueOf(new JsonValue(false)));
                 levelValue.get("completed").set(String.valueOf(new JsonValue(false)));
             }
+            levelValue.get("score").set(String.valueOf(new JsonValue(0)));
             // Optionally update score if needed
             // levelValue.get("score").setInt(score);
         }
@@ -67,8 +70,7 @@ public class SaveFileManager {
             levelValue.get("unlocked").set(String.valueOf(new JsonValue(true)));
             levelValue.get("completed").set(String.valueOf(new JsonValue(true)));
 
-            // Optionally update score if needed
-            // levelValue.get("score").setInt(score);
+            levelValue.get("score").set(String.valueOf(new JsonValue(0)));
         }
         String fileName = "assets/save_data.json";
         try (FileWriter fileWriter = new FileWriter(fileName)) {
@@ -104,6 +106,9 @@ public class SaveFileManager {
             }
         }
         return 0;
+    }
+    public void update(JsonValue json){
+        saveFile = json;
     }
 }
 
