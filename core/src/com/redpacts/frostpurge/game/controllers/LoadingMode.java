@@ -279,7 +279,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		canvas.drawBackground(background, 0, 0,true);
 		if (!assets.isFinished()) {
 			processLoad();
-			System.out.println(.83f * canvas.getWidth());
 			canvas.draw(loading,Color.WHITE, 0, 0,1040,(float) bounds.y+ bounds.height - 60,0,.65f,.65f,false);
 		} else {
 			hoveringStart();
