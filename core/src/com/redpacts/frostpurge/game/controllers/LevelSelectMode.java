@@ -138,6 +138,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * pageDirection = 1 means go to right, = -1 means go to left, 0 means go nowhere
 	 */
 	int pageDirection;
+	Texture emptyStars;
+	TextureRegion stars;
+	Texture lock;
 
 
 	public String getLevel(){
@@ -202,7 +205,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		// Load the background
 		background = assets.getEntry("background", Texture.class);
 		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
+		emptyStars = assets.getEntry("emptystars",Texture.class);
+		stars = new TextureRegion(assets.getEntry("filledstars",Texture.class));
+		lock = assets.getEntry("lock",Texture.class);
 		// Load the direction button
 		forwardButton = assets.getEntry("forwardButton", Texture.class);
 		forward = new ButtonBox(0,
@@ -258,8 +263,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		if (xbox != null){
 			// TODO: Support XBox
-			level1Button.enlarged=true;
-//			level1.fontScale = 1.25f;
+			level1Button.resize("up");
 		}
 		time = 0;
 
@@ -334,7 +338,19 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					button.hoveringButton(null,time,levels.size, levels);
 					bounds = button.getBounds();
 					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawText(Integer.toString(game.getScore("level"+Integer.toString(level))) ,font,bounds.x*scale + bounds.width/3,bounds.y*scale);
+					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth(),emptyStars.getHeight());
+					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
+					if (ratio>1){
+						ratio = 1;
+					}
+					if (ratio!=0){
+						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
+						canvas.drawCentered(stars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth(),stars.getRegionHeight());
+						stars.setRegionWidth((emptyStars.getWidth()));
+					}
+					if (!button.available){
+						canvas.draw(lock, bounds.x*scale,bounds.y*scale,lock.getWidth()*scale,lock.getHeight()*scale);
+					}
 				}
 			}
 		} else{
@@ -365,6 +381,19 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					button.hoveringButton(xbox,time, levels.size, levels);
 					bounds = button.getBounds();
 					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth(),emptyStars.getHeight());
+					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
+					if (ratio>1){
+						ratio = 1;
+					}
+					if (ratio!=0){
+						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
+						canvas.drawCentered(stars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth(),stars.getRegionHeight());
+						stars.setRegionWidth((emptyStars.getWidth()));
+					}
+					if (!button.available){
+						canvas.draw(lock, bounds.x*scale,bounds.y*scale,lock.getWidth()*scale,lock.getHeight()*scale);
+					}
 				}
 			}
 		}
@@ -560,39 +589,50 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		if (pressState % 2 == 0 && pressState != 0) {
 			return true;
 		}
-		if(xbox.getDPadRight() && levelPage < (numberOfLevels - 1)/3 ){
-			pageDirection = 1;
-			for (int i = 0; i<3; i++){
-				try {
-					levels.get(levelPage * 3 + i).enlarged = false;
-				}catch (Exception e){
+		if (xbox != null) {
+			if (xbox.getDPadRight() && levelPage < (numberOfLevels - 1) / 3) {
+				pageDirection = 1;
+				for (int i = 0; i < 3; i++) {
+					try {
+						if (levels.get(levelPage * 3 + i).enlarged){
+							levels.get(levelPage * 3 + i).resize("down");
+						}
+					} catch (Exception e) {
 
+					}
+				}
+				System.out.println(levels.get((levelPage + pageDirection) * 3).enlarged);
+				if (levels.get((levelPage + pageDirection) * 3).available){
+					System.out.println("unlocked");
+					levels.get((levelPage + pageDirection) * 3).enlarged = true;
+				}
+
+			} else if (xbox.getDPadLeft() && levelPage > 0) {
+				pageDirection = -1;
+				for (int i = 0; i < 3; i++) {
+					try {
+						if (levels.get(levelPage * 3 + i).enlarged){
+							levels.get(levelPage * 3 + i).resize("down");
+						}
+					} catch (Exception e) {
+
+					}
+				}
+				if (levels.get((levelPage + pageDirection) * 3 + 2).available){
+					levels.get((levelPage + pageDirection) * 3 + 2).resize("up");
+				} else if (levels.get((levelPage + pageDirection) * 3 + 1).available) {
+					levels.get((levelPage + pageDirection) * 3 + 1).resize("up");
+				}else if (levels.get((levelPage + pageDirection) * 3).available) {
+					levels.get((levelPage + pageDirection) * 3).resize("up");
 				}
 			}
-			System.out.println((levelPage+pageDirection)*3);
-			System.out.println(levels.get((levelPage+pageDirection)*3).label);
-
-			levels.get((levelPage+pageDirection)*3).enlarged = true;
-
-		} else if(xbox.getDPadLeft() && levelPage > 0){
-			pageDirection = -1;
-			for (int i = 0; i<3; i++){
-				try {
-					levels.get(levelPage * 3 + i).enlarged = false;
-				}catch (Exception e){
-
-				}
-			}
-			System.out.println((levelPage+pageDirection)*3);
-			System.out.println(levels.get((levelPage+pageDirection)*3).label);
-
-			levels.get((levelPage+pageDirection)*3+2).enlarged = true;
 		}
-
-		for(ButtonBox levelButton: levels){
-			int level = levelButton.label;
-			if(levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getStart()){
-				pressState = levelButton.label * 2 - 1;
+		if (xbox != null) {
+			for (ButtonBox levelButton : levels) {
+				int level = levelButton.label;
+				if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getStart()) {
+					pressState = levelButton.label * 2 - 1;
+				}
 			}
 		}
 		return true;
@@ -835,7 +875,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				if (Math.abs(x)<.5){
 					x = 0;
 				}
-				if (x>0){
+				if (x>0 && levels.get(this.label).available){
 //					System.out.println("right");
 					if (this.label < (mode.levelPage+1)*3){
 						this.resize("down");
@@ -843,12 +883,14 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						mode.resetTime();
 					}
 				} else if (x<0) {
-//					System.out.println("left");
 					if (this.label > (mode.levelPage*3)+1){
-						this.resize("down");
-						levels.get(this.label-2).resize("up");
-						mode.resetTime();
+						if (levels.get(this.label-2).available){
+							this.resize("down");
+							levels.get(this.label-2).resize("up");
+							mode.resetTime();
+						}
 					}
+//					System.out.println("left");
 				}
 			}
 			}

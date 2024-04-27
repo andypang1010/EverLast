@@ -7,7 +7,10 @@
         "level2": "levelSelect/level2.png",
         "level3": "levelSelect/level3.png",
         "level4": "levelSelect/level1.png",
-        "level5": "levelSelect/level2.png"
+        "level5": "levelSelect/level2.png",
+        "lock": "ui/locked_level_UI.png",
+        "emptystars": "ui/outline_stars.png",
+        "filledstars": "ui/filled_stars.png"
 	},
   "fonts": {
       "font": {
