@@ -338,14 +338,14 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					button.hoveringButton(null,time,levels.size, levels);
 					bounds = button.getBounds();
 					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth(),emptyStars.getHeight());
+					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth()*scale,emptyStars.getHeight()*scale);
 					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
 					if (ratio>1){
 						ratio = 1;
 					}
 					if (ratio!=0){
 						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
-						canvas.drawCentered(stars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth(),stars.getRegionHeight());
+						canvas.drawCentered(stars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
 						stars.setRegionWidth((emptyStars.getWidth()));
 					}
 					if (!button.available){
@@ -381,7 +381,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					button.hoveringButton(xbox,time, levels.size, levels);
 					bounds = button.getBounds();
 					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth(),emptyStars.getHeight());
+					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth()*scale,emptyStars.getHeight()*scale);
 					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
 					if (ratio>1){
 						ratio = 1;
