@@ -74,6 +74,7 @@ public class GameMode implements Screen {
     private float currentTime;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
+    private SaveFileManager saveFileManager;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         this.drawble = new Array<GameObject>();
@@ -208,7 +209,9 @@ public class GameMode implements Screen {
 
     public void update(float delta) {
         inputController.readInput(null,null);
-
+        if (inputController.didDebug()){
+            playerModel.setWin(true);
+        }
         // Handle pausing the game
         if (inputController.didPause()) {
             if (gameState == GameState.PLAY) {
@@ -242,6 +245,9 @@ public class GameMode implements Screen {
         }
         if (playerModel.didwin()){
             gameState = GameState.WIN;
+            playerModel.setWin(false);
+            saveFileManager.saveGame(currentLevel.getName(),true, true, (int)(currentTime*100));
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
         }
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){
@@ -270,7 +276,7 @@ public class GameMode implements Screen {
                 listener.exitScreen(this, 0);
             }
             if (inputController.didReplay()){
-                loadLevel(currentLevel.getName());
+                loadLevel(currentLevel.getName(), saveFileManager);
             }
         }
 
@@ -384,7 +390,8 @@ public class GameMode implements Screen {
 
     }
 
-    public void loadLevel(String level){
+    public void loadLevel(String level, SaveFileManager savefile){
+        saveFileManager = savefile;
         gameState = GameState.PLAY;
         JsonValue leveljson = directory.getEntry(level, JsonValue.class);
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);

@@ -27,6 +27,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LevelSelectMode levelselect;
 	private AssetDirectory directory;
 	private String mode;
+	SaveFileManager saveFileManager;
 	/**
 	 * Creates a new game from the configuration settings.
 	 *
@@ -133,7 +134,7 @@ public class GDXRoot extends Game implements ScreenListener {
 
 		} else if (screen == levelselect) {
 			levelselect.resetPressState();
-			playing.loadLevel(levelselect.getLevel());
+			playing.loadLevel(levelselect.getLevel(), levelselect.getSaveFile());
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";

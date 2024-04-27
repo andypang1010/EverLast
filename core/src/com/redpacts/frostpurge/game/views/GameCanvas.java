@@ -371,6 +371,17 @@ public class GameCanvas {
         spriteBatch.draw(image, x,  y, width, height);
     }
 
+    public void drawCentered(Texture image, float x, float y, float width, float height){
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+
+        // Unlike Lab 1, we can shortcut without a master drawing method
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x-width/2,  y-height/2, width, height);
+    }
+
     /**
      * Draws the tinted texture with the given transformations
      *
@@ -447,6 +458,16 @@ public class GameCanvas {
         spriteBatch.setColor(Color.WHITE);
         spriteBatch.draw(region, x,  y, width, height);
     }
+    public void drawCentered(TextureRegion region, float x, float y, float width, float height) {
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+
+        // Unlike Lab 1, we can shortcut without a master drawing method
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(region, x-width/2,  y-height/2, width, height);
+    }
 
     /**
      * Draws the tinted texture region (filmstrip) with the given transformations
@@ -484,6 +505,24 @@ public class GameCanvas {
         }
 
         computeTransform(ox,oy,x,y,angle,sx,sy);
+        spriteBatch.setColor(tint);
+        if (flip){
+            region.flip(true, false);
+        }
+        spriteBatch.draw(region,region.getRegionWidth(),region.getRegionHeight(),local);
+        if (flip){
+            region.flip(true, false);
+        }
+
+    }
+    public void drawCentered(TextureRegion region, Color tint, float ox, float oy,
+                     float x, float y, float angle, float sx, float sy, boolean flip) {
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+
+        computeTransform(ox,oy,x-(region.getRegionWidth()),y-(region.getRegionHeight()),angle,sx,sy);
         spriteBatch.setColor(tint);
         if (flip){
             region.flip(true, false);

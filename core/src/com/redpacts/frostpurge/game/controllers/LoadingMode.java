@@ -121,6 +121,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** Whether or not this player mode is still active */
 	private boolean active;
 	private boolean playEnlarged;
+	private FilmStrip loading;
+	private float time;
 
 
 	/**
@@ -214,13 +216,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		statusBar = internal.getEntry( "progress", Texture.class );
 
 		// Break up the status bar texture into regions
-		statusBkgLeft = internal.getEntry( "progress.backleft", TextureRegion.class );
-		statusBkgRight = internal.getEntry( "progress.backright", TextureRegion.class );
-		statusBkgMiddle = internal.getEntry( "progress.background", TextureRegion.class );
-
-		statusFrgLeft = internal.getEntry( "progress.foreleft", TextureRegion.class );
-		statusFrgRight = internal.getEntry( "progress.foreright", TextureRegion.class );
-		statusFrgMiddle = internal.getEntry( "progress.foreground", TextureRegion.class );
+		Texture loadingTexture = new TextureRegion(internal.getEntry("loading2",Texture.class)).getTexture();
+		loading = new FilmStrip(loadingTexture, 1,4,4);
 
 		bounds = new Rectangle(83*canvas.getWidth()/100, canvas.getHeight() /8, playButton.getWidth(), playButton.getHeight());
 		// No progress so far.
@@ -239,6 +236,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		assets = new AssetDirectory( file );
 		assets.loadAssets();
 		active = true;
+		time = 0;
 	}
 	
 	/**
@@ -259,7 +257,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton == null) {
+		if (!assets.isFinished()) {
 			assets.update(budget);
 			this.progress = assets.getProgress();
 			if (progress >= 1.0f) {
@@ -279,8 +277,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private void draw() {
 		canvas.begin();
 		canvas.drawBackground(background, 0, 0,true);
-		if (playButton == null) {
-			drawProgress(canvas);
+		if (!assets.isFinished()) {
+			processLoad();
+			canvas.draw(loading,Color.WHITE, 0, 0,1040,(float) bounds.y+ bounds.height - 60,0,.65f,.65f,false);
 		} else {
 			hoveringStart();
 //			font.getData().setScale(fontscale*scale);
@@ -289,6 +288,20 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 			canvas.draw(playButton, (float) bounds.x, (float) bounds.y, (float) bounds.getWidth(), (float) bounds.getHeight());
 		}
 		canvas.end();
+	}
+
+	private void processLoad(){
+		time += Gdx.graphics.getDeltaTime();
+		int frame = (loading == null ? 11 : loading.getFrame());
+		if (loading != null) {
+			if (time >= .125) {
+				frame++;
+				time = 0f;
+				if (frame >= loading.getSize())
+					frame = 0;
+				loading.setFrame(frame);
+			}
+		}
 	}
 	
 	/**
