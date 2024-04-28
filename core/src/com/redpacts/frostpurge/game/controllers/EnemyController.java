@@ -16,6 +16,7 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
@@ -62,6 +63,10 @@ public class EnemyController extends CharactersController implements StateMachin
         this.tileGraph = tileGraph;
         currentTile = this.waypoints[0];
         this.board = board;
+
+        if(Objects.equals(enemy.getEnemyType(), "Messenger")){
+            speedMultiplier = 80f;
+        }
 
         if (initState == EnemyStates.PATROL) {
             setGoal(this.waypoints[this.nextWaypointIndex]);
@@ -243,14 +248,25 @@ public class EnemyController extends CharactersController implements StateMachin
 
             case CHASE:
                 System.out.println("IN CHASE STATE!");
+                System.out.println(((EnemyModel) model).getEnemyType());
+                if(Objects.equals(((EnemyModel) model).getEnemyType(), "Regular")){
 
-                // Update path to player every 0.5 seconds
-                if (updatePathCounter > 30){
-                    setGoal(modelPositionToTile(playerModel));
-                    updatePathCounter = 0;
-                }
-                else {
-                    updatePathCounter++;
+                    // Update path to player every 0.5 seconds
+                    if (updatePathCounter > 30){
+                        setGoal(modelPositionToTile(playerModel));
+                        updatePathCounter = 0;
+                    }
+                    else {
+                        updatePathCounter++;
+                    }
+                }else if(Objects.equals(((EnemyModel) model).getEnemyType(), "Messenger")){
+                    if (updatePathCounter > 30){
+                        setGoal(modelPositionToTile(findNeighborEnemies()));
+                        updatePathCounter = 0;
+                    }
+                    else {
+                        updatePathCounter++;
+                    }
                 }
 
                 alertNeighborEnemies();
@@ -285,6 +301,27 @@ public class EnemyController extends CharactersController implements StateMachin
                 System.out.println("Alerted!!!");
             }
         }
+    }
+
+    private CharactersModel findNeighborEnemies() {
+        for (int i = 0; i < GameMode.enemyControllers.size; i++) {
+            EnemyController enemy = GameMode.enemyControllers.get(i);
+            if (enemy == this) continue;
+
+            Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
+//                    System.out.println(((EnemyModel) enemy.getModel()).getID() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
+            if (enemy.getCurrentState() != EnemyStates.CHASE &&
+                    Vector2.dst(
+                            model.getBody().getPosition().x,
+                            model.getBody().getPosition().y,
+                            enemyPosition.x,
+                            enemyPosition.y)
+                            < 300) {
+
+                return enemy.model;
+            }
+        }
+        return this.model;
     }
 
     private boolean isPlayerWithinListenRadius() {

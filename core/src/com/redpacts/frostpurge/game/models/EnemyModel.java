@@ -18,12 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnemyModel extends CharactersModel{
-
     /*
     FSM
      */
     EnemyStates initState;
     EnemyStates currentState;
+    private String enemyType;
+
     private int[] startpatrol;
     private int[] endpatrol;
     private int enemyID;
@@ -37,11 +38,12 @@ public class EnemyModel extends CharactersModel{
      * @param position vector2 representing the starting location
      * @param rotation float representing angle the player is facing
      */
-    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, EnemyStates initState, int id){
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, EnemyStates initState, String type, int id){
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
         this.radius = 3.19f;
+        this.enemyType = type;
 
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
@@ -67,7 +69,7 @@ public class EnemyModel extends CharactersModel{
 
 
         this.startpatrol = startpatrol;
-        type = "enemy";
+        this.type = "enemy";
 
         this.initState = initState;
         currentState = initState;
@@ -93,6 +95,7 @@ public class EnemyModel extends CharactersModel{
     public void setCurrentState(EnemyStates currentState) {
         this.currentState = currentState;
     }
+    public String getEnemyType(){return this.enemyType;}
 
     /*
     VISION CONE
@@ -154,10 +157,15 @@ public class EnemyModel extends CharactersModel{
 
         // Setting category and mask bits for the enemy
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY;
-        fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY |
-                CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
-                CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE);
+        if(enemyType == "Messenger"){
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+        }else if(enemyType == "Regular"){
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY |
+                    CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
+                    CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE);
+        }
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
