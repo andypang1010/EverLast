@@ -204,12 +204,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		stars = new TextureRegion(assets.getEntry("filledstars",Texture.class));
 		lock = assets.getEntry("lock",Texture.class);
 		// Load the direction button
+
 		forwardTexture = assets.getEntry("forwardButton", Texture.class);
 		forwardButton = new ButtonBox(0,
 				new Rectangle(canvas.getWidth() * 85 / 100, canvas.getHeight() * 2/15, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
+		forwardButton.available = true;
+
 		backwardTexture = assets.getEntry("backwardButton", Texture.class);
 		backwardButton = new ButtonBox(0,
 				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 2/15, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
+		backwardButton.available = true;
 
 		// Load the level button
 		// Label of each button represents the level number

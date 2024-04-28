@@ -22,6 +22,7 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
+import java.awt.*;
 import java.util.Comparator;
 
 public class GameMode implements Screen, InputProcessor {
@@ -112,6 +113,7 @@ public class GameMode implements Screen, InputProcessor {
     private Array<GameObject> drawble;
 
     private Array<EnemyModel> enemies;
+    private Array<ButtonBox> buttons = new Array<>();;
 
     private TileGraph tileGraph = new TileGraph();
 
@@ -122,7 +124,9 @@ public class GameMode implements Screen, InputProcessor {
     private float scale;
     private float sx;
     private float sy;
+    /** Standard window size (for scaling) */
     private static int STANDARD_WIDTH = 1920;
+    /** Standard window height (for scaling) */
     private static int STANDARD_HEIGHT = 1080;
 
     /** Listener that will update the player mode when we are done */
@@ -136,7 +140,11 @@ public class GameMode implements Screen, InputProcessor {
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         // TODO: Change scale?
-        float scale = 8/7f;
+        float enlargeScale = 8/7f;
+        // Compute the dimensions from the canvas
+        this.resize(canvas.getWidth(), canvas.getHeight());
+        STANDARD_WIDTH = canvas.getWidth();
+        STANDARD_HEIGHT = canvas.getHeight();
 
         // We need these files loaded immediately
         pauseScreenAssets = new AssetDirectory( "pausescreen.json" );
@@ -148,20 +156,20 @@ public class GameMode implements Screen, InputProcessor {
         pauseScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         pauseTexture = pauseScreenAssets.getEntry("pauseButton", Texture.class);
-        pauseButton = new ButtonBox(0, scale,
+        pauseButton = new ButtonBox(0, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 42 / 100, canvas.getHeight() * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
 
         resumeTexture = pauseScreenAssets.getEntry("resumeButton", Texture.class);
-        resumeButton = new ButtonBox(0, scale,
+        resumeButton = new ButtonBox(0, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 47 / 100, canvas.getHeight() * 24/100, resumeTexture.getWidth(), resumeTexture.getHeight()), resumeTexture);
 
         homeTexture = pauseScreenAssets.getEntry("homeButton", Texture.class);
-        homeButton = new ButtonBox(0, scale,
+        homeButton = new ButtonBox(0, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 9/100, homeTexture.getWidth(), homeTexture.getHeight()), homeTexture);
         homeScreen = false;
 
         levelSelectTexture = pauseScreenAssets.getEntry("levelSelectButton", Texture.class);
-        levelSelectButton = new ButtonBox(0, scale,
+        levelSelectButton = new ButtonBox(0, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 18 / 100, canvas.getHeight() * 9/100, levelSelectTexture.getWidth(), levelSelectTexture.getHeight()), levelSelectTexture);
         levelSelectScreen = false;
 
@@ -170,12 +178,19 @@ public class GameMode implements Screen, InputProcessor {
         retryScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         retryTexture = pauseScreenAssets.getEntry("retryButton", Texture.class);
-        retryButton = new ButtonBox(0, scale,
+        retryButton = new ButtonBox(0, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 40 / 100, canvas.getHeight() * 42/100, retryTexture.getWidth(), retryTexture.getHeight()), retryTexture);
 
         // Load the win screen assets
         winScreenTexture = pauseScreenAssets.getEntry("winScreen", Texture.class);
         winScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        // TODO: Add more buttons to scale
+        this.buttons.add(pauseButton);
+        this.buttons.add(resumeButton);
+        this.buttons.add(homeButton);
+        this.buttons.add(levelSelectButton);
+        this.buttons.add(retryButton);
 
         this.drawble = new Array<GameObject>();
         this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
@@ -263,7 +278,9 @@ public class GameMode implements Screen, InputProcessor {
         sx = ((float)canvas.getWidth())/STANDARD_WIDTH;
         sy = ((float)canvas.getHeight())/STANDARD_HEIGHT;
         scale = (sx < sy ? sx : sy);
-
+        for (ButtonBox button : buttons) {
+            button.setScreenScale(scale);
+        }
     }
 
     @Override
@@ -328,6 +345,11 @@ public class GameMode implements Screen, InputProcessor {
 
     public void update(float delta) {
         Gdx.input.setInputProcessor(this);
+
+        for(ButtonBox button : buttons) {
+            button.setScreenScale(scale);
+        }
+
         inputController.readInput(null,null);
         if (inputController.didDebug()){
             playerModel.setWin(true);
@@ -497,22 +519,23 @@ public class GameMode implements Screen, InputProcessor {
         canvas.begin();
         canvas.drawBackground(pauseScreenTexture, 0, 0, true);
         Rectangle bounds;
+        System.out.println(scale);
 
         pauseButton.hoveringButton();
         bounds = pauseButton.getBounds();
-        canvas.draw(pauseButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(pauseButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         resumeButton.hoveringButton();
         bounds = resumeButton.getBounds();
-        canvas.draw(resumeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(resumeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         homeButton.hoveringButton();
         bounds = homeButton.getBounds();
-        canvas.draw(homeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(homeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         levelSelectButton.hoveringButton();
         bounds = levelSelectButton.getBounds();
-        canvas.draw(levelSelectButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         canvas.end();
     }
@@ -524,18 +547,19 @@ public class GameMode implements Screen, InputProcessor {
 
         retryButton.hoveringButton();
         bounds = retryButton.getBounds();
-        canvas.draw(retryButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(retryButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         homeButton.hoveringButton();
         bounds = homeButton.getBounds();
-        canvas.draw(homeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(homeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         levelSelectButton.hoveringButton();
         bounds = levelSelectButton.getBounds();
-        canvas.draw(levelSelectButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         canvas.end();
     }
+
     public void drawWinScreen(){
         canvas.begin();
         canvas.drawBackground(winScreenTexture, 0, 0, true);
@@ -543,14 +567,15 @@ public class GameMode implements Screen, InputProcessor {
 
         homeButton.hoveringButton();
         bounds = homeButton.getBounds();
-        canvas.draw(homeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(homeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         levelSelectButton.hoveringButton();
         bounds = levelSelectButton.getBounds();
-        canvas.draw(levelSelectButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+        canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
         canvas.end();
     }
+
     public void setScreenListener(ScreenListener listener) {
         this.listener = listener;
     }
@@ -592,7 +617,7 @@ public class GameMode implements Screen, InputProcessor {
                 maxTime = 46;
                 break;
             case "level2":
-                maxTime = 31;
+                maxTime = 61;
                 break;
             case "level3":
                 maxTime = 46;
