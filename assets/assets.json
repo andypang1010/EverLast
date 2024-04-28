@@ -37,6 +37,7 @@
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
-    "playgroundlevel": "levels/AlphaLevel.json"
+    "playgroundlevel": "levels/AlphaLevel.json",
+    "savedata": "save_data.json"
   }
 }

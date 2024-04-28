@@ -132,6 +132,7 @@ public class GameMode implements Screen, InputProcessor {
     private float currentTime;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
+    private SaveFileManager saveFileManager;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         // TODO: Change scale?
@@ -328,7 +329,9 @@ public class GameMode implements Screen, InputProcessor {
     public void update(float delta) {
         Gdx.input.setInputProcessor(this);
         inputController.readInput(null,null);
-
+        if (inputController.didDebug()){
+            playerModel.setWin(true);
+        }
         // Handle pausing the game
         if (pressState == 2) { // Home button selected
             pressState = 0;
@@ -363,7 +366,7 @@ public class GameMode implements Screen, InputProcessor {
             }
             if (inputController.didReplay() || pressState == 8){ // Retry clicked
                 pressState = 0;
-                loadLevel(currentLevel.getName());
+                loadLevel(currentLevel.getName(), saveFileManager);
             }
             return; // Skip the rest of the update loop
         } else if (gameState == GameState.WIN){
@@ -372,7 +375,7 @@ public class GameMode implements Screen, InputProcessor {
                 listener.exitScreen(this, 0);
             }
             if (inputController.didReplay()){
-                loadLevel(currentLevel.getName());
+                loadLevel(currentLevel.getName(), saveFileManager);
             }
             return;
         }
@@ -390,7 +393,11 @@ public class GameMode implements Screen, InputProcessor {
         }
         if (playerModel.didwin()){
             gameState = GameState.WIN;
+            playerModel.setWin(false);
+            saveFileManager.saveGame(currentLevel.getName(),true, true, (int)(currentTime*100));
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
         }
+
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
@@ -484,14 +491,6 @@ public class GameMode implements Screen, InputProcessor {
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
-////        if (gameState == GameState.OVER){
-////            font.setColor(Color.RED);
-////            canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
-////        }
-//        if (gameState == GameState.WIN){
-//            font.setColor(Color.GREEN);
-//            canvas.drawTextCenteredHUD("YOU WIN!", font, 0, HUDcamera);
-//        }
     }
 
     public void drawPauseScreen(){
@@ -581,7 +580,8 @@ public class GameMode implements Screen, InputProcessor {
 
     }
 
-    public void loadLevel(String level){
+    public void loadLevel(String level, SaveFileManager savefile){
+        saveFileManager = savefile;
         gameState = GameState.PLAY;
         JsonValue leveljson = directory.getEntry(level, JsonValue.class);
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);

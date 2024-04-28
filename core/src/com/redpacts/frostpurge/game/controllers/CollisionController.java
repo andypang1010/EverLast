@@ -226,7 +226,7 @@ public class CollisionController{
      */
     private void win(PlayerModel player){
         if(board.isGoalTile(player.getPosition().x, player.getPosition().y)){
-            player.win();
+            player.setWin(true);
         }
     }
     /**
