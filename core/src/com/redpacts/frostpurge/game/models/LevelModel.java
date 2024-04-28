@@ -157,9 +157,9 @@ public class LevelModel {
      */
     public void createBreakable(int x, int y, int rotation, AssetDirectory directory, int index, int base){
         // TODO: Right now only supports one type of breakable.
-        TextureRegion texture =  new TextureRegion(directory.getEntry("BreakableWoodBox", Texture.class));
-        breakables.insert(index-1, new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 2, 2));
-        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 2, 2);
+        TextureRegion texture =  new TextureRegion(directory.getEntry("BreakableGlassBox", Texture.class));
+        breakables.insert(index-1, new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4));
+//        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);
     }
     /**
      * Creates a bouncy object
@@ -175,7 +175,7 @@ public class LevelModel {
         TextureRegion idle = new TextureRegion(directory.getEntry("IdleBouncyMushroom", Texture.class));
         TextureRegion active =  new TextureRegion(directory.getEntry("ActiveBouncyMushroom", Texture.class));
         bouncy.insert(index-1, new BouncyTile(idle, active, new Vector2(x,y), 1, base, 1, 8, 8));
-        extraLayer[y / 64][x / 64] = new BouncyTile(idle, active, new Vector2(x,y), 1, base, 1, 8, 8);
+//        extraLayer[y / 64][x / 64] = new BouncyTile(idle, active, new Vector2(x,y), 1, base, 1, 8, 8);
     }
     public int getWidth(){return width;}
     public int getHeight(){return height;}

@@ -77,7 +77,7 @@ public class BreakableTile extends TileModel{
 
         time += Gdx.graphics.getDeltaTime();
         int frame = activeTexture.getFrame();
-        if (time >= .125 / 3){
+        if (time >= .125){
             frame++;
             time = 0f;
             if (frame >= activeTexture.getSize()) {
