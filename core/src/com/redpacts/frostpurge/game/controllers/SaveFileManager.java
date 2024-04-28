@@ -34,8 +34,7 @@ public class SaveFileManager {
                 break;
             }
         }
-        String fileName = "assets/save_data.json";
-        try (FileWriter fileWriter = new FileWriter(fileName)) {
+        try (FileWriter fileWriter = new FileWriter(SAVE_FILE_NAME)) {
             fileWriter.write(saveFile.toJson(JsonWriter.OutputType.json));
         } catch (IOException e) {
             System.out.println("Error creating JSON file: " + e.getMessage());
@@ -57,8 +56,7 @@ public class SaveFileManager {
             // Optionally update score if needed
             // levelValue.get("score").setInt(score);
         }
-        String fileName = "assets/save_data.json";
-        try (FileWriter fileWriter = new FileWriter(fileName)) {
+        try (FileWriter fileWriter = new FileWriter(SAVE_FILE_NAME)) {
             fileWriter.write(saveFile.toJson(JsonWriter.OutputType.json));
         } catch (IOException e) {
             System.out.println("Error creating JSON file: " + e.getMessage());
@@ -72,8 +70,7 @@ public class SaveFileManager {
 
             levelValue.get("score").set(String.valueOf(new JsonValue(0)));
         }
-        String fileName = "assets/save_data.json";
-        try (FileWriter fileWriter = new FileWriter(fileName)) {
+        try (FileWriter fileWriter = new FileWriter(SAVE_FILE_NAME)) {
             fileWriter.write(saveFile.toJson(JsonWriter.OutputType.json));
         } catch (IOException e) {
             System.out.println("Error creating JSON file: " + e.getMessage());
