@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.controllers.EnemyController;
 import com.redpacts.frostpurge.game.util.EnemyStates;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -23,6 +24,8 @@ public class LevelModel {
     private TileModel[][] extraLayer;
     private TileModel[][] accentLayer;
     private Array<EnemyModel> enemies;
+    private Array<BouncyTile> bouncy;
+    private Array<BreakableTile> breakables;
     private PlayerModel player;
     private boolean altered;
     private String name;
@@ -36,6 +39,8 @@ public class LevelModel {
         extraLayer = new TileModel[height][width];
         accentLayer = new TileModel[height][width];
         enemies = new Array<>();
+        bouncy = new Array<>();
+        breakables = new Array<>();
         altered = false;
         this.directory = directory;
     }
@@ -130,6 +135,49 @@ public class LevelModel {
         int[] coordinates = {(int) Math.floor((double) x /64), (int) Math.floor((double) y /64)};
         enemies.get(enemyID-1).addWaypoint(coordinates,pointNumber);
     }
+    /**
+     * Creates a bouncy object
+     * @param x x coordinate of spawn point
+     * @param y y coordinate of spawn point
+     * @param rotation initial rotation of player
+     * @param directory The directory so that the bouncy can get its animations
+     * @param index number bouncy on in the level
+     * @param label type of breakable (e.g. glass, wood, etc.)
+     * @return enemy to be put into an enemy controller
+     */
+    public void createBreakable(int x, int y, int rotation, AssetDirectory directory, int index, String label, int base){
+        // TODO: Right now only supports one type of breakable.
+        TextureRegion glassBox =  new TextureRegion(directory.getEntry("BreakableGlassBox", Texture.class));
+        switch (label) {
+            case "glass":
+                breakables.insert(bouncy.size, new BreakableTile(glassBox, new Vector2(x,y), 1,  base, 1, 4, 4));
+                break;
+        }
+//        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);
+    }
+    /**
+     * Creates a bouncy object
+     * @param x x coordinate of spawn point
+     * @param y y coordinate of spawn point
+     * @param rotation initial rotation of player
+     * @param directory The directory so that the bouncy can get its animations
+     * @param index number bouncy on in the level
+     * @param label type of bouncy (mushroom, etc.)
+     * @return enemy to be put into an enemy controller
+     */
+    public void createBouncy(int x, int y, int rotation, AssetDirectory directory, int index, String label, int base){
+        // TODO: Right now only supports one type of bouncy.
+        TextureRegion activeBouncyMushroom
+                =  new TextureRegion(directory.getEntry("ActiveBouncyMushroom", Texture.class));
+        System.out.println("BOUNCE");
+        switch (label) {
+            case "mushroom":
+                System.out.println("MUSHROOM");
+                bouncy.insert(bouncy.size, new BouncyTile(activeBouncyMushroom, new Vector2(x,y), 1, base, 1, 8, 8));
+                break;
+        }
+//        extraLayer[y / 64][x / 64] = new BouncyTile(idle, active, new Vector2(x,y), 1, base, 1, 8, 8);
+    }
     public int getWidth(){return width;}
     public int getHeight(){return height;}
     public TileModel[][] getBaseLayer(){
@@ -147,6 +195,8 @@ public class LevelModel {
     public PlayerModel getPlayer(){
         return player;
     }
+    public Array<BouncyTile> getBouncy() { return bouncy;}
+    public Array<BreakableTile> getBreakables() { return breakables;}
     public String getName(){return name;}
     public String getNextLevelName(){
         char num = name.charAt(name.length()-1);
@@ -205,12 +255,16 @@ public class LevelModel {
         return neighbors;
     }
 
+    public void drawBouncy(BouncyTile object, GameCanvas canvas){
+        object.processFilmStrip();
+        canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);
+    }
+    public void drawBreakable(BreakableTile object, GameCanvas canvas){
+        object.processFilmStrip();
+        canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);
+    }
     public void drawTile(TileModel object, GameCanvas canvas){
         canvas.draw(object.getTextureRegion(), object.getPosition().x, object.getPosition().y);
-    }
-
-    public void drawTile(TileModel object, GameCanvas canvas, float sx, float sy){
-        canvas.draw(object.getTextureRegion(), object.getPosition().x*sx, object.getPosition().y*sy);
     }
 
     public void drawDebug(TileModel object, GameCanvas canvas) {

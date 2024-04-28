@@ -55,12 +55,11 @@ public class BouncyTile extends TileModel{
     /**
      * Create a tile with the specified texture
      *
-     * @param textureIdle      The idle texture of the tile
      * @param textureActive    The active texture of the tile
      */
-    public BouncyTile(TextureRegion textureIdle, TextureRegion textureActive, Vector2 position, float scale, int base, int rows, int cols, int size){
+    public BouncyTile(TextureRegion textureActive, Vector2 position, float scale, int base, int rows, int cols, int size){
         this.type = TileType.BOUNCY;
-        this.textureRegion = textureIdle;
+        this.texture = new FilmStrip(textureActive.getTexture(), rows, cols, size).getTexture();
         this.activeTexture = new FilmStrip(textureActive.getTexture(), rows, cols, size);
         this.active = false;
         this.time = 0;

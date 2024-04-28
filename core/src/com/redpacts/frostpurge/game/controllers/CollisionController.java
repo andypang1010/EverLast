@@ -145,12 +145,14 @@ public class CollisionController{
             }
         }
         for (BouncyTile b: bouncy) {
+            System.out.println("BOUNCE");
             if (b != null) {
                 b.createBody(world);
                 addObject(b);
             }
         }
         for (BreakableTile b: breakables) {
+            System.out.println("BREAK");
             if (b != null) {
                 b.createBody(world);
                 addObject(b);

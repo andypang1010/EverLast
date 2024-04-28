@@ -17,6 +17,9 @@
     "EnemyDown": "enemies/enemyDownfilmstripEDIT1.png",
     "Fire" : "characters/firenoaxis.png",
     "FireBoost": "characters/fireboostnoaxis.png",
+    "IdleBouncyMushroom": "bouncy/bouncyMushroomIdle.png",
+    "ActiveBouncyMushroom": "bouncy/bouncyMushroomFilmstrip.png",
+    "BreakableGlassBox": "breakable/breakableGlassBoxFilmstrip.png",
     "tileset": "Tilesets/TileSet.png"
   },
   "sounds" : {

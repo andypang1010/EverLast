@@ -113,6 +113,8 @@ public class GameMode implements Screen, InputProcessor {
     private Array<GameObject> drawble;
 
     private Array<EnemyModel> enemies;
+    private Array<BouncyTile> bouncy;
+    private Array<BreakableTile> breakables;
     private Array<ButtonBox> buttons = new Array<>();;
 
     private TileGraph tileGraph = new TileGraph();
@@ -434,6 +436,8 @@ public class GameMode implements Screen, InputProcessor {
 
         drawble.add(playerModel);
         drawble.addAll(enemies);
+        drawble.addAll(bouncy);
+        drawble.addAll(breakables);
         sort_by_y(drawble);
         drawble.reverse();
 
@@ -470,11 +474,15 @@ public class GameMode implements Screen, InputProcessor {
         for(GameObject object: drawble){
             if(object instanceof PlayerModel){
                 playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
-            }else if(object instanceof EnemyModel){
+            } else if(object instanceof EnemyModel){
                 enemyControllers.get(i).draw(canvas,(EnemyModel) object);
                 i++;
-            }else if (object instanceof TileModel){
+            } else if (object instanceof ObstacleTile || object instanceof EmptyTile || object instanceof GoalTile || object instanceof SwampTile){
                 currentLevel.drawTile((TileModel) object, canvas);
+            } else if (object instanceof BreakableTile) {
+                currentLevel.drawBreakable((BreakableTile) object, canvas);
+            } else if (object instanceof BouncyTile) {
+                currentLevel.drawBouncy((BouncyTile) object, canvas);
             }
         }
 
@@ -519,7 +527,6 @@ public class GameMode implements Screen, InputProcessor {
         canvas.begin();
         canvas.drawBackground(pauseScreenTexture, 0, 0, true);
         Rectangle bounds;
-        System.out.println(scale);
 
         pauseButton.hoveringButton();
         bounds = pauseButton.getBounds();
@@ -612,6 +619,8 @@ public class GameMode implements Screen, InputProcessor {
         currentLevel = levelController.initializeLevel(leveljson, tilesetjson,tileset,tileset[0].length,tileset.length, directory);
         enemies = currentLevel.getEnemies();
         playerModel = currentLevel.getPlayer();
+        bouncy = currentLevel.getBouncy();
+        breakables = currentLevel.getBreakables();
         switch (level){
             case "level1":
                 maxTime = 46;
@@ -647,7 +656,7 @@ public class GameMode implements Screen, InputProcessor {
 //        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionController = new CollisionController(currentLevel, playerModel, enemies, new Array<>(), new Array<>(),canvas.getWidth(), canvas.getHeight());
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight());
     }
 
     // PROCESSING PLAYER INPUT
