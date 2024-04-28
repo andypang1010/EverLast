@@ -27,14 +27,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.ControllerMapping;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.redpacts.frostpurge.game.models.ButtonBox;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.XBoxController;
@@ -42,8 +39,6 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 import com.badlogic.gdx.math.Rectangle;
 
 import com.badlogic.gdx.utils.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class that provides a loading screen for the state of the game.

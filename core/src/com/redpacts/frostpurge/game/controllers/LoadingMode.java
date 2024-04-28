@@ -159,6 +159,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	public boolean isReady() {
 		return pressState == 2;
 	}
+	public void resetButton() {
+		pressState = 0;
+	}
 
 	/**
 	 * Returns the asset directory produced by this loading screen
@@ -228,8 +231,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		pressState = 0;
 		playEnlarged = false;
 
-		Gdx.input.setInputProcessor( this );
-
 		// Let ANY connected controller start the game.
 		for (XBoxController controller : Controllers.get().getXBoxControllers()) {
 			controller.addListener( this );
@@ -259,6 +260,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
+		Gdx.input.setInputProcessor(this);
 		if (playButton == null) {
 			assets.update(budget);
 			this.progress = assets.getProgress();

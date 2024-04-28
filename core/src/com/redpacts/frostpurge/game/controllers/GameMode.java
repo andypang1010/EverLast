@@ -1,6 +1,5 @@
 package com.redpacts.frostpurge.game.controllers;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -11,22 +10,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.*;
+import com.redpacts.frostpurge.game.models.ButtonBox;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class GameMode implements Screen, InputProcessor {
@@ -59,14 +54,31 @@ public class GameMode implements Screen, InputProcessor {
     private Texture levelSelectTexture;
     private ButtonBox levelSelectButton;
     /**
-     * pressState = 0 means no click on resume button, 1 means clicking, 2 means clicked.
+     * pressState = 0 means no click on button, 1 means clicking on home, 2 means home clicked.
+     * 3 means clicking on level select button, 4 means level select clicked.
+     * 5 means clicking on resume button, 6 means resume clicked.
+     * 7 means clicking on retry, 8 means retry clicked.
      */
     private int pressState = 0;
+    private boolean homeScreen;
+    private boolean levelSelectScreen;
 
     /*
     Game Over Screen
      */
-    private AssetDirectory gameOverAssets;
+    /**
+     * Background texture for retry screen
+     */
+    private Texture retryScreenTexture;
+    /**
+     * Texture for retry button
+     */
+    private Texture retryTexture;
+    private ButtonBox retryButton;
+    /**
+     * Background texture for win screen
+     */
+    private Texture winScreenTexture;
 
     /*
     Gameplay
@@ -131,14 +143,38 @@ public class GameMode implements Screen, InputProcessor {
         pauseScreenAssets.finishLoading();
 
         // Load the pause screen assets
-        pauseScreenTexture = pauseScreenAssets.getEntry("background", Texture.class);
+        pauseScreenTexture = pauseScreenAssets.getEntry("pauseScreen", Texture.class);
         pauseScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
         pauseTexture = pauseScreenAssets.getEntry("pauseButton", Texture.class);
         pauseButton = new ButtonBox(0, scale,
-                new Rectangle(canvas.getWidth() * 41 / 100, canvas.getHeight() * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
+                new Rectangle(canvas.getWidth() * 42 / 100, canvas.getHeight() * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
+
         resumeTexture = pauseScreenAssets.getEntry("resumeButton", Texture.class);
         resumeButton = new ButtonBox(0, scale,
                 new Rectangle(canvas.getWidth() * 47 / 100, canvas.getHeight() * 24/100, resumeTexture.getWidth(), resumeTexture.getHeight()), resumeTexture);
+
+        homeTexture = pauseScreenAssets.getEntry("homeButton", Texture.class);
+        homeButton = new ButtonBox(0, scale,
+                new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 9/100, homeTexture.getWidth(), homeTexture.getHeight()), homeTexture);
+        homeScreen = false;
+
+        levelSelectTexture = pauseScreenAssets.getEntry("levelSelectButton", Texture.class);
+        levelSelectButton = new ButtonBox(0, scale,
+                new Rectangle(canvas.getWidth() * 18 / 100, canvas.getHeight() * 9/100, levelSelectTexture.getWidth(), levelSelectTexture.getHeight()), levelSelectTexture);
+        levelSelectScreen = false;
+
+        // Load the retry screen assets
+        retryScreenTexture = pauseScreenAssets.getEntry("retryScreen", Texture.class);
+        retryScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        retryTexture = pauseScreenAssets.getEntry("retryButton", Texture.class);
+        retryButton = new ButtonBox(0, scale,
+                new Rectangle(canvas.getWidth() * 40 / 100, canvas.getHeight() * 42/100, retryTexture.getWidth(), retryTexture.getHeight()), retryTexture);
+
+        // Load the win screen assets
+        winScreenTexture = pauseScreenAssets.getEntry("winScreen", Texture.class);
+        winScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         this.drawble = new Array<GameObject>();
         this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
@@ -190,6 +226,25 @@ public class GameMode implements Screen, InputProcessor {
      */
     public void setDebug(boolean value) {
         debug = value;
+    }
+
+    /**
+     * Checks if the player chooses to return to home screen.
+     */
+    public boolean isHomeScreen() {return this.homeScreen;}
+
+
+    /**
+     * Checks if the player chooses to return to level select screen.
+     */
+    public boolean isLevelSelectScreen() {return this.levelSelectScreen;}
+    /**
+     * Reset boolean flags for home screen and level select screen..
+     */
+    public void resetButton(){
+        pressState = 0;
+        homeScreen = false;
+        levelSelectScreen = false;
     }
 
     @Override
@@ -275,7 +330,17 @@ public class GameMode implements Screen, InputProcessor {
         inputController.readInput(null,null);
 
         // Handle pausing the game
-        if (inputController.didPause() || pressState == 2) {
+        if (pressState == 2) { // Home button selected
+            pressState = 0;
+            levelSelectScreen = false;
+            homeScreen = true;
+            listener.exitScreen(this, 0);
+        } else if (pressState == 4) { // Level select button selected
+            pressState = 0;
+            levelSelectScreen = true;
+            homeScreen = false;
+            listener.exitScreen(this, 0);
+        } else if (inputController.didPause() || pressState == 6) {
             if (gameState == GameState.PLAY) {
                 gameState = GameState.PAUSE;
             } else if (gameState == GameState.PAUSE) {
@@ -289,6 +354,27 @@ public class GameMode implements Screen, InputProcessor {
             // Draw pause screen
             drawPauseScreen();
             return; // Skip the rest of the update loop
+        }
+
+        if (gameState == GameState.OVER){
+            drawRetryScreen();
+            if (inputController.didExit()){
+                listener.exitScreen(this, 0);
+            }
+            if (inputController.didReplay() || pressState == 8){ // Retry clicked
+                pressState = 0;
+                loadLevel(currentLevel.getName());
+            }
+            return; // Skip the rest of the update loop
+        } else if (gameState == GameState.WIN){
+            drawWinScreen();
+            if (inputController.didExit()){
+                listener.exitScreen(this, 0);
+            }
+            if (inputController.didReplay()){
+                loadLevel(currentLevel.getName());
+            }
+            return;
         }
 
         if (gameState == GameState.PLAY){
@@ -325,15 +411,6 @@ public class GameMode implements Screen, InputProcessor {
         // Toggle debug mode
         if (inputController.didDebug()) {
             debug = !debug;
-        }
-
-        if (gameState == GameState.WIN || gameState == GameState.OVER){
-            if (inputController.didExit()){
-                listener.exitScreen(this, 0);
-            }
-            if (inputController.didReplay()){
-                loadLevel(currentLevel.getName());
-            }
         }
 
         if (gameState == GameState.PLAY){
@@ -407,14 +484,14 @@ public class GameMode implements Screen, InputProcessor {
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
-        if (gameState == GameState.OVER){
-            font.setColor(Color.RED);
-            canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
-        }
-        if (gameState == GameState.WIN){
-            font.setColor(Color.GREEN);
-            canvas.drawTextCenteredHUD("YOU WIN!", font, 0, HUDcamera);
-        }
+////        if (gameState == GameState.OVER){
+////            font.setColor(Color.RED);
+////            canvas.drawTextCenteredHUD("GAME OVER!", font, 0, HUDcamera);
+////        }
+//        if (gameState == GameState.WIN){
+//            font.setColor(Color.GREEN);
+//            canvas.drawTextCenteredHUD("YOU WIN!", font, 0, HUDcamera);
+//        }
     }
 
     public void drawPauseScreen(){
@@ -429,6 +506,49 @@ public class GameMode implements Screen, InputProcessor {
         resumeButton.hoveringButton();
         bounds = resumeButton.getBounds();
         canvas.draw(resumeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        homeButton.hoveringButton();
+        bounds = homeButton.getBounds();
+        canvas.draw(homeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        levelSelectButton.hoveringButton();
+        bounds = levelSelectButton.getBounds();
+        canvas.draw(levelSelectButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        canvas.end();
+    }
+
+    public void drawRetryScreen(){
+        canvas.begin();
+        canvas.drawBackground(retryScreenTexture, 0, 0, true);
+        Rectangle bounds;
+
+        retryButton.hoveringButton();
+        bounds = retryButton.getBounds();
+        canvas.draw(retryButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        homeButton.hoveringButton();
+        bounds = homeButton.getBounds();
+        canvas.draw(homeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        levelSelectButton.hoveringButton();
+        bounds = levelSelectButton.getBounds();
+        canvas.draw(levelSelectButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        canvas.end();
+    }
+    public void drawWinScreen(){
+        canvas.begin();
+        canvas.drawBackground(winScreenTexture, 0, 0, true);
+        Rectangle bounds;
+
+        homeButton.hoveringButton();
+        bounds = homeButton.getBounds();
+        canvas.draw(homeButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
+
+        levelSelectButton.hoveringButton();
+        bounds = levelSelectButton.getBounds();
+        canvas.draw(levelSelectButton.getTexture(), bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight());
 
         canvas.end();
     }
@@ -524,8 +644,26 @@ public class GameMode implements Screen, InputProcessor {
             return true;
         }
         if (gameState == GameState.PAUSE) {
-            if (resumeButton.isPressed() || pauseButton.isPressed()) {
+             if (homeButton.isPressed()) {
                 pressState = 1;
+             } else if (levelSelectButton.isPressed()){
+                 pressState = 3;
+             } else if (resumeButton.isPressed() || pauseButton.isPressed()) {
+                 pressState = 5;
+             }
+        } else if (gameState == GameState.OVER) {
+            if (homeButton.isPressed()) {
+                pressState = 1;
+            } else if (levelSelectButton.isPressed()){
+                pressState = 3;
+            } else if (retryButton.isPressed()) {
+                pressState = 7;
+            }
+        } else if (gameState == GameState.WIN) {
+            if (homeButton.isPressed()) {
+                pressState = 1;
+            } else if (levelSelectButton.isPressed()){
+                pressState = 3;
             }
         }
         return false;
@@ -544,13 +682,7 @@ public class GameMode implements Screen, InputProcessor {
      */
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (pressState % 2 == 1) {
-            switch (pressState){
-                case 1: // From pause to game
-                    pressState++;
-                    break;
-                default:
-                    break;
-            }
+            pressState++;
             return false;
         }
         return true;

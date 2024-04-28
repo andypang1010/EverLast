@@ -120,11 +120,10 @@ public class GDXRoot extends Game implements ScreenListener {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
 		} else if (screen == loading) {
+			loading.resetButton();
+
 			directory = loading.getAssets();
 			playing.populate(directory);
-
-			loading.dispose();
-			loading = null;
 
 			levelselect = new LevelSelectMode(canvas);
 			levelselect.setScreenListener(this);
@@ -133,11 +132,26 @@ public class GDXRoot extends Game implements ScreenListener {
 
 		} else if (screen == levelselect) {
 			levelselect.resetPressState();
+
 			playing.loadLevel(levelselect.getLevel());
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
+		} else if (screen == playing && playing.isHomeScreen()) {
+			playing.resetButton();
+
+			loading.setScreenListener(this);
+			setScreen(loading);
+			mode = "loading";
+		} else if (screen == playing && playing.isLevelSelectScreen()) {
+			playing.resetButton();
+
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
 		} else if (screen == playing) {
+			playing.resetButton();
+
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
