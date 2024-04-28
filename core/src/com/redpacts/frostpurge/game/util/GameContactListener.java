@@ -34,7 +34,7 @@ public class GameContactListener implements ContactListener {
 
         // If either object is the avatar, change color
         if (obj1 != null && obj2 != null) {
-            processCollision(obj1, obj2);
+            processCollision(contact, obj1, obj2);
         }
     }
 
@@ -55,7 +55,7 @@ public class GameContactListener implements ContactListener {
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
-    protected void processCollision(GameObject obj1, GameObject obj2) {
+    protected void processCollision(Contact contact, GameObject obj1, GameObject obj2) {
         if (obj1 instanceof PlayerModel && obj2 instanceof PlayerModel) {
             handleCollision((PlayerModel) obj1, (PlayerModel) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof EnemyModel) {
@@ -64,8 +64,12 @@ public class GameContactListener implements ContactListener {
             handleCollision((PlayerModel) obj1, (ObstacleTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof SwampTile) {
             handleCollision((PlayerModel) obj1, (SwampTile) obj2);
-        }else if (obj1 instanceof PlayerModel && obj2 instanceof GoalTile) {
+        } else if (obj1 instanceof PlayerModel && obj2 instanceof GoalTile) {
             handleCollision((PlayerModel) obj1, (GoalTile) obj2);
+        } else if (obj1 instanceof PlayerModel && obj2 instanceof BouncyTile) {
+            handleCollision((PlayerModel) obj1, (BouncyTile) obj2);
+        } else if (obj1 instanceof PlayerModel && obj2 instanceof BreakableTile) {
+            handleCollision(contact, (PlayerModel) obj1, (BreakableTile) obj2);
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
@@ -74,6 +78,32 @@ public class GameContactListener implements ContactListener {
             handleCollision((EnemyModel) obj1, (EnemyModel) obj2);
         } else if (obj1 instanceof EnemyModel && obj2 instanceof ObstacleTile) {
             handleCollision((EnemyModel) obj1, (ObstacleTile) obj2);
+        } else if (obj1 instanceof EnemyModel && obj2 instanceof BouncyTile) {
+            handleCollision((EnemyModel) obj1, (BouncyTile) obj2);
+        }
+
+        else if (obj1 instanceof ObstacleTile && obj2 instanceof PlayerModel) {
+            handleCollision((PlayerModel) obj2, (ObstacleTile) obj1);
+        } else if (obj1 instanceof ObstacleTile && obj2 instanceof EnemyModel) {
+            handleCollision((EnemyModel) obj2, (ObstacleTile) obj1);
+        }
+
+        else if (obj1 instanceof SwampTile && obj2 instanceof PlayerModel) {
+            handleCollision((PlayerModel) obj2, (SwampTile) obj1);
+        }
+
+        else if (obj1 instanceof GoalTile && obj2 instanceof PlayerModel) {
+            handleCollision((PlayerModel) obj2, (GoalTile) obj1);
+        }
+
+        else if (obj1 instanceof BouncyTile && obj2 instanceof PlayerModel) {
+            handleCollision((PlayerModel) obj2, (BouncyTile) obj1);
+        } else if (obj1 instanceof BouncyTile && obj2 instanceof EnemyModel) {
+            handleCollision((EnemyModel) obj2, (BouncyTile) obj1);
+        }
+
+        else if (obj1 instanceof BreakableTile && obj2 instanceof PlayerModel) {
+            handleCollision(contact, (PlayerModel) obj2, (BreakableTile) obj1);
         }
     }
 
@@ -153,6 +183,28 @@ public class GameContactListener implements ContactListener {
 //        board.removeExtra(tile.getPosition().x, tile.getPosition().y);
 //        player.setCanBoost(true);
     }
+    /**
+     * Handles collisions between a player and a bouncy
+     *
+     * @param player The player
+     * @param tile   The tile
+     */
+    private void handleCollision(PlayerModel player, BouncyTile tile) {
+        tile.activate();
+    }
+    /**
+     * Handles collisions between a player and a breakable collides
+     *
+     * @param player The player
+     * @param tile   The tile
+     */
+    private void handleCollision(Contact contact, PlayerModel player, BreakableTile tile) {
+        // TODO: Implement actual break speed
+        if (player.getBody().getLinearVelocity().len() > 65) {
+            contact.setEnabled(false);
+            tile.deactivate();
+        }
+    }
 
     /**
      * Handles collisions between a player and an enemy
@@ -183,5 +235,14 @@ public class GameContactListener implements ContactListener {
 //        float vy1 = enemy.getVelocity().y;
 //
 //        enemy.setVelocity(-vx1, -vy1);
+    }
+    /**
+     * Handles collisions between an enemy and a bouncy
+     *
+     * @param enemy The player
+     * @param tile   The tile
+     */
+    private void handleCollision(EnemyModel enemy, BouncyTile tile) {
+        tile.activate();
     }
 }

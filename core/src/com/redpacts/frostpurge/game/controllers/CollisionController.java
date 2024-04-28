@@ -15,11 +15,13 @@ import com.redpacts.frostpurge.game.util.PooledList;
 
 public class CollisionController{
     public static class PhysicsConstants {
-        public static final short CATEGORY_PLAYER = 0x0001;
-        public static final short CATEGORY_ENEMY = 0x0002;
-        public static final short CATEGORY_OBSTACLE = 0x0004;
-        public static final short CATEGORY_SWAMP = 0x0008;
-        public static final short CATEGORY_DESTRUCTIBLE = 0x0016;
+        public static final short CATEGORY_EMPTY = 0x0001;
+        public static final short CATEGORY_PLAYER = 0x0002;
+        public static final short CATEGORY_ENEMY = 0x0004;
+        public static final short CATEGORY_OBSTACLE = 0x0008;
+        public static final short CATEGORY_SWAMP = 0x0016;
+        public static final short CATEGORY_DESTRUCTIBLE = 0x0032;
+        public static final short CATEGORY_BOUNCY = 0x0064;
     }
     /** Reference to the game board */
     public LevelModel board;
@@ -27,6 +29,10 @@ public class CollisionController{
     public PlayerModel player;
     /** Reference to all the enemies in the game */
     public Array<EnemyModel> enemies;
+    /** Reference to all the bouncies in the game */
+    public Array<BouncyTile> bouncy;
+    /** Reference to all the breakables in the game */
+    public Array<BreakableTile> breakables;
     /** Width of the collision geometry */
     protected float width;
     /** Height of the collision geometry */
