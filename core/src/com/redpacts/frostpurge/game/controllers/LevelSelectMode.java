@@ -342,8 +342,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						ratio = 1;
 					}
 					if (ratio!=0){
-						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
-						canvas.drawCentered(stars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
+						stars.setRegionWidth((int) (emptyStars.getWidth()*ratio));
+						canvas.drawCentered(stars, (bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
 						stars.setRegionWidth((emptyStars.getWidth()));
 					}
 					if (!button.available){
