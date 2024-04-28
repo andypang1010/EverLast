@@ -647,7 +647,7 @@ public class GameMode implements Screen, InputProcessor {
 //        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionController = new CollisionController(currentLevel, playerModel, enemies, canvas.getWidth(), canvas.getHeight());
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, new Array<>(), new Array<>(),canvas.getWidth(), canvas.getHeight());
     }
 
     // PROCESSING PLAYER INPUT
