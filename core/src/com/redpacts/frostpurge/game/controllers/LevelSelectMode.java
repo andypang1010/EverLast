@@ -215,7 +215,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		backwardButton = assets.getEntry("backwardButton", Texture.class);
 		backward = new ButtonBox(0,
 				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 2/15, backwardButton.getWidth(), backwardButton.getHeight()), backwardButton, this);
-
+		forward.available = true;
+		backward.available = true;
 		// Load the level button
 		// Label of each button represents the level number
 		numberOfLevels = 5; // Number of levels
