@@ -379,7 +379,7 @@ public class GameMode implements Screen, InputProcessor {
                 retryButton.resize("down");
                 levelSelectButton.resize("down");
                 homeButton.resize("down");
-            } else if (gameState == GameState.PAUSE) {
+            } else if (gameState == GameState.PAUSE && !inputController.didPause()) {
                 pressState = 0;
                 gameState = GameState.PLAY;
             }
@@ -394,22 +394,9 @@ public class GameMode implements Screen, InputProcessor {
 
         if (gameState == GameState.OVER){
             drawRetryScreen();
-            if (inputController.didExit()){
-                listener.exitScreen(this, 0);
-            }
-            if (inputController.didReplay() || pressState == 8){ // Retry clicked
-                pressState = 0;
-                loadLevel(currentLevel.getName(), saveFileManager);
-            }
             return; // Skip the rest of the update loop
         } else if (gameState == GameState.WIN){
             drawWinScreen();
-            if (inputController.didExit()){
-                listener.exitScreen(this, 0);
-            }
-            if (inputController.didReplay()){
-                loadLevel(currentLevel.getName(), saveFileManager);
-            }
             return;
         }
 
@@ -758,31 +745,32 @@ public class GameMode implements Screen, InputProcessor {
      */
     public boolean buttonDown(Controller controller, int buttonCode) {
         // TODO: Support XBox
-
-		if (pressState % 2 == 0 && pressState != 0) {
-            return true;
-        }
-        if (gameState == GameState.PAUSE && inputController.xbox.getBack()) {
-             if (homeButton.getEnlarged()) {
-                pressState = 1;
-             } else if (levelSelectButton.getEnlarged()){
-                 pressState = 3;
-             } else if (resumeButton.getEnlarged() || pauseButton.getEnlarged()) {
-                 pressState = 5;
-             }
-        } else if (gameState == GameState.OVER && inputController.xbox.getBack()) {
-            if (homeButton.getEnlarged()) {
-                pressState = 1;
-            } else if (levelSelectButton.getEnlarged()){
-                pressState = 3;
-            } else if (retryButton.getEnlarged()) {
-                pressState = 7;
+        if (inputController.xbox != null) {
+            if (pressState % 2 == 0 && pressState != 0) {
+                return true;
             }
-        } else if (gameState == GameState.WIN && inputController.xbox.getBack()) {
-            if (homeButton.getEnlarged()) {
-                pressState = 1;
-            } else if (levelSelectButton.getEnlarged()){
-                pressState = 3;
+            if (gameState == GameState.PAUSE && inputController.xbox.getBack()) {
+                if (homeButton.getEnlarged()) {
+                    pressState = 1;
+                } else if (levelSelectButton.getEnlarged()) {
+                    pressState = 3;
+                } else if (resumeButton.getEnlarged() || pauseButton.getEnlarged()) {
+                    pressState = 5;
+                }
+            } else if (gameState == GameState.OVER && inputController.xbox.getBack()) {
+                if (homeButton.getEnlarged()) {
+                    pressState = 1;
+                } else if (levelSelectButton.getEnlarged()) {
+                    pressState = 3;
+                } else if (retryButton.getEnlarged()) {
+                    pressState = 7;
+                }
+            } else if (gameState == GameState.WIN && inputController.xbox.getBack()) {
+                if (homeButton.getEnlarged()) {
+                    pressState = 1;
+                } else if (levelSelectButton.getEnlarged()) {
+                    pressState = 3;
+                }
             }
         }
         return false;

@@ -351,9 +351,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		if (active) {
 			update(delta);
 			draw();
-
 			// We are are ready, notify our listener
 			if (isReady() && listener != null) {
+				resetButton();
 				listener.exitScreen(this, 0);
 			}
 		}

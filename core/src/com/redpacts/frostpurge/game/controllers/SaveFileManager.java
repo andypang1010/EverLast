@@ -28,9 +28,10 @@ public class SaveFileManager {
             if (levelValue.getString("name").equals(level)) {
                 levelValue.get("unlocked").set(String.valueOf(new JsonValue(unlocked)));
                 levelValue.get("completed").set(String.valueOf(new JsonValue(completed)));
-                levelValue.get("score").set(String.valueOf(new JsonValue(score)));
-                // Optionally update score if needed
-                // levelValue.get("score").setInt(score);
+                int currScore = levelValue.getInt("score");
+                if (score>currScore){
+                    levelValue.get("score").set(String.valueOf(new JsonValue(score)));
+                }
                 break;
             }
         }
@@ -39,7 +40,6 @@ public class SaveFileManager {
         } catch (IOException e) {
             System.out.println("Error creating JSON file: " + e.getMessage());
         }
-        System.out.println(saveFile);
     }
 
     public void clearGame() {

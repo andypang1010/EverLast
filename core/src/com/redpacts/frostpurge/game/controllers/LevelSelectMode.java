@@ -435,6 +435,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				game.unlockAll();
 			}
 			if (isReady() && listener != null) {
+				pressState = 0;
 				listener.exitScreen(this, 0);
 			}
 		}
