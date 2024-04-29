@@ -1,11 +1,11 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Color;
-import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
@@ -14,10 +14,19 @@ public class PlayerController extends CharactersController {
     static final float MAX_OFFSET = 500f;
     static final float OFFSET_MULTIPLIER = 2f;
 
+    /** The sound for accelerating */
+    private Sound accelerateSound;
+    /** The sound for boosting */
+    private Sound boostSound;
+    private float actionVolume;
+
 
     PlayerController(PlayerModel player){
         model = player;
         flip = false;
+
+        accelerateSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.ACCELERATE);
+        boostSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.BOOST);
     }
 
     public void vacuum() {
@@ -58,11 +67,14 @@ public class PlayerController extends CharactersController {
         ((PlayerModel) model).addBoostCoolDown(-1);
         setAngle(horizontal,vertical);
         if (!decelerate){
+            playAccelerate(true);
             model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
         }else{
+            playAccelerate(false);
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
         if (boost && ((PlayerModel) model).getBoostNum() > 0 && ((PlayerModel) model).getBoostCoolDown() == 0){
+            playBoost();
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
@@ -72,6 +84,24 @@ public class PlayerController extends CharactersController {
         }
         model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.99f));//friction
         model.setPosition(model.getBody().getPosition().scl(10));
+    }
+
+    private void playAccelerate(boolean on) {
+        long soundId = ((PlayerModel) model).getActionId(PlayerModel.Actions.ACCELERATE);
+
+        if (on) {
+            if (soundId == -1) {
+                soundId = accelerateSound.loop(0.2f);
+                ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, soundId);
+            }
+        } else {
+            ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, -1);
+            accelerateSound.stop(soundId);
+        }
+    }
+
+    public void playBoost() {
+        boostSound.play(1);
     }
 
     public Vector2 cameraOffsetPos() {

@@ -50,6 +50,8 @@ public class GameMode implements Screen {
 
     public static Array<EnemyController> enemyControllers;
 
+    private AudioController audioController;
+
     private Comparator<GameObject> comparator;
     private Array<GameObject> drawble;
 

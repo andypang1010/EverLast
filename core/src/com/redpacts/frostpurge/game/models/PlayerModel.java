@@ -1,5 +1,6 @@
 package com.redpacts.frostpurge.game.models;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,12 +12,22 @@ import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 public class PlayerModel extends CharactersModel {
+    public enum Actions {
+        ACCELERATE,
+        BOOST
+    }
+
     private static final int MAX_BOOST = 4;
     private static final int BOOST_COOL_DOWN = 60;
     private float hp;
 
     private Texture fire;
     private Texture fireBoost;
+
+    private Sound accelerateSound;
+    private long accelerateId;
+    private Sound boostSound;
+    private long boostId;
     private boolean alive;
     private int boostNum;
     private int boostCoolDown;
@@ -63,6 +74,15 @@ public class PlayerModel extends CharactersModel {
         Texture run_up_text = new TextureRegion(directory.getEntry("Liv_Run_Up", Texture.class)).getTexture();
         run_up = new FilmStrip(run_up_text, 1, 8, 8);
 
+        // TODO: Import actual audio assets
+        accelerateSound = directory.getEntry("Accelerate", Sound.class);
+        accelerateId = -1;
+        setActionSound(Actions.ACCELERATE, accelerateSound);
+
+        boostSound = directory.getEntry("Boost", Sound.class);
+        boostId = -1;
+        setActionSound(Actions.BOOST, boostSound);
+
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
         alive = true;
@@ -101,6 +121,56 @@ public class PlayerModel extends CharactersModel {
             this.invincibility = 0;
         }
     }
+
+    public Sound getActionSound(Actions action) {
+        switch (action) {
+            case ACCELERATE:
+                return accelerateSound;
+            case BOOST:
+                return boostSound;
+        }
+        assert false : "Invalid action enumeration";
+        return null;
+    }
+
+    public void setActionSound(Actions action, Sound sound) {
+        switch (action) {
+            case ACCELERATE:
+                accelerateSound = sound;
+                break;
+            case BOOST:
+                boostSound = sound;
+                break;
+            default:
+                assert false : "Invalid action enumeration";
+                break;
+        }
+    }
+
+    public long getActionId(Actions action) {
+        switch (action) {
+            case ACCELERATE:
+                return accelerateId;
+            case BOOST:
+                return boostId;
+        }
+        assert false : "Invalid action enumeration";
+        return -1;
+    }
+
+    public void setActionId(Actions action, long id) {
+        switch (action) {
+            case ACCELERATE:
+                accelerateId = id;
+                break;
+            case BOOST:
+                boostId = id;
+                break;
+            default:
+                assert false : "Invalid action enumeration";
+        }
+    }
+
     public boolean isAlive(){return alive && this.hp > 0;}
     public void die(){alive = false;}
     public void win(){won = true;}

@@ -20,7 +20,8 @@
     "tileset": "Tilesets/TileSet.png"
   },
   "sounds" : {
-
+    "Accelerate" : "sound/afterburner.mp3",
+    "Boost" : "sound/bump.mp3"
   },
   "fonts": {
     "font": {
