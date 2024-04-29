@@ -140,7 +140,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			mode = "playing";
 		} else if (screen == playing && playing.isHomeScreen()) {
 			playing.resetButton();
-
+			loading.resetButton();
 			loading.setScreenListener(this);
 			setScreen(loading);
 			mode = "loading";

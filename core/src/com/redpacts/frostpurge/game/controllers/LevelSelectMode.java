@@ -343,7 +343,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					}
 					if (ratio!=0){
 						stars.setRegionWidth((int) (emptyStars.getWidth()*ratio));
-						canvas.drawCentered(stars, (bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
+						canvas.drawCentered(stars, ((bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2))*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
 						stars.setRegionWidth((emptyStars.getWidth()));
 					}
 					if (!button.available){
@@ -386,7 +386,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					}
 					if (ratio!=0){
 						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
-						canvas.drawCentered(stars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth(),stars.getRegionHeight());
+						canvas.drawCentered(stars, ((bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2))*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
 						stars.setRegionWidth((emptyStars.getWidth()));
 					}
 					if (!button.available){
@@ -435,6 +435,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				game.unlockAll();
 			}
 			if (isReady() && listener != null) {
+				pressState = 0;
 				listener.exitScreen(this, 0);
 			}
 		}
@@ -600,9 +601,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 					}
 				}
-				System.out.println(levels.get((levelPage + pageDirection) * 3).enlarged);
 				if (levels.get((levelPage + pageDirection) * 3).available){
-					System.out.println("unlocked");
 					levels.get((levelPage + pageDirection) * 3).enlarged = true;
 				}
 
@@ -794,6 +793,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		public Texture getTexture() {return this.texture;}
 		public Rectangle getBounds() {return this.bounds;}
 		public int getLabel() {return this.label;}
+		public boolean getEnlarged(){return this.enlarged;}
 
 		public void hoveringButton(XBoxController xbox, float time, int size,Array<ButtonBox> levels){
 			if (xbox == null) {
