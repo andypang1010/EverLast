@@ -21,7 +21,9 @@
   },
   "sounds" : {
     "Accelerate" : "sound/accelerate.wav",
-    "Boost" : "sound/boost.wav"
+    "Boost" : "sound/boost.wav",
+    "Collide" : "sound/collide.wav",
+    "Quack" : "sound/quack.wav"
   },
   "fonts": {
     "font": {
