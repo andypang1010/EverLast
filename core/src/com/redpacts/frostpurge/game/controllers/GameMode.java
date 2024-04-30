@@ -384,6 +384,10 @@ public class GameMode implements Screen, InputProcessor {
                 gameState = GameState.PLAY;
             }
             inputController.clearPausePressed();
+        } else if (pressState == 8){
+            pressState = 0;
+            gameState = GameState.PLAY;
+            loadLevel(currentLevel.getName(), saveFileManager);
         }
 
         if (gameState == GameState.PAUSE) {
