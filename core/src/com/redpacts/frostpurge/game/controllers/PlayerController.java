@@ -12,13 +12,14 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerController extends CharactersController {
 
     static final float MAX_OFFSET = 500f;
+    private static final float MAX_SPEED = 100;
+    private static final float BOOST_MAX_SPEED = 120;
     static final float OFFSET_MULTIPLIER = 2f;
 
     /** The sound for accelerating */
     private Sound accelerateSound;
     /** The sound for boosting */
     private Sound boostSound;
-    private float actionVolume;
 
 
     PlayerController(PlayerModel player){
@@ -66,9 +67,13 @@ public class PlayerController extends CharactersController {
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
         ((PlayerModel) model).addBoostCoolDown(-1);
         setAngle(horizontal,vertical);
+
         if (!decelerate){
             playAccelerate(true);
+//            System.out.println("PLAYER VELOCITY: " + model.getBody().getLinearVelocity().len());
             model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
+
+//            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().cpy().nor().scl(Math.min(model.getBody().getLinearVelocity().len(), MAX_SPEED)));
         }else{
             playAccelerate(false);
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
@@ -78,6 +83,8 @@ public class PlayerController extends CharactersController {
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
+
+//            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().cpy().nor().scl(Math.min(model.getBody().getLinearVelocity().len(), BOOST_MAX_SPEED)));
         }
         if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
@@ -90,8 +97,10 @@ public class PlayerController extends CharactersController {
         long soundId = ((PlayerModel) model).getActionId(PlayerModel.Actions.ACCELERATE);
 
         if (on) {
+            accelerateSound.setVolume(soundId, Math.min(model.getBody().getLinearVelocity().len() / 120f, 1f));
+
             if (soundId == -1) {
-                soundId = accelerateSound.loop(0.2f);
+                soundId = accelerateSound.loop();
                 ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, soundId);
             }
         } else {

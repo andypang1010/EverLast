@@ -3,7 +3,7 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-//import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -51,8 +51,6 @@ public class GameMode implements Screen {
     private PlayerController playerController;
 
     public static Array<EnemyController> enemyControllers;
-
-    private AudioController audioController;
 
     private Comparator<GameObject> comparator;
     private Array<GameObject> drawble;
