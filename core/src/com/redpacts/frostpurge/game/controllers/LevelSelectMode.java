@@ -602,7 +602,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					}
 				}
 				if (levels.get((levelPage + pageDirection) * 3).available){
-					levels.get((levelPage + pageDirection) * 3).enlarged = true;
+					levels.get((levelPage + pageDirection) * 3).resize("up");
 				}
 
 			} else if (xbox.getDPadLeft() && levelPage > 0) {
@@ -822,6 +822,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				if (Math.abs(x)<.5){
 					x = 0;
 				}
+				try{
 				if (x>0 && levels.get(this.label).available){
 //					System.out.println("right");
 					if (this.label < (mode.levelPage+1)*3){
@@ -838,6 +839,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						}
 					}
 //					System.out.println("left");
+				}}catch (Exception e){
+
 				}
 			}
 			}
