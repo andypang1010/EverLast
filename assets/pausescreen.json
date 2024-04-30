@@ -1,0 +1,12 @@
+{
+	"textures": {
+        "pauseScreen": "pauseScreen/pauseScreen.png",
+        "pauseButton": "pauseScreen/pauseButton.png",
+        "resumeButton": "pauseScreen/resumeButton.png",
+        "homeButton": "pauseScreen/homeButton.png",
+        "levelSelectButton": "pauseScreen/levelSelectButton.png",
+        "retryScreen": "pauseScreen/retryScreen.png",
+        "retryButton": "pauseScreen/retryButton.png",
+        "winScreen": "pauseScreen/winScreen.png"
+    }
+}

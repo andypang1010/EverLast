@@ -103,7 +103,7 @@ public class PlayerModel extends CharactersModel {
     }
     public boolean isAlive(){return alive && this.hp > 0;}
     public void die(){alive = false;}
-    public void win(){won = true;}
+    public void setWin(boolean won){this.won = won;}
     public boolean didwin(){
         return won;
     }
@@ -171,7 +171,8 @@ public class PlayerModel extends CharactersModel {
         fixtureDef.filter.maskBits = (CollisionController.PhysicsConstants.CATEGORY_ENEMY |
                 CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
                 CollisionController.PhysicsConstants.CATEGORY_SWAMP |
-                CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE);
+                CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |
+                CollisionController.PhysicsConstants.CATEGORY_BOUNCY);
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
