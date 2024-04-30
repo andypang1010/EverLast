@@ -116,3 +116,5 @@ Thumbs.db
 /ios/xcode/native/
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
+openjdk-21.0.2_windows-x64_bin.zip
+packr-all-4.0.0.jar
