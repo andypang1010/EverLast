@@ -223,10 +223,11 @@ public class CollisionController{
      * @param player Player to check
      */
     private void pickPowerUp(PlayerModel player){
-        if(board.isSwampTile(player.getPosition().x, player.getPosition().y)){
-            board.removeExtra(player.getPosition().x, player.getPosition().y);
-            player.addCanBoost(1);
+        if(board.isSwampTile(player.getPosition().x, player.getPosition().y) && player.isVacuuming()){
+            board.removeSwamp(player.getPosition().x, player.getPosition().y);
+            player.addCanBoost(2);
         }
+
     }
     /**
      * Check if the player is on a swamp tile, and pick up the power up if true
