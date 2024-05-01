@@ -37,9 +37,11 @@ public class LevelController {
         JsonValue layer1 = leveljson.get("layers").child();
         JsonValue layer2 = layer1.next();
         JsonValue layer3 = layer2.next();
+        JsonValue layer4 = layer3.next();
         JsonValue characters = layer3.next();
 
         initializeBaseTileLayer(level, layer1, tileset);
+        initializeBase2TileLayer(level,layer1,tileset);
         initializeExtraTileLayer(level, layer2, tileset,tileProperties);
         initializeAccentTileLayer(level, layer3, tileset, tileProperties);
         initializeCharacterLayer(level, characters, directory);
@@ -63,6 +65,18 @@ public class LevelController {
                 level.populateBase(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
+            }
+        }
+    }
+    private void initializeBase2TileLayer(LevelModel level, JsonValue layer, TextureRegion[][]tileset){
+        int[] data = layer.get("data").asIntArray();
+        for (int i = 0; i<data.length;i++){
+            int index = data[i];
+            if (index!=0){
+                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                level.populateBase2(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+            }else{
+                level.populateBase2(height- 1-i/width, i%width, tileset[0][0]);
             }
         }
     }

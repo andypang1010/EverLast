@@ -483,6 +483,7 @@ public class GameMode implements Screen, InputProcessor {
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
+                currentLevel.drawTile(currentLevel.getBase2Layer()[i][j],canvas);
             }
         }
         int i = 0;

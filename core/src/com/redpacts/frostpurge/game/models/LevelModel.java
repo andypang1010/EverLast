@@ -21,6 +21,7 @@ public class LevelModel {
     private int width;
     private int height;
     private TileModel[][] baseLayer;
+    private TileModel[][] baseLayer2;
     private TileModel[][] extraLayer;
     private TileModel[][] accentLayer;
     private Array<EnemyModel> enemies;
@@ -36,6 +37,7 @@ public class LevelModel {
         this.height = height;
         this.width = width;
         baseLayer = new TileModel[height][width];
+        baseLayer2 = new TileModel[height][width];
         extraLayer = new TileModel[height][width];
         accentLayer = new TileModel[height][width];
         enemies = new Array<>();
@@ -53,6 +55,9 @@ public class LevelModel {
      */
     public void populateBase(int i, int j, TextureRegion texture){
         baseLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
+    }
+    public void populateBase2(int i, int j, TextureRegion texture){
+        baseLayer2[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
     }
     /**
      * Used to populate the array for the accent layer by creating an emptytile in the appropriate index
@@ -182,6 +187,9 @@ public class LevelModel {
     public int getHeight(){return height;}
     public TileModel[][] getBaseLayer(){
         return baseLayer;
+    }
+    public TileModel[][] getBase2Layer(){
+        return baseLayer2;
     }
     public TileModel[][] getExtraLayer(){
         return extraLayer;
