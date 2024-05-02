@@ -20,12 +20,6 @@ import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
-
-<<<<<<< Updated upstream
-import java.sql.Time;
-import java.util.ArrayList;
-=======
->>>>>>> Stashed changes
 import java.util.Comparator;
 
 public class GameMode implements Screen {
