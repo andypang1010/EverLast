@@ -178,13 +178,13 @@ public class GameMode implements Screen {
 
                 for (int x = i - 1; x <= i + 1; x++) {
                     for (int y = j - 1; y <= j + 1; y++) {
-//                        if (Math.abs((x - i) + (y - j)) != 1  || !currentLevel.inBounds(x, y)) {
-//                            continue;
-//                        }
-
-                        if (!currentLevel.inBounds(x, y) || (x == i && y == j)) {
+                        if (Math.abs((x - i) + (y - j)) != 1  || !currentLevel.inBounds(x, y)) {
                             continue;
                         }
+
+//                        if (!currentLevel.inBounds(x, y) || (x == i && y == j)) {
+//                            continue;
+//                        }
 
                         if (currentLevel.getExtraLayer()[y][x] == null) {
                             groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
@@ -205,13 +205,13 @@ public class GameMode implements Screen {
 
                 for (int x = i - 1; x <= i + 1; x++) {
                     for (int y = j - 1; y <= j + 1; y++) {
-//                        if (Math.abs((x - i) + (y - j)) != 1  || !currentLevel.inBounds(x, y)) {
-//                            continue;
-//                        }
-
-                        if (!currentLevel.inBounds(x, y) || (x == i && y == j)) {
+                        if (Math.abs((x - i) + (y - j)) != 1  || !currentLevel.inBounds(x, y)) {
                             continue;
                         }
+
+//                        if (!currentLevel.inBounds(x, y) || (x == i && y == j)) {
+//                            continue;
+//                        }
 
                         ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
                     }
