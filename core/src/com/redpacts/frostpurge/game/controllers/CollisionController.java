@@ -11,6 +11,7 @@ import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.GameContactListener;
 import com.redpacts.frostpurge.game.util.PooledList;
+import jdk.incubator.vector.VectorOperators;
 
 
 public class CollisionController{
@@ -61,7 +62,14 @@ public class CollisionController{
     protected static final float DEFAULT_HEIGHT = 18.0f;
     /** All the objects in the world. */
     protected PooledList<GameObject> objects  = new PooledList<GameObject>();
-
+    VisionConeCallback callback;
+    Vector2 right = new Vector2(3f, 6f);
+    Vector2 left = new Vector2(-3f, 6f);
+    Vector2 upAndDown = new Vector2(0, 3f);
+    Vector2 rayStart;
+    Vector2 rayEnd;
+    Vector2 rayDirection;
+    Vector2 direction;
     /// ACCESSORS
 
     /**
@@ -160,6 +168,7 @@ public class CollisionController{
         }
         GameContactListener contactListener = new GameContactListener(world, board);
         world.setContactListener(contactListener);
+        callback = new VisionConeCallback();
     }
 
     /**
@@ -213,7 +222,7 @@ public class CollisionController{
         pickPowerUp((PlayerModel) player);
         win((PlayerModel) player);
         for (EnemyModel e : enemies){
-            checkEnemyVision(e);
+//            checkEnemyVision(e);
         }
         postUpdate(1/60f);
     }
@@ -312,46 +321,44 @@ public class CollisionController{
     // TODO: Perhaps change parameters so that we can customize vision cone (length/fov).
     public void checkEnemyVision(EnemyModel enemy) {
         // Create the callback instance
-        VisionConeCallback callback = new VisionConeCallback();
 
         // Calculating offset
 
         switch(getDirection(enemy.getBody().getLinearVelocity())) {
             case "right":
-                offsetVisionCone = new Vector2(3f, 6f);
+                offsetVisionCone = right;
                 break;
             case "left":
-                offsetVisionCone = new Vector2(-3f, 6f);
+                offsetVisionCone = left;
                 break;
             case "up":
             case "down":
-                offsetVisionCone = new Vector2(0, 3f);
+                offsetVisionCone = upAndDown;
                 break;
             default:
-                offsetVisionCone = new Vector2();
+                offsetVisionCone = upAndDown;
                 break;
         }
 
         // Calculate the end point of the vision cone based on the enemy's direction and range
-        Vector2 rayStart = enemy.getBody().getPosition().cpy().add(offsetVisionCone);
+        rayStart = enemy.getBody().getPosition().cpy().add(offsetVisionCone);
 //        System.out.println(rayStart);
         float fov = 45f; // Field of view angle in degrees
         int numRays = 20; // Number of rays to cast within the fov
         float deltaAngle = fov / (numRays - 1); // Angle between each ray
 
         // Calculate the direction vector based on enemy's rotation
-        Vector2 direction = enemy.getBody().getLinearVelocity().cpy().nor(); // Normalize the direction vector
+        direction = enemy.getBody().getLinearVelocity().cpy().nor(); // Normalize the direction vector
 
         float angle = -fov / 2; // Calculate current angle
-        Vector2 rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
-        Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(40f)); // Calculate end point of the ray
+        rayDirection = direction.cpy().rotateDeg(angle); // Rotate direction vector by current angle
+        rayEnd = rayStart.cpy().add(rayDirection.scl(40f)); // Calculate end point of the ray
         world.rayCast(callback, rayStart, rayEnd);
 
         if (callback.getHitPoint() != null) { // Record where the ray cast end/collided with obstacle
             rayEnd = callback.getHitPoint();
             callback.clearHitPoint();
         }
-        Vector2 rayPrevious = rayEnd.cpy();
 
         for (int i = 1; i < numRays; i++) {
             angle = -fov / 2 + deltaAngle * i;
@@ -363,10 +370,10 @@ public class CollisionController{
                 rayEnd = callback.getHitPoint();
                 callback.clearHitPoint();
             }
-            enemy.setTriangle(rayStart.cpy().scl(10).add(-100, -100),
-                    rayPrevious.cpy().scl(10).add(-100, -100),
-                    rayEnd.cpy().scl(10).add(-100, -100)); // Add triangle to draw vision cone.
-            rayPrevious = rayEnd.cpy();
+//            enemy.setTriangle(rayStart.cpy().scl(10).add(-100, -100),
+//                    rayPrevious.cpy().scl(10).add(-100, -100),
+//                    rayEnd.cpy().scl(10).add(-100, -100)); // Add triangle to draw vision cone.
+//            rayPrevious = rayEnd.cpy();
         }
 
         if (callback.canSeeTarget) {

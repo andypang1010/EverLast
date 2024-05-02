@@ -131,16 +131,16 @@ public class EnemyController extends CharactersController implements StateMachin
             rayPrevious = rayEnd.cpy();
         }
         // Draw vision cones
-        for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
-            float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
-            short[] indices_c = new short[3];
-            indices_c[0] = 0;
-            indices_c[1] = 1;
-            indices_c[2] = 2;
-            cone = new PolygonRegion(textureRegion, vertices, indices_c);
-            canvas.draw(cone, coneColor, 100, 100 ,0);
-        }
-        ((EnemyModel) model).getTriangles().clear();
+//        for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
+//            float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
+//            short[] indices_c = new short[3];
+//            indices_c[0] = 0;
+//            indices_c[1] = 1;
+//            indices_c[2] = 2;
+//            cone = new PolygonRegion(textureRegion, vertices, indices_c);
+//            canvas.draw(cone, coneColor, 100, 100 ,0);
+//        }
+//        ((EnemyModel) model).getTriangles().clear();
 
         // Draw enemy
         String direction = getDirection(enemy.getBody().getLinearVelocity().x,enemy.getBody().getLinearVelocity().y, previousDirection);
@@ -303,10 +303,10 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     private void moveToNextTile() {
-        Vector2 vel = moveDirection.cpy();
+        vel = moveDirection.cpy();
         vel.scl(speedMultiplier);
         model.getBody().setLinearVelocity(vel);
-        model.setVelocity(vel.x,vel.y);
+        model.setVelocity(vel);
     }
 
     private TileModel modelPositionToTile(CharactersModel model) {
