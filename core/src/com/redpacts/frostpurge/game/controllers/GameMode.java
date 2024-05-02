@@ -23,6 +23,8 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.awt.*;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class GameMode implements Screen, InputProcessor {
@@ -117,7 +119,8 @@ public class GameMode implements Screen, InputProcessor {
     private Array<BreakableTile> breakables;
     private Array<ButtonBox> buttons = new Array<>();;
 
-    private TileGraph tileGraph = new TileGraph();
+    private TileGraph groundedTileGraph = new TileGraph();
+    private TileGraph ignoreObstaclesTileGraph = new TileGraph();
 
     private Texture statusBarBGTexture;
     private Texture boostBarTexture;
@@ -311,17 +314,18 @@ public class GameMode implements Screen, InputProcessor {
         obj_list.sort(comparator);
     }
 
-    private void populateTileGraph() {
+    private void populateGroundedTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
                 TileModel currentTile = null;
 
                 if (currentLevel.getExtraLayer()[j][i] == null) {
-                    tileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    groundedTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
                     currentTile = currentLevel.getBaseLayer()[j][i];
                 }
+
                 else if (currentLevel.getExtraLayer()[j][i].getType() != TileModel.TileType.OBSTACLE) {
-                    tileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+                    groundedTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
                     currentTile = currentLevel.getExtraLayer()[j][i];
                 }
 
@@ -329,18 +333,44 @@ public class GameMode implements Screen, InputProcessor {
                     continue;
                 }
 
-                for(int x = i - 1; x <= i + 1; x++) {
-                    for(int y = j-1; y <= j+1; y++) {
-                        if (i == x && j == y) {
+                for (int x = i - 1; x <= i + 1; x++) {
+                    for (int y = j - 1; y <= j + 1; y++) {
+//                        if (Math.abs((x - i) + (y - j)) != 1  || !currentLevel.inBounds(x, y)) {
+//                            continue;
+//                        }
+
+                        if (!currentLevel.inBounds(x, y) || (x == i && y == j)) {
                             continue;
                         }
-                        if (currentLevel.inBounds(x, y)) {
-                            if (currentLevel.getExtraLayer()[y][x] == null) {
-                                tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                            } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
-                                tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
-                            }
+
+                        if (currentLevel.getExtraLayer()[y][x] == null) {
+                            groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                        } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
+                            groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private void populateIgnoreObstaclesTileGraph() {
+        for (int i = 0; i < currentLevel.getWidth(); i++) {
+            for (int j = 0; j < currentLevel.getHeight(); j++) {
+                ignoreObstaclesTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                TileModel currentTile = currentLevel.getBaseLayer()[j][i];
+
+                for (int x = i - 1; x <= i + 1; x++) {
+                    for (int y = j - 1; y <= j + 1; y++) {
+//                        if (Math.abs((x - i) + (y - j)) != 1  || !currentLevel.inBounds(x, y)) {
+//                            continue;
+//                        }
+
+                        if (!currentLevel.inBounds(x, y) || (x == i && y == j)) {
+                            continue;
+                        }
+
+                        ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
                     }
                 }
             }
@@ -648,7 +678,8 @@ public class GameMode implements Screen, InputProcessor {
         currentTime = maxTime;
         currentLevel.setName(level);
 
-        populateTileGraph();
+        populateGroundedTileGraph();
+        populateIgnoreObstaclesTileGraph();
 
         playerController = new PlayerController(playerModel);
 
@@ -657,7 +688,7 @@ public class GameMode implements Screen, InputProcessor {
         for (int i = 0; i < enemies.size; i++){
 //            for (int j = 0; j<)
 //            enemies.get(i).getWaypoints()
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel,enemies.get(i).getWaypoints()));
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, groundedTileGraph,currentLevel,enemies.get(i).getWaypoints()));
         }
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
