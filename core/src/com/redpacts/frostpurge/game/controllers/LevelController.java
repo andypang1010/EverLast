@@ -62,6 +62,7 @@ public class LevelController {
             int index = data[i];
             if (index!=0){
                 index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                System.out.println(index);
                 level.populateBase(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
