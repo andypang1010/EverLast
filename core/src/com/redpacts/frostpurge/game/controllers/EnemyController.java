@@ -261,7 +261,14 @@ public class EnemyController extends CharactersController implements StateMachin
                     }
                 }else if(Objects.equals(((EnemyModel) model).getEnemyType(), "Messenger")){
                     if (updatePathCounter > 30){
-                        setGoal(modelPositionToTile(findNeighborEnemies()));
+                        CharactersModel target = findNeighborEnemies();
+                        if(target == null){
+                            changeState(EnemyStates.PATROL);
+                            nextWaypointIndex = 0;
+                            setGoal(waypoints[0]);
+                        }else{
+                            setGoal(modelPositionToTile(target));
+                        }
                         updatePathCounter = 0;
                     }
                     else {
@@ -316,12 +323,12 @@ public class EnemyController extends CharactersController implements StateMachin
                             model.getBody().getPosition().y,
                             enemyPosition.x,
                             enemyPosition.y)
-                            < 300) {
+                            < 100) {
 
                 return enemy.model;
             }
         }
-        return this.model;
+        return null;
     }
 
     private boolean isPlayerWithinListenRadius() {
