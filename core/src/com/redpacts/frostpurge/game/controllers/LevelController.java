@@ -38,12 +38,12 @@ public class LevelController {
         JsonValue layer2 = layer1.next();
         JsonValue layer3 = layer2.next();
         JsonValue layer4 = layer3.next();
-        JsonValue characters = layer3.next();
+        JsonValue characters = layer4.next();
 
         initializeBaseTileLayer(level, layer1, tileset);
         initializeBase2TileLayer(level,layer2,tileset);
-        initializeExtraTileLayer(level, layer2, tileset,tileProperties);
-        initializeAccentTileLayer(level, layer3, tileset, tileProperties);
+        initializeExtraTileLayer(level, layer3, tileset,tileProperties);
+        initializeAccentTileLayer(level, layer4, tileset, tileProperties);
         initializeCharacterLayer(level, characters, directory);
 
         return level;
