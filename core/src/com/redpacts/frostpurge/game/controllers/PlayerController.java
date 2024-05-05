@@ -119,19 +119,31 @@ public class PlayerController extends CharactersController {
         }
 
         // Draw player
-        String direction = getDirection(horizontal,vertical,previousDirection);
-        if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
-            model.resetFilmStrip(model.getFilmStrip("idle"+direction));
-            processRun(direction);
-            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
-            ((PlayerModel) model).drawFire(canvas);
-        }else{
-            //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
-            model.resetFilmStrip(model.getFilmStrip(direction));
-            processRun("idle"+direction);
-            model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+        switch (((PlayerModel) model).getGameOverState()) {
+            case 0:
+                String direction = getDirection(horizontal,vertical,previousDirection);
+                if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
+                    model.resetFilmStrip(model.getFilmStrip("idle" + direction));
+                    processRun(direction);
+                    model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+                    ((PlayerModel) model).drawFire(canvas);
+                }else{
+                    //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
+                    model.resetFilmStrip(model.getFilmStrip(direction));
+                    processRun("idle"+direction);
+                    model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+                }
+                previousDirection = direction;
+                break;
+            case 1: // Player wins
+                processRun("win");
+                model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "win", "");
+                break;
+            case -1: // Player loses
+                processRun("death");
+                model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "death", "");
+                break;
         }
-        previousDirection = direction;
 
     }
 }

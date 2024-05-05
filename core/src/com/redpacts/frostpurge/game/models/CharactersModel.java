@@ -16,6 +16,8 @@ public abstract class CharactersModel extends GameObject {
     protected FilmStrip idleright;
     protected FilmStrip idleleft;
     protected FilmStrip idleup;
+    protected FilmStrip win;
+    protected FilmStrip death;
     protected String type;
 
     public Vector2 getVelocity(){
@@ -44,6 +46,10 @@ public abstract class CharactersModel extends GameObject {
                 return idleleft;
             case "idleup":
                 return idleup;
+            case "death":
+                return death;
+            case "win":
+                return win;
             default:
                 return null;
         }
@@ -83,6 +89,12 @@ public abstract class CharactersModel extends GameObject {
                     default:
                         throw new IllegalArgumentException("Character animation fail");
                 }
+                break;
+            case "death":
+                canvas.draw(death, tint, (float) run_down.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                break;
+            case "win":
+                canvas.draw(win, tint, (float) run_down.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
                 break;
             default:
                 break;

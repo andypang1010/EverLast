@@ -3,6 +3,8 @@
     "Tile" : "environment/tile.jpg",
     "House" : "environment/House_Color.png",
     "Plant" : "environment/Plant1_Color.png",
+    "Liv_Death": "characters/livDeath.png",
+    "Liv_Win": "characters/livWin.png",
     "Liv_Run_Left": "characters/filmstripleft.png",
     "Liv_Run_Right": "characters/filmstripright.png",
     "Liv_Run_Up": "characters/filmstripup.png",

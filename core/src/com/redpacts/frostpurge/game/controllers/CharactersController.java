@@ -71,6 +71,8 @@ public abstract class CharactersController {
         }
         FilmStrip running = model.getFilmStrip(type);
         int frame = (running == null ? 11 : running.getFrame());
+        System.out.println("FRAME");
+        System.out.println(frame);
         if (running != null) {
             if (type.startsWith("idle")){
                 if (time >= .25){
@@ -80,7 +82,15 @@ public abstract class CharactersController {
                         frame = 0;
                     running.setFrame(frame);
                 }
-            }else{
+            } else if (type.equals("death")) {
+                if (time >= .125){
+                    frame++;
+                    time = 0f;
+                    if (frame >= model.getFilmStrip(type).getSize())
+                        frame = model.getFilmStrip(type).getSize() - 1;
+                    running.setFrame(frame);
+                }
+            } else{
                 if (time >= .125){
                     frame++;
                     time = 0f;

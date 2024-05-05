@@ -22,6 +22,12 @@ public class PlayerModel extends CharactersModel {
     private int boostCoolDown;
     private int invincibility;
     private int INVINCIBILITY_COOLDOWN = 120;
+    private int gameOver;
+    /**
+     * -1 means lose, 1 means win
+     */
+    private int gameOverState;
+    private int GAMEOVER_COOLDOWN = 120;
     private FilmStrip runLeftNormal;
     private FilmStrip runRightNormal;
     private FilmStrip runDownNormal;
@@ -62,6 +68,8 @@ public class PlayerModel extends CharactersModel {
         this.velocity = new Vector2(0, 0);
         this.hp = 100;
         this.invincibility = 0;
+        this.gameOver = 0;
+        this.gameOverState = 0;
         this.alive = true;
         this.radius = 3.19f;
 
@@ -108,6 +116,8 @@ public class PlayerModel extends CharactersModel {
         run_up_text = new TextureRegion(directory.getEntry("Liv_Run_Up_Damaged", Texture.class)).getTexture();
         runUpDamaged = new FilmStrip(run_up_text, 1, 8, 8);
 
+        death = new FilmStrip(new TextureRegion(directory.getEntry("Liv_Death", Texture.class)).getTexture(), 1, 7, 7);
+        win = new FilmStrip(new TextureRegion(directory.getEntry("Liv_Win", Texture.class)).getTexture(), 1, 8, 8);
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
@@ -153,7 +163,7 @@ public class PlayerModel extends CharactersModel {
     }
 
     /**
-     * Return true if invincibility frame is at least 1 and at most 16, and false otherwise
+     * Return true if invincibility frame is in range [1; INVINCIBILITY_COOLDOWN], and false otherwise
      */
     public boolean getInvincibility(){
         return 1 <= invincibility && invincibility <= INVINCIBILITY_COOLDOWN;
@@ -180,6 +190,33 @@ public class PlayerModel extends CharactersModel {
             setFilmStripNormal();
         }
     }
+    /**
+     * Return true if gameover frame is in range [1; GAMEOVER_COOLDOWN], and false otherwise
+     */
+    public boolean getGameOver(){
+        return 1 <= gameOver && gameOver <= GAMEOVER_COOLDOWN;
+    }
+    /**
+     * Start gameover frame at 1.
+     * Effect: Set gameover frame
+     */
+
+    public void startGameOver(){
+        this.gameOver = 1;
+    }
+
+    /**
+     * Increase game over frame
+     * Effect: If frame is out of range, reset to 0
+     */
+    public void addGameOver(){
+        this.gameOver += 1;
+        if (this.gameOver < 0 || this.gameOver > GAMEOVER_COOLDOWN) {
+            this.gameOver = 0;
+        }
+    }
+    public void setGameOverState(int i) { gameOverState = i;}
+    public int getGameOverState() {return gameOverState;}
     public boolean isAlive(){return alive && this.hp > 0;}
     public void die(){alive = false;}
     public void setWin(boolean won){this.won = won;}

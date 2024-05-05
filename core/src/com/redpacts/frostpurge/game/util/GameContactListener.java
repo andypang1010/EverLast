@@ -121,23 +121,14 @@ public class GameContactListener implements ContactListener {
      * @param enemy  The enemy
      */
     private void handleCollision(Contact contact, PlayerModel player, EnemyModel enemy) {
-        if(!player.getInvincibility()) {
-            //        float vx1 = player.getVelocity().x;
-//        float vy1 = player.getVelocity().y;
-//        float vx2 = enemy.getVelocity().x;
-//        float vy2 = enemy.getVelocity().y;
-//
-//        player.setVelocity(-vx1, -vy1);
-//        enemy.setVelocity(-vx2, -vy2);
+        if(!player.getInvincibility() && !player.getGameOver()) { // Player is not invincible, nor the gameplay is over
             Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
-//        System.out.println("Direction:"+contactDirection);
-//        System.out.println(enemy.getPosition());
             player.addHp(-25);
-            player.getBody().applyForceToCenter(contactDirection.scl(100), true);
-            enemy.getBody().applyForceToCenter(contactDirection.scl(-100), true);
+            player.getBody().applyForceToCenter(contactDirection.scl(50), true);
+            enemy.getBody().applyForceToCenter(contactDirection.scl(-50), true);
 
             player.startInvincibility();
-        } else {
+        } else { // Player is invincible
             contact.setEnabled(false);
         }
     }
