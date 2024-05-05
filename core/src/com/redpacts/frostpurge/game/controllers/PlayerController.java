@@ -85,6 +85,37 @@ public class PlayerController extends CharactersController {
     }
 
     public void draw(GameCanvas canvas, float horizontal, float vertical){
+        drawShadow(canvas);
+        // Draw player
+        switch (((PlayerModel) model).getGameOverState()) {
+            case 0: // Player active
+                String direction = getDirection(horizontal,vertical,previousDirection);
+                if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
+                    model.resetFilmStrip(model.getFilmStrip("idle" + direction));
+                    processRun(direction);
+                    model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+                    ((PlayerModel) model).drawFire(canvas);
+                }else{
+                    //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
+                    model.resetFilmStrip(model.getFilmStrip(direction));
+                    processRun("idle"+direction);
+                    model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+                }
+                previousDirection = direction;
+                break;
+            case 1: // Player wins
+                processRun("win");
+                model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "win", previousDirection);
+                break;
+            case -1: // Player loses
+                processRun("death");
+                model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "death", previousDirection);
+                break;
+        }
+
+    }
+
+    private void drawShadow(GameCanvas canvas){
         // Draw shadow
         short[] indices = new short[3];
         indices[0] = 0;
@@ -117,33 +148,5 @@ public class PlayerController extends CharactersController {
 
             rayPrevious = rayEnd.cpy();
         }
-
-        // Draw player
-        switch (((PlayerModel) model).getGameOverState()) {
-            case 0:
-                String direction = getDirection(horizontal,vertical,previousDirection);
-                if (Math.abs(model.getBody().getLinearVelocity().y) + Math.abs(model.getBody().getLinearVelocity().x) > 1 || Math.abs(horizontal) + Math.abs(vertical)>.5) {
-                    model.resetFilmStrip(model.getFilmStrip("idle" + direction));
-                    processRun(direction);
-                    model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
-                    ((PlayerModel) model).drawFire(canvas);
-                }else{
-                    //System.out.println(Math.abs(model.getVelocity().y) + Math.abs(model.getVelocity().x));
-                    model.resetFilmStrip(model.getFilmStrip(direction));
-                    processRun("idle"+direction);
-                    model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
-                }
-                previousDirection = direction;
-                break;
-            case 1: // Player wins
-                processRun("win");
-                model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "win", "");
-                break;
-            case -1: // Player loses
-                processRun("death");
-                model.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "death", "");
-                break;
-        }
-
     }
 }

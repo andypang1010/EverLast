@@ -91,10 +91,30 @@ public abstract class CharactersModel extends GameObject {
                 }
                 break;
             case "death":
-                canvas.draw(death, tint, (float) run_down.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                switch(direction){
+                    case "right":
+                        canvas.draw(death, tint, (float) death.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                        break;
+                    case "left":
+                        canvas.draw(death, tint, (float) death.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,true);
+                        break;
+                    default:
+                        canvas.draw(death, tint, (float) death.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                        break;
+                }
                 break;
             case "win":
-                canvas.draw(win, tint, (float) run_down.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                switch(direction){
+                    case "right":
+                        canvas.draw(win, tint, (float) win.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                        break;
+                    case "left":
+                        canvas.draw(win, tint, (float) win.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,true);
+                        break;
+                    default:
+                        canvas.draw(win, tint, (float) win.getRegionWidth() / 2, 140, position.x, position.y, 0,.25f,.25f,false);
+                        break;
+                }
                 break;
             default:
                 break;
