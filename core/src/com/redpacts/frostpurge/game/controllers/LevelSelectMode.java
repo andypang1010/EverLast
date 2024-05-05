@@ -31,7 +31,9 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
@@ -39,6 +41,7 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.XBoxController;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -87,6 +90,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private ButtonBox levelSelectButton;
 	private Texture settingsTexture;
 	private ButtonBox settingsButton;
+	private Slider volumeSlider;
+	private Slider sensitivitySlider;
+	private ButtonBox smallWindowButton;
+	private ButtonBox largeWindowButton;
 	private Array<ButtonBox> levels;
 	/** Texture atlas to support a progress bar */
 
@@ -228,6 +235,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		settingsTexture = assets.getEntry("settingsButton",Texture.class);
 		settingsButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*93/100,canvas.getHeight()*13/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
 		settingsButton.available = true;
+
+		// TODO: Handle SliderStyle
+		volumeSlider = new Slider(0f, 1f, 0.01f, false, new Slider.SliderStyle());
+		volumeSlider.setValue(0.5f);
+
+		sensitivitySlider = new Slider(0f, 1f, 0.01f, false, new Slider.SliderStyle());
+		sensitivitySlider.setValue(0.5f);
+
+
+
 		// Load the level button
 		// Label of each button represents the level number
 		numberOfLevels = 5; // Number of levels
@@ -332,6 +349,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				levelSelectButton.hoveringButton(null, time, levels.size, levels);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+
 			}
 			else{
 				settingsButton.hoveringButton(null,time,levels.size,levels);
@@ -384,6 +402,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				levelSelectButton.hoveringButton(xbox,time,levels.size,levels);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				canvas.drawSlider(volumeSlider, canvas.getWidth() / 2f, 500f, 400f, 100f);
+				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 2f, 300f, 400f, 100f);
+
 			}
 			if (levelPage == 0){
 				forwardButton.hoveringButton(xbox,time,levels.size, levels);

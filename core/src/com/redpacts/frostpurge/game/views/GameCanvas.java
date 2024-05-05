@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import jdk.internal.org.jline.reader.Widget;
 
 public class GameCanvas {
     /** While we are not drawing polygons (yet), this spritebatch is more reliable */
@@ -327,6 +329,14 @@ public class GameCanvas {
         }
         spriteBatch.setColor(Color.WHITE);
         spriteBatch.draw(image, x, y, w, h);
+    }
+
+    public void drawSlider(Slider slider, float x, float y, float width, float height) {
+        slider.setOrigin(x, y);
+        slider.setWidth(width);
+        slider.setHeight(height);
+        slider.setColor(Color.WHITE);
+        slider.draw(spriteBatch, 100f);
     }
 
     /**
