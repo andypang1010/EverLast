@@ -33,8 +33,8 @@
   },
   "jsons": {
     "level1": "levels/MyLevel1.json",
-    "level2": "levels/level7.json",
-    "level3": "levels/level3.json",
+    "level2": "levels/MyLevel2.json",
+    "level3": "levels/MyLevel3.json",
     "level4": "levels/level4.json",
     "level5": "levels/level5.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
