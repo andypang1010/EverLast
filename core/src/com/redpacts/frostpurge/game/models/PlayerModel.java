@@ -21,6 +21,24 @@ public class PlayerModel extends CharactersModel {
     private int boostNum;
     private int boostCoolDown;
     private int invincibility;
+    private int INVINCIBILITY_COOLDOWN = 120;
+    private FilmStrip runLeftNormal;
+    private FilmStrip runRightNormal;
+    private FilmStrip runDownNormal;
+    private FilmStrip runUpNormal;
+    private FilmStrip idleRightNormal;
+    private FilmStrip idleLeftNormal;
+    private FilmStrip idleUpNormal;
+
+    private FilmStrip runLeftDamaged;
+    private FilmStrip runRightDamaged;
+    private FilmStrip runDownDamaged;
+    private FilmStrip runUpDamaged;
+    private FilmStrip idleRightDamaged;
+    private FilmStrip idleLeftDamaged;
+    private FilmStrip idleUpDamaged;
+
+
     boolean won = false;
 
     @Override
@@ -48,20 +66,48 @@ public class PlayerModel extends CharactersModel {
         this.radius = 3.19f;
 
         Texture idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right", Texture.class)).getTexture();
-        idleright = new FilmStrip(idle_right, 1, 3, 3);
+        idleRightNormal = new FilmStrip(idle_right, 1, 3, 3);
+        idleright = idleRightNormal;
+        idle_right = new TextureRegion(directory.getEntry("Liv_Idle_Right_Damaged", Texture.class)).getTexture();
+        idleRightDamaged = new FilmStrip(idle_right, 1, 3, 3);
+
         Texture idle_left = new TextureRegion(directory.getEntry("Liv_Idle_Left", Texture.class)).getTexture();
-        idleleft = new FilmStrip(idle_left, 1, 3, 3);
+        idleLeftNormal = new FilmStrip(idle_left, 1, 3, 3);
+        idleleft = idleLeftNormal;
+        idle_left = new TextureRegion(directory.getEntry("Liv_Idle_Left_Damaged", Texture.class)).getTexture();
+        idleLeftDamaged = new FilmStrip(idle_left, 1, 3, 3);
+
         Texture idle_up = new TextureRegion(directory.getEntry("Liv_Idle_Up", Texture.class)).getTexture();
-        idleup = new FilmStrip(idle_up, 1, 3, 3);
+        idleUpNormal = new FilmStrip(idle_up, 1, 3, 3);
+        idleup = idleUpNormal;
+        idle_up = new TextureRegion(directory.getEntry("Liv_Idle_Up_Damaged", Texture.class)).getTexture();
+        idleUpDamaged = new FilmStrip(idle_up, 1, 3, 3);
 
         Texture run_left_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture();
-        run_left = new FilmStrip(run_left_text, 1, 8, 8);
+        runLeftNormal = new FilmStrip(run_left_text, 1, 8, 8);
+        run_left = runLeftNormal;
+        run_left_text = new TextureRegion(directory.getEntry("Liv_Run_Left_Damaged", Texture.class)).getTexture();
+        runLeftDamaged = new FilmStrip(run_left_text, 1, 8, 8);
+
         Texture run_right_text = new TextureRegion(directory.getEntry("Liv_Run_Right", Texture.class)).getTexture();
-        run_right = new FilmStrip(run_right_text, 1, 8, 8);
-        Texture run_down_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture(); // NOT THE CORRECT ONE YET
-        run_down = new FilmStrip(run_down_text, 1, 8, 8);
+        runRightNormal = new FilmStrip(run_right_text, 1, 8, 8);
+        run_right = runRightNormal;
+        run_right_text = new TextureRegion(directory.getEntry("Liv_Run_Right_Damaged", Texture.class)).getTexture();
+        runRightDamaged = new FilmStrip(run_right_text, 1, 8, 8);
+
+        // TODO: CHANGE TO RIGHT TEXTURE
+        Texture run_down_text = new TextureRegion(directory.getEntry("Liv_Run_Left", Texture.class)).getTexture();
+        runDownNormal = new FilmStrip(run_down_text, 1, 8, 8);
+        run_down = runDownNormal;
+        run_down_text = new TextureRegion(directory.getEntry("Liv_Run_Left_Damaged", Texture.class)).getTexture();
+        runDownDamaged = new FilmStrip(run_down_text, 1, 8, 8);
+
         Texture run_up_text = new TextureRegion(directory.getEntry("Liv_Run_Up", Texture.class)).getTexture();
-        run_up = new FilmStrip(run_up_text, 1, 8, 8);
+        runUpNormal = new FilmStrip(run_up_text, 1, 8, 8);
+        run_up = runUpNormal;
+        run_up_text = new TextureRegion(directory.getEntry("Liv_Run_Up_Damaged", Texture.class)).getTexture();
+        runUpDamaged = new FilmStrip(run_up_text, 1, 8, 8);
+
 
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
@@ -69,6 +115,25 @@ public class PlayerModel extends CharactersModel {
         this.boostNum = 0;
         this.boostCoolDown = 0;
         type = "player";
+    }
+
+    private void setFilmStripNormal(){
+        run_left = runLeftNormal;
+        run_right = runRightNormal;
+        run_down = runDownNormal;
+        run_up = runUpNormal;
+        idleright = idleRightNormal;
+        idleleft = idleLeftNormal;
+        idleup = idleUpNormal;
+    }
+    private void setFilmStripDamaged(){
+        run_left = runLeftDamaged;
+        run_right = runRightDamaged;
+        run_down = runDownDamaged;
+        run_up = runUpDamaged;
+        idleright = idleRightDamaged;
+        idleleft = idleLeftDamaged;
+        idleup = idleUpDamaged;
     }
 
     public float getHp(){
@@ -86,19 +151,33 @@ public class PlayerModel extends CharactersModel {
             this.hp = 0;
         }
     }
-    public float getInvincibility(){
-        return invincibility;
+
+    /**
+     * Return true if invincibility frame is at least 1 and at most 16, and false otherwise
+     */
+    public boolean getInvincibility(){
+        return 1 <= invincibility && invincibility <= INVINCIBILITY_COOLDOWN;
     }
-    public void setInvincibility(int i){
-        this.invincibility = i;
-        if(this.invincibility < 0){
-            this.invincibility = 0;
-        }
+
+    /**
+     * Start invincibility frame at 1 to start it.
+     * Effect: Set invincibility frame, and change current filmstrip to appropriate filmstrip.
+     */
+
+    public void startInvincibility(){
+        this.invincibility = 1;
+        setFilmStripDamaged();
     }
-    public void addInvincibility(int i){
-        this.invincibility += i;
-        if(this.invincibility < 0){
+
+    /**
+     * Increase invincibility frame
+     * Effect: If frame is out of range, reset to 0
+     */
+    public void addInvincibility(){
+        this.invincibility += 1;
+        if (this.invincibility < 0 || this.invincibility > INVINCIBILITY_COOLDOWN) {
             this.invincibility = 0;
+            setFilmStripNormal();
         }
     }
     public boolean isAlive(){return alive && this.hp > 0;}

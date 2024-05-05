@@ -56,6 +56,10 @@ public class PlayerController extends CharactersController {
      */
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
         ((PlayerModel) model).addBoostCoolDown(-1);
+        if (((PlayerModel) model).getInvincibility()){
+            ((PlayerModel) model).addInvincibility();
+        }
+
         setAngle(horizontal,vertical);
         if (!decelerate){
             model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
