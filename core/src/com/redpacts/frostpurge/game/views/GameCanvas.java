@@ -332,7 +332,6 @@ public class GameCanvas {
     }
 
     public void drawSlider(Slider slider, float x, float y, float width, float height) {
-        slider.setOrigin(x, y);
         slider.setWidth(width);
         slider.setHeight(height);
         slider.setColor(Color.WHITE);
