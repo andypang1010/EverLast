@@ -56,7 +56,6 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	@Override
 	public void render(){
-
 		// Update the game state
 		switch (mode){
 			case "loading":
@@ -138,12 +137,12 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
-		} else if (screen == playing && playing.isHomeScreen()) {
+		} else if (screen == playing && playing.isSettings()) {
 			playing.resetButton();
-			loading.resetButton();
-			loading.setScreenListener(this);
-			setScreen(loading);
-			mode = "loading";
+			levelselect.levelPage = -1;
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
 		} else if (screen == playing && playing.isLevelSelectScreen()) {
 			playing.resetButton();
 

@@ -61,7 +61,7 @@ public class GameMode implements Screen, InputProcessor {
      * 7 means clicking on retry, 8 means retry clicked.
      */
     private int pressState = 0;
-    private boolean homeScreen;
+    private boolean settings;
     private boolean levelSelectScreen;
 
     /*
@@ -169,7 +169,7 @@ public class GameMode implements Screen, InputProcessor {
         homeTexture = pauseScreenAssets.getEntry("homeButton", Texture.class);
         homeButton = new ButtonBox(2, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 9/100, homeTexture.getWidth(), homeTexture.getHeight()), homeTexture);
-        homeScreen = false;
+        settings = false;
 
         levelSelectTexture = pauseScreenAssets.getEntry("levelSelectButton", Texture.class);
         levelSelectButton = new ButtonBox(3, enlargeScale, scale,
@@ -251,7 +251,7 @@ public class GameMode implements Screen, InputProcessor {
     /**
      * Checks if the player chooses to return to home screen.
      */
-    public boolean isHomeScreen() {return this.homeScreen;}
+    public boolean isSettings() {return this.settings;}
 
 
     /**
@@ -263,7 +263,7 @@ public class GameMode implements Screen, InputProcessor {
      */
     public void resetButton(){
         pressState = 0;
-        homeScreen = false;
+        settings = false;
         levelSelectScreen = false;
     }
 
@@ -364,12 +364,12 @@ public class GameMode implements Screen, InputProcessor {
         if (pressState == 2) { // Home button selected
             pressState = 0;
             levelSelectScreen = false;
-            homeScreen = true;
+            settings = true;
             listener.exitScreen(this, 0);
         } else if (pressState == 4) { // Level select button selected
             pressState = 0;
             levelSelectScreen = true;
-            homeScreen = false;
+            settings = false;
             listener.exitScreen(this, 0);
         } else if (inputController.didPause() || pressState == 6) {
             if (gameState == GameState.PLAY) {
