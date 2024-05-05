@@ -153,9 +153,13 @@ public class LevelModel {
     public void createBreakable(int x, int y, int rotation, AssetDirectory directory, int index, String label, int base){
         // TODO: Right now only supports one type of breakable.
         TextureRegion glassBox =  new TextureRegion(directory.getEntry("BreakableGlassBox", Texture.class));
+        TextureRegion woodBox =  new TextureRegion(directory.getEntry("BreakableWoodBox", Texture.class));
         switch (label) {
             case "glass":
-                breakables.insert(bouncy.size, new BreakableTile(glassBox, new Vector2(x,y), 1,  base, 1, 4, 4));
+                breakables.insert(breakables.size, new BreakableTile(glassBox, new Vector2(x,y), 1,  base, 1, 4, 4));
+                break;
+            case "wood":
+                breakables.insert(breakables.size, new BreakableTile(woodBox, new Vector2(x,y), 1,  base, 1, 2, 2));
                 break;
         }
 //        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);

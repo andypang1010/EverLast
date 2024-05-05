@@ -94,13 +94,13 @@ public class BreakableTile extends TileModel{
         bodyDef.active = true;
         bodyDef.type = BodyDef.BodyType.StaticBody;
         // Set the position of the obstacle
-        bodyDef.position.set(this.getPosition().cpy().add(64f / 2, 64f / 2).scl(0.1f));
+        bodyDef.position.set(this.getPosition().cpy().add(128f / 2, 128f / 2).scl(0.1f));
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(6.4f / 2, 6.4f / 2);
+        shape.setAsBox(12.8f / 2, 12.8f / 2);
 
         this.shape = shape;
 

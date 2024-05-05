@@ -101,7 +101,7 @@ public class BouncyTile extends TileModel{
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.restitution = 1f;
+        fixtureDef.restitution = 4f;
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_BOUNCY;
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
                 CollisionController.PhysicsConstants.CATEGORY_ENEMY);
