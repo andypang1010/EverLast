@@ -22,14 +22,14 @@ public class SaveFileManager {
         saveFile = json;
     }
 
-    public void saveGame(String level, boolean unlocked, boolean completed, int score) {
+    public void saveGame(String level, boolean unlocked, boolean completed, float score) {
         JsonValue levelsArray = saveFile.get("levels");
         for (JsonValue levelValue : levelsArray) {
             if (levelValue.getString("name").equals(level)) {
                 levelValue.get("unlocked").set(String.valueOf(new JsonValue(unlocked)));
                 levelValue.get("completed").set(String.valueOf(new JsonValue(completed)));
-                int currScore = levelValue.getInt("score");
-                if (score>currScore){
+                float currScore = levelValue.getFloat("score");
+                if (score<currScore || currScore == 0){
                     levelValue.get("score").set(String.valueOf(new JsonValue(score)));
                 }
                 break;
@@ -95,11 +95,11 @@ public class SaveFileManager {
         }
         return false;
     }
-    public int getScore(String level) {
+    public float getScore(String level) {
         JsonValue levelsArray = saveFile.get("levels");
         for (JsonValue levelValue : levelsArray) {
             if (levelValue.getString("name").equals(level)) {
-                return (levelValue.getInt("score"));
+                return (levelValue.getFloat("score"));
             }
         }
         return 0;
