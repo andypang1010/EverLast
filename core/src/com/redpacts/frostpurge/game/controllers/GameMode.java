@@ -405,37 +405,36 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         if (gameState == GameState.OVER){
-            drawRetryScreen();
-            return; // Skip the rest of the update loop
+            if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.addGameOver();
+            } else{
+                playerModel.setGameOverState(0);
+                drawRetryScreen();
+                return; // Skip the rest of the update loop
+            }
+
         } else if (gameState == GameState.WIN){
-            drawWinScreen();
-            return;
-        }
-
-        if (gameState == GameState.PLAY){
-            currentTime -= Gdx.graphics.getDeltaTime();
-            playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
-        }
-
-        if (currentTime <= 0) {
+            if (playerModel.getGameOver()){
+                playerModel.addGameOver();
+            } else{
+                playerModel.setGameOverState(0);
+                drawWinScreen();
+                return;
+            }
+        } else if (currentTime <= 0 || !playerModel.isAlive()) {
             gameState = GameState.OVER;
+            playerModel.startGameOver();
+            playerModel.setGameOverState(-1);
             pauseButton.resize("down");
             resumeButton.resize("down");
             retryButton.resize("up");
             levelSelectButton.resize("down");
             homeButton.resize("down");
-        }
-        if (!playerModel.isAlive()){
-            gameState = GameState.OVER;
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("up");
-            levelSelectButton.resize("down");
-            homeButton.resize("down");
-        }
-        if (playerModel.didwin()){
+        } else if (playerModel.didwin()){
             gameState = GameState.WIN;
             playerModel.setWin(false);
+            playerModel.startGameOver();
+            playerModel.setGameOverState(1);
             saveFileManager.saveGame(currentLevel.getName(),true, true, (int)(currentTime*100));
             saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
             pauseButton.resize("down");
@@ -444,6 +443,12 @@ public class GameMode implements Screen, InputProcessor {
             levelSelectButton.resize("up");
             homeButton.resize("down");
         }
+
+        if (gameState == GameState.PLAY){
+            currentTime -= Gdx.graphics.getDeltaTime();
+            playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
+        }
+
 
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){

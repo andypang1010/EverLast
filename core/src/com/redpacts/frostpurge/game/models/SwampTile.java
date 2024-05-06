@@ -97,7 +97,6 @@ public class SwampTile extends TileModel{
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
-        body.setSleepingAllowed(false);
 
         // TODO: shape needs scaling
         PolygonShape shape = new PolygonShape();

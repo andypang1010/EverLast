@@ -136,7 +136,6 @@ public class EnemyModel extends CharactersModel{
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
-        body.setSleepingAllowed(false);
 
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,

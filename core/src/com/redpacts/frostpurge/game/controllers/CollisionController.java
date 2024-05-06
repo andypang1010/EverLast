@@ -247,7 +247,6 @@ public class CollisionController{
                 vacuuming = false;
             }
         }
-
     }
     /**
      * Check if the player is on a swamp tile, and pick up the power up if true
