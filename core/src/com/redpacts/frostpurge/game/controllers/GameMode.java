@@ -436,8 +436,8 @@ public class GameMode implements Screen, InputProcessor {
         if (playerModel.didwin()){
             gameState = GameState.WIN;
             playerModel.setWin(false);
-            saveFileManager.saveGame(currentLevel.getName(),true, true, (maxTime - currentTime));
-            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
+            saveFileManager.saveGame(currentLevel.getName(),true, true, (maxTime - currentTime),0);
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0,0);
             pauseButton.resize("down");
             resumeButton.resize("down");
             retryButton.resize("down");

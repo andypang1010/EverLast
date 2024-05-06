@@ -22,7 +22,7 @@ public class SaveFileManager {
         saveFile = json;
     }
 
-    public void saveGame(String level, boolean unlocked, boolean completed, float score) {
+    public void saveGame(String level, boolean unlocked, boolean completed, float score, float starScore) {
         JsonValue levelsArray = saveFile.get("levels");
         for (JsonValue levelValue : levelsArray) {
             if (levelValue.getString("name").equals(level)) {
@@ -31,6 +31,10 @@ public class SaveFileManager {
                 float currScore = levelValue.getFloat("score");
                 if (score<currScore || currScore == 0){
                     levelValue.get("score").set(String.valueOf(new JsonValue(score)));
+                }
+                float currStarScore = levelValue.getFloat("starScore");
+                if (starScore<currStarScore || currStarScore == 0){
+                    levelValue.get("starScore").set(String.valueOf(new JsonValue(score)));
                 }
                 break;
             }
@@ -53,6 +57,7 @@ public class SaveFileManager {
                 levelValue.get("completed").set(String.valueOf(new JsonValue(false)));
             }
             levelValue.get("score").set(String.valueOf(new JsonValue(0)));
+            levelValue.get("starScore").set(String.valueOf(new JsonValue(0)));
             // Optionally update score if needed
             // levelValue.get("score").setInt(score);
         }
@@ -69,6 +74,7 @@ public class SaveFileManager {
             levelValue.get("completed").set(String.valueOf(new JsonValue(true)));
 
             levelValue.get("score").set(String.valueOf(new JsonValue(0)));
+            levelValue.get("starScore").set(String.valueOf(new JsonValue(0)));
         }
         try (FileWriter fileWriter = new FileWriter(SAVE_FILE_NAME)) {
             fileWriter.write(saveFile.toJson(JsonWriter.OutputType.json));
@@ -104,6 +110,16 @@ public class SaveFileManager {
         }
         return 0;
     }
+    public float getStarScore(String level) {
+        JsonValue levelsArray = saveFile.get("levels");
+        for (JsonValue levelValue : levelsArray) {
+            if (levelValue.getString("name").equals(level)) {
+                return (levelValue.getFloat("starScore"));
+            }
+        }
+        return 0;
+    }
+
     public void update(JsonValue json){
         saveFile = json;
     }
