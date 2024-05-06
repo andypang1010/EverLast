@@ -54,6 +54,9 @@ public class GameMode implements Screen, InputProcessor {
      */
     private Texture levelSelectTexture;
     private ButtonBox levelSelectButton;
+
+    private Texture exitTexture;
+    private ButtonBox exitButton;
     /**
      * pressState = 0 means no click on button, 1 means clicking on home, 2 means home clicked.
      * 3 means clicking on level select button, 4 means level select clicked.
@@ -184,6 +187,10 @@ public class GameMode implements Screen, InputProcessor {
         retryButton = new ButtonBox(4, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 40 / 100, canvas.getHeight() * 42/100, retryTexture.getWidth(), retryTexture.getHeight()), retryTexture);
 
+        exitTexture = pauseScreenAssets.getEntry("exitGameButton", Texture.class);
+        exitButton = new ButtonBox(5, enlargeScale, scale,
+                new Rectangle(canvas.getWidth() * 88 / 100, canvas.getHeight() * 9/100, exitTexture.getWidth(), exitTexture.getHeight()), exitTexture);
+
         // Load the win screen assets
         winScreenTexture = pauseScreenAssets.getEntry("winScreen", Texture.class);
         winScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -194,6 +201,7 @@ public class GameMode implements Screen, InputProcessor {
         this.buttons.add(homeButton);
         this.buttons.add(levelSelectButton);
         this.buttons.add(retryButton);
+        this.buttons.add(exitButton);
 
         this.drawble = new Array<GameObject>();
         this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
@@ -563,6 +571,9 @@ public class GameMode implements Screen, InputProcessor {
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        bounds = exitButton.getBounds();
+        canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
         canvas.end();
     }
 
@@ -583,6 +594,10 @@ public class GameMode implements Screen, InputProcessor {
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        bounds = exitButton.getBounds();
+        canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+
         canvas.end();
     }
 
@@ -598,6 +613,10 @@ public class GameMode implements Screen, InputProcessor {
         levelSelectButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        bounds = exitButton.getBounds();
+        canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 
         canvas.end();
     }
@@ -703,6 +722,8 @@ public class GameMode implements Screen, InputProcessor {
                  pressState = 3;
              } else if (resumeButton.isPressed() || pauseButton.isPressed()) {
                  pressState = 5;
+             } else if (exitButton.isPressed()){
+                 listener.exitScreen(this,1);
              }
         } else if (gameState == GameState.OVER) {
             if (homeButton.isPressed()) {
@@ -711,12 +732,16 @@ public class GameMode implements Screen, InputProcessor {
                 pressState = 3;
             } else if (retryButton.isPressed()) {
                 pressState = 7;
+            }else if (exitButton.isPressed()){
+                listener.exitScreen(this,1);
             }
         } else if (gameState == GameState.WIN) {
             if (homeButton.isPressed()) {
                 pressState = 1;
             } else if (levelSelectButton.isPressed()){
                 pressState = 3;
+            }else if (exitButton.isPressed()){
+                listener.exitScreen(this,1);
             }
         }
         return false;

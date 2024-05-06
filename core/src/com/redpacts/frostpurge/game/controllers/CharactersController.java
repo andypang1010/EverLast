@@ -13,48 +13,6 @@ public abstract class CharactersController {
     protected boolean flip;
     protected String previousDirection = "right";
     protected Vector2 vel;
-
-    public void accelerate(float x, float y, float scale) {
-        vel = model.getVelocity();
-        vel.x += .5f * scale * x;
-        vel.y -= .5f * scale * y;
-        model.setVelocity(vel.x, vel.y);
-    }
-
-    public void stop() {
-        vel = model.getVelocity();
-        float x = -.05f* model.getVelocity().x;
-        float y = -.05f* model.getVelocity().y;
-        vel.x = stopHelper(vel.x,x);
-        vel.y = stopHelper(vel.y,y);
-        model.setVelocity(vel.x, vel.y);
-    }
-    public void friction(){
-        vel = model.getVelocity();
-        float x = -.15f* model.getVelocity().x/ Math.abs(model.getVelocity().x);
-        float y = -.15f* model.getVelocity().y/ Math.abs(model.getVelocity().y);
-        vel.x = stopHelper(vel.x,x);
-        vel.y = stopHelper(vel.y,y);
-        model.setVelocity(vel.x, vel.y);
-    }
-    private float stopHelper(float vel, float change){
-        if (vel<0){
-            if (vel + change >0){
-                vel = 0;
-            }
-            else{
-                vel += change;
-            }
-        }else if(vel>0){
-            if (vel + change <0){
-                vel = 0;
-            }
-            else{
-                vel += change;
-            }
-        }
-        return vel;
-    }
     /**
      * Update the animation of the ship to process a turn
      *
@@ -74,8 +32,16 @@ public abstract class CharactersController {
         System.out.println("FRAME");
         System.out.println(frame);
         if (running != null) {
-            if (type.startsWith("idle")){
+            if (type.startsWith("idle") || type.startsWith("vacuumstart") || type.startsWith("vacuumend")){
                 if (time >= .25){
+                    frame++;
+                    time = 0f;
+                    if (frame >= model.getFilmStrip(type).getSize())
+                        frame = 0;
+                    running.setFrame(frame);
+                }
+            } else if(type.startsWith("vacuum")){
+                if (time >= 1/3f){
                     frame++;
                     time = 0f;
                     if (frame >= model.getFilmStrip(type).getSize())
@@ -90,7 +56,7 @@ public abstract class CharactersController {
                         frame = model.getFilmStrip(type).getSize() - 1;
                     running.setFrame(frame);
                 }
-            } else{
+            }else{
                 if (time >= .125){
                     frame++;
                     time = 0f;

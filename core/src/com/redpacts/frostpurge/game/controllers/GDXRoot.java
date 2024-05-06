@@ -116,8 +116,10 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
-		if (exitCode != 0) {
+		if (exitCode != 0 && exitCode != 1) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
+			Gdx.app.exit();
+		} else if (exitCode == 1) {
 			Gdx.app.exit();
 		} else if (screen == loading) {
 			loading.resetButton();
