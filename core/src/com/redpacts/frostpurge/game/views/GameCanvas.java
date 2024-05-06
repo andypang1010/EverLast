@@ -332,18 +332,9 @@ public class GameCanvas {
         spriteBatch.draw(image, x, y, w, h);
     }
 
-    public void drawSlider(Slider slider, float x, float y, float width, float height) {
-        slider.setWidth(width);
-        slider.setHeight(height);
+    public void drawSlider(Slider slider) {
         slider.setColor(Color.WHITE);
         slider.draw(spriteBatch, 1f);
-    }
-
-    public void drawTextButton(TextButton textButton, float x, float y, float width, float height) {
-        textButton.setWidth(width);
-        textButton.setHeight(height);
-        textButton.setColor(Color.WHITE);
-        textButton.draw(spriteBatch, 1f);
     }
 
     /**

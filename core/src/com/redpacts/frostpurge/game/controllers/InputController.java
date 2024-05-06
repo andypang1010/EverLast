@@ -158,8 +158,8 @@ public class InputController {
      */
     public void readInput(Rectangle bounds, Vector2 scale) {
         if (xbox != null){
-            float x = xbox.getLeftX();
-            float y = xbox.getLeftY();
+            float x = xbox.getLeftX() * LevelSelectMode.sensitivitySlider.getValue();
+            float y = xbox.getLeftY() * LevelSelectMode.sensitivitySlider.getValue();
             if (Math.abs(x) < xbox.getDeadZone()){
                 x = 0;
             }
@@ -183,8 +183,8 @@ public class InputController {
             // Remember the current state for the next frame
             previousPausePressed = currentPausePressed;
         }else{
-            float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
-            float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
+            float x = (Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2) * LevelSelectMode.sensitivitySlider.getValue();
+            float y = (Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2) * LevelSelectMode.sensitivitySlider.getValue();
             if (Math.abs(x) < 10f){
                 x = 0;
             }

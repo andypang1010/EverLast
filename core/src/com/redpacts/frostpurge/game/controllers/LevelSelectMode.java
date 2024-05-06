@@ -94,8 +94,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private ButtonBox levelSelectButton;
 	private Texture settingsTexture;
 	private ButtonBox settingsButton;
-	private Slider volumeSlider;
-	private Slider sensitivitySlider;
+	public static Slider volumeSlider;
+	public static Slider sensitivitySlider;
 	private ButtonBox smallWindowButton;
 	private ButtonBox largeWindowButton;
 	private Array<ButtonBox> levels;
@@ -247,23 +247,27 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //		volumeSlider = new Slider(0f, 1f, 0.01f, false, skin);
 //		volumeSlider.setValue(0.5f);
 
-		volumeSlider = new Slider(0f, 1f, 0.01f,false, skin);
-		volumeSlider.setValue(volumeSlider.getMaxValue() / 2);
-		volumeSlider.addListener(event -> {
-            System.out.println(volumeSlider.getValue());
-            return false;
-        });
 
-//		sensitivitySlider = new Slider(0f, 1f, 0.01f, false, skin);
-//		sensitivitySlider.setValue(0.5f);
+
+		volumeSlider = new Slider(0f, 2f, 0.01f,false, skin);
+		volumeSlider.setValue(volumeSlider.getMaxValue() / 2);
+		volumeSlider.setSize(canvas.getWidth() / 3f, canvas.getHeight() / 20f);
+//		volumeSlider.setOrigin(volumeSlider.getWidth() / 2f, volumeSlider.getHeight() / 2f);
+		volumeSlider.setPosition(canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
+
+		sensitivitySlider = new Slider(0f, 2f, 0.01f,false, skin);
+		sensitivitySlider.setValue(volumeSlider.getMaxValue() / 2);
+		sensitivitySlider.setSize(canvas.getWidth() / 3f, canvas.getHeight() / 20f);
+//		sensitivitySlider.setOrigin(sensitivitySlider.getWidth() / 2f, sensitivitySlider.getHeight() / 2f);
+		sensitivitySlider.setPosition(canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
 
 
 		smallWindowButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 3 / 10, canvas.getHeight() * 4/15, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
+				new Rectangle(canvas.getWidth() * 3 / 10, canvas.getHeight() * 2/15, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
 		smallWindowButton.available = true;
 
 		largeWindowButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 7 / 10, canvas.getHeight() * 4/15, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
+				new Rectangle(canvas.getWidth() * 7 / 10, canvas.getHeight() * 2/15, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
 		largeWindowButton.available = true;
 
 
@@ -373,8 +377,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-				canvas.drawSlider(volumeSlider, canvas.getWidth() / 2f, 500f, 400f, 100f);
-//				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 2f, 300f, 400f, 100f);
+				canvas.drawText("Vol (1 - 2): ", font, canvas.getWidth() * 1f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawSlider(volumeSlider);
+
+				canvas.drawText("Sen (9 - 0): ", font, canvas.getWidth() * 1f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawSlider(sensitivitySlider);
 
 				smallWindowButton.hoveringButton(null, time, levels.size, levels);
 				bounds = smallWindowButton.getBounds();
@@ -437,8 +444,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 
-				canvas.drawSlider(volumeSlider, canvas.getWidth() / 2f, 500f, 400f, 100f);
-//				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 2f, 300f, 400f, 100f);
+				canvas.drawSlider(volumeSlider);
+				canvas.drawSlider(sensitivitySlider);
 
 				smallWindowButton.hoveringButton(xbox, time, levels.size, levels);
 				bounds = smallWindowButton.getBounds();
@@ -510,11 +517,23 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public void render(float delta) {
 		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
-//		if(smallWindowButton.isPressed()){
-//			Gdx.graphics.setWindowedMode(1280, 720);
-//		}else if(largeWindowButton.isPressed()){
-//			Gdx.graphics.setWindowedMode(1920, 1080);
-//		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+			volumeSlider.setValue(volumeSlider.getValue() - volumeSlider.getStepSize());
+		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+			volumeSlider.setValue(volumeSlider.getValue() + volumeSlider.getStepSize());
+		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) {
+			sensitivitySlider.setValue(sensitivitySlider.getValue() - sensitivitySlider.getStepSize());
+		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+			sensitivitySlider.setValue(sensitivitySlider.getValue() + sensitivitySlider.getStepSize());
+		}
+
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
 //			update(delta);
