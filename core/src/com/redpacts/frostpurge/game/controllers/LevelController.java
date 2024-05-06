@@ -62,7 +62,7 @@ public class LevelController {
             int index = data[i];
             if (index!=0){
                 index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
-                System.out.println(index);
+                //System.out.println(index);
                 level.populateBase(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
@@ -167,7 +167,7 @@ public class LevelController {
                     properties = properties.next();
                     x+= 75;
                     id = properties.getInt("value");
-                    System.out.println(id);
+                    //System.out.println(id);
                     level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, id);
                     break;
                 case "waypoint":
@@ -176,7 +176,7 @@ public class LevelController {
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
                     x += 32;
-                    System.out.println(id);
+                    //System.out.println(id);
                     level.addWaypoint(x,height*64 - y,id,pointNumber);
                     break;
                 case "bouncy":
@@ -187,7 +187,6 @@ public class LevelController {
                     level.createBouncy(x,(height*64-y),rotation,directory, id, label, base);
                     break;
                 case "breakable":
-                    System.out.println("called");
                     properties = properties.next();
                     id = properties.getInt("value");
                     properties = properties.next();
