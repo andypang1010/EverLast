@@ -22,6 +22,6 @@
     }
   },
   "jsons": {
-      "savedata": "save_data.json"
+      "savedata": "assets/save_data.json"
   }
 }

@@ -366,7 +366,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
 						float score = game.getScore("level" + Integer.toString(button.label));
-						float ratio = (float) score / 2000;
+						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
+						float ratio = starsScore / 30;
 						if (score != 0){
 							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
 						}
