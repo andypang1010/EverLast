@@ -87,6 +87,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private ButtonBox levelSelectButton;
 	private Texture settingsTexture;
 	private ButtonBox settingsButton;
+	private Texture exitTexture;
+	private ButtonBox exitButton;
 	private Array<ButtonBox> levels;
 	/** Texture atlas to support a progress bar */
 
@@ -226,8 +228,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		levelSelectButton.available = true;
 
 		settingsTexture = assets.getEntry("settingsButton",Texture.class);
-		settingsButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*93/100,canvas.getHeight()*13/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		settingsButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*93/100,canvas.getHeight()*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
 		settingsButton.available = true;
+
+		exitTexture = assets.getEntry("exitGameButton",Texture.class);
+		exitButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*46/100,canvas.getHeight()*1/15,exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
+		exitButton.available = true;
 		// Load the level button
 		// Label of each button represents the level number
 		numberOfLevels = 5; // Number of levels
@@ -320,13 +326,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		canvas.begin();
 		canvas.drawBackground(background, 0, 0, true);
 		Rectangle bounds;
+		exitButton.hoveringButton(xbox,time,levels.size,levels);
+		bounds = exitButton.getBounds();
+		canvas.draw(exitButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 		if (xbox==null){
-
-//			for (LevelBox levelBox: levelBoxes){
-//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-//				hoveringBox(levelBox);
-//				font.getData().setScale(levelBox.fontScale*scale);
-//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? levelBox.bounds.y*sy+levelBox.glyph.height*scale*1.25f : levelBox.bounds.y*sy+levelBox.glyph.height*scale);
 			if (levelPage == -1) {
 				canvas.drawTextCentered("Settings", font, 300);
 				levelSelectButton.hoveringButton(null, time, levels.size, levels);
@@ -565,6 +568,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		if(settingsButton.isPressed()){
 			pageDirection = -(levelPage+1);
+		}
+		if(exitButton.isPressed()){
+			listener.exitScreen(this, 1);
 		}
 		if(forwardButton.isPressed() && levelPage < (numberOfLevels - 1)/3 ){
 			pageDirection = 1;
