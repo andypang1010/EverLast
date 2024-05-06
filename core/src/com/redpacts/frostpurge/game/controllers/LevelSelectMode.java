@@ -33,10 +33,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -94,6 +96,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private ButtonBox levelSelectButton;
 	private Texture settingsTexture;
 	private ButtonBox settingsButton;
+	private Stage stage;
 	public static Slider volumeSlider;
 	public static Slider sensitivitySlider;
 	private ButtonBox smallWindowButton;
@@ -247,24 +250,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //		volumeSlider = new Slider(0f, 1f, 0.01f, false, skin);
 //		volumeSlider.setValue(0.5f);
 
+		stage = new Stage(new ScreenViewport());
 
-
-		volumeSlider = new Slider(0f, 2f, 0.01f,false, skin);
+		volumeSlider = new Slider(0f, 1f, 0.01f,false, skin);
 		volumeSlider.setValue(volumeSlider.getMaxValue() / 2);
 
-		sensitivitySlider = new Slider(0f, 2f, 0.01f,false, skin);
-		sensitivitySlider.setValue(volumeSlider.getMaxValue() / 2);
+		sensitivitySlider = new Slider(0f, 2f, 0.02f,false, skin);
+		sensitivitySlider.setValue(sensitivitySlider.getMaxValue() / 2);
 
+		stage.addActor(volumeSlider);
+		stage.addActor(sensitivitySlider);
 
 		smallWindowButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 3 / 10, canvas.getHeight() * 2/15, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
+				new Rectangle(canvas.getWidth() * 3f / 10f, canvas.getHeight() * 2f / 15f, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
 		smallWindowButton.available = true;
 
 		largeWindowButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 7 / 10, canvas.getHeight() * 2/15, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
+				new Rectangle(canvas.getWidth() * 7f / 10f, canvas.getHeight() * 2f / 15f, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
 		largeWindowButton.available = true;
-
-
 
 		// Load the level button
 		// Label of each button represents the level number
@@ -510,24 +513,30 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
-		Gdx.input.setInputProcessor(this);
+		if (levelPage != -1) {
+			Gdx.input.setInputProcessor(this);
+		}
+		else {
+//			Gdx.input.setInputProcessor(this);
+			Gdx.input.setInputProcessor(stage);
+		}
 		inputController.readInput(null,null);
-
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
-			volumeSlider.setValue(volumeSlider.getValue() - volumeSlider.getStepSize());
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-			volumeSlider.setValue(volumeSlider.getValue() + volumeSlider.getStepSize());
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) {
-			sensitivitySlider.setValue(sensitivitySlider.getValue() - sensitivitySlider.getStepSize());
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
-			sensitivitySlider.setValue(sensitivitySlider.getValue() + sensitivitySlider.getStepSize());
-		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+//			volumeSlider.setValue(volumeSlider.getValue() - volumeSlider.getStepSize());
+//		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+//			volumeSlider.setValue(volumeSlider.getValue() + volumeSlider.getStepSize());
+//		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) {
+//			sensitivitySlider.setValue(sensitivitySlider.getValue() - sensitivitySlider.getStepSize());
+//		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+//			sensitivitySlider.setValue(sensitivitySlider.getValue() + sensitivitySlider.getStepSize());
+//		}
 
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
