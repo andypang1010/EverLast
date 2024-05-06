@@ -110,7 +110,7 @@ public class EnemyModel extends CharactersModel{
     }
     List<Vector2Triple> triangles = new ArrayList<>();
     public void setTriangle(Vector2 v1, Vector2 v2, Vector2 v3) {
-        triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
+//        triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
     }
     public List<Vector2Triple> getTriangles() {return triangles;}
 

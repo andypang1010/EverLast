@@ -171,8 +171,8 @@ public class EnemyController extends CharactersController implements StateMachin
                 cone = new PolygonRegion(textureRegion, vertices, indices_c);
                 canvas.draw(cone, coneColor, 100, 100 ,0);
             }
+            ((EnemyModel) model).getTriangles().clear();
         }
-        ((EnemyModel) model).getTriangles().clear();
 
         // Draw enemy
         String direction = getDirection(enemy.getBody().getLinearVelocity().x,enemy.getBody().getLinearVelocity().y, previousDirection);
