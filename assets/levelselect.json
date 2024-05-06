@@ -10,7 +10,10 @@
         "level5": "levelSelect/level2.png",
         "lock": "ui/locked_level_UI.png",
         "emptystars": "ui/outline_stars.png",
-        "filledstars": "ui/filled_stars.png"
+        "filledstars": "ui/filled_stars.png",
+        "levelSelectButton": "levelSelect/levelSelectButton.png",
+        "settingsButton": "pauseScreen/Settings.png",
+        "exitGameButton": "levelSelect/exitgameButton.png"
 	},
   "fonts": {
       "font": {

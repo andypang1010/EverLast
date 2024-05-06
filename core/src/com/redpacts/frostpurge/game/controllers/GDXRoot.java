@@ -56,7 +56,6 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	@Override
 	public void render(){
-
 		// Update the game state
 		switch (mode){
 			case "loading":
@@ -117,8 +116,10 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
-		if (exitCode != 0) {
+		if (exitCode != 0 && exitCode != 1) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
+			Gdx.app.exit();
+		} else if (exitCode == 1) {
 			Gdx.app.exit();
 		} else if (screen == loading) {
 			loading.resetButton();
@@ -138,12 +139,12 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
-		} else if (screen == playing && playing.isHomeScreen()) {
+		} else if (screen == playing && playing.isSettings()) {
 			playing.resetButton();
-			loading.resetButton();
-			loading.setScreenListener(this);
-			setScreen(loading);
-			mode = "loading";
+			levelselect.levelPage = -1;
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
 		} else if (screen == playing && playing.isLevelSelectScreen()) {
 			playing.resetButton();
 
