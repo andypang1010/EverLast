@@ -251,15 +251,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		volumeSlider = new Slider(0f, 2f, 0.01f,false, skin);
 		volumeSlider.setValue(volumeSlider.getMaxValue() / 2);
-		volumeSlider.setSize(canvas.getWidth() / 3f, canvas.getHeight() / 20f);
-//		volumeSlider.setOrigin(volumeSlider.getWidth() / 2f, volumeSlider.getHeight() / 2f);
-		volumeSlider.setPosition(canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
 
 		sensitivitySlider = new Slider(0f, 2f, 0.01f,false, skin);
 		sensitivitySlider.setValue(volumeSlider.getMaxValue() / 2);
-		sensitivitySlider.setSize(canvas.getWidth() / 3f, canvas.getHeight() / 20f);
-//		sensitivitySlider.setOrigin(sensitivitySlider.getWidth() / 2f, sensitivitySlider.getHeight() / 2f);
-		sensitivitySlider.setPosition(canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
 
 
 		smallWindowButton = new ButtonBox(0,
@@ -372,16 +366,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //				font.getData().setScale(levelBox.fontScale*scale);
 //				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? levelBox.bounds.y*sy+levelBox.glyph.height*scale*1.25f : levelBox.bounds.y*sy+levelBox.glyph.height*scale);
 			if (levelPage == -1) {
-				canvas.drawTextCentered("Settings", font, 300);
 				levelSelectButton.hoveringButton(null, time, levels.size, levels);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-				canvas.drawText("Vol (1 - 2): ", font, canvas.getWidth() * 1f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawSlider(volumeSlider);
+				canvas.drawText("Volume: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawSlider(volumeSlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
 
-				canvas.drawText("Sen (9 - 0): ", font, canvas.getWidth() * 1f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawSlider(sensitivitySlider);
+				canvas.drawText("Sens: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
 
 				smallWindowButton.hoveringButton(null, time, levels.size, levels);
 				bounds = smallWindowButton.getBounds();
@@ -439,19 +432,21 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		} else{
 			// TODO: Support XBox
 			if (levelPage == -1){
-				canvas.drawTextCentered("Settings", font, 300);
 				levelSelectButton.hoveringButton(xbox,time,levels.size,levels);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 
-				canvas.drawSlider(volumeSlider);
-				canvas.drawSlider(sensitivitySlider);
+				canvas.drawText("Volume: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawSlider(volumeSlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
 
-				smallWindowButton.hoveringButton(xbox, time, levels.size, levels);
+				canvas.drawText("Sens: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+
+				smallWindowButton.hoveringButton(null, time, levels.size, levels);
 				bounds = smallWindowButton.getBounds();
 				canvas.draw(smallWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 
-				largeWindowButton.hoveringButton(xbox, time, levels.size, levels);
+				largeWindowButton.hoveringButton(null, time, levels.size, levels);
 				bounds = largeWindowButton.getBounds();
 				canvas.draw(largeWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 

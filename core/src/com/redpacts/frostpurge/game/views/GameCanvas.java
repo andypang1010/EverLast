@@ -332,8 +332,10 @@ public class GameCanvas {
         spriteBatch.draw(image, x, y, w, h);
     }
 
-    public void drawSlider(Slider slider) {
+    public void drawSlider(Slider slider, float width, float height, float x, float y) {
         slider.setColor(Color.WHITE);
+        slider.setSize(width, height);
+        slider.setPosition(x, y);
         slider.draw(spriteBatch, 1f);
     }
 
