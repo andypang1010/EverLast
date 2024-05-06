@@ -116,7 +116,7 @@ public class PlayerModel extends CharactersModel {
 
     public void addVacuumingProgression(int v){
         this.vacuumingProgression += v;
-        if(this.vacuumingProgression > 82){
+        if(this.vacuumingProgression > 30){
             this.vacuumingProgression = 0;
         }
     }

@@ -65,24 +65,24 @@ public class PlayerController extends CharactersController {
      */
     public void update(float horizontal, float vertical, boolean decelerate, boolean boost, boolean vacuum){
         ((PlayerModel) model).addBoostCoolDown(-1);
-        // Switch vacuum state
-//        if(((PlayerModel) model).getVacuumingProgression() > 0){
-//            int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
-//            if(vacuumFrame >= 1 && vacuumFrame <= 30){
-//                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.START);
-//            }else if(vacuumFrame >= 31 && vacuumFrame <= 52){
-//                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.VACUUM);
-//                if(vacuum){
-//                    ((PlayerModel) model).addVacuumingProgression(-1);
-//                }
-//            }else if(vacuumFrame >= 53 && vacuumFrame <= 82){
-//                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.END);
-//            }
-//            ((PlayerModel) model).addVacuumingProgression(1);
-//            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
-//        }else{
-//            ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.NONE);
-//        }
+//         Switch vacuum state
+        if(((PlayerModel) model).getVacuumingProgression() > 0){
+            int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
+            if(vacuumFrame >= 1 && vacuumFrame <= 9){
+                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.START);
+            }else if(vacuumFrame >= 10 && vacuumFrame <= 19){
+                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.VACUUM);
+                if(vacuum){
+                    ((PlayerModel) model).addVacuumingProgression(-1);
+                }
+            }else if(vacuumFrame >= 20 && vacuumFrame <= 30){
+                ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.END);
+            }
+            ((PlayerModel) model).addVacuumingProgression(1);
+            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
+        }else{
+            ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.NONE);
+        }
         setAngle(horizontal,vertical);
         if (!decelerate){
             model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
@@ -92,9 +92,9 @@ public class PlayerController extends CharactersController {
         if (boost){
             this.boost(horizontal, vertical);
         }
-        if(vacuum){
-            this.vacuum();
-        }
+//        if(vacuum){
+//            this.vacuum();
+//        }
         if (Math.abs(horizontal) >= .1f || Math.abs(vertical) >= .1f){
             model.setRotation(-(float) Math.toDegrees(Math.atan2(vertical,horizontal)));
         }
