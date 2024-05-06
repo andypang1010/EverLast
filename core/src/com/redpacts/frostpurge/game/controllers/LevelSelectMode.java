@@ -33,9 +33,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.ScreenListener;
@@ -241,8 +244,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		Skin skin = new Skin(Gdx.files.internal("ui/skin/clean-crispy-ui.json"));
 
 		// TODO: Handle SliderStyle
-		volumeSlider = new Slider(0f, 1f, 0.01f, false, skin);
-		volumeSlider.setValue(0.5f);
+//		volumeSlider = new Slider(0f, 1f, 0.01f, false, skin);
+//		volumeSlider.setValue(0.5f);
+
+		volumeSlider = new Slider(0f, 1f, 0.01f,false, skin);
+		volumeSlider.setValue(volumeSlider.getMaxValue() / 2);
+		volumeSlider.addListener(event -> {
+            System.out.println(volumeSlider.getValue());
+            return false;
+        });
 
 //		sensitivitySlider = new Slider(0f, 1f, 0.01f, false, skin);
 //		sensitivitySlider.setValue(0.5f);
@@ -500,11 +510,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public void render(float delta) {
 		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
-		if(inputController.didDecelerate()){
-			Gdx.graphics.setWindowedMode(1280, 720);
-		}else if(inputController.didBoost()){
-			Gdx.graphics.setWindowedMode(1920, 1080);
-		}
+//		if(smallWindowButton.isPressed()){
+//			Gdx.graphics.setWindowedMode(1280, 720);
+//		}else if(largeWindowButton.isPressed()){
+//			Gdx.graphics.setWindowedMode(1920, 1080);
+//		}
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
 //			update(delta);
@@ -614,6 +624,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //		for (LevelBox levelBox : levelBoxes) {
 //			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
 //				pressState = levelBox.label *2 -1;
+
+		if (smallWindowButton.isPressed()) {
+			Gdx.graphics.setWindowedMode(1280, 720);
+		}
+
+		if (largeWindowButton.isPressed()) {
+			Gdx.graphics.setWindowedMode(1920, 1080);
+		}
+
 		if(levelSelectButton.isPressed()){
 			pageDirection =1 ;
 		}

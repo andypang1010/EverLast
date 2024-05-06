@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import jdk.internal.org.jline.reader.Widget;
 
 public class GameCanvas {
@@ -335,7 +336,14 @@ public class GameCanvas {
         slider.setWidth(width);
         slider.setHeight(height);
         slider.setColor(Color.WHITE);
-        slider.draw(spriteBatch, 100f);
+        slider.draw(spriteBatch, 1f);
+    }
+
+    public void drawTextButton(TextButton textButton, float x, float y, float width, float height) {
+        textButton.setWidth(width);
+        textButton.setHeight(height);
+        textButton.setColor(Color.WHITE);
+        textButton.draw(spriteBatch, 1f);
     }
 
     /**
