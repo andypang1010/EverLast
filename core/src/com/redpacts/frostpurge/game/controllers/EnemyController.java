@@ -82,6 +82,34 @@ public class EnemyController extends CharactersController implements StateMachin
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
         }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+                graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y-64), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x-64, model.getPosition().y), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y+64), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x+64, model.getPosition().y), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
 
         setMoveDirection();
         targetTile = goalTile;
@@ -242,12 +270,38 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
 
             case CHASE:
-                System.out.println("IN CHASE STATE!");
 
                 // Update path to player every 0.5 seconds
                 if (updatePathCounter > 30){
                     setGoal(modelPositionToTile(playerModel));
+                    if (((EnemyModel) model).getID() == 1){
+//                        System.out.println(targetTile.getPosition());
+                        if (pathQueue.notEmpty()) {
+//                            System.out.println("next tile:");
+//                            System.out.println(pathQueue.first().getPosition());
+                        }
+                    }
                     updatePathCounter = 0;
+                    float dist =Vector2.dst(
+                            model.getBody().getPosition().x,
+                            model.getBody().getPosition().y,
+                            playerModel.getBody().getPosition().x,
+                            playerModel.getBody().getPosition().y);
+//                    System.out.println(dist);
+                    if (dist<10){
+                        speedMultiplier = 40;
+                    }else if (dist<15){
+                        speedMultiplier = 50;
+                    }
+                    else if (dist<20){
+                        speedMultiplier = 60;
+                    }else if (dist<25){
+                        speedMultiplier = 70;
+                    }else if (dist<30){
+                        speedMultiplier = 80;
+                    }else if (dist<35){
+                        speedMultiplier = 90;
+                    }
                 }
                 else {
                     updatePathCounter++;
