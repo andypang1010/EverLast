@@ -323,6 +323,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * prefer this in lecture.
 	 */
 	private void draw() {
+		font.getData().setScale(scale);
 		canvas.begin();
 		canvas.drawBackground(background, 0, 0, true);
 		Rectangle bounds;
