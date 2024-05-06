@@ -31,27 +31,17 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.XBoxController;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
 import com.badlogic.gdx.utils.Array;
-
-import java.awt.*;
 
 /**
  * Class that provides a loading screen for the state of the game.
@@ -96,9 +86,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private ButtonBox levelSelectButton;
 	private Texture settingsTexture;
 	private ButtonBox settingsButton;
-	private Stage stage;
-	public static Slider volumeSlider;
-	public static Slider sensitivitySlider;
+	private ButtonBox volumeLowButton;
+	private ButtonBox volumeHighButton;
+	public static ProgressBar volumeBar;
+	private ButtonBox sensitivityLowButton;
+	private ButtonBox sensitivityHighButton;
+	public static ProgressBar sensitivityBar;
 	private ButtonBox smallWindowButton;
 	private ButtonBox largeWindowButton;
 	private Array<ButtonBox> levels;
@@ -246,20 +239,27 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		Skin skin = new Skin(Gdx.files.internal("ui/skin/clean-crispy-ui.json"));
 
-		// TODO: Handle SliderStyle
-//		volumeSlider = new Slider(0f, 1f, 0.01f, false, skin);
-//		volumeSlider.setValue(0.5f);
+		volumeBar = new ProgressBar(0f, 1f, 0.05f,false, skin);
+		volumeBar.setValue(volumeBar.getMaxValue() / 2);
 
-		stage = new Stage(new ScreenViewport());
+		volumeLowButton = new ButtonBox(0,
+				new Rectangle(canvas.getWidth() * 3.5f / 7f - volumeBar.getWidth() - 120f, canvas.getHeight() * 3f / 5f - 20f, levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		volumeLowButton.available = true;
 
-		volumeSlider = new Slider(0f, 1f, 0.01f,false, skin);
-		volumeSlider.setValue(volumeSlider.getMaxValue() / 2);
+		volumeHighButton = new ButtonBox(0,
+				new Rectangle(canvas.getWidth() * 3.9f / 7f + volumeBar.getWidth() + 120f, canvas.getHeight() * 3f / 5f - 20f, levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		volumeHighButton.available = true;
 
-		sensitivitySlider = new Slider(0f, 2f, 0.02f,false, skin);
-		sensitivitySlider.setValue(sensitivitySlider.getMaxValue() / 2);
+		sensitivityBar = new ProgressBar(0f, 2f, 0.1f,false, skin);
+		sensitivityBar.setValue(sensitivityBar.getMaxValue() / 2);
 
-		stage.addActor(volumeSlider);
-		stage.addActor(sensitivitySlider);
+		sensitivityLowButton = new ButtonBox(0,
+				new Rectangle(canvas.getWidth() * 3.5f / 7f - sensitivityBar.getWidth() - 120f, canvas.getHeight() * 2f / 5f - 20f, levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		sensitivityLowButton.available = true;
+
+		sensitivityHighButton = new ButtonBox(0,
+				new Rectangle(canvas.getWidth() * 3.9f / 7f + sensitivityBar.getWidth() + 120f, canvas.getHeight() * 2f / 5f - 20f, levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		sensitivityHighButton.available = true;
 
 		smallWindowButton = new ButtonBox(0,
 				new Rectangle(canvas.getWidth() * 3f / 10f, canvas.getHeight() * 2f / 15f, settingsTexture.getWidth(), settingsTexture.getHeight()), settingsTexture, this);
@@ -373,11 +373,28 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-				canvas.drawText("Volume: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawSlider(volumeSlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
+				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
 
-				canvas.drawText("Sens: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+				volumeLowButton.hoveringButton(null, time, levels.size, levels);
+				bounds = volumeLowButton.getBounds();
+				canvas.draw(volumeLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				volumeHighButton.hoveringButton(null, time, levels.size, levels);
+				bounds = volumeHighButton.getBounds();
+				canvas.draw(volumeHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+
+				sensitivityLowButton.hoveringButton(null, time, levels.size, levels);
+				bounds = sensitivityLowButton.getBounds();
+				canvas.draw(sensitivityLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				sensitivityHighButton.hoveringButton(null, time, levels.size, levels);
+				bounds = sensitivityHighButton.getBounds();
+				canvas.draw(sensitivityHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
 
 				smallWindowButton.hoveringButton(null, time, levels.size, levels);
 				bounds = smallWindowButton.getBounds();
@@ -439,11 +456,20 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 
-				canvas.drawText("Volume: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawSlider(volumeSlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
+				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
 
-				canvas.drawText("Sens: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawSlider(sensitivitySlider, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+
+				sensitivityLowButton.hoveringButton(null, time, levels.size, levels);
+				bounds = sensitivityLowButton.getBounds();
+				canvas.draw(sensitivityLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				sensitivityHighButton.hoveringButton(null, time, levels.size, levels);
+				bounds = sensitivityHighButton.getBounds();
+				canvas.draw(sensitivityHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
 
 				smallWindowButton.hoveringButton(null, time, levels.size, levels);
 				bounds = smallWindowButton.getBounds();
@@ -513,13 +539,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
-		if (levelPage != -1) {
-			Gdx.input.setInputProcessor(this);
-		}
-		else {
-//			Gdx.input.setInputProcessor(this);
-			Gdx.input.setInputProcessor(stage);
-		}
+		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
 //
 //		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
@@ -647,6 +667,22 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //		for (LevelBox levelBox : levelBoxes) {
 //			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
 //				pressState = levelBox.label *2 -1;
+
+		if (volumeLowButton.isPressed()) {
+			volumeBar.setValue(volumeBar.getValue() - volumeBar.getStepSize());
+		}
+
+		if (volumeHighButton.isPressed()) {
+			volumeBar.setValue(volumeBar.getValue() + volumeBar.getStepSize());
+		}
+
+		if (sensitivityLowButton.isPressed()) {
+			sensitivityBar.setValue(sensitivityBar.getValue() - sensitivityBar.getStepSize());
+		}
+
+		if (sensitivityHighButton.isPressed()) {
+			sensitivityBar.setValue(sensitivityBar.getValue() + sensitivityBar.getStepSize());
+		}
 
 		if (smallWindowButton.isPressed()) {
 			Gdx.graphics.setWindowedMode(1280, 720);
