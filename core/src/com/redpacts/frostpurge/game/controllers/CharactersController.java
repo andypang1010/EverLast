@@ -27,10 +27,13 @@ public abstract class CharactersController {
         else{
             time += Gdx.graphics.getDeltaTime();
         }
+
         FilmStrip running = model.getFilmStrip(type);
+        if (model instanceof EnemyModel && ((EnemyModel) model).getID() == 1){
+//            System.out.println(running.getFrame());
+//            System.out.println(running);
+        }
         int frame = (running == null ? 11 : running.getFrame());
-        System.out.println("FRAME");
-        System.out.println(frame);
         if (running != null) {
             if (type.startsWith("idle") || type.startsWith("vacuumstart") || type.startsWith("vacuumend")){
                 if (time >= .25){

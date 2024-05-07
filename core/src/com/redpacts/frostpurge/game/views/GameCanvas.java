@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
 public class GameCanvas {
     /** While we are not drawing polygons (yet), this spritebatch is more reliable */
@@ -327,6 +329,13 @@ public class GameCanvas {
         }
         spriteBatch.setColor(Color.WHITE);
         spriteBatch.draw(image, x, y, w, h);
+    }
+
+    public void drawBar(ProgressBar bar, float width, float height, float x, float y) {
+        bar.setColor(Color.WHITE);
+        bar.setSize(width, height);
+        bar.setPosition(x, y);
+        bar.draw(spriteBatch, 1f);
     }
 
     /**
