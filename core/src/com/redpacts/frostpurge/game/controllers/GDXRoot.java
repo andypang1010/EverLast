@@ -27,6 +27,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LevelSelectMode levelselect;
 	private AssetDirectory directory;
 	private String mode;
+	SaveFileManager saveFileManager;
 	/**
 	 * Creates a new game from the configuration settings.
 	 *
@@ -55,7 +56,6 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	@Override
 	public void render(){
-
 		// Update the game state
 		switch (mode){
 			case "loading":
@@ -116,15 +116,16 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
-		if (exitCode != 0) {
+		if (exitCode != 0 && exitCode != 1) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
+		} else if (exitCode == 1) {
+			Gdx.app.exit();
 		} else if (screen == loading) {
+			loading.resetButton();
+
 			directory = loading.getAssets();
 			playing.populate(directory);
-
-			loading.dispose();
-			loading = null;
 
 			levelselect = new LevelSelectMode(canvas);
 			levelselect.setScreenListener(this);
@@ -133,11 +134,27 @@ public class GDXRoot extends Game implements ScreenListener {
 
 		} else if (screen == levelselect) {
 			levelselect.resetPressState();
-			playing.loadLevel(levelselect.getLevel());
+
+			playing.loadLevel(levelselect.getLevel(), levelselect.getSaveFile());
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
+		} else if (screen == playing && playing.isSettings()) {
+			playing.resetButton();
+			levelselect.levelPage = -1;
+			levelselect.levelSelectButton.resize("up");
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
+		} else if (screen == playing && playing.isLevelSelectScreen()) {
+			playing.resetButton();
+
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
 		} else if (screen == playing) {
+			playing.resetButton();
+
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";

@@ -132,8 +132,10 @@ public class LevelController {
      */
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
         int x,y,rotation;
-        int enemyID;
+        int id;
+        int base = 3;
         String type;
+        String label;
         JsonValue objects = layer.get("objects").child();
         while (objects != null){
             x = objects.getInt("x");
@@ -149,18 +151,32 @@ public class LevelController {
                 case "enemy":
                     properties = properties.next();
                     x+= 75;
-                    enemyID = properties.getInt("value");
-                    System.out.println(enemyID);
-                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, enemyID);
+                    id = properties.getInt("value");
+                    System.out.println(id);
+                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, id);
                     break;
                 case "waypoint":
                     properties = properties.next();
-                    enemyID = properties.getInt("value");
+                    id = properties.getInt("value");
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
                     x += 32;
-                    System.out.println(enemyID);
-                    level.addWaypoint(x,height*64 - y,enemyID,pointNumber);
+                    System.out.println(id);
+                    level.addWaypoint(x,height*64 - y,id,pointNumber);
+                    break;
+                case "bouncy":
+                    properties = properties.next();
+                    id = properties.getInt("value");
+                    properties = properties.next();
+                    label = properties.getString("value");
+                    level.createBouncy(x,(height*64-y),rotation,directory, id, label, base);
+                    break;
+                case "breakable":
+                    properties = properties.next();
+                    id = properties.getInt("value");
+                    properties = properties.next();
+                    label = properties.getString("value");
+                    level.createBreakable(x,(height*64-y),rotation,directory, id, label, base);
                     break;
             }
             objects = objects.next();

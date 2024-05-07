@@ -61,9 +61,8 @@ public class GoalTile extends TileModel{
         // Set the position of the obstacle
         bodyDef.position.set(this.getPosition().cpy().add(64f / 2, 64f / 2).scl(0.1f));
 
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
         body.setUserData(this);
-        body.setSleepingAllowed(false);
 
         // TODO: shape needs scaling
         PolygonShape shape = new PolygonShape();
