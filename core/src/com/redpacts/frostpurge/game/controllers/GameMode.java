@@ -396,6 +396,8 @@ public class GameMode implements Screen, InputProcessor {
     }
 
     public void update(float delta) {
+        Gdx.input.setCursorCatched(gameState == GameState.PLAY);
+
         if (gameState!= GameState.PLAY){
             for (EnemyController enemy : enemyControllers){
                 enemy.playQuack(false);
@@ -499,7 +501,6 @@ public class GameMode implements Screen, InputProcessor {
         if (gameState == GameState.PLAY){
             currentTime -= Gdx.graphics.getDeltaTime();
             playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
-            Gdx.input.setCursorCatched(true);
         }
 
 

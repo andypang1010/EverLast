@@ -103,7 +103,7 @@ public class PlayerController extends CharactersController {
         if (!decelerate){
             playAccelerate(true);
 //            System.out.println("PLAYER VELOCITY: " + model.getBody().getLinearVelocity().len());
-            model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
+            model.getBody().applyForceToCenter(-horizontal*1.5f, vertical*1.5f, true);
 
 //            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().cpy().nor().scl(Math.min(model.getBody().getLinearVelocity().len(), MAX_SPEED)));
         }else{
@@ -112,7 +112,7 @@ public class PlayerController extends CharactersController {
         }
 
         if (boost){
-            this.boost(horizontal, vertical);
+            this.boost(-horizontal, -vertical);
 
         }
 //        if(vacuum){
@@ -159,7 +159,7 @@ public class PlayerController extends CharactersController {
         // Draw player
         switch (((PlayerModel) model).getGameOverState()) {
             case 0: // Player active
-                String direction = getDirection(horizontal,vertical,previousDirection);
+                String direction = getDirection(-horizontal, -vertical, previousDirection);
                 int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
                 if(((PlayerModel) model).getVacuumingState() == PlayerModel.VacuumingState.START){
                     model.resetFilmStrip(model.getFilmStrip("vacuum"+direction));

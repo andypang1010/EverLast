@@ -194,16 +194,16 @@ public class InputController {
                 y = 0;
             }
             normalize(x,y);
-            if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
+            if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)){
                 horizontal = normalization[0];
                 vertical = normalization[1];
             }else{
                 horizontal = 0;
                 vertical = 0;
             }
-            boostPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-            vacuumPressed = Gdx.input.isButtonPressed((Input.Buttons.MIDDLE));
-            deceleratePressed = !Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+            boostPressed = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+            vacuumPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+            deceleratePressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
             exitPressed = Gdx.input.isKeyPressed(Input.Keys.BACKSPACE);
             debugPressed = Gdx.input.isKeyPressed(Input.Keys.D);
             replayPressed = Gdx.input.isKeyPressed(Input.Keys.R);
