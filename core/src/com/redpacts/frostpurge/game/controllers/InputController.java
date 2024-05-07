@@ -2,7 +2,6 @@ package com.redpacts.frostpurge.game.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -161,8 +160,8 @@ public class InputController {
      */
     public void readInput(Rectangle bounds, Vector2 scale) {
         if (xbox != null){
-            float x = xbox.getLeftX();
-            float y = xbox.getLeftY();
+            float x = xbox.getLeftX() * LevelSelectMode.sensitivityBar.getValue();
+            float y = xbox.getLeftY() * LevelSelectMode.sensitivityBar.getValue();
             if (Math.abs(x) < xbox.getDeadZone()){
                 x = 0;
             }
@@ -186,8 +185,8 @@ public class InputController {
             // Remember the current state for the next frame
             previousPausePressed = currentPausePressed;
         }else{
-            float x = Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2;
-            float y = Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2;
+            float x = (Gdx.input.getX() - (float) Gdx.graphics.getWidth() / 2) * LevelSelectMode.sensitivityBar.getValue();
+            float y = (Gdx.input.getY() - (float) Gdx.graphics.getHeight() / 2) * LevelSelectMode.sensitivityBar.getValue();
             if (Math.abs(x) < 10f){
                 x = 0;
             }
