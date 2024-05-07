@@ -405,11 +405,46 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         if (gameState == GameState.OVER){
-            drawRetryScreen();
-            return; // Skip the rest of the update loop
+            if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.addGameOver();
+            } else{
+                playerModel.setGameOverState(0);
+                drawRetryScreen();
+                return; // Skip the rest of the update loop
+            }
+
         } else if (gameState == GameState.WIN){
-            drawWinScreen();
-            return;
+            if (playerModel.getGameOver()){
+                playerModel.addGameOver();
+            } else{
+                playerModel.setGameOverState(0);
+                drawWinScreen();
+                return;
+            }
+        } else if (currentTime <= 0 || !playerModel.isAlive()) {
+            gameState = GameState.OVER;
+            playerModel.startGameOver();
+            playerModel.setGameOverState(-1);
+            pauseButton.resize("down");
+            resumeButton.resize("down");
+            retryButton.resize("up");
+            levelSelectButton.resize("down");
+            homeButton.resize("down");
+        } else if (playerModel.didwin()){
+            gameState = GameState.WIN;
+            playerModel.setWin(false);
+
+            saveFileManager.saveGame(currentLevel.getName(),true, true, (maxTime - currentTime),currentTime);
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0,0);
+
+            playerModel.startGameOver();
+            playerModel.setGameOverState(1);
+
+            pauseButton.resize("down");
+            resumeButton.resize("down");
+            retryButton.resize("down");
+            levelSelectButton.resize("up");
+            homeButton.resize("down");
         }
 
         if (gameState == GameState.PLAY){
@@ -417,33 +452,6 @@ public class GameMode implements Screen, InputProcessor {
             playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
         }
 
-        if (currentTime <= 0) {
-            gameState = GameState.OVER;
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("up");
-            levelSelectButton.resize("down");
-            homeButton.resize("down");
-        }
-        if (!playerModel.isAlive()){
-            gameState = GameState.OVER;
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("up");
-            levelSelectButton.resize("down");
-            homeButton.resize("down");
-        }
-        if (playerModel.didwin()){
-            gameState = GameState.WIN;
-            playerModel.setWin(false);
-            saveFileManager.saveGame(currentLevel.getName(),true, true, (maxTime - currentTime),currentTime);
-            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0,0);
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("down");
-            levelSelectButton.resize("up");
-            homeButton.resize("down");
-        }
 
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){

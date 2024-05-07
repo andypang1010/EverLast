@@ -447,9 +447,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		}
 		// Flip to match graphics coordinates
 		screenY = heightY-screenY;
-
-		if (isStartPressed()){
-			pressState = 1;
+		if (assets.isFinished()) {
+			if (isStartPressed()) {
+				pressState = 1;
+			}
 		}
 		return false;
 	}
