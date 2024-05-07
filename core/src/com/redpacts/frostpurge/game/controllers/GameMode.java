@@ -401,6 +401,10 @@ public class GameMode implements Screen, InputProcessor {
                 enemy.playQuack(false);
             }
         }
+
+        else {
+            sample.setVolume(0.15f * LevelSelectMode.volumeBar.getValue());
+        }
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
         buttonDown(inputController.xbox, 0);
@@ -697,7 +701,6 @@ public class GameMode implements Screen, InputProcessor {
 //        song = engine.newMusicBuffer( false, 44100 );
         sample = directory.getEntry( "song", Music.class );
         sample.setLooping(true);
-        sample.setVolume(0.05f);
 //        song.addSource(sample);
         int tilewidth = 64;
         int tileheight = 64;
