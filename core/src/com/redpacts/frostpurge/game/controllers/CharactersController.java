@@ -29,8 +29,8 @@ public abstract class CharactersController {
         }
         FilmStrip running = model.getFilmStrip(type);
         int frame = (running == null ? 11 : running.getFrame());
-        System.out.println("FRAME");
-        System.out.println(frame);
+       // System.out.println("FRAME");
+        //System.out.println(frame);
         if (running != null) {
             if (type.startsWith("idle") || type.startsWith("vacuumstart") || type.startsWith("vacuumend")){
                 if (time >= .25){

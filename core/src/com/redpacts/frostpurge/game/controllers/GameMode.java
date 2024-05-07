@@ -482,11 +482,13 @@ public class GameMode implements Screen, InputProcessor {
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
-                if (currentLevel.getAccentLayer()[i][j]!=null){
-                    drawble.add(currentLevel.getAccentLayer()[i][j]);
+                TileModel accentTile = currentLevel.getAccentLayer()[i][j];
+                TileModel extraTile = currentLevel.getExtraLayer()[i][j];
+                if(accentTile!=null && playerModel.getPosition().cpy().sub(accentTile.getPosition()).len() <= 1600){
+                    drawble.add(accentTile);
                 }
-                if (currentLevel.getExtraLayer()[i][j]!=null){
-                    drawble.add(currentLevel.getExtraLayer()[i][j]);
+                if(extraTile!=null && playerModel.getPosition().cpy().sub(extraTile.getPosition()).len() <= 1600){
+                    drawble.add(extraTile);
                 }
             }
         }
