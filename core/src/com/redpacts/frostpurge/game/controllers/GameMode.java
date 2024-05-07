@@ -697,7 +697,7 @@ public class GameMode implements Screen, InputProcessor {
 //        song = engine.newMusicBuffer( false, 44100 );
         sample = directory.getEntry( "song", Music.class );
         sample.setLooping(true);
-        sample.setVolume(.5f);
+        sample.setVolume(0.05f);
 //        song.addSource(sample);
         int tilewidth = 64;
         int tileheight = 64;

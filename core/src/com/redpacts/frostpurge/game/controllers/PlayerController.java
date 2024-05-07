@@ -129,7 +129,7 @@ public class PlayerController extends CharactersController {
         long soundId = ((PlayerModel) model).getActionId(PlayerModel.Actions.ACCELERATE);
 
         if (on) {
-            accelerateSound.setVolume(soundId, Math.min(model.getBody().getLinearVelocity().len() / 120f, 1f));
+            accelerateSound.setVolume(soundId, Math.min(model.getBody().getLinearVelocity().len() / 120f, 1f) * LevelSelectMode.volumeBar.getValue());
 
             if (soundId == -1) {
                 soundId = accelerateSound.loop();
@@ -142,7 +142,7 @@ public class PlayerController extends CharactersController {
     }
 
     public void playBoost() {
-        boostSound.play(1);
+        boostSound.play(1 *  LevelSelectMode.volumeBar.getValue());
     }
 
     public Vector2 cameraOffsetPos() {

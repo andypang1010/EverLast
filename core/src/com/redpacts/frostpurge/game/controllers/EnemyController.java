@@ -373,7 +373,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
         if (on) {
 //            quackSound.setVolume(soundId, 1 / (model.getPosition().cpy().sub(playerModel.getPosition()).len()));
-            quackSound.setVolume(soundId, 0.4f);
+            quackSound.setVolume(soundId, 0.4f  * LevelSelectMode.volumeBar.getValue());
             if (soundId == -1) {
                 soundId = quackSound.loop();
                 ((EnemyModel) model).setQuackId(soundId);
