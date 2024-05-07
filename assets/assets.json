@@ -3,15 +3,31 @@
     "Tile" : "environment/tile.jpg",
     "House" : "environment/House_Color.png",
     "Plant" : "environment/Plant1_Color.png",
+    "Liv_Death": "characters/livDeath.png",
+    "Liv_Win": "characters/livWin.png",
     "Liv_Run_Left": "characters/filmstripleft.png",
     "Liv_Run_Right": "characters/filmstripright.png",
     "Liv_Run_Up": "characters/filmstripup.png",
     "Liv_Idle_Right": "characters/filmstripidle.png",
     "Liv_Idle_Left": "characters/idleleft.png",
     "Liv_Idle_Up": "characters/idleup.png",
-    "StatusBar_BG": "ui/StatusBar_BG.png",
-    "StatusBar_Boost": "ui/StatusBar_boostBar.png",
-    "StatusBar_Health": "ui/StatusBar_healthBar.png",
+    "Liv_Run_Left_Damaged": "characters/damaged/filmstripleft.png",
+    "Liv_Run_Right_Damaged": "characters/damaged/filmstripright.png",
+    "Liv_Run_Up_Damaged": "characters/damaged/filmstripup.png",
+    "Liv_Idle_Right_Damaged": "characters/damaged/filmstripidle.png",
+    "Liv_Idle_Left_Damaged": "characters/damaged/idleleft.png",
+    "Liv_Idle_Up_Damaged": "characters/damaged/idleup.png",
+    "Liv_Vacuum_Start_Left": "characters/leftstart.png",
+    "Liv_Vacuum_Left": "characters/leftvacuum.png",
+    "Liv_Vacuum_End_Left": "characters/leftend.png",
+    "Liv_Vacuum_Start_Right": "characters/rightstart.png",
+    "Liv_Vacuum_Right": "characters/rightvacuum.png",
+    "Liv_Vacuum_End_Right": "characters/rightend.png",
+    "StatusBar_BG": "ui/empty_health_bar.png",
+    "StatusBar_Boost": "ui/boost_bar_fire.png",
+    "StatusBar_Health": "ui/health_bar.png",
+    "Heart_Beat": "ui/heart_beat_normal_filmstrip.png",
+    "Heart_Hurt": "ui/heart_hurt_filmstrip.png",
     "EnemyLR": "enemies/enemyLRfilmstripEDIT1.png",
     "EnemyUp": "enemies/enemyUpfilmstripEDIT1.png",
     "EnemyDown": "enemies/enemyDownfilmstripEDIT1.png",
@@ -23,11 +39,17 @@
     "tileset": "Tilesets/TileSet.png"
   },
   "sounds" : {
-
+    "Accelerate" : "sound/accelerate.wav",
+    "Boost" : "sound/boost.wav",
+    "Collide" : "sound/collide.wav",
+    "Quack" : "sound/quack.wav"
+  },
+  "music": {
+    "song" : "sound/level.ogg"
   },
   "fonts": {
     "font": {
-      "file": "ui/gamefont.ttf",
+      "file": "ui/racetime.ttf",
       "size": 64
     }
   },

@@ -1,6 +1,7 @@
 package com.redpacts.frostpurge.game.models;
 
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -32,6 +33,9 @@ public class EnemyModel extends CharactersModel{
         return enemyID;
     }
 
+    private Sound quackSound;
+    private long quackId;
+
     /**
      * Instantiates the player with their starting location and angle and with their texture
      * @param position vector2 representing the starting location
@@ -51,13 +55,13 @@ public class EnemyModel extends CharactersModel{
         idleup = idleright;
 
         run_right = new FilmStrip(duck, 1, 8, 8);
-        run_right.setFrame(4);
+//        run_right.setFrame(4);
 
         TextureRegion left = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class ));
         left.flip(false,true);
 
         run_left = new FilmStrip(left.getTexture(),1,8,8);
-        run_left.setFrame(4);
+//        run_left.setFrame(4);
 
         Texture up= new TextureRegion(directory.getEntry( "EnemyUp", Texture.class )).getTexture();
         run_up = new FilmStrip(up, 1, 7, 7);
@@ -65,6 +69,8 @@ public class EnemyModel extends CharactersModel{
         Texture down = new TextureRegion(directory.getEntry( "EnemyDown", Texture.class )).getTexture();
         run_down = new FilmStrip(down, 1, 8, 8);
 
+        quackSound = directory.getEntry("Quack", Sound.class);
+        quackId = -1;
 
         this.startpatrol = startpatrol;
         type = "enemy";
@@ -110,7 +116,7 @@ public class EnemyModel extends CharactersModel{
     }
     List<Vector2Triple> triangles = new ArrayList<>();
     public void setTriangle(Vector2 v1, Vector2 v2, Vector2 v3) {
-        triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
+//        triangles.add(new Vector2Triple(v1.cpy(), v2.cpy(), v3.cpy()));
     }
     public List<Vector2Triple> getTriangles() {return triangles;}
 
@@ -136,7 +142,6 @@ public class EnemyModel extends CharactersModel{
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
-        body.setSleepingAllowed(false);
 
         // TODO: getTexture is not scaled...
 //        shape.setAsBox((float) this.getTexture().getWidth() / 2,
@@ -162,5 +167,21 @@ public class EnemyModel extends CharactersModel{
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
+    }
+
+    public Sound getQuack() {
+        return quackSound;
+    }
+
+    public void setQuack(Sound sound) {
+        quackSound = sound;
+    }
+
+    public long getQuackId() {
+        return quackId;
+    }
+
+    public void setQuackId(long id) {
+        quackId = id;
     }
 }

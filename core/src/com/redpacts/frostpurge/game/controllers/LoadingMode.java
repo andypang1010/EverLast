@@ -447,9 +447,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		}
 		// Flip to match graphics coordinates
 		screenY = heightY-screenY;
-
-		if (isStartPressed()){
-			pressState = 1;
+		if (assets.isFinished()) {
+			if (isStartPressed()) {
+				pressState = 1;
+			}
 		}
 		return false;
 	}
@@ -487,7 +488,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	public boolean buttonDown (Controller controller, int buttonCode) {
 		if (pressState == 0) {
 			ControllerMapping mapping = controller.getMapping();
-			if (mapping != null && buttonCode == mapping.buttonStart) {
+			if (mapping != null && buttonCode == mapping.buttonStart && assets.isFinished()) {
 				pressState = 1;
 				return false;
 			}

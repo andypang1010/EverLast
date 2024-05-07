@@ -26,12 +26,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
@@ -41,6 +44,8 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 import com.badlogic.gdx.math.Rectangle;
 
 import com.badlogic.gdx.utils.Array;
+
+import java.util.Locale;
 
 /**
  * Class that provides a loading screen for the state of the game.
@@ -71,6 +76,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * Background texture for level-select
 	 */
 	private Texture background;
+	private Texture settingsBackground;
 	/**
 	 * Texture for forward button
 	 */
@@ -81,6 +87,27 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	private Texture backwardTexture;
 	private ButtonBox backwardButton;
+	private Texture levelSelectTexture;
+	public ButtonBox levelSelectButton;
+	private Texture settingsTexture;
+	private ButtonBox settingsButton;
+	private Texture incTexture;
+
+	private ButtonBox volumeLowButton;
+	private Texture decTexture;
+	private ButtonBox volumeHighButton;
+	public static ProgressBar volumeBar;
+	private ButtonBox sensitivityLowButton;
+	private ButtonBox sensitivityHighButton;
+	public static ProgressBar sensitivityBar;
+	private Texture smallWindowTexture;
+	private ButtonBox smallWindowButton;
+	private Texture largeWindowTexture;
+	private ButtonBox largeWindowButton;
+
+	private Texture exitTexture;
+	private ButtonBox exitButton;
+
 	private Array<ButtonBox> levels;
 	/** Texture atlas to support a progress bar */
 
@@ -136,6 +163,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	Texture emptyStars;
 	TextureRegion stars;
 	Texture lock;
+	Music sample;
 
 
 	public String getLevel(){
@@ -200,6 +228,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		// Load the background
 		background = assets.getEntry("background", Texture.class);
 		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		settingsBackground = assets.getEntry("settingsBackground",Texture.class);
+		settingsBackground.setFilter(TextureFilter.Linear,TextureFilter.Linear);
+
 		emptyStars = assets.getEntry("emptystars",Texture.class);
 		stars = new TextureRegion(assets.getEntry("filledstars",Texture.class));
 		lock = assets.getEntry("lock",Texture.class);
@@ -207,13 +238,64 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		forwardTexture = assets.getEntry("forwardButton", Texture.class);
 		forwardButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 85 / 100, canvas.getHeight() * 2/15, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
+				new Rectangle(canvas.getWidth() * 85 / 100, canvas.getHeight() * 1/18, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
 		forwardButton.available = true;
 
 		backwardTexture = assets.getEntry("backwardButton", Texture.class);
 		backwardButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 2/15, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
+				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 1/18, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
 		backwardButton.available = true;
+
+		levelSelectTexture = assets.getEntry("levelSelectButton",Texture.class);
+		levelSelectButton = new ButtonBox(-1,new Rectangle(canvas.getWidth()*6/100,canvas.getHeight()*2/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		levelSelectButton.available = true;
+
+		settingsTexture = assets.getEntry("settingsButton",Texture.class);
+		settingsButton = new ButtonBox(-2,new Rectangle(canvas.getWidth()*93/100,canvas.getHeight()*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
+		settingsButton.available = true;
+
+
+		Skin skin = new Skin(Gdx.files.internal("ui/skin/clean-crispy-ui.json"));
+
+		volumeBar = new ProgressBar(0f, 1f, 0.05f,false, skin);
+		volumeBar.setValue(volumeBar.getMaxValue() / 2);
+
+		incTexture = assets.getEntry("incButton",Texture.class);
+		decTexture = assets.getEntry("decButton",Texture.class);
+		smallWindowTexture = assets.getEntry("smallRes",Texture.class);
+		largeWindowTexture = assets.getEntry("largeRes",Texture.class);
+
+		volumeLowButton = new ButtonBox(-3,
+				new Rectangle(canvas.getWidth() * 3.17f / 7f - volumeBar.getWidth() - 120f, canvas.getHeight() * 3f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
+		volumeLowButton.available = true;
+
+		volumeHighButton = new ButtonBox(-4,
+				new Rectangle(canvas.getWidth() * 3.57f / 7f + volumeBar.getWidth() + 120f, canvas.getHeight() * 3f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
+		volumeHighButton.available = true;
+
+		sensitivityBar = new ProgressBar(0f, 2f, 0.1f,false, skin);
+		sensitivityBar.setValue(sensitivityBar.getMaxValue() / 2);
+
+		sensitivityLowButton = new ButtonBox(-5,
+				new Rectangle(canvas.getWidth() * 3.17f / 7f - sensitivityBar.getWidth() - 120f, canvas.getHeight() * 2f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
+		sensitivityLowButton.available = true;
+
+		sensitivityHighButton = new ButtonBox(-6,
+				new Rectangle(canvas.getWidth() * 3.57f / 7f + sensitivityBar.getWidth() + 120f, canvas.getHeight() * 2f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
+		sensitivityHighButton.available = true;
+
+		smallWindowButton = new ButtonBox(-7,
+				new Rectangle(canvas.getWidth() * 2.6f / 10f, canvas.getHeight() * 2f / 15f, smallWindowTexture.getWidth(), smallWindowTexture.getHeight()), smallWindowTexture, this);
+		smallWindowButton.available = true;
+
+		largeWindowButton = new ButtonBox(-8,
+				new Rectangle(canvas.getWidth() * 6.8f / 11f, canvas.getHeight() * 2f / 15f, largeWindowTexture.getWidth(), largeWindowTexture.getHeight()), largeWindowTexture, this);
+		largeWindowButton.available = true;
+
+
+		exitTexture = assets.getEntry("exitGameButton",Texture.class);
+		exitButton = new ButtonBox(-9,new Rectangle(canvas.getWidth()*45/100,canvas.getHeight()*1/15,exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
+		exitButton.available = true;
 
 		// Load the level button
 		// Label of each button represents the level number
@@ -222,24 +304,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pageDirection = 0;
 		Texture button1 = assets.getEntry("level1", Texture.class);
 		ButtonBox level1Button = new ButtonBox(1,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, button1.getWidth(), button1.getHeight()), button1, this);
+				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
 
 		Texture button2 = assets.getEntry("level2", Texture.class);
 		ButtonBox level2Button = new ButtonBox(2,
-				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button2.getWidth(), button2.getHeight()), button2, this);
+				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
 
 		Texture button3 = assets.getEntry("level3", Texture.class);
 		ButtonBox level3Button = new ButtonBox(3,
-				new Rectangle(canvas.getWidth() * 58 / 100, canvas.getHeight() * 5/18, button3.getWidth(), button3.getHeight()), button3, this);
+				new Rectangle(canvas.getWidth() * 61 / 100, canvas.getHeight() * 5/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
 
 		// TODO: Change scale when we have actual button for level 4, 5
 		Texture button4 = assets.getEntry("level4", Texture.class);
 		ButtonBox level4Button = new ButtonBox(4,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, button4.getWidth(), button4.getHeight()), button4, this);
+				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
 
 		Texture button5 = assets.getEntry("level5", Texture.class);
 		ButtonBox level5Button = new ButtonBox(5,
-				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button5.getWidth(), button5.getHeight()), button5, this);
+				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
 
 		levels = new Array<>(numberOfLevels);
 		levels.add(level1Button);
@@ -253,6 +335,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pressState = 0;
 
 		active = true;
+
+		sample = assets.getEntry( "song", Music.class );
+		sample.setLooping(true);
 
 		// Let ANY connected controller start the game.
 		for (XBoxController controller : Controllers.get().getXBoxControllers()) {
@@ -268,6 +353,13 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		game = new SaveFileManager(assets.getEntry("savedata", JsonValue.class));
 	}
 
+	public void playmusic(){
+		sample.setPosition(0);
+		sample.play();
+	}
+	public void pausemusic(){
+		sample.pause();
+	}
 	/**
 	 * Called when this screen should release all resources.
 	 */
@@ -304,68 +396,164 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * prefer this in lecture.
 	 */
 	private void draw() {
+		if (scale!=0){
+			font.getData().setScale(scale);
+		}
 		canvas.begin();
-		canvas.drawBackground(background, 0, 0, true);
+		if (levelPage == -1){
+			canvas.drawBackground(settingsBackground,0,0,true);
+		}else{
+			canvas.drawBackground(background, 0, 0, true);
+		}
 		Rectangle bounds;
+		exitButton.hoveringButton(xbox,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+		bounds = exitButton.getBounds();
+		canvas.draw(exitButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 		if (xbox==null){
+			if (levelPage == -1) {
+				levelSelectButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = levelSelectButton.getBounds();
+				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-//			for (LevelBox levelBox: levelBoxes){
-//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-//				hoveringBox(levelBox);
-//				font.getData().setScale(levelBox.fontScale*scale);
-//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? levelBox.bounds.y*sy+levelBox.glyph.height*scale*1.25f : levelBox.bounds.y*sy+levelBox.glyph.height*scale);
+				font.setColor(Color.BLACK);
+				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 12.3f / 21f);
+
+				volumeLowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = volumeLowButton.getBounds();
+				canvas.draw(volumeLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				volumeHighButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = volumeHighButton.getBounds();
+				canvas.draw(volumeHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				font.setColor(Color.BLACK);
+				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 1.93f / 5f);
+
+				sensitivityLowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = sensitivityLowButton.getBounds();
+				canvas.draw(sensitivityLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				sensitivityHighButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = sensitivityHighButton.getBounds();
+				canvas.draw(sensitivityHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+
+				smallWindowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = smallWindowButton.getBounds();
+				canvas.draw(smallWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				largeWindowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = largeWindowButton.getBounds();
+				canvas.draw(largeWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+			}
+			else{
+				settingsButton.hoveringButton(null,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = settingsButton.getBounds();
+				canvas.draw(settingsTexture,bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale, bounds.getHeight()*scale);
+			}
 			if (levelPage == 0){
-				forwardButton.hoveringButton(null,time,levels.size, levels);
+				forwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
 				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			} else if (levelPage == (numberOfLevels - 1)/3) {
-				backwardButton.hoveringButton(null,time,levels.size, levels);
+				backwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else {
-				forwardButton.hoveringButton(null,time,levels.size, levels);
+			} else if (levelPage!=-1){
+				forwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
 				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-				backwardButton.hoveringButton(null,time,levels.size, levels);
+				backwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			}
-			for(ButtonBox button : levels) {
-				int level = button.getLabel();
-				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
-					button.hoveringButton(null,time,levels.size, levels);
-					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth()*scale,emptyStars.getHeight()*scale);
-					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
-					if (ratio>1){
-						ratio = 1;
-					}
-					if (ratio!=0){
-						stars.setRegionWidth((int) (emptyStars.getWidth()*ratio));
-						canvas.drawCentered(stars, ((bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2))*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
-						stars.setRegionWidth((emptyStars.getWidth()));
-					}
-					if (!button.available){
-						canvas.draw(lock, bounds.x*scale,bounds.y*scale,lock.getWidth()*scale,lock.getHeight()*scale);
+			if (levelPage!=-1) {
+				for (ButtonBox button : levels) {
+					int level = button.getLabel();
+					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
+						button.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+						bounds = button.getBounds();
+						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
+						float score = game.getScore("level" + Integer.toString(button.label));
+						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
+						float ratio = starsScore / 30;
+						if (score != 0){
+							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
+						}
+						if (ratio > 1) {
+							ratio = 1;
+						}
+						if (ratio != 0) {
+							stars.setRegionWidth((int) (emptyStars.getWidth() * ratio));
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 5 * bounds.y * scale / 6, (float) stars.getRegionWidth() * scale, stars.getRegionHeight() * scale);
+							stars.setRegionWidth((emptyStars.getWidth()));
+						}
+						if (!button.available) {
+							canvas.draw(lock, bounds.x * scale, bounds.y * scale, lock.getWidth() * scale, lock.getHeight() * scale);
+						}
 					}
 				}
 			}
 		} else{
 			// TODO: Support XBox
+			if (levelPage == -1){
+				levelSelectButton.hoveringButton(xbox,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = levelSelectButton.getBounds();
+				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
+
+				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+
+				volumeLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = volumeLowButton.getBounds();
+				canvas.draw(volumeLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				volumeHighButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = volumeHighButton.getBounds();
+				canvas.draw(volumeHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				sensitivityLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = sensitivityLowButton.getBounds();
+				canvas.draw(sensitivityLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				sensitivityHighButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = sensitivityHighButton.getBounds();
+				canvas.draw(sensitivityHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+
+				smallWindowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = smallWindowButton.getBounds();
+				canvas.draw(smallWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+				largeWindowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = largeWindowButton.getBounds();
+				canvas.draw(largeWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+
+			}else{
+				settingsButton.hoveringButton(xbox,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = settingsButton.getBounds();
+				canvas.draw(settingsTexture,bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale, bounds.getHeight()*scale);
+			}
 			if (levelPage == 0){
-				forwardButton.hoveringButton(xbox,time,levels.size, levels);
+				forwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
 				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			} else if (levelPage == (numberOfLevels - 1)/3) {
-				backwardButton.hoveringButton(xbox,time,levels.size, levels);
+				backwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else {
-				forwardButton.hoveringButton(xbox,time,levels.size, levels);
+			} else if (levelPage!=-1) {
+				forwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
 				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-				backwardButton.hoveringButton(xbox,time,levels.size, levels);
+				backwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			}
@@ -373,24 +561,31 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
 //				levelBox.font.getData().setScale(levelBox.fontScale*scale);
 //				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? (levelBox.bounds.y+levelBox.glyph.height *1.25f)*sy : (levelBox.bounds.y+levelBox.glyph.height)*sy );
-			for(ButtonBox button : levels) {
-				int level = button.getLabel();
-				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
-					button.hoveringButton(xbox,time, levels.size, levels);
-					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth()*scale,emptyStars.getHeight()*scale);
-					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
-					if (ratio>1){
-						ratio = 1;
-					}
-					if (ratio!=0){
-						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
-						canvas.drawCentered(stars, ((bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2))*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
-						stars.setRegionWidth((emptyStars.getWidth()));
-					}
-					if (!button.available){
-						canvas.draw(lock, bounds.x*scale,bounds.y*scale,lock.getWidth()*scale,lock.getHeight()*scale);
+			if (levelPage!=-1) {
+				for (ButtonBox button : levels) {
+					int level = button.getLabel();
+					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
+						button.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+						bounds = button.getBounds();
+						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
+						float score = game.getScore("level" + Integer.toString(button.label));
+						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
+						float ratio = starsScore / 30;
+						if (score != 0){
+							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
+						}
+						if (ratio > 1) {
+							ratio = 1;
+						}
+						if (ratio != 0) {
+							stars.setRegionWidth((int) (emptyStars.getWidth() * ratio));
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 5 * bounds.y * scale / 6, (float) stars.getRegionWidth() * scale, stars.getRegionHeight() * scale);
+							stars.setRegionWidth((emptyStars.getWidth()));
+						}
+						if (!button.available) {
+							canvas.draw(lock, bounds.x * scale, bounds.y * scale, lock.getWidth() * scale, lock.getHeight() * scale);
+						}
 					}
 				}
 			}
@@ -412,11 +607,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public void render(float delta) {
 		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
-		if(inputController.didDecelerate()){
-			Gdx.graphics.setWindowedMode(1280, 720);
-		}else if(inputController.didBoost()){
-			Gdx.graphics.setWindowedMode(1920, 1080);
-		}
+		sample.setVolume(0.5f * volumeBar.getValue());
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+//			volumeSlider.setValue(volumeSlider.getValue() - volumeSlider.getStepSize());
+//		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+//			volumeSlider.setValue(volumeSlider.getValue() + volumeSlider.getStepSize());
+//		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) {
+//			sensitivitySlider.setValue(sensitivitySlider.getValue() - sensitivitySlider.getStepSize());
+//		}
+//
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+//			sensitivitySlider.setValue(sensitivitySlider.getValue() + sensitivitySlider.getStepSize());
+//		}
+
 		if (active) {
 			time += Gdx.graphics.getDeltaTime();
 //			update(delta);
@@ -527,6 +735,39 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
 //				pressState = levelBox.label *2 -1;
 
+		if (volumeLowButton.isPressed()) {
+			volumeBar.setValue(volumeBar.getValue() - volumeBar.getStepSize());
+		}
+
+		if (volumeHighButton.isPressed()) {
+			volumeBar.setValue(volumeBar.getValue() + volumeBar.getStepSize());
+		}
+
+		if (sensitivityLowButton.isPressed()) {
+			sensitivityBar.setValue(sensitivityBar.getValue() - sensitivityBar.getStepSize());
+		}
+
+		if (sensitivityHighButton.isPressed()) {
+			sensitivityBar.setValue(sensitivityBar.getValue() + sensitivityBar.getStepSize());
+		}
+
+		if (smallWindowButton.isPressed()) {
+			Gdx.graphics.setWindowedMode(1280, 720);
+		}
+
+		if (largeWindowButton.isPressed()) {
+			Gdx.graphics.setWindowedMode(1920, 1080);
+		}
+
+		if(levelSelectButton.isPressed()){
+			pageDirection =1 ;
+		}
+		if(settingsButton.isPressed()){
+			pageDirection = -(levelPage+1);
+		}
+		if(exitButton.isPressed()){
+			listener.exitScreen(this, 1);
+		}
 		if(forwardButton.isPressed() && levelPage < (numberOfLevels - 1)/3 ){
 			pageDirection = 1;
 		} else if(backwardButton.isPressed() && levelPage > 0){
@@ -590,49 +831,102 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			return true;
 		}
 		if (xbox != null) {
-			if (xbox.getDPadRight() && levelPage < (numberOfLevels - 1) / 3) {
-				pageDirection = 1;
-				for (int i = 0; i < 3; i++) {
-					try {
-						if (levels.get(levelPage * 3 + i).enlarged){
-							levels.get(levelPage * 3 + i).resize("down");
-						}
-					} catch (Exception e) {
+			if (levelPage!=-1) {
+				if (xbox.getRBumper() && levelPage < (numberOfLevels - 1) / 3) {
+					pageDirection = 1;
+					for (int i = 0; i < 3; i++) {
+						try {
+							if (levels.get(levelPage * 3 + i).enlarged) {
+								levels.get(levelPage * 3 + i).resize("down");
+							}
+						} catch (Exception e) {
 
+						}
+						if (exitButton.enlarged){
+							exitButton.resize("down");
+						}else if(settingsButton.enlarged){
+							settingsButton.resize("down");
+						}
+					}
+					if (levels.get((levelPage + pageDirection) * 3).available) {
+						levels.get((levelPage + pageDirection) * 3).resize("up");
+					}
+
+				} else if (xbox.getLBumper() && levelPage > 0) {
+					pageDirection = -1;
+					for (int i = 0; i < 3; i++) {
+						try {
+							if (levels.get(levelPage * 3 + i).enlarged) {
+								levels.get(levelPage * 3 + i).resize("down");
+							}
+						} catch (Exception e) {
+
+						}
+						if (exitButton.enlarged){
+							exitButton.resize("down");
+						}else if(settingsButton.enlarged){
+							settingsButton.resize("down");
+						}
+					}
+					if (levels.get((levelPage + pageDirection) * 3 + 2).available) {
+						levels.get((levelPage + pageDirection) * 3 + 2).resize("up");
+					} else if (levels.get((levelPage + pageDirection) * 3 + 1).available) {
+						levels.get((levelPage + pageDirection) * 3 + 1).resize("up");
+					} else if (levels.get((levelPage + pageDirection) * 3).available) {
+						levels.get((levelPage + pageDirection) * 3).resize("up");
 					}
 				}
-				if (levels.get((levelPage + pageDirection) * 3).available){
-					levels.get((levelPage + pageDirection) * 3).enlarged = true;
-				}
-
-			} else if (xbox.getDPadLeft() && levelPage > 0) {
-				pageDirection = -1;
-				for (int i = 0; i < 3; i++) {
-					try {
-						if (levels.get(levelPage * 3 + i).enlarged){
-							levels.get(levelPage * 3 + i).resize("down");
-						}
-					} catch (Exception e) {
-
+				for (ButtonBox levelButton : levels) {
+					int level = levelButton.label;
+					if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getA()) {
+						pressState = levelButton.label * 2 - 1;
 					}
 				}
-				if (levels.get((levelPage + pageDirection) * 3 + 2).available){
-					levels.get((levelPage + pageDirection) * 3 + 2).resize("up");
-				} else if (levels.get((levelPage + pageDirection) * 3 + 1).available) {
-					levels.get((levelPage + pageDirection) * 3 + 1).resize("up");
-				}else if (levels.get((levelPage + pageDirection) * 3).available) {
-					levels.get((levelPage + pageDirection) * 3).resize("up");
+				if (settingsButton.enlarged && xbox.getA() && time >.2){
+					resetTime();
+					pageDirection = -(levelPage+1);
+					levelSelectButton.resize("up");
+					for (int i = 0; i < 3; i++) {
+						try {
+							if (levels.get(levelPage * 3 + i).enlarged) {
+								levels.get(levelPage * 3 + i).resize("down");
+							}
+						} catch (Exception e) {
+
+						}
+					}
+				}
+				if (exitButton.enlarged && xbox.getA()){
+					listener.exitScreen(this,1);
+				}
+			}else{
+				if (exitButton.enlarged && xbox.getA()){
+					listener.exitScreen(this,1);
+				} else if(levelSelectButton.enlarged && xbox.getA() && time > .2){
+					levelSelectButton.resize("down");
+					pageDirection = 1;
+					resetTime();
+				} else if (smallWindowButton.enlarged && xbox.getA()) {
+					Gdx.graphics.setWindowedMode(1280, 720);
+				}
+				else if (largeWindowButton.enlarged && xbox.getA()) {
+					Gdx.graphics.setWindowedMode(1920, 1080);
+				} else if (volumeLowButton.enlarged  && xbox.getA() && time > .1) {
+					resetTime();
+					volumeBar.setValue(volumeBar.getValue() - volumeBar.getStepSize());
+				} else if (volumeHighButton.enlarged && xbox.getA()&& time > .1){
+					resetTime();
+					volumeBar.setValue(volumeBar.getValue() + volumeBar.getStepSize());
+				} else if (sensitivityLowButton.enlarged  && xbox.getA()&& time > .1) {
+					resetTime();
+				sensitivityBar.setValue(sensitivityBar.getValue() - sensitivityBar.getStepSize());
+				} else if (sensitivityHighButton.enlarged && xbox.getA()&& time > .1){
+					resetTime();
+					sensitivityBar.setValue(sensitivityBar.getValue() + sensitivityBar.getStepSize());
 				}
 			}
 		}
-		if (xbox != null) {
-			for (ButtonBox levelButton : levels) {
-				int level = levelButton.label;
-				if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getStart()) {
-					pressState = levelButton.label * 2 - 1;
-				}
-			}
-		}
+
 		return true;
 	}
 
@@ -795,7 +1089,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		public int getLabel() {return this.label;}
 		public boolean getEnlarged(){return this.enlarged;}
 
-		public void hoveringButton(XBoxController xbox, float time, int size,Array<ButtonBox> levels){
+		public void hoveringButton(XBoxController xbox, float time, int size, Array<ButtonBox> levels, ButtonBox settings, ButtonBox exit, ButtonBox volumedown, ButtonBox volumeup, ButtonBox sensdown, ButtonBox sensup, ButtonBox resdown, ButtonBox resup){
 			if (xbox == null) {
 				int x = (int) (Gdx.input.getX() / scale);
 				int y = (int) ((Gdx.graphics.getHeight() - Gdx.input.getY()) / scale);
@@ -822,22 +1116,185 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				if (Math.abs(x)<.5){
 					x = 0;
 				}
-				if (x>0 && levels.get(this.label).available){
-//					System.out.println("right");
-					if (this.label < (mode.levelPage+1)*3){
-						this.resize("down");
-						levels.get(this.label).resize("up");
-						mode.resetTime();
-					}
-				} else if (x<0) {
-					if (this.label > (mode.levelPage*3)+1){
-						if (levels.get(this.label-2).available){
-							this.resize("down");
-							levels.get(this.label-2).resize("up");
-							mode.resetTime();
+				float y = xbox.getLeftY();
+//				System.out.println("got input");
+				if (Math.abs(y)<.5){
+					y = 0;
+				}
+				try{
+					if (mode.levelPage!=-1){
+						if (y<0){
+							if (!exit.enlarged){
+								this.resize("down");
+								settings.resize("up");
+								mode.resetTime();
+							}else{
+								if (levels.get(mode.levelPage*3 + 1).available){
+									levels.get(mode.levelPage*3 + 1).resize("up");
+									mode.resetTime();
+								}else{
+									this.resize("down");
+									levels.get(mode.levelPage*3).resize("up");
+									mode.resetTime();
+								}
+
+							}
+						}else if (y>0){
+							if (!settings.enlarged){
+								this.resize("down");
+								exit.resize("up");
+								mode.resetTime();
+							}else{
+								this.resize("down");
+								if (levels.get(mode.levelPage*3 + 2).available){
+									levels.get(mode.levelPage*3 + 2).resize("up");
+									mode.resetTime();
+								}
+								else if (levels.get(mode.levelPage*3 + 1).available){
+									levels.get(mode.levelPage*3 + 1).resize("up");
+									mode.resetTime();
+								}else {
+									levels.get(mode.levelPage*3).resize("up");
+									mode.resetTime();
+								}
+
+							}
+		//					this.resize("down");
+						}
+						else if (x>0 && levels.get(this.label).available && !settings.enlarged&&!exit.enlarged){
+		//					System.out.println("right");
+							if (this.label < (mode.levelPage+1)*3){
+								this.resize("down");
+								levels.get(this.label).resize("up");
+								mode.resetTime();
+							}
+						} else if (x<0&& !settings.enlarged&&!exit.enlarged) {
+							if (this.label > (mode.levelPage*3)+1){
+								if (levels.get(this.label-2).available){
+									this.resize("down");
+									levels.get(this.label-2).resize("up");
+									mode.resetTime();
+								}
+							}
+							}
+					}else{
+						switch (this.label){
+							case -1:
+								if (x>0){
+									this.resize("down");
+									resdown.resize("up");
+									mode.resetTime();
+								} else if (y<0){
+									this.resize("down");
+									sensdown.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -3:
+								if (x>0){
+									this.resize("down");
+									volumeup.resize("up");
+									mode.resetTime();
+								}else if (y>0){
+									this.resize("down");
+									sensdown.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -4:
+								if (x<0){
+									this.resize("down");
+									volumedown.resize("up");
+									mode.resetTime();
+								}else if (y>0){
+									this.resize("down");
+									sensup.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -5:
+								if (x>0){
+									this.resize("down");
+									sensup.resize("up");
+									mode.resetTime();
+								}else if (y>0){
+									this.resize("down");
+									resdown.resize("up");
+									mode.resetTime();
+								}else if(y<0){
+									this.resize("down");
+									volumedown.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -6:
+								if (x<0){
+									this.resize("down");
+									sensdown.resize("up");
+									mode.resetTime();
+								}else if (y>0){
+									this.resize("down");
+									resup.resize("up");
+									mode.resetTime();
+								}else if(y<0){
+									this.resize("down");
+									volumeup.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -7:
+								if (x>0){
+									this.resize("down");
+									resup.resize("up");
+									mode.resetTime();
+								} else if (x<0) {
+									this.resize("down");
+									mode.levelSelectButton.resize("up");
+									mode.resetTime();
+								} else if (y>0){
+									this.resize("down");
+									exit.resize("up");
+									mode.resetTime();
+								}else if(y<0){
+									this.resize("down");
+									sensdown.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -8:
+								if (x<0){
+									this.resize("down");
+									resdown.resize("up");
+									mode.resetTime();
+								}else if (y>0){
+									this.resize("down");
+									exit.resize("up");
+									mode.resetTime();
+								}else if(y<0){
+									this.resize("down");
+									sensup.resize("up");
+									mode.resetTime();
+								}
+								break;
+							case -9:
+								if (x<0){
+									this.resize("down");
+									resdown.resize("up");
+									mode.resetTime();
+								} else if(x>0){
+									this.resize("down");
+									resup.resize("up");
+									mode.resetTime();
+								}
+								else if (y<0){
+									this.resize("down");
+									resdown.resize("up");
+									mode.resetTime();
+								}
 						}
 					}
-//					System.out.println("left");
+				}catch (Exception e){
+
 				}
 			}
 			}
@@ -862,5 +1319,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
 			return bounds.contains(x, y);
 		}
+	}
+	public String scoreToTime(float score){
+		int minutes = (int) score / 60;
+		int seconds = (int) score % 60;
+		int milliseconds = (int) ((score - (int)score) * 1000);
+
+		return String.format("Time: %d'%02d\"%03d", minutes, seconds, milliseconds);
 	}
 }

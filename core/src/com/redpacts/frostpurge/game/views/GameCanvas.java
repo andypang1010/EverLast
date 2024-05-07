@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
 public class GameCanvas {
     /** While we are not drawing polygons (yet), this spritebatch is more reliable */
@@ -329,6 +331,13 @@ public class GameCanvas {
         spriteBatch.draw(image, x, y, w, h);
     }
 
+    public void drawBar(ProgressBar bar, float width, float height, float x, float y) {
+        bar.setColor(Color.WHITE);
+        bar.setSize(width, height);
+        bar.setPosition(x, y);
+        bar.draw(spriteBatch, 1f);
+    }
+
     /**
      * Draws the tinted texture at the given position.
      * <p>
@@ -571,8 +580,8 @@ public class GameCanvas {
         }
         GlyphLayout layout = new GlyphLayout(font,text);
         font.setColor(Color.WHITE);
-        x *= (float) getWidth() /getWidth();
-        y *= (float) getHeight() /getHeight();
+        x = x - layout.width/2;
+        y = y - layout.height/2;
         font.draw(spriteBatch, layout, x, y);
     }
     /**
@@ -652,6 +661,36 @@ public class GameCanvas {
      */
     public void drawUI(Texture image, Color tint,
                      float x, float y, float angle, float sx, float sy, OrthographicCamera camera) {
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        // Call the master drawing method (we have to for transforms)
+
+        //Update HUD camera
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+
+        holder.setRegion(image);
+        draw(holder,tint,0,0,x,height- y,angle,sx,sy, false);
+        active = DrawPass.STANDARD;
+        spriteBatch.end();
+    }
+
+    /**Draw the UI for the game which is different because it needs to follow the player.
+     *
+     * @param image
+     * @param tint
+     * @param x
+     * @param y
+     * @param angle
+     * @param sx
+     * @param sy
+     */
+    public void drawUI(TextureRegion image, Color tint,
+                       float x, float y, float angle, float sx, float sy, OrthographicCamera camera) {
         spriteBatch.begin();
         active = DrawPass.STANDARD;
         if (active != DrawPass.STANDARD) {

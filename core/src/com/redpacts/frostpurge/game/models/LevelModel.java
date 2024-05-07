@@ -298,4 +298,15 @@ public class LevelModel {
         int indexy = (int) Math.floor(y/64);
         extraLayer[indexy][indexx] = null;
     }
+    public void removeSwamp(float x, float y){
+        int indexx = (int) Math.floor(x/64);
+        int indexy = (int) Math.floor(y/64);
+        if(extraLayer[indexy][indexx] != null && extraLayer[indexy][indexx].getType() == TileModel.TileType.SWAMP){
+            extraLayer[indexy][indexx] = null;
+            Array<TileModel> neighbors = this.getTileNeighbors(indexx, indexy);
+            for(TileModel neighbor: neighbors){
+                removeSwamp(neighbor.getPosition().x, neighbor.getPosition().y);
+            }
+        }
+    }
 }

@@ -56,7 +56,6 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	@Override
 	public void render(){
-
 		// Update the game state
 		switch (mode){
 			case "loading":
@@ -117,8 +116,10 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
-		if (exitCode != 0) {
+		if (exitCode != 0 && exitCode != 1) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
+			Gdx.app.exit();
+		} else if (exitCode == 1) {
 			Gdx.app.exit();
 		} else if (screen == loading) {
 			loading.resetButton();
@@ -130,32 +131,42 @@ public class GDXRoot extends Game implements ScreenListener {
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
+			levelselect.playmusic();
 
 		} else if (screen == levelselect) {
 			levelselect.resetPressState();
+			levelselect.pausemusic();
 
 			playing.loadLevel(levelselect.getLevel(), levelselect.getSaveFile());
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
-		} else if (screen == playing && playing.isHomeScreen()) {
+			playing.playmusic();
+		} else if (screen == playing && playing.isSettings()) {
 			playing.resetButton();
-			loading.resetButton();
-			loading.setScreenListener(this);
-			setScreen(loading);
-			mode = "loading";
+			playing.pausemusic();
+			levelselect.levelPage = -1;
+			levelselect.levelSelectButton.resize("up");
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
+			levelselect.playmusic();
 		} else if (screen == playing && playing.isLevelSelectScreen()) {
 			playing.resetButton();
+			playing.pausemusic();
 
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
+			levelselect.playmusic();
 		} else if (screen == playing) {
 			playing.resetButton();
+			playing.pausemusic();
 
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
+			levelselect.playmusic();
 		} else {
 			// We quit the main application
 			Gdx.app.exit();

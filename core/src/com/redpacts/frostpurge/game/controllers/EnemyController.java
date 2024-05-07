@@ -3,6 +3,7 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.ai.fsm.*;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -48,10 +49,15 @@ public class EnemyController extends CharactersController implements StateMachin
     Color coneColor;
     boolean reachedDestination = false;
     int updatePathCounter = 0;
+
+    private Sound quackSound;
+
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board, ArrayList<int[]> waypoints) {
         this.model = enemy;
         playerModel = targetPlayerModel;
         this.waypoints = new TileModel[waypoints.size()];
+
+        quackSound = ((EnemyModel) model).getQuack();
 
         for (int i = 0; i<waypoints.size();i++){
             this.waypoints[i] = board.getTileState(waypoints.get(i)[0],waypoints.get(i)[1]);
@@ -82,12 +88,40 @@ public class EnemyController extends CharactersController implements StateMachin
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
         }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+                graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y-64), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x-64, model.getPosition().y), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y+64), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x+64, model.getPosition().y), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
 
         setMoveDirection();
         targetTile = goalTile;
     }
 
-    private void checkCollision() {
+    private void checkWaypointCollision() {
         if (pathQueue.size > 0) {
             if (currentTile == pathQueue.first()) {
                 pathQueue.removeFirst();
@@ -98,6 +132,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas, EnemyModel enemy){
+        boolean drawVisionCone = false;
         // Draw shadow
         short[] indices = new short[3];
         indices[0] = 0;
@@ -105,7 +140,7 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[2] = 2;
 
         Vector2 rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
-        int numRays = 20; // Number of segments for circle
+        int numRays = 15; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
 
         float angle = 0;
@@ -130,24 +165,39 @@ public class EnemyController extends CharactersController implements StateMachin
 
             rayPrevious = rayEnd.cpy();
         }
-        // Draw vision cones
-        for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
-            float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
-            short[] indices_c = new short[3];
-            indices_c[0] = 0;
-            indices_c[1] = 1;
-            indices_c[2] = 2;
-            cone = new PolygonRegion(textureRegion, vertices, indices_c);
-            canvas.draw(cone, coneColor, 100, 100 ,0);
+
+        if (drawVisionCone){
+            // Draw vision cones
+            for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
+                float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
+                short[] indices_c = new short[3];
+                indices_c[0] = 0;
+                indices_c[1] = 1;
+                indices_c[2] = 2;
+                cone = new PolygonRegion(textureRegion, vertices, indices_c);
+                canvas.draw(cone, coneColor, 100, 100 ,0);
+            }
+            ((EnemyModel) model).getTriangles().clear();
         }
-        ((EnemyModel) model).getTriangles().clear();
 
         // Draw enemy
-        String direction = getDirection(enemy.getBody().getLinearVelocity().x,enemy.getBody().getLinearVelocity().y, previousDirection);
+        String direction = getDirection(model.getVelocity().x,model.getVelocity().y, previousDirection);
+        if (((EnemyModel) model).getID() == 1) {
+            angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
+//            System.out.println(angle);
+//            System.out.println(direction);
+        }
+//        model.resetFilmStrip(model.getFilmStrip(direction));
         processRun(direction);
         if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
         } else{
+            if (((EnemyModel) model).getID() == 1) {
+                angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
+//            System.out.println(angle);
+                System.out.println("actual:");
+                System.out.println(direction);
+            }
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
         }
         previousDirection = direction;
@@ -179,6 +229,7 @@ public class EnemyController extends CharactersController implements StateMachin
         switch (currentState) {
             case PATROL:
 //                System.out.println("IN PATROL");
+                playQuack(false);
 
                 // When reaches next patrol waypoint
                 if (currentTile == waypoints[nextWaypointIndex]) {
@@ -205,6 +256,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
 
             case QUESTION:
+                playQuack(false);
                 System.out.println("IN QUESTION STATE!");
 
                 if (isPlayerWithinListenRadius()) {
@@ -220,6 +272,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
             case SEARCH:
                 System.out.println("IN SEARCH STATE!");
+                playQuack(false);
 
                 // If the player is within listen radius, go to question state
                 if (isPlayerWithinListenRadius()) {
@@ -242,12 +295,40 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
 
             case CHASE:
-                System.out.println("IN CHASE STATE!");
+                playQuack(true);
+
 
                 // Update path to player every 0.5 seconds
                 if (updatePathCounter > 30){
                     setGoal(modelPositionToTile(playerModel));
+                    if (((EnemyModel) model).getID() == 1){
+//                        System.out.println(targetTile.getPosition());
+                        if (pathQueue.notEmpty()) {
+//                            System.out.println("next tile:");
+//                            System.out.println(pathQueue.first().getPosition());
+                        }
+                    }
                     updatePathCounter = 0;
+                    float dist =Vector2.dst(
+                            model.getBody().getPosition().x,
+                            model.getBody().getPosition().y,
+                            playerModel.getBody().getPosition().x,
+                            playerModel.getBody().getPosition().y);
+//                    System.out.println(dist);
+                    if (dist<10){
+                        speedMultiplier = 40;
+                    }else if (dist<15){
+                        speedMultiplier = 50;
+                    }
+                    else if (dist<20){
+                        speedMultiplier = 60;
+                    }else if (dist<25){
+                        speedMultiplier = 70;
+                    }else if (dist<30){
+                        speedMultiplier = 80;
+                    }else if (dist<35){
+                        speedMultiplier = 90;
+                    }
                 }
                 else {
                     updatePathCounter++;
@@ -258,7 +339,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
         }
 
-        checkCollision();
+        checkWaypointCollision();
         setMoveDirection();
 
         model.setPosition(model.getBody().getPosition().scl(10));
@@ -284,6 +365,23 @@ public class EnemyController extends CharactersController implements StateMachin
                 enemy.changeState(EnemyStates.CHASE);
                 System.out.println("Alerted!!!");
             }
+        }
+    }
+
+    public void playQuack(boolean on) {
+        long soundId = ((EnemyModel) model).getQuackId();
+
+        if (on) {
+//            quackSound.setVolume(soundId, 1 / (model.getPosition().cpy().sub(playerModel.getPosition()).len()));
+            quackSound.setVolume(soundId, 0.4f  * LevelSelectMode.volumeBar.getValue());
+            if (soundId == -1) {
+                soundId = quackSound.loop();
+                ((EnemyModel) model).setQuackId(soundId);
+            }
+
+        } else {
+            ((EnemyModel) model).setQuackId(-1);
+            quackSound.stop(soundId);
         }
     }
 

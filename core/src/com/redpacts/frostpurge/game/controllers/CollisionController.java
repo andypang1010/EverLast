@@ -3,6 +3,7 @@ package com.redpacts.frostpurge.game.controllers;
 import java.util.Iterator;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.physics.box2d.*;
@@ -61,6 +62,10 @@ public class CollisionController{
     protected static final float DEFAULT_HEIGHT = 18.0f;
     /** All the objects in the world. */
     protected PooledList<GameObject> objects  = new PooledList<GameObject>();
+    private float spillageTimer;
+    private float swampx;
+    private float swampy;
+    private boolean vacuuming = false;
 
     /// ACCESSORS
 
@@ -223,9 +228,24 @@ public class CollisionController{
      * @param player Player to check
      */
     private void pickPowerUp(PlayerModel player){
-        if(board.isSwampTile(player.getPosition().x, player.getPosition().y)){
-            board.removeExtra(player.getPosition().x, player.getPosition().y);
-            player.addCanBoost(1);
+        spillageTimer += Gdx.graphics.getDeltaTime();
+        if(board.isSwampTile(player.getPosition().x, player.getPosition().y)) {
+            if (player.getVacuumingProgression() == 0) {
+                spillageTimer = 0;
+                player.setVacuumingProgression(1);
+                swampx = player.getPosition().x;
+                swampy = player.getPosition().y;
+                vacuuming = true;
+            }
+        }
+        if (vacuuming) {
+            if (spillageTimer > .3) {
+
+                board.removeSwamp(swampx, swampy);
+                player.addCanBoost(2);
+                spillageTimer = 0;
+                vacuuming = false;
+            }
         }
     }
     /**
