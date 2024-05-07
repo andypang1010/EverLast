@@ -574,6 +574,7 @@ public class GameMode implements Screen, InputProcessor {
         if(playerModel.getBoostNum() >= 4){
             canvas.drawUI(boostBarTexture,Color.WHITE, 450*sx, -800*sy, 0, 0.5f*scale,0.5f*scale, HUDcamera);
         }
+
         if(playerModel.getHp() >= 50){
             healthBarColor.set(Color.GREEN);
             healthBarColor.lerp(Color.YELLOW, 1f-(playerModel.getHp() - 50f)/50f);
@@ -586,7 +587,9 @@ public class GameMode implements Screen, InputProcessor {
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
-        font.getData().setScale(scale);
+        if (scale != 0) {
+            font.getData().setScale(scale);
+        }
         font.setColor(Color.BLACK);
         canvas.drawTextHUD(scoreToTime(maxTime-currentTime), font, 1150*scale, 1000*scale, HUDcamera);
     }
@@ -595,23 +598,23 @@ public class GameMode implements Screen, InputProcessor {
         canvas.begin();
         canvas.drawBackground(pauseScreenTexture, 0, 0, true);
         Rectangle bounds;
-        pauseButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton ,gameState);
+        pauseButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton ,exitButton, gameState);
         bounds = pauseButton.getBounds();
         canvas.draw(pauseButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        resumeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        resumeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = resumeButton.getBounds();
         canvas.draw(resumeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        homeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        homeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = homeButton.getBounds();
         canvas.draw(homeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        levelSelectButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        levelSelectButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = exitButton.getBounds();
         canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
         canvas.end();
@@ -622,19 +625,19 @@ public class GameMode implements Screen, InputProcessor {
         canvas.drawBackground(retryScreenTexture, 0, 0, true);
         Rectangle bounds;
 
-        retryButton.hoveringButton(inputController.xbox , controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        retryButton.hoveringButton(inputController.xbox , controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = retryButton.getBounds();
         canvas.draw(retryButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        homeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        homeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = homeButton.getBounds();
         canvas.draw(homeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        levelSelectButton.hoveringButton(inputController.xbox , controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        levelSelectButton.hoveringButton(inputController.xbox , controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = exitButton.getBounds();
         canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 
@@ -646,15 +649,15 @@ public class GameMode implements Screen, InputProcessor {
         canvas.drawBackground(winScreenTexture, 0, 0, true);
         Rectangle bounds;
 
-        homeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        homeButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = homeButton.getBounds();
         canvas.draw(homeButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        levelSelectButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        levelSelectButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,exitButton,gameState);
         bounds = exitButton.getBounds();
         canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 
@@ -830,13 +833,15 @@ public class GameMode implements Screen, InputProcessor {
             if (pressState % 2 == 0 && pressState != 0) {
                 return true;
             }
-            if (gameState == GameState.PAUSE && inputController.xbox.getBack()) {
+            if (gameState == GameState.PAUSE && inputController.xbox.getA()) {
                 if (homeButton.getEnlarged()) {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {
                     pressState = 3;
                 } else if (resumeButton.getEnlarged() || pauseButton.getEnlarged()) {
                     pressState = 5;
+                }else if (exitButton.getEnlarged()){
+                    listener.exitScreen(this,1);
                 }
             } else if (gameState == GameState.OVER && inputController.xbox.getBack()) {
                 if (homeButton.getEnlarged()) {
@@ -845,12 +850,16 @@ public class GameMode implements Screen, InputProcessor {
                     pressState = 3;
                 } else if (retryButton.getEnlarged()) {
                     pressState = 7;
+                }else if (exitButton.getEnlarged()){
+                    listener.exitScreen(this,1);
                 }
             } else if (gameState == GameState.WIN && inputController.xbox.getBack()) {
                 if (homeButton.getEnlarged()) {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {
                     pressState = 3;
+                }else if (exitButton.getEnlarged()){
+                    listener.exitScreen(this,1);
                 }
             }
         }

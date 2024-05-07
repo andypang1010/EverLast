@@ -142,6 +142,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		} else if (screen == playing && playing.isSettings()) {
 			playing.resetButton();
 			levelselect.levelPage = -1;
+			levelselect.levelSelectButton.resize("up");
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
