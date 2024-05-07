@@ -44,6 +44,9 @@
     "Collide" : "sound/collide.wav",
     "Quack" : "sound/quack.wav"
   },
+  "music": {
+    "song" : "sound/level.ogg"
+  },
   "fonts": {
     "font": {
       "file": "ui/racetime.ttf",

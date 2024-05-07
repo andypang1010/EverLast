@@ -26,6 +26,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.graphics.Color;
@@ -162,6 +163,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	Texture emptyStars;
 	TextureRegion stars;
 	Texture lock;
+	Music sample;
 
 
 	public String getLevel(){
@@ -334,6 +336,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		active = true;
 
+		sample = assets.getEntry( "song", Music.class );
+		sample.setLooping(true);
+		sample.setVolume(.5f);
+
 		// Let ANY connected controller start the game.
 		for (XBoxController controller : Controllers.get().getXBoxControllers()) {
 			controller.addListener(this);
@@ -348,6 +354,13 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		game = new SaveFileManager(assets.getEntry("savedata", JsonValue.class));
 	}
 
+	public void playmusic(){
+		sample.setPosition(0);
+		sample.play();
+	}
+	public void pausemusic(){
+		sample.pause();
+	}
 	/**
 	 * Called when this screen should release all resources.
 	 */
