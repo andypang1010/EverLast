@@ -396,6 +396,11 @@ public class GameMode implements Screen, InputProcessor {
     }
 
     public void update(float delta) {
+        if (gameState!= GameState.PLAY){
+            for (EnemyController enemy : enemyControllers){
+                enemy.playQuack(false);
+            }
+        }
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
         buttonDown(inputController.xbox, 0);

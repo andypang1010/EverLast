@@ -368,7 +368,7 @@ public class EnemyController extends CharactersController implements StateMachin
         }
     }
 
-    private void playQuack(boolean on) {
+    public void playQuack(boolean on) {
         long soundId = ((EnemyModel) model).getQuackId();
 
         if (on) {
