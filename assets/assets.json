@@ -39,7 +39,13 @@
     "tileset": "Tilesets/TileSet.png"
   },
   "sounds" : {
-
+    "Accelerate" : "sound/accelerate.wav",
+    "Boost" : "sound/boost.wav",
+    "Collide" : "sound/collide.wav",
+    "Quack" : "sound/quack.wav"
+  },
+  "music": {
+    "song" : "sound/level.ogg"
   },
   "fonts": {
     "font": {

@@ -1,12 +1,13 @@
 package com.redpacts.frostpurge.game.controllers;
 
+import com.badlogic.gdx.audio.Sound;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Color;
-import com.redpacts.frostpurge.game.models.EnemyModel;
 import com.redpacts.frostpurge.game.models.PlayerModel;
 import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.views.GameCanvas;
@@ -14,12 +15,22 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 public class PlayerController extends CharactersController {
 
     static final float MAX_OFFSET = 500f;
+    private static final float MAX_SPEED = 100;
+    private static final float BOOST_MAX_SPEED = 120;
     static final float OFFSET_MULTIPLIER = 2f;
+
+    /** The sound for accelerating */
+    private Sound accelerateSound;
+    /** The sound for boosting */
+    private Sound boostSound;
 
 
     PlayerController(PlayerModel player){
         model = player;
         flip = false;
+
+        accelerateSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.ACCELERATE);
+        boostSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.BOOST);
     }
 
     public void vacuum() {
@@ -30,6 +41,7 @@ public class PlayerController extends CharactersController {
 
     public void boost(float horizontal, float vertical) {
         if(((PlayerModel) model).getBoostNum() > 0 && ((PlayerModel) model).getBoostCoolDown() == 0){
+            playBoost();
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
@@ -87,13 +99,21 @@ public class PlayerController extends CharactersController {
             ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.NONE);
         }
         setAngle(horizontal,vertical);
+
         if (!decelerate){
+            playAccelerate(true);
+//            System.out.println("PLAYER VELOCITY: " + model.getBody().getLinearVelocity().len());
             model.getBody().applyForceToCenter(horizontal*1.5f, -vertical*1.5f, true);
+
+//            model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().cpy().nor().scl(Math.min(model.getBody().getLinearVelocity().len(), MAX_SPEED)));
         }else{
+            playAccelerate(false);
             model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.95f));
         }
+
         if (boost){
             this.boost(horizontal, vertical);
+
         }
 //        if(vacuum){
 //            this.vacuum();
@@ -103,6 +123,26 @@ public class PlayerController extends CharactersController {
         }
         model.getBody().setLinearVelocity(model.getBody().getLinearVelocity().scl(0.99f));//friction
         model.setPosition(model.getBody().getPosition().scl(10));
+    }
+
+    private void playAccelerate(boolean on) {
+        long soundId = ((PlayerModel) model).getActionId(PlayerModel.Actions.ACCELERATE);
+
+        if (on) {
+            accelerateSound.setVolume(soundId, Math.min(model.getBody().getLinearVelocity().len() / 120f, 1f));
+
+            if (soundId == -1) {
+                soundId = accelerateSound.loop();
+                ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, soundId);
+            }
+        } else {
+            ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, -1);
+            accelerateSound.stop(soundId);
+        }
+    }
+
+    public void playBoost() {
+        boostSound.play(1);
     }
 
     public Vector2 cameraOffsetPos() {

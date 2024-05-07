@@ -20,6 +20,9 @@
         "largeRes": "levelSelect/1920x1080_button.png",
         "settingsBackground": "levelSelect/background.png"
 	},
+  "music" : {
+    "song" : "sound/menu.ogg"
+  },
   "fonts": {
       "font": {
         "file": "ui/racetime.ttf",

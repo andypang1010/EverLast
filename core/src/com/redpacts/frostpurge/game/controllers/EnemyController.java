@@ -3,6 +3,7 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.ai.fsm.*;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -48,10 +49,15 @@ public class EnemyController extends CharactersController implements StateMachin
     Color coneColor;
     boolean reachedDestination = false;
     int updatePathCounter = 0;
+
+    private Sound quackSound;
+
     EnemyController(EnemyModel enemy, PlayerModel targetPlayerModel, EnemyStates initState, TileGraph tileGraph, LevelModel board, ArrayList<int[]> waypoints) {
         this.model = enemy;
         playerModel = targetPlayerModel;
         this.waypoints = new TileModel[waypoints.size()];
+
+        quackSound = ((EnemyModel) model).getQuack();
 
         for (int i = 0; i<waypoints.size();i++){
             this.waypoints[i] = board.getTileState(waypoints.get(i)[0],waypoints.get(i)[1]);
@@ -115,7 +121,7 @@ public class EnemyController extends CharactersController implements StateMachin
         targetTile = goalTile;
     }
 
-    private void checkCollision() {
+    private void checkWaypointCollision() {
         if (pathQueue.size > 0) {
             if (currentTile == pathQueue.first()) {
                 pathQueue.removeFirst();
@@ -223,6 +229,7 @@ public class EnemyController extends CharactersController implements StateMachin
         switch (currentState) {
             case PATROL:
 //                System.out.println("IN PATROL");
+                playQuack(false);
 
                 // When reaches next patrol waypoint
                 if (currentTile == waypoints[nextWaypointIndex]) {
@@ -249,6 +256,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
 
             case QUESTION:
+                playQuack(false);
                 System.out.println("IN QUESTION STATE!");
 
                 if (isPlayerWithinListenRadius()) {
@@ -264,6 +272,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
             case SEARCH:
                 System.out.println("IN SEARCH STATE!");
+                playQuack(false);
 
                 // If the player is within listen radius, go to question state
                 if (isPlayerWithinListenRadius()) {
@@ -286,6 +295,8 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
 
             case CHASE:
+                playQuack(true);
+
 
                 // Update path to player every 0.5 seconds
                 if (updatePathCounter > 30){
@@ -328,7 +339,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
         }
 
-        checkCollision();
+        checkWaypointCollision();
         setMoveDirection();
 
         model.setPosition(model.getBody().getPosition().scl(10));
@@ -354,6 +365,23 @@ public class EnemyController extends CharactersController implements StateMachin
                 enemy.changeState(EnemyStates.CHASE);
                 System.out.println("Alerted!!!");
             }
+        }
+    }
+
+    public void playQuack(boolean on) {
+        long soundId = ((EnemyModel) model).getQuackId();
+
+        if (on) {
+//            quackSound.setVolume(soundId, 1 / (model.getPosition().cpy().sub(playerModel.getPosition()).len()));
+            quackSound.setVolume(soundId, 0.4f);
+            if (soundId == -1) {
+                soundId = quackSound.loop();
+                ((EnemyModel) model).setQuackId(soundId);
+            }
+
+        } else {
+            ((EnemyModel) model).setQuackId(-1);
+            quackSound.stop(soundId);
         }
     }
 

@@ -3,8 +3,13 @@ package com.redpacts.frostpurge.game.controllers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+
+import com.badlogic.gdx.audio.Music;
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
+
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.badlogic.gdx.controllers.Controller;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,8 +18,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+
+
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.utils.Json;
+
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
+import com.redpacts.frostpurge.game.audio.AudioEngine;
+import com.redpacts.frostpurge.game.audio.AudioSource;
+import com.redpacts.frostpurge.game.audio.MusicQueue;
 import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.models.ButtonBox;
 import com.redpacts.frostpurge.game.util.EnemyStates;
@@ -148,6 +161,7 @@ public class GameMode implements Screen, InputProcessor {
     private GameState gameState;
     private SaveFileManager saveFileManager;
     private float[] controllerTime;
+    private Music sample;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         // TODO: Change scale?
@@ -382,6 +396,11 @@ public class GameMode implements Screen, InputProcessor {
     }
 
     public void update(float delta) {
+        if (gameState!= GameState.PLAY){
+            for (EnemyController enemy : enemyControllers){
+                enemy.playQuack(false);
+            }
+        }
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
         buttonDown(inputController.xbox, 0);
@@ -674,7 +693,12 @@ public class GameMode implements Screen, InputProcessor {
 
         font = directory.getEntry("font", BitmapFont.class);
 
-
+//        AudioEngine engine = (AudioEngine)Gdx.audio;
+//        song = engine.newMusicBuffer( false, 44100 );
+        sample = directory.getEntry( "song", Music.class );
+        sample.setLooping(true);
+        sample.setVolume(.5f);
+//        song.addSource(sample);
         int tilewidth = 64;
         int tileheight = 64;
         tilesetjson = directory.getEntry("tileset", JsonValue.class);
@@ -1016,5 +1040,12 @@ public class GameMode implements Screen, InputProcessor {
         int milliseconds = (int) ((score - (int)score) * 1000);
 
         return String.format("Time Elapsed: %d'%02d\"%03d", minutes, seconds, milliseconds);
+    }
+    public void playmusic(){
+        sample.setPosition(0);
+        sample.play();
+    }
+    public void pausemusic(){
+        sample.pause();
     }
 }

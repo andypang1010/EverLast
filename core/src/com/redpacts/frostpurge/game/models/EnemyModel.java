@@ -1,6 +1,7 @@
 package com.redpacts.frostpurge.game.models;
 
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,6 +32,9 @@ public class EnemyModel extends CharactersModel{
     public int getID(){
         return enemyID;
     }
+
+    private Sound quackSound;
+    private long quackId;
 
     /**
      * Instantiates the player with their starting location and angle and with their texture
@@ -65,6 +69,8 @@ public class EnemyModel extends CharactersModel{
         Texture down = new TextureRegion(directory.getEntry( "EnemyDown", Texture.class )).getTexture();
         run_down = new FilmStrip(down, 1, 8, 8);
 
+        quackSound = directory.getEntry("Quack", Sound.class);
+        quackId = -1;
 
         this.startpatrol = startpatrol;
         type = "enemy";
@@ -161,5 +167,21 @@ public class EnemyModel extends CharactersModel{
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
+    }
+
+    public Sound getQuack() {
+        return quackSound;
+    }
+
+    public void setQuack(Sound sound) {
+        quackSound = sound;
+    }
+
+    public long getQuackId() {
+        return quackId;
+    }
+
+    public void setQuackId(long id) {
+        quackId = id;
     }
 }
