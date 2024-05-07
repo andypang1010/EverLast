@@ -16,7 +16,7 @@ import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 public class SaveFileManager {
     private JsonValue saveFile;
-    private static final String SAVE_FILE_NAME = "assets/save_data.json";
+    private static final String SAVE_FILE_NAME = "save_data.json";
 
     public SaveFileManager(JsonValue json) {
         saveFile = json;

@@ -679,6 +679,36 @@ public class GameCanvas {
         spriteBatch.end();
     }
 
+    /**Draw the UI for the game which is different because it needs to follow the player.
+     *
+     * @param image
+     * @param tint
+     * @param x
+     * @param y
+     * @param angle
+     * @param sx
+     * @param sy
+     */
+    public void drawUI(TextureRegion image, Color tint,
+                       float x, float y, float angle, float sx, float sy, OrthographicCamera camera) {
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        // Call the master drawing method (we have to for transforms)
+
+        //Update HUD camera
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+
+        holder.setRegion(image);
+        draw(holder,tint,0,0,x,height- y,angle,sx,sy, false);
+        active = DrawPass.STANDARD;
+        spriteBatch.end();
+    }
+
     /**
      * Draws the tinted polygon with the given transformations
      *

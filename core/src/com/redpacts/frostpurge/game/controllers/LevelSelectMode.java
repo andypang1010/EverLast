@@ -809,6 +809,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						} catch (Exception e) {
 
 						}
+						if (exitButton.enlarged){
+							exitButton.resize("down");
+						}else if(settingsButton.enlarged){
+							settingsButton.resize("down");
+						}
 					}
 					if (levels.get((levelPage + pageDirection) * 3).available) {
 						levels.get((levelPage + pageDirection) * 3).resize("up");
@@ -823,6 +828,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 							}
 						} catch (Exception e) {
 
+						}
+						if (exitButton.enlarged){
+							exitButton.resize("down");
+						}else if(settingsButton.enlarged){
+							settingsButton.resize("down");
 						}
 					}
 					if (levels.get((levelPage + pageDirection) * 3 + 2).available) {
@@ -1086,9 +1096,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 								settings.resize("up");
 								mode.resetTime();
 							}else{
-								this.resize("down");
-								levels.get(mode.levelPage*3 + 1).resize("up");
-								mode.resetTime();
+								if (levels.get(mode.levelPage*3 + 1).available){
+									levels.get(mode.levelPage*3 + 1).resize("up");
+									mode.resetTime();
+								}else{
+									this.resize("down");
+									levels.get(mode.levelPage*3).resize("up");
+									mode.resetTime();
+								}
+
 							}
 						}else if (y>0){
 							if (!settings.enlarged){
@@ -1097,8 +1113,18 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 								mode.resetTime();
 							}else{
 								this.resize("down");
-								levels.get(mode.levelPage*3 + 2).resize("up");
-								mode.resetTime();
+								if (levels.get(mode.levelPage*3 + 2).available){
+									levels.get(mode.levelPage*3 + 2).resize("up");
+									mode.resetTime();
+								}
+								else if (levels.get(mode.levelPage*3 + 1).available){
+									levels.get(mode.levelPage*3 + 1).resize("up");
+									mode.resetTime();
+								}else {
+									levels.get(mode.levelPage*3).resize("up");
+									mode.resetTime();
+								}
+
 							}
 		//					this.resize("down");
 						}
