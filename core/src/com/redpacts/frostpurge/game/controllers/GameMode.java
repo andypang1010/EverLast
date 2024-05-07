@@ -459,10 +459,13 @@ public class GameMode implements Screen, InputProcessor {
         } else if (playerModel.didwin()){
             gameState = GameState.WIN;
             playerModel.setWin(false);
+
+            saveFileManager.saveGame(currentLevel.getName(),true, true, (maxTime - currentTime),currentTime);
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0,0);
+
             playerModel.startGameOver();
             playerModel.setGameOverState(1);
-            saveFileManager.saveGame(currentLevel.getName(),true, true, (int)(currentTime*100));
-            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
+
             pauseButton.resize("down");
             resumeButton.resize("down");
             retryButton.resize("down");
@@ -583,6 +586,9 @@ public class GameMode implements Screen, InputProcessor {
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
+        font.getData().setScale(scale);
+        font.setColor(Color.BLACK);
+        canvas.drawTextHUD(scoreToTime(maxTime-currentTime), font, 1150*scale, 1000*scale, HUDcamera);
     }
 
     public void drawPauseScreen(){
@@ -994,5 +1000,12 @@ public class GameMode implements Screen, InputProcessor {
         /** When the ships is dead (but shells still work) */
         OVER,
         WIN
+    }
+    public String scoreToTime(float score){
+        int minutes = (int) score / 60;
+        int seconds = (int) score % 60;
+        int milliseconds = (int) ((score - (int)score) * 1000);
+
+        return String.format("Time Elapsed: %d'%02d\"%03d", minutes, seconds, milliseconds);
     }
 }
