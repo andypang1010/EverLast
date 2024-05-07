@@ -561,6 +561,7 @@ public class GameMode implements Screen, InputProcessor {
             canvas.endDebug();
         }
 
+        canvas.drawUI(healthBarTexture, healthBarColor, (150+(0.05f)*(100-playerModel.getHp()))*sx, -900*sy, 0, playerModel.getHp()/100*scale, 0.95f*scale, HUDcamera);
         canvas.drawUI(statusBarBGTexture,Color.WHITE, 150*sx, -900*sy, 0f, scale, scale, HUDcamera);
         if(playerModel.getBoostNum() >= 1){
             canvas.drawUI(boostBarTexture,Color.WHITE, 150*sx, -800*sy, 0, 0.5f*scale,0.5f*scale, HUDcamera);
@@ -581,8 +582,7 @@ public class GameMode implements Screen, InputProcessor {
             healthBarColor.set(Color.YELLOW);
             healthBarColor.lerp(Color.RED, 1f-playerModel.getHp()/50);
         }
-        canvas.drawUI(healthBarTexture, healthBarColor, (150+(0.05f)*(100-playerModel.getHp()))*sx, -900*sy, 0, 1f*playerModel.getHp()/100*scale, 1f*scale, HUDcamera);
-        canvas.drawUI(processHeart(), Color.WHITE, 90*sx, -900*sy, 0f, 1f*scale,1f*scale, HUDcamera);
+        canvas.drawUI(processHeart(), Color.WHITE, 90*sx, -900*sy, 0f, scale, scale, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
