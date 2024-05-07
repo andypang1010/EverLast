@@ -7,6 +7,7 @@
         "levelSelectButton": "pauseScreen/levelSelectButton.png",
         "retryScreen": "pauseScreen/retryScreen.png",
         "retryButton": "pauseScreen/retryButton.png",
-        "winScreen": "pauseScreen/winScreen.png"
+        "winScreen": "pauseScreen/winScreen.png",
+        "exitGameButton": "levelSelect/exitgameButton.png"
     }
 }
