@@ -51,13 +51,13 @@ public class EnemyModel extends CharactersModel{
         idleup = idleright;
 
         run_right = new FilmStrip(duck, 1, 8, 8);
-        run_right.setFrame(4);
+//        run_right.setFrame(4);
 
         TextureRegion left = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class ));
         left.flip(false,true);
 
         run_left = new FilmStrip(left.getTexture(),1,8,8);
-        run_left.setFrame(4);
+//        run_left.setFrame(4);
 
         Texture up= new TextureRegion(directory.getEntry( "EnemyUp", Texture.class )).getTexture();
         run_up = new FilmStrip(up, 1, 7, 7);

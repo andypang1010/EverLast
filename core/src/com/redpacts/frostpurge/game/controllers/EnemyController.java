@@ -175,11 +175,23 @@ public class EnemyController extends CharactersController implements StateMachin
         }
 
         // Draw enemy
-        String direction = getDirection(enemy.getBody().getLinearVelocity().x,enemy.getBody().getLinearVelocity().y, previousDirection);
+        String direction = getDirection(model.getVelocity().x,model.getVelocity().y, previousDirection);
+        if (((EnemyModel) model).getID() == 1) {
+            angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
+//            System.out.println(angle);
+//            System.out.println(direction);
+        }
+//        model.resetFilmStrip(model.getFilmStrip(direction));
         processRun(direction);
         if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
         } else{
+            if (((EnemyModel) model).getID() == 1) {
+                angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
+//            System.out.println(angle);
+                System.out.println("actual:");
+                System.out.println(direction);
+            }
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
         }
         previousDirection = direction;
