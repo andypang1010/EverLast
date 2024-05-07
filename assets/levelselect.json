@@ -17,11 +17,11 @@
 	},
   "fonts": {
       "font": {
-        "file": "ui/gamefont.ttf",
+        "file": "ui/racetime.ttf",
         "size": 64
     }
   },
   "jsons": {
-      "savedata": "save_data.json"
+      "savedata": "assets/save_data.json"
   }
 }

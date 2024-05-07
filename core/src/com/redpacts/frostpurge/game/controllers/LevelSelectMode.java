@@ -241,24 +241,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pageDirection = 0;
 		Texture button1 = assets.getEntry("level1", Texture.class);
 		ButtonBox level1Button = new ButtonBox(1,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, button1.getWidth(), button1.getHeight()), button1, this);
+				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
 
 		Texture button2 = assets.getEntry("level2", Texture.class);
 		ButtonBox level2Button = new ButtonBox(2,
-				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button2.getWidth(), button2.getHeight()), button2, this);
+				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
 
 		Texture button3 = assets.getEntry("level3", Texture.class);
 		ButtonBox level3Button = new ButtonBox(3,
-				new Rectangle(canvas.getWidth() * 58 / 100, canvas.getHeight() * 5/18, button3.getWidth(), button3.getHeight()), button3, this);
+				new Rectangle(canvas.getWidth() * 61 / 100, canvas.getHeight() * 5/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
 
 		// TODO: Change scale when we have actual button for level 4, 5
 		Texture button4 = assets.getEntry("level4", Texture.class);
 		ButtonBox level4Button = new ButtonBox(4,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, button4.getWidth(), button4.getHeight()), button4, this);
+				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
 
 		Texture button5 = assets.getEntry("level5", Texture.class);
 		ButtonBox level5Button = new ButtonBox(5,
-				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button5.getWidth(), button5.getHeight()), button5, this);
+				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
 
 		levels = new Array<>(numberOfLevels);
 		levels.add(level1Button);
@@ -323,6 +323,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * prefer this in lecture.
 	 */
 	private void draw() {
+		font.getData().setScale(scale);
 		canvas.begin();
 		canvas.drawBackground(background, 0, 0, true);
 		Rectangle bounds;
@@ -365,7 +366,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						bounds = button.getBounds();
 						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
-						float ratio = (float) game.getScore("level" + Integer.toString(button.label)) / 2000;
+						float score = game.getScore("level" + Integer.toString(button.label));
+						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
+						float ratio = starsScore / 30;
+						if (score != 0){
+							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
+						}
 						if (ratio > 1) {
 							ratio = 1;
 						}
@@ -415,6 +421,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						button.hoveringButton(xbox, time, levels.size, levels);
 						bounds = button.getBounds();
 						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+						canvas.drawText("Time",font,(bounds.x+bounds.width/2)*scale,(bounds.y+bounds.height/2)*scale);
 						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
 						float ratio = (float) game.getScore("level" + Integer.toString(button.label)) / 2000;
 						if (ratio > 1) {
@@ -910,5 +917,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
 			return bounds.contains(x, y);
 		}
+	}
+	public String scoreToTime(float score){
+		int minutes = (int) score / 60;
+		int seconds = (int) score % 60;
+		int milliseconds = (int) ((score - (int)score) * 1000);
+
+		return String.format("Time: %d'%02d\"%03d", minutes, seconds, milliseconds);
 	}
 }
