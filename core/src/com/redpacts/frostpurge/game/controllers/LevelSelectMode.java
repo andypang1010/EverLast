@@ -42,6 +42,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 import com.badlogic.gdx.utils.Array;
 
+import java.awt.*;
+
 /**
  * Class that provides a loading screen for the state of the game.
  *
@@ -81,6 +83,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	private Texture backwardTexture;
 	private ButtonBox backwardButton;
+	private Texture levelSelectTexture;
+	private ButtonBox levelSelectButton;
+	private Texture settingsTexture;
+	private ButtonBox settingsButton;
+	private Texture exitTexture;
+	private ButtonBox exitButton;
 	private Array<ButtonBox> levels;
 	/** Texture atlas to support a progress bar */
 
@@ -207,14 +215,25 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		forwardTexture = assets.getEntry("forwardButton", Texture.class);
 		forwardButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 85 / 100, canvas.getHeight() * 2/15, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
+				new Rectangle(canvas.getWidth() * 85 / 100, canvas.getHeight() * 1/18, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
 		forwardButton.available = true;
 
 		backwardTexture = assets.getEntry("backwardButton", Texture.class);
 		backwardButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 2/15, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
+				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 1/18, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
 		backwardButton.available = true;
 
+		levelSelectTexture = assets.getEntry("levelSelectButton",Texture.class);
+		levelSelectButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*6/100,canvas.getHeight()*2/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		levelSelectButton.available = true;
+
+		settingsTexture = assets.getEntry("settingsButton",Texture.class);
+		settingsButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*93/100,canvas.getHeight()*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
+		settingsButton.available = true;
+
+		exitTexture = assets.getEntry("exitGameButton",Texture.class);
+		exitButton = new ButtonBox(0,new Rectangle(canvas.getWidth()*46/100,canvas.getHeight()*1/15,exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
+		exitButton.available = true;
 		// Load the level button
 		// Label of each button represents the level number
 		numberOfLevels = 5; // Number of levels
@@ -222,24 +241,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pageDirection = 0;
 		Texture button1 = assets.getEntry("level1", Texture.class);
 		ButtonBox level1Button = new ButtonBox(1,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, button1.getWidth(), button1.getHeight()), button1, this);
+				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
 
 		Texture button2 = assets.getEntry("level2", Texture.class);
 		ButtonBox level2Button = new ButtonBox(2,
-				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button2.getWidth(), button2.getHeight()), button2, this);
+				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
 
 		Texture button3 = assets.getEntry("level3", Texture.class);
 		ButtonBox level3Button = new ButtonBox(3,
-				new Rectangle(canvas.getWidth() * 58 / 100, canvas.getHeight() * 5/18, button3.getWidth(), button3.getHeight()), button3, this);
+				new Rectangle(canvas.getWidth() * 61 / 100, canvas.getHeight() * 5/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
 
 		// TODO: Change scale when we have actual button for level 4, 5
 		Texture button4 = assets.getEntry("level4", Texture.class);
 		ButtonBox level4Button = new ButtonBox(4,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, button4.getWidth(), button4.getHeight()), button4, this);
+				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
 
 		Texture button5 = assets.getEntry("level5", Texture.class);
 		ButtonBox level5Button = new ButtonBox(5,
-				new Rectangle(canvas.getWidth() * 33 / 100, canvas.getHeight() * 5/18, button5.getWidth(), button5.getHeight()), button5, this);
+				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
 
 		levels = new Array<>(numberOfLevels);
 		levels.add(level1Button);
@@ -304,16 +323,25 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * prefer this in lecture.
 	 */
 	private void draw() {
+		font.getData().setScale(scale);
 		canvas.begin();
 		canvas.drawBackground(background, 0, 0, true);
 		Rectangle bounds;
+		exitButton.hoveringButton(xbox,time,levels.size,levels);
+		bounds = exitButton.getBounds();
+		canvas.draw(exitButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
 		if (xbox==null){
-
-//			for (LevelBox levelBox: levelBoxes){
-//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-//				hoveringBox(levelBox);
-//				font.getData().setScale(levelBox.fontScale*scale);
-//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? levelBox.bounds.y*sy+levelBox.glyph.height*scale*1.25f : levelBox.bounds.y*sy+levelBox.glyph.height*scale);
+			if (levelPage == -1) {
+				canvas.drawTextCentered("Settings", font, 300);
+				levelSelectButton.hoveringButton(null, time, levels.size, levels);
+				bounds = levelSelectButton.getBounds();
+				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+			}
+			else{
+				settingsButton.hoveringButton(null,time,levels.size,levels);
+				bounds = settingsButton.getBounds();
+				canvas.draw(settingsTexture,bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale, bounds.getHeight()*scale);
+			}
 			if (levelPage == 0){
 				forwardButton.hoveringButton(null,time,levels.size, levels);
 				bounds = forwardButton.getBounds();
@@ -322,7 +350,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				backwardButton.hoveringButton(null,time,levels.size, levels);
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else {
+			} else if (levelPage!=-1){
 				forwardButton.hoveringButton(null,time,levels.size, levels);
 				bounds = forwardButton.getBounds();
 				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
@@ -330,29 +358,42 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 			}
-			for(ButtonBox button : levels) {
-				int level = button.getLabel();
-				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
-					button.hoveringButton(null,time,levels.size, levels);
-					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth()*scale,emptyStars.getHeight()*scale);
-					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
-					if (ratio>1){
-						ratio = 1;
-					}
-					if (ratio!=0){
-						stars.setRegionWidth((int) (emptyStars.getWidth()*ratio));
-						canvas.drawCentered(stars, ((bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2))*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
-						stars.setRegionWidth((emptyStars.getWidth()));
-					}
-					if (!button.available){
-						canvas.draw(lock, bounds.x*scale,bounds.y*scale,lock.getWidth()*scale,lock.getHeight()*scale);
+			if (levelPage!=-1) {
+				for (ButtonBox button : levels) {
+					int level = button.getLabel();
+					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
+						button.hoveringButton(null, time, levels.size, levels);
+						bounds = button.getBounds();
+						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
+						float score = game.getScore("level" + Integer.toString(button.label));
+						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
+						float ratio = starsScore / 30;
+						if (score != 0){
+							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
+						}
+						if (ratio > 1) {
+							ratio = 1;
+						}
+						if (ratio != 0) {
+							stars.setRegionWidth((int) (emptyStars.getWidth() * ratio));
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 5 * bounds.y * scale / 6, (float) stars.getRegionWidth() * scale, stars.getRegionHeight() * scale);
+							stars.setRegionWidth((emptyStars.getWidth()));
+						}
+						if (!button.available) {
+							canvas.draw(lock, bounds.x * scale, bounds.y * scale, lock.getWidth() * scale, lock.getHeight() * scale);
+						}
 					}
 				}
 			}
 		} else{
 			// TODO: Support XBox
+			if (levelPage == -1){
+				canvas.drawTextCentered("Settings", font, 300);
+				levelSelectButton.hoveringButton(xbox,time,levels.size,levels);
+				bounds = levelSelectButton.getBounds();
+				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+			}
 			if (levelPage == 0){
 				forwardButton.hoveringButton(xbox,time,levels.size, levels);
 				bounds = forwardButton.getBounds();
@@ -361,7 +402,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				backwardButton.hoveringButton(xbox,time,levels.size, levels);
 				bounds = backwardButton.getBounds();
 				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else {
+			} else if (levelPage!=1) {
 				forwardButton.hoveringButton(xbox,time,levels.size, levels);
 				bounds = forwardButton.getBounds();
 				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
@@ -373,24 +414,27 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
 //				levelBox.font.getData().setScale(levelBox.fontScale*scale);
 //				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? (levelBox.bounds.y+levelBox.glyph.height *1.25f)*sy : (levelBox.bounds.y+levelBox.glyph.height)*sy );
-			for(ButtonBox button : levels) {
-				int level = button.getLabel();
-				if(levelPage * 3 < level && level <= (levelPage + 1) * 3){
-					button.hoveringButton(xbox,time, levels.size, levels);
-					bounds = button.getBounds();
-					canvas.draw(button.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-					canvas.drawCentered(emptyStars, (bounds.x+bounds.width/2)*scale, 5*bounds.y*scale/6,emptyStars.getWidth()*scale,emptyStars.getHeight()*scale);
-					float ratio = (float) game.getScore("level" + Integer.toString(button.label)) /2000;
-					if (ratio>1){
-						ratio = 1;
-					}
-					if (ratio!=0){
-						stars.setRegionWidth((int) (stars.getRegionWidth()*ratio));
-						canvas.drawCentered(stars, ((bounds.x+ bounds.width/2 - emptyStars.getWidth() * (1 - ratio) / 2))*scale, 5*bounds.y*scale/6, (float) stars.getRegionWidth()*scale,stars.getRegionHeight()*scale);
-						stars.setRegionWidth((emptyStars.getWidth()));
-					}
-					if (!button.available){
-						canvas.draw(lock, bounds.x*scale,bounds.y*scale,lock.getWidth()*scale,lock.getHeight()*scale);
+			if (levelPage!=-1) {
+				for (ButtonBox button : levels) {
+					int level = button.getLabel();
+					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
+						button.hoveringButton(xbox, time, levels.size, levels);
+						bounds = button.getBounds();
+						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+						canvas.drawText("Time",font,(bounds.x+bounds.width/2)*scale,(bounds.y+bounds.height/2)*scale);
+						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
+						float ratio = (float) game.getScore("level" + Integer.toString(button.label)) / 2000;
+						if (ratio > 1) {
+							ratio = 1;
+						}
+						if (ratio != 0) {
+							stars.setRegionWidth((int) (stars.getRegionWidth() * ratio));
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 5 * bounds.y * scale / 6, (float) stars.getRegionWidth() * scale, stars.getRegionHeight() * scale);
+							stars.setRegionWidth((emptyStars.getWidth()));
+						}
+						if (!button.available) {
+							canvas.draw(lock, bounds.x * scale, bounds.y * scale, lock.getWidth() * scale, lock.getHeight() * scale);
+						}
 					}
 				}
 			}
@@ -526,7 +570,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //		for (LevelBox levelBox : levelBoxes) {
 //			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
 //				pressState = levelBox.label *2 -1;
-
+		if(levelSelectButton.isPressed()){
+			pageDirection =1 ;
+		}
+		if(settingsButton.isPressed()){
+			pageDirection = -(levelPage+1);
+		}
+		if(exitButton.isPressed()){
+			listener.exitScreen(this, 1);
+		}
 		if(forwardButton.isPressed() && levelPage < (numberOfLevels - 1)/3 ){
 			pageDirection = 1;
 		} else if(backwardButton.isPressed() && levelPage > 0){
@@ -865,5 +917,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY())/scale);
 			return bounds.contains(x, y);
 		}
+	}
+	public String scoreToTime(float score){
+		int minutes = (int) score / 60;
+		int seconds = (int) score % 60;
+		int milliseconds = (int) ((score - (int)score) * 1000);
+
+		return String.format("Time: %d'%02d\"%03d", minutes, seconds, milliseconds);
 	}
 }

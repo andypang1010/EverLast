@@ -59,7 +59,7 @@ public class GameContactListener implements ContactListener {
         if (obj1 instanceof PlayerModel && obj2 instanceof PlayerModel) {
             handleCollision((PlayerModel) obj1, (PlayerModel) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof EnemyModel) {
-            handleCollision((PlayerModel) obj1, (EnemyModel) obj2);
+            handleCollision(contact, (PlayerModel) obj1, (EnemyModel) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof ObstacleTile) {
             handleCollision((PlayerModel) obj1, (ObstacleTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof SwampTile) {
@@ -73,7 +73,7 @@ public class GameContactListener implements ContactListener {
         }
 
         else if (obj1 instanceof EnemyModel && obj2 instanceof PlayerModel) {
-            handleCollision((PlayerModel) obj2, (EnemyModel) obj1);
+            handleCollision(contact, (PlayerModel) obj2, (EnemyModel) obj1);
         } else if (obj1 instanceof EnemyModel && obj2 instanceof EnemyModel) {
             handleCollision((EnemyModel) obj1, (EnemyModel) obj2);
         } else if (obj1 instanceof EnemyModel && obj2 instanceof ObstacleTile) {
@@ -120,20 +120,17 @@ public class GameContactListener implements ContactListener {
      * @param player The player
      * @param enemy  The enemy
      */
-    private void handleCollision(PlayerModel player, EnemyModel enemy) {
-//        float vx1 = player.getVelocity().x;
-//        float vy1 = player.getVelocity().y;
-//        float vx2 = enemy.getVelocity().x;
-//        float vy2 = enemy.getVelocity().y;
-//
-//        player.setVelocity(-vx1, -vy1);
-//        enemy.setVelocity(-vx2, -vy2);
-        Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
-//        System.out.println("Direction:"+contactDirection);
-//        System.out.println(enemy.getPosition());
-        player.addHp(-25);
-        player.getBody().applyForceToCenter(contactDirection.scl(100), true);
-        enemy.getBody().applyForceToCenter(contactDirection.scl(-100), true);
+    private void handleCollision(Contact contact, PlayerModel player, EnemyModel enemy) {
+        if(!player.getInvincibility() && !player.getGameOver()) { // Player is not invincible, nor the gameplay is over
+            Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
+            player.addHp(-25);
+            player.getBody().applyForceToCenter(contactDirection.scl(50), true);
+            enemy.getBody().applyForceToCenter(contactDirection.scl(-50), true);
+
+            player.startInvincibility();
+        } else { // Player is invincible
+            contact.setEnabled(false);
+        }
     }
 
     /**

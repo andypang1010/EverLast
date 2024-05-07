@@ -114,8 +114,11 @@ public class InputController {
      *
      * @return true if the debug action button was pressed.
      */
+//    public boolean didDebug() {
+//        return debugPressed;
+//    }
     public boolean didDebug() {
-        return debugPressed;
+        return false;
     }
     public boolean didExit(){return exitPressed;}
     public boolean didReplay(){return replayPressed;}

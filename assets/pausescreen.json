@@ -3,10 +3,11 @@
         "pauseScreen": "pauseScreen/pauseScreen.png",
         "pauseButton": "pauseScreen/pauseButton.png",
         "resumeButton": "pauseScreen/resumeButton.png",
-        "homeButton": "pauseScreen/homeButton.png",
+        "homeButton": "pauseScreen/settings.png",
         "levelSelectButton": "pauseScreen/levelSelectButton.png",
         "retryScreen": "pauseScreen/retryScreen.png",
         "retryButton": "pauseScreen/retryButton.png",
-        "winScreen": "pauseScreen/winScreen.png"
+        "winScreen": "pauseScreen/winScreen.png",
+        "exitGameButton": "levelSelect/exitgameButton.png"
     }
 }

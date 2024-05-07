@@ -18,6 +18,7 @@ import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.models.ButtonBox;
 import com.redpacts.frostpurge.game.util.EnemyStates;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
@@ -54,6 +55,9 @@ public class GameMode implements Screen, InputProcessor {
      */
     private Texture levelSelectTexture;
     private ButtonBox levelSelectButton;
+
+    private Texture exitTexture;
+    private ButtonBox exitButton;
     /**
      * pressState = 0 means no click on button, 1 means clicking on home, 2 means home clicked.
      * 3 means clicking on level select button, 4 means level select clicked.
@@ -61,7 +65,7 @@ public class GameMode implements Screen, InputProcessor {
      * 7 means clicking on retry, 8 means retry clicked.
      */
     private int pressState = 0;
-    private boolean homeScreen;
+    private boolean settings;
     private boolean levelSelectScreen;
 
     /*
@@ -122,6 +126,9 @@ public class GameMode implements Screen, InputProcessor {
     private Texture statusBarBGTexture;
     private Texture boostBarTexture;
     private Texture healthBarTexture;
+    private FilmStrip heartBeat;
+    private FilmStrip heartHurt;
+    private Color healthBarColor;
     private boolean debug;
     private float scale;
     private float sx;
@@ -136,6 +143,7 @@ public class GameMode implements Screen, InputProcessor {
     private BitmapFont font;
     private float maxTime;
     private float currentTime;
+    private float beatTime;
     /** Variable to track the game state (SIMPLE FIELDS) */
     private GameState gameState;
     private SaveFileManager saveFileManager;
@@ -169,7 +177,7 @@ public class GameMode implements Screen, InputProcessor {
         homeTexture = pauseScreenAssets.getEntry("homeButton", Texture.class);
         homeButton = new ButtonBox(2, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 9/100, homeTexture.getWidth(), homeTexture.getHeight()), homeTexture);
-        homeScreen = false;
+        settings = false;
 
         levelSelectTexture = pauseScreenAssets.getEntry("levelSelectButton", Texture.class);
         levelSelectButton = new ButtonBox(3, enlargeScale, scale,
@@ -184,6 +192,10 @@ public class GameMode implements Screen, InputProcessor {
         retryButton = new ButtonBox(4, enlargeScale, scale,
                 new Rectangle(canvas.getWidth() * 40 / 100, canvas.getHeight() * 42/100, retryTexture.getWidth(), retryTexture.getHeight()), retryTexture);
 
+        exitTexture = pauseScreenAssets.getEntry("exitGameButton", Texture.class);
+        exitButton = new ButtonBox(5, enlargeScale, scale,
+                new Rectangle(canvas.getWidth() * 88 / 100, canvas.getHeight() * 9/100, exitTexture.getWidth(), exitTexture.getHeight()), exitTexture);
+
         // Load the win screen assets
         winScreenTexture = pauseScreenAssets.getEntry("winScreen", Texture.class);
         winScreenTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -194,6 +206,9 @@ public class GameMode implements Screen, InputProcessor {
         this.buttons.add(homeButton);
         this.buttons.add(levelSelectButton);
         this.buttons.add(retryButton);
+        this.buttons.add(exitButton);
+
+        this.healthBarColor = new Color();
 
         this.drawble = new Array<GameObject>();
         this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
@@ -251,7 +266,7 @@ public class GameMode implements Screen, InputProcessor {
     /**
      * Checks if the player chooses to return to home screen.
      */
-    public boolean isHomeScreen() {return this.homeScreen;}
+    public boolean isSettings() {return this.settings;}
 
 
     /**
@@ -263,7 +278,7 @@ public class GameMode implements Screen, InputProcessor {
      */
     public void resetButton(){
         pressState = 0;
-        homeScreen = false;
+        settings = false;
         levelSelectScreen = false;
     }
 
@@ -347,6 +362,25 @@ public class GameMode implements Screen, InputProcessor {
         }
     }
 
+    protected TextureRegion processHeart() {
+        FilmStrip heart;
+        if(playerModel.getInvincibility()){
+            heart = heartHurt;
+        }else{
+            heart = heartBeat;
+        }
+        beatTime += Gdx.graphics.getDeltaTime();
+        float beatInterval = 0.25f + playerModel.getHp() / 100;
+        float extraTime = beatTime >= beatInterval ? beatTime - beatInterval : 0;
+        int frame = (int) (extraTime / 0.05f);
+        if (frame >= heart.getSize()) {
+            frame = 0;
+            beatTime = 0;
+        }
+        heart.setFrame(frame);
+        return heart;
+    }
+
     public void update(float delta) {
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
@@ -364,12 +398,12 @@ public class GameMode implements Screen, InputProcessor {
         if (pressState == 2) { // Home button selected
             pressState = 0;
             levelSelectScreen = false;
-            homeScreen = true;
+            settings = true;
             listener.exitScreen(this, 0);
         } else if (pressState == 4) { // Level select button selected
             pressState = 0;
             levelSelectScreen = true;
-            homeScreen = false;
+            settings = false;
             listener.exitScreen(this, 0);
         } else if (inputController.didPause() || pressState == 6) {
             if (gameState == GameState.PLAY) {
@@ -397,11 +431,46 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         if (gameState == GameState.OVER){
-            drawRetryScreen();
-            return; // Skip the rest of the update loop
+            if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.addGameOver();
+            } else{
+                playerModel.setGameOverState(0);
+                drawRetryScreen();
+                return; // Skip the rest of the update loop
+            }
+
         } else if (gameState == GameState.WIN){
-            drawWinScreen();
-            return;
+            if (playerModel.getGameOver()){
+                playerModel.addGameOver();
+            } else{
+                playerModel.setGameOverState(0);
+                drawWinScreen();
+                return;
+            }
+        } else if (currentTime <= 0 || !playerModel.isAlive()) {
+            gameState = GameState.OVER;
+            playerModel.startGameOver();
+            playerModel.setGameOverState(-1);
+            pauseButton.resize("down");
+            resumeButton.resize("down");
+            retryButton.resize("up");
+            levelSelectButton.resize("down");
+            homeButton.resize("down");
+        } else if (playerModel.didwin()){
+            gameState = GameState.WIN;
+            playerModel.setWin(false);
+
+            saveFileManager.saveGame(currentLevel.getName(),true, true, (maxTime - currentTime),currentTime);
+            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0,0);
+
+            playerModel.startGameOver();
+            playerModel.setGameOverState(1);
+
+            pauseButton.resize("down");
+            resumeButton.resize("down");
+            retryButton.resize("down");
+            levelSelectButton.resize("up");
+            homeButton.resize("down");
         }
 
         if (gameState == GameState.PLAY){
@@ -409,33 +478,6 @@ public class GameMode implements Screen, InputProcessor {
             playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
         }
 
-        if (currentTime <= 0) {
-            gameState = GameState.OVER;
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("up");
-            levelSelectButton.resize("down");
-            homeButton.resize("down");
-        }
-        if (!playerModel.isAlive()){
-            gameState = GameState.OVER;
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("up");
-            levelSelectButton.resize("down");
-            homeButton.resize("down");
-        }
-        if (playerModel.didwin()){
-            gameState = GameState.WIN;
-            playerModel.setWin(false);
-            saveFileManager.saveGame(currentLevel.getName(),true, true, (int)(currentTime*100));
-            saveFileManager.saveGame(currentLevel.getNextLevelName(),true, false, 0);
-            pauseButton.resize("down");
-            resumeButton.resize("down");
-            retryButton.resize("down");
-            levelSelectButton.resize("up");
-            homeButton.resize("down");
-        }
 
         drawble.clear();
         for (int i = 0; i<currentLevel.getHeight();i++){
@@ -520,23 +562,34 @@ public class GameMode implements Screen, InputProcessor {
             canvas.endDebug();
         }
 
-        canvas.drawUI(statusBarBGTexture,Color.WHITE, 50*sx, -800*sy, 0f, 1.2f*scale,1.2f*scale, HUDcamera);
+        canvas.drawUI(statusBarBGTexture,Color.WHITE, 150*sx, -900*sy, 0f, scale, scale, HUDcamera);
         if(playerModel.getBoostNum() >= 1){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 50*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 150*sx, -800*sy, 0, 0.5f*scale,0.5f*scale, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 2){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 150*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 250*sx, -800*sy, 0, 0.5f*scale,0.5f*scale, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 3){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 250*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 350*sx, -800*sy, 0, 0.5f*scale,0.5f*scale, HUDcamera);
         }
         if(playerModel.getBoostNum() >= 4){
-            canvas.drawUI(boostBarTexture,Color.WHITE, 350*sx, -800*sy, 0, 1.2f*scale,1.2f*scale, HUDcamera);
+            canvas.drawUI(boostBarTexture,Color.WHITE, 450*sx, -800*sy, 0, 0.5f*scale,0.5f*scale, HUDcamera);
         }
-        canvas.drawUI(healthBarTexture, Color.WHITE, (50+(1.932f)*(100-playerModel.getHp()))*sx, -800*sy, 0, 1.2f*playerModel.getHp()/100*scale, 1.2f*scale, HUDcamera);
+        if(playerModel.getHp() >= 50){
+            healthBarColor.set(Color.GREEN);
+            healthBarColor.lerp(Color.YELLOW, 1f-(playerModel.getHp() - 50f)/50f);
+        }else{
+            healthBarColor.set(Color.YELLOW);
+            healthBarColor.lerp(Color.RED, 1f-playerModel.getHp()/50);
+        }
+        canvas.drawUI(healthBarTexture, healthBarColor, (150+(0.05f)*(100-playerModel.getHp()))*sx, -900*sy, 0, 1f*playerModel.getHp()/100*scale, 1f*scale, HUDcamera);
+        canvas.drawUI(processHeart(), Color.WHITE, 90*sx, -900*sy, 0f, 1f*scale,1f*scale, HUDcamera);
         font.getData().setScale(1);
         font.setColor(Color.GRAY);
 //        canvas.drawTextHUD("Time: " + (int) currentTime, font, 1500, 1000, HUDcamera);
+        font.getData().setScale(scale);
+        font.setColor(Color.BLACK);
+        canvas.drawTextHUD(scoreToTime(maxTime-currentTime), font, 1150*scale, 1000*scale, HUDcamera);
     }
 
     public void drawPauseScreen(){
@@ -559,6 +612,9 @@ public class GameMode implements Screen, InputProcessor {
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        bounds = exitButton.getBounds();
+        canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
         canvas.end();
     }
 
@@ -579,6 +635,10 @@ public class GameMode implements Screen, InputProcessor {
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        bounds = exitButton.getBounds();
+        canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+
         canvas.end();
     }
 
@@ -594,6 +654,10 @@ public class GameMode implements Screen, InputProcessor {
         levelSelectButton.hoveringButton(inputController.xbox, controllerTime, pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
         bounds = levelSelectButton.getBounds();
         canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+
+        exitButton.hoveringButton(inputController.xbox,controllerTime,pauseButton,resumeButton,levelSelectButton,homeButton,retryButton,gameState);
+        bounds = exitButton.getBounds();
+        canvas.draw(exitButton.getTexture(),bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
 
         canvas.end();
     }
@@ -622,6 +686,13 @@ public class GameMode implements Screen, InputProcessor {
         statusBarBGTexture = new TextureRegion(directory.getEntry("StatusBar_BG", Texture.class)).getTexture();
         boostBarTexture = new TextureRegion(directory.getEntry("StatusBar_Boost", Texture.class)).getTexture();
         healthBarTexture = new TextureRegion(directory.getEntry("StatusBar_Health", Texture.class)).getTexture();
+
+        Texture heartBeatTexture = new TextureRegion(directory.getEntry("Heart_Beat", Texture.class)).getTexture();
+        heartBeat = new FilmStrip(heartBeatTexture, 1, 4, 4);
+        Texture heartHurtTexture = new TextureRegion(directory.getEntry("Heart_Hurt", Texture.class)).getTexture();
+        heartHurt = new FilmStrip(heartHurtTexture, 1, 4, 4);
+
+        beatTime = 0;
 
         inputController = new InputController();
 
@@ -699,6 +770,8 @@ public class GameMode implements Screen, InputProcessor {
                  pressState = 3;
              } else if (resumeButton.isPressed() || pauseButton.isPressed()) {
                  pressState = 5;
+             } else if (exitButton.isPressed()){
+                 listener.exitScreen(this,1);
              }
         } else if (gameState == GameState.OVER) {
             if (homeButton.isPressed()) {
@@ -707,12 +780,16 @@ public class GameMode implements Screen, InputProcessor {
                 pressState = 3;
             } else if (retryButton.isPressed()) {
                 pressState = 7;
+            }else if (exitButton.isPressed()){
+                listener.exitScreen(this,1);
             }
         } else if (gameState == GameState.WIN) {
             if (homeButton.isPressed()) {
                 pressState = 1;
             } else if (levelSelectButton.isPressed()){
                 pressState = 3;
+            }else if (exitButton.isPressed()){
+                listener.exitScreen(this,1);
             }
         }
         return false;
@@ -924,5 +1001,12 @@ public class GameMode implements Screen, InputProcessor {
         /** When the ships is dead (but shells still work) */
         OVER,
         WIN
+    }
+    public String scoreToTime(float score){
+        int minutes = (int) score / 60;
+        int seconds = (int) score % 60;
+        int milliseconds = (int) ((score - (int)score) * 1000);
+
+        return String.format("Time Elapsed: %d'%02d\"%03d", minutes, seconds, milliseconds);
     }
 }

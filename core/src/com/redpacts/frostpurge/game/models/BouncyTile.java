@@ -92,7 +92,6 @@ public class BouncyTile extends TileModel{
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
-        body.setSleepingAllowed(false);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(6.4f * 3 / 2, 6.4f * 2 / 2);

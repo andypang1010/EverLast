@@ -82,6 +82,34 @@ public class EnemyController extends CharactersController implements StateMachin
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
         }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+                graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y-64), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x-64, model.getPosition().y), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y+64), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
+        if (pathQueue.isEmpty()){
+            System.out.println("missed");
+            graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x+64, model.getPosition().y), goalTile);
+            for (int i = 1; i < graphPath.getCount(); i++) {
+                pathQueue.addLast(graphPath.get(i));
+            }
+        }
 
         setMoveDirection();
         targetTile = goalTile;
@@ -98,6 +126,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void draw(GameCanvas canvas, EnemyModel enemy){
+        boolean drawVisionCone = false;
         // Draw shadow
         short[] indices = new short[3];
         indices[0] = 0;
@@ -105,7 +134,7 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[2] = 2;
 
         Vector2 rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
-        int numRays = 20; // Number of segments for circle
+        int numRays = 15; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
 
         float angle = 0;
@@ -130,17 +159,20 @@ public class EnemyController extends CharactersController implements StateMachin
 
             rayPrevious = rayEnd.cpy();
         }
-        // Draw vision cones
-        for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
-            float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
-            short[] indices_c = new short[3];
-            indices_c[0] = 0;
-            indices_c[1] = 1;
-            indices_c[2] = 2;
-            cone = new PolygonRegion(textureRegion, vertices, indices_c);
-            canvas.draw(cone, coneColor, 100, 100 ,0);
+
+        if (drawVisionCone){
+            // Draw vision cones
+            for (EnemyModel.Vector2Triple t : ((EnemyModel) model).getTriangles()) {
+                float[] vertices = {t.first.x, t.first.y, t.second.x, t.second.y, t.third.x, t.third.y};
+                short[] indices_c = new short[3];
+                indices_c[0] = 0;
+                indices_c[1] = 1;
+                indices_c[2] = 2;
+                cone = new PolygonRegion(textureRegion, vertices, indices_c);
+                canvas.draw(cone, coneColor, 100, 100 ,0);
+            }
+            ((EnemyModel) model).getTriangles().clear();
         }
-        ((EnemyModel) model).getTriangles().clear();
 
         // Draw enemy
         String direction = getDirection(enemy.getBody().getLinearVelocity().x,enemy.getBody().getLinearVelocity().y, previousDirection);
@@ -242,12 +274,38 @@ public class EnemyController extends CharactersController implements StateMachin
                 break;
 
             case CHASE:
-                System.out.println("IN CHASE STATE!");
 
                 // Update path to player every 0.5 seconds
                 if (updatePathCounter > 30){
                     setGoal(modelPositionToTile(playerModel));
+                    if (((EnemyModel) model).getID() == 1){
+//                        System.out.println(targetTile.getPosition());
+                        if (pathQueue.notEmpty()) {
+//                            System.out.println("next tile:");
+//                            System.out.println(pathQueue.first().getPosition());
+                        }
+                    }
                     updatePathCounter = 0;
+                    float dist =Vector2.dst(
+                            model.getBody().getPosition().x,
+                            model.getBody().getPosition().y,
+                            playerModel.getBody().getPosition().x,
+                            playerModel.getBody().getPosition().y);
+//                    System.out.println(dist);
+                    if (dist<10){
+                        speedMultiplier = 40;
+                    }else if (dist<15){
+                        speedMultiplier = 50;
+                    }
+                    else if (dist<20){
+                        speedMultiplier = 60;
+                    }else if (dist<25){
+                        speedMultiplier = 70;
+                    }else if (dist<30){
+                        speedMultiplier = 80;
+                    }else if (dist<35){
+                        speedMultiplier = 90;
+                    }
                 }
                 else {
                     updatePathCounter++;
