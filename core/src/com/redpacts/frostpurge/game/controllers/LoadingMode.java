@@ -85,9 +85,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** Default budget for asset loader (do nothing but load 60 fps) */
 	private static int DEFAULT_BUDGET = 15;
 	/** Standard window size (for scaling) */
-	private static int STANDARD_WIDTH  = 800;
+	private static int STANDARD_WIDTH  = 1920;
 	/** Standard window height (for scaling) */
-	private static int STANDARD_HEIGHT = 700;
+	private static int STANDARD_HEIGHT = 1080;
 	/** Ratio of the bar width to the screen */
 	private static float BAR_WIDTH_RATIO  = 0.66f;
 	/** Ration of the bar height to the screen */
@@ -222,7 +222,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		Texture loadingTexture = new TextureRegion(internal.getEntry("loading2",Texture.class)).getTexture();
 		loading = new FilmStrip(loadingTexture, 1,4,4);
 
-		bounds = new Rectangle(83*canvas.getWidth()/100, canvas.getHeight() /8, playButton.getWidth(), playButton.getHeight());
+		bounds = new Rectangle(83*STANDARD_WIDTH/100, STANDARD_HEIGHT/8, playButton.getWidth(), playButton.getHeight());
 		// No progress so far.
 		progress = 0;
 		pressState = 0;
@@ -281,13 +281,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		canvas.drawBackground(background, 0, 0,true);
 		if (!assets.isFinished()) {
 			processLoad();
-			canvas.draw(loading,Color.WHITE, 0, 0,1040,(float) bounds.y+ bounds.height - 60,0,.65f,.65f,false);
+			canvas.draw(loading,Color.WHITE, 0, 0,1040 * scale,(float) (bounds.y+ bounds.height - 60) * scale,0,.65f*scale,.65f*scale,false);
 		} else {
 			hoveringStart();
 //			font.getData().setScale(fontscale*scale);
 //			font.setColor(pressState == 1? Color.GRAY: font.getColor());
 //			canvas.drawTextCentered("-Start-", font, -200*scale);
-			canvas.draw(playButton, (float) bounds.x, (float) bounds.y, (float) bounds.getWidth(), (float) bounds.getHeight());
+			canvas.draw(playButton, (float) bounds.x * scale, (float) bounds.y * scale, (float) bounds.getWidth() * scale, (float) bounds.getHeight() * scale);
 		}
 		canvas.end();
 	}
@@ -646,13 +646,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 //			fontscale =1f;
 		float centerX = this.bounds.x + this.bounds.width/2;
 		float centerY = this.bounds.y + this.bounds.height/2;
-		if (bounds.contains(x, y) && !this.playEnlarged){
+		if (bounds.contains(x/scale, y/scale) && !this.playEnlarged){
 			this.playEnlarged = true;
 			this.bounds.width = this.bounds.width * 5 / 4;
 			this.bounds.height = this.bounds.height * 5 / 4;
 			this.bounds.x = (int) centerX - this.bounds.width / 2;
 			this.bounds.y = (int) centerY - this.bounds.height / 2;
-		} else if(!bounds.contains(x,y) && this.playEnlarged){
+		} else if(!bounds.contains(x/scale,y/scale) && this.playEnlarged){
 			this.playEnlarged = false;
 			this.bounds.width = this.bounds.width * 4 / 5;
 			this.bounds.height = this.bounds.height * 4 / 5;
@@ -667,6 +667,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 //		float textHeight = glyph.height;
 //        return x >= ((float) Gdx.graphics.getWidth() / 2 - textWidth*scale / 2) && x <= ((float) Gdx.graphics.getWidth() / 2 + textWidth*scale / 2)
 //                && y >= ((float) Gdx.graphics.getHeight() / 2 - textHeight*scale / 2) - 200*scale && y <= ((float) Gdx.graphics.getHeight() / 2 + textHeight*scale / 2) - 200*scale;
-		return bounds.contains(x, y);
+		return bounds.contains(x/scale, y/scale);
 	}
 }

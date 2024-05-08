@@ -168,8 +168,6 @@ public class GameMode implements Screen, InputProcessor {
         float enlargeScale = 8/7f;
         // Compute the dimensions from the canvas
         this.resize(canvas.getWidth(), canvas.getHeight());
-        STANDARD_WIDTH = canvas.getWidth();
-        STANDARD_HEIGHT = canvas.getHeight();
 
         // We need these files loaded immediately
         pauseScreenAssets = new AssetDirectory( "pausescreen.json" );
@@ -182,20 +180,20 @@ public class GameMode implements Screen, InputProcessor {
 
         pauseTexture = pauseScreenAssets.getEntry("pauseButton", Texture.class);
         pauseButton = new ButtonBox(0, enlargeScale, scale,
-                new Rectangle(canvas.getWidth() * 42 / 100, canvas.getHeight() * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
+                new Rectangle(STANDARD_WIDTH * 42 / 100, STANDARD_HEIGHT * 36/100, pauseTexture.getWidth(), pauseTexture.getHeight()), pauseTexture);
 
         resumeTexture = pauseScreenAssets.getEntry("resumeButton", Texture.class);
         resumeButton = new ButtonBox(1, enlargeScale, scale,
-                new Rectangle(canvas.getWidth() * 47 / 100, canvas.getHeight() * 24/100, resumeTexture.getWidth(), resumeTexture.getHeight()), resumeTexture);
+                new Rectangle(STANDARD_WIDTH * 47 / 100, STANDARD_HEIGHT * 24/100, resumeTexture.getWidth(), resumeTexture.getHeight()), resumeTexture);
 
         homeTexture = pauseScreenAssets.getEntry("homeButton", Texture.class);
         homeButton = new ButtonBox(2, enlargeScale, scale,
-                new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 9/100, homeTexture.getWidth(), homeTexture.getHeight()), homeTexture);
+                new Rectangle(STANDARD_WIDTH * 6 / 100, STANDARD_HEIGHT * 9/100, homeTexture.getWidth(), homeTexture.getHeight()), homeTexture);
         settings = false;
 
         levelSelectTexture = pauseScreenAssets.getEntry("levelSelectButton", Texture.class);
         levelSelectButton = new ButtonBox(3, enlargeScale, scale,
-                new Rectangle(canvas.getWidth() * 18 / 100, canvas.getHeight() * 9/100, levelSelectTexture.getWidth(), levelSelectTexture.getHeight()), levelSelectTexture);
+                new Rectangle(STANDARD_WIDTH * 18 / 100, STANDARD_HEIGHT * 9/100, levelSelectTexture.getWidth(), levelSelectTexture.getHeight()), levelSelectTexture);
         levelSelectScreen = false;
 
         // Load the retry screen assets
@@ -204,11 +202,11 @@ public class GameMode implements Screen, InputProcessor {
 
         retryTexture = pauseScreenAssets.getEntry("retryButton", Texture.class);
         retryButton = new ButtonBox(4, enlargeScale, scale,
-                new Rectangle(canvas.getWidth() * 40 / 100, canvas.getHeight() * 42/100, retryTexture.getWidth(), retryTexture.getHeight()), retryTexture);
+                new Rectangle(STANDARD_WIDTH * 40 / 100, STANDARD_HEIGHT * 42/100, retryTexture.getWidth(), retryTexture.getHeight()), retryTexture);
 
         exitTexture = pauseScreenAssets.getEntry("exitGameButton", Texture.class);
         exitButton = new ButtonBox(5, enlargeScale, scale,
-                new Rectangle(canvas.getWidth() * 88 / 100, canvas.getHeight() * 9/100, exitTexture.getWidth(), exitTexture.getHeight()), exitTexture);
+                new Rectangle(STANDARD_WIDTH * 88 / 100, STANDARD_HEIGHT * 9/100, exitTexture.getWidth(), exitTexture.getHeight()), exitTexture);
 
         // Load the win screen assets
         winScreenTexture = pauseScreenAssets.getEntry("winScreen", Texture.class);
@@ -225,9 +223,6 @@ public class GameMode implements Screen, InputProcessor {
         this.healthBarColor = new Color();
 
         this.drawble = new Array<GameObject>();
-        this.sx = (float) canvas.getWidth() / STANDARD_WIDTH;
-        this.sy = (float) canvas.getHeight() / STANDARD_HEIGHT;
-        scale = (Math.min(sx, sy));
         this.comparator = new Comparator<GameObject>() {
             public int compare(GameObject o1, GameObject o2) {
                 float o1y;

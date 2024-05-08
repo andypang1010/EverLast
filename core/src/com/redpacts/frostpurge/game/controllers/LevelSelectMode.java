@@ -64,9 +64,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	// There are TWO asset managers.  One to load the loading screen.  The other to load the assets
 	/** Internal assets for this loading screen */
 	/** Standard window size (for scaling) */
-	private int initialWidth  = 1280;
+	private static int STANDARD_WIDTH = 1920;
 	/** Standard window height (for scaling) */
-	private int initialHeight = 720;
+	private static int STANDARD_HEIGHT = 1080;
 	/**
 	 * The actual assets to be loaded
 	 */
@@ -217,8 +217,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(), canvas.getHeight());
-		initialWidth = canvas.getWidth();
-		initialHeight = canvas.getHeight();
 
 		// We need these files loaded immediately
 		assets = new AssetDirectory( "levelselect.json" );
@@ -238,20 +236,20 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		forwardTexture = assets.getEntry("forwardButton", Texture.class);
 		forwardButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 85 / 100, canvas.getHeight() * 1/18, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
+				new Rectangle(STANDARD_WIDTH * 85 / 100, STANDARD_HEIGHT * 1/18, forwardTexture.getWidth(), forwardTexture.getHeight()), forwardTexture, this);
 		forwardButton.available = true;
 
 		backwardTexture = assets.getEntry("backwardButton", Texture.class);
 		backwardButton = new ButtonBox(0,
-				new Rectangle(canvas.getWidth() * 6 / 100, canvas.getHeight() * 1/18, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
+				new Rectangle(STANDARD_WIDTH * 6 / 100, STANDARD_HEIGHT * 1/18, backwardTexture.getWidth(), backwardTexture.getHeight()), backwardTexture, this);
 		backwardButton.available = true;
 
 		levelSelectTexture = assets.getEntry("levelSelectButton",Texture.class);
-		levelSelectButton = new ButtonBox(-1,new Rectangle(canvas.getWidth()*6/100,canvas.getHeight()*2/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		levelSelectButton = new ButtonBox(-1,new Rectangle(STANDARD_WIDTH*6/100,STANDARD_HEIGHT*2/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
 		levelSelectButton.available = true;
 
 		settingsTexture = assets.getEntry("settingsButton",Texture.class);
-		settingsButton = new ButtonBox(-2,new Rectangle(canvas.getWidth()*93/100,canvas.getHeight()*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
+		settingsButton = new ButtonBox(-2,new Rectangle(STANDARD_WIDTH*93/100,STANDARD_HEIGHT*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
 		settingsButton.available = true;
 
 
@@ -266,35 +264,35 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		largeWindowTexture = assets.getEntry("largeRes",Texture.class);
 
 		volumeLowButton = new ButtonBox(-3,
-				new Rectangle(canvas.getWidth() * 3.17f / 7f - volumeBar.getWidth() - 120f, canvas.getHeight() * 3f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
+				new Rectangle(STANDARD_WIDTH * 3.17f / 7f - volumeBar.getWidth() - 120f, STANDARD_HEIGHT * 3f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
 		volumeLowButton.available = true;
 
 		volumeHighButton = new ButtonBox(-4,
-				new Rectangle(canvas.getWidth() * 3.57f / 7f + volumeBar.getWidth() + 120f, canvas.getHeight() * 3f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
+				new Rectangle(STANDARD_WIDTH * 3.57f / 7f + volumeBar.getWidth() + 120f, STANDARD_HEIGHT * 3f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
 		volumeHighButton.available = true;
 
 		sensitivityBar = new ProgressBar(0f, 2f, 0.1f,false, skin);
 		sensitivityBar.setValue(sensitivityBar.getMaxValue() / 2);
 
 		sensitivityLowButton = new ButtonBox(-5,
-				new Rectangle(canvas.getWidth() * 3.17f / 7f - sensitivityBar.getWidth() - 120f, canvas.getHeight() * 2f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
+				new Rectangle(STANDARD_WIDTH * 3.17f / 7f - sensitivityBar.getWidth() - 120f, STANDARD_HEIGHT * 2f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
 		sensitivityLowButton.available = true;
 
 		sensitivityHighButton = new ButtonBox(-6,
-				new Rectangle(canvas.getWidth() * 3.57f / 7f + sensitivityBar.getWidth() + 120f, canvas.getHeight() * 2f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
+				new Rectangle(STANDARD_WIDTH * 3.57f / 7f + sensitivityBar.getWidth() + 120f, STANDARD_HEIGHT * 2f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
 		sensitivityHighButton.available = true;
 
 		smallWindowButton = new ButtonBox(-7,
-				new Rectangle(canvas.getWidth() * 2.6f / 10f, canvas.getHeight() * 2f / 15f, smallWindowTexture.getWidth(), smallWindowTexture.getHeight()), smallWindowTexture, this);
+				new Rectangle(STANDARD_WIDTH * 2.6f / 10f, STANDARD_HEIGHT * 2f / 15f, smallWindowTexture.getWidth(), smallWindowTexture.getHeight()), smallWindowTexture, this);
 		smallWindowButton.available = true;
 
 		largeWindowButton = new ButtonBox(-8,
-				new Rectangle(canvas.getWidth() * 6.8f / 11f, canvas.getHeight() * 2f / 15f, largeWindowTexture.getWidth(), largeWindowTexture.getHeight()), largeWindowTexture, this);
+				new Rectangle(STANDARD_WIDTH * 6.8f / 11f, STANDARD_HEIGHT * 2f / 15f, largeWindowTexture.getWidth(), largeWindowTexture.getHeight()), largeWindowTexture, this);
 		largeWindowButton.available = true;
 
 
 		exitTexture = assets.getEntry("exitGameButton",Texture.class);
-		exitButton = new ButtonBox(-9,new Rectangle(canvas.getWidth()*45/100,canvas.getHeight()*1/15,exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
+		exitButton = new ButtonBox(-9,new Rectangle(STANDARD_WIDTH*45/100,STANDARD_HEIGHT*1/15,exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
 		exitButton.available = true;
 
 		// Load the level button
@@ -304,24 +302,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pageDirection = 0;
 		Texture button1 = assets.getEntry("level1", Texture.class);
 		ButtonBox level1Button = new ButtonBox(1,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
+				new Rectangle(STANDARD_WIDTH * 5 / 100, STANDARD_HEIGHT * 5/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
 
 		Texture button2 = assets.getEntry("level2", Texture.class);
 		ButtonBox level2Button = new ButtonBox(2,
-				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
+				new Rectangle(STANDARD_WIDTH * 36 / 100, STANDARD_HEIGHT * 5/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
 
 		Texture button3 = assets.getEntry("level3", Texture.class);
 		ButtonBox level3Button = new ButtonBox(3,
-				new Rectangle(canvas.getWidth() * 61 / 100, canvas.getHeight() * 5/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
+				new Rectangle(STANDARD_WIDTH * 61 / 100, STANDARD_HEIGHT * 5/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
 
 		// TODO: Change scale when we have actual button for level 4, 5
 		Texture button4 = assets.getEntry("level4", Texture.class);
 		ButtonBox level4Button = new ButtonBox(4,
-				new Rectangle(canvas.getWidth() * 5 / 100, canvas.getHeight() * 5/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
+				new Rectangle(STANDARD_WIDTH * 5 / 100, STANDARD_HEIGHT * 5/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
 
 		Texture button5 = assets.getEntry("level5", Texture.class);
 		ButtonBox level5Button = new ButtonBox(5,
-				new Rectangle(canvas.getWidth() * 36 / 100, canvas.getHeight() * 5/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
+				new Rectangle(STANDARD_WIDTH * 36 / 100, STANDARD_HEIGHT * 5/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
 
 		levels = new Array<>(numberOfLevels);
 		levels.add(level1Button);
@@ -656,8 +654,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 	@Override
 	public void resize(int i, int i1) {
-		sx = ((float)canvas.getWidth())/initialWidth;
-		sy = ((float)canvas.getHeight())/initialHeight;
+		sx = ((float)canvas.getWidth())/STANDARD_WIDTH;
+		sy = ((float)canvas.getHeight())/STANDARD_HEIGHT;
 		scale = (sx < sy ? sx : sy);
 	}
 
