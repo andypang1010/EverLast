@@ -498,8 +498,11 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         if (gameState == GameState.PLAY){
-            currentTime -= Gdx.graphics.getDeltaTime();
-            playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
+            if (Gdx.graphics.getDeltaTime() < 0.25) {
+                currentTime -= Gdx.graphics.getDeltaTime();
+                playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
+            }
+            System.out.println(currentTime);
         }
 
 
