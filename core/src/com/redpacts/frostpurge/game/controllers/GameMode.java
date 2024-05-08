@@ -400,6 +400,11 @@ public class GameMode implements Screen, InputProcessor {
             for (EnemyController enemy : enemyControllers){
                 enemy.playQuack(false);
             }
+            playerController.pauseSounds();
+        }
+
+        else {
+            sample.setVolume(0.15f * LevelSelectMode.volumeBar.getValue());
         }
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
@@ -700,7 +705,6 @@ public class GameMode implements Screen, InputProcessor {
 //        song = engine.newMusicBuffer( false, 44100 );
         sample = directory.getEntry( "song", Music.class );
         sample.setLooping(true);
-        sample.setVolume(.5f);
 //        song.addSource(sample);
         int tilewidth = 64;
         int tileheight = 64;
@@ -741,10 +745,16 @@ public class GameMode implements Screen, InputProcessor {
                 maxTime = 46;
                 break;
             case "level2":
-                maxTime = 61;
+                maxTime = 70;
                 break;
             case "level3":
-                maxTime = 46;
+                maxTime = 60;
+                break;
+            case "level4":
+                maxTime = 60;
+                break;
+            case "level5":
+                maxTime = 75;
                 break;
             default:
                 maxTime = 61;

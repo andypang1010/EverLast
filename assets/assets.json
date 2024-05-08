@@ -37,7 +37,7 @@
     "ActiveBouncyMushroom": "bouncy/bouncyMushroomFilmstrip.png",
     "BreakableGlassBox": "breakable/breakableGlassBoxFilmstrip.png",
     "BreakableWoodBox": "breakable/breakableWoodBoxFilmstrip.png",
-    "tileset": "Tilesets/TileSet.png"
+    "tileset": "Tilesets/TileSetComplete.png"
   },
   "sounds" : {
     "Accelerate" : "sound/accelerate.wav",

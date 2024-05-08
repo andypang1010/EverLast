@@ -338,7 +338,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		sample = assets.getEntry( "song", Music.class );
 		sample.setLooping(true);
-		sample.setVolume(.5f);
 
 		// Let ANY connected controller start the game.
 		for (XBoxController controller : Controllers.get().getXBoxControllers()) {
@@ -608,6 +607,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public void render(float delta) {
 		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
+		sample.setVolume(0.5f * volumeBar.getValue());
 //
 //		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
 //			volumeSlider.setValue(volumeSlider.getValue() - volumeSlider.getStepSize());
