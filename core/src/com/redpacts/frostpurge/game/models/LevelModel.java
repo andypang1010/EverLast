@@ -159,7 +159,7 @@ public class LevelModel {
                 breakables.insert(breakables.size, new BreakableTile(glassBox, new Vector2(x,y), 1,  base, 1, 4, 4));
                 break;
             case "wood":
-                breakables.insert(breakables.size, new BreakableTile(woodBox, new Vector2(x,y), 1,  base, 1, 2, 2));
+                breakables.insert(breakables.size, new BreakableTile(woodBox, new Vector2(x,y), 1,  base, 1, 4, 4));
                 break;
         }
 //        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);
