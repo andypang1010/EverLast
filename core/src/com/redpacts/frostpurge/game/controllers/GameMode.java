@@ -402,6 +402,7 @@ public class GameMode implements Screen, InputProcessor {
             for (EnemyController enemy : enemyControllers){
                 enemy.playQuack(false);
             }
+            playerController.pauseSounds();
         }
 
         else {

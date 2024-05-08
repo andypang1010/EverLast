@@ -144,6 +144,10 @@ public class PlayerController extends CharactersController {
     public void playBoost() {
         boostSound.play(1 *  LevelSelectMode.volumeBar.getValue());
     }
+    public void pauseSounds(){
+        boostSound.pause();
+        accelerateSound.pause();
+    }
 
     public Vector2 cameraOffsetPos() {
         Vector2 pos = model.getPosition().cpy();
