@@ -287,6 +287,7 @@ public class GameMode implements Screen, InputProcessor {
      * Checks if the player chooses to return to level select screen.
      */
     public boolean isLevelSelectScreen() {return this.levelSelectScreen;}
+    public boolean isRetry(){return this.retryButton.isPressed();}
     /**
      * Reset boolean flags for home screen and level select screen..
      */
@@ -444,8 +445,7 @@ public class GameMode implements Screen, InputProcessor {
             inputController.clearPausePressed();
         } else if (pressState == 8){
             pressState = 0;
-            gameState = GameState.PLAY;
-            loadLevel(currentLevel.getName(), saveFileManager);
+            listener.exitScreen(this,0);
         }
 
         if (gameState == GameState.PAUSE) {
