@@ -127,7 +127,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			directory = loading.getAssets();
 			playing.populate(directory);
 
-			levelselect = new LevelSelectMode(canvas);
+			levelselect = new LevelSelectMode(canvas,playing);
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
@@ -137,7 +137,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			levelselect.resetPressState();
 			levelselect.pausemusic();
 
-			playing.loadLevel(levelselect.getLevel(), levelselect.getSaveFile());
+//			playing.loadLevel(levelselect.getLevel(), levelselect.getSaveFile());
 			playing.setScreenListener(this);
 			setScreen(playing);
 			mode = "playing";
@@ -145,6 +145,8 @@ public class GDXRoot extends Game implements ScreenListener {
 		} else if (screen == playing && playing.isSettings()) {
 			playing.resetButton();
 			playing.pausemusic();
+
+			levelselect.loading = false;
 			levelselect.levelPage = -1;
 			levelselect.levelSelectButton.resize("up");
 			levelselect.setScreenListener(this);
@@ -155,14 +157,26 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.resetButton();
 			playing.pausemusic();
 
+			levelselect.loading = false;
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
 			levelselect.playmusic();
+		} else if (screen == playing && playing.isRetry()) {
+			playing.resetButton();
+			playing.pausemusic();
+
+			levelselect.loading = true;
+			levelselect.setScreenListener(this);
+			setScreen(levelselect);
+			mode = "levelselect";
+			levelselect.playmusic();
+			new Thread(levelselect.load).start();
 		} else if (screen == playing) {
 			playing.resetButton();
 			playing.pausemusic();
 
+			levelselect.loading = false;
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";

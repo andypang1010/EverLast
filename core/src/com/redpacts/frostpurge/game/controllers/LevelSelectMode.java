@@ -38,12 +38,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.JsonValue;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
+import com.redpacts.frostpurge.game.util.FilmStrip;
 import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.XBoxController;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 import com.badlogic.gdx.math.Rectangle;
 
 import com.badlogic.gdx.utils.Array;
+import com.redpacts.frostpurge.game.controllers.GameMode;
 
 import java.util.Locale;
 
@@ -71,6 +73,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * The actual assets to be loaded
 	 */
 	private AssetDirectory assets;
+	public boolean loading = false;
 
 	/**
 	 * Background texture for level-select
@@ -164,6 +167,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	TextureRegion stars;
 	Texture lock;
 	Music sample;
+	AssetLoader load;
+	Texture loadingscreen;
+	FilmStrip loadAnimation;
+	Rectangle loadingBounds;
 
 
 	public String getLevel(){
@@ -211,7 +218,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 *
 	 * @param canvas The game canvas to draw to
 	 */
-	public LevelSelectMode(GameCanvas canvas) {
+	public LevelSelectMode(GameCanvas canvas, GameMode gamemode) {
+		load = new AssetLoader(this,gamemode);
 		this.canvas = canvas;
 		inputController = new InputController();
 
@@ -223,6 +231,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		assets.loadAssets();
 		assets.finishLoading();
 
+		loadingscreen = assets.getEntry("loadingBackground",Texture.class);
+		Texture loadtexture = assets.getEntry("loading",Texture.class);
+		loadAnimation = new FilmStrip(loadtexture,1,4,4);
 		// Load the background
 		background = assets.getEntry("background", Texture.class);
 		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -394,20 +405,26 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * prefer this in lecture.
 	 */
 	private void draw() {
-		if (scale!=0){
+	canvas.begin();
+	if (loading) {
+		canvas.drawBackground(loadingscreen,0,0,true);
+		processLoad();
+		canvas.draw(loadAnimation,Color.WHITE, 0, 0,1040*scale,(float) 150*scale,0,.65f*scale,.65f*scale,false);
+	}else{
+		if (scale != 0) {
 			font.getData().setScale(scale);
 		}
-		canvas.begin();
-		if (levelPage == -1){
-			canvas.drawBackground(settingsBackground,0,0,true);
-		}else{
+
+		if (levelPage == -1) {
+			canvas.drawBackground(settingsBackground, 0, 0, true);
+		} else {
 			canvas.drawBackground(background, 0, 0, true);
 		}
 		Rectangle bounds;
-		exitButton.hoveringButton(xbox,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+		exitButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 		bounds = exitButton.getBounds();
-		canvas.draw(exitButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
-		if (xbox==null){
+		canvas.draw(exitButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+		if (xbox == null) {
 			if (levelPage == -1) {
 				levelSelectButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = levelSelectButton.getBounds();
@@ -419,11 +436,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 				volumeLowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeLowButton.getBounds();
-				canvas.draw(volumeLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(volumeLowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				volumeHighButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeHighButton.getBounds();
-				canvas.draw(volumeHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(volumeHighButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				font.setColor(Color.BLACK);
 				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
@@ -431,44 +448,43 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 				sensitivityLowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = sensitivityLowButton.getBounds();
-				canvas.draw(sensitivityLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(sensitivityLowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				sensitivityHighButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = sensitivityHighButton.getBounds();
-				canvas.draw(sensitivityHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(sensitivityHighButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 
 				smallWindowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = smallWindowButton.getBounds();
-				canvas.draw(smallWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(smallWindowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				largeWindowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = largeWindowButton.getBounds();
-				canvas.draw(largeWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(largeWindowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-			}
-			else{
-				settingsButton.hoveringButton(null,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+			} else {
+				settingsButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = settingsButton.getBounds();
-				canvas.draw(settingsTexture,bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(settingsTexture, bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 			}
-			if (levelPage == 0){
-				forwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+			if (levelPage == 0) {
+				forwardButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
-				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else if (levelPage == (numberOfLevels - 1)/3) {
-				backwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				canvas.draw(forwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+			} else if (levelPage == (numberOfLevels - 1) / 3) {
+				backwardButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
-				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else if (levelPage!=-1){
-				forwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				canvas.draw(backwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+			} else if (levelPage != -1) {
+				forwardButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
-				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-				backwardButton.hoveringButton(null,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				canvas.draw(forwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+				backwardButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
-				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(backwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 			}
-			if (levelPage!=-1) {
+			if (levelPage != -1) {
 				for (ButtonBox button : levels) {
 					int level = button.getLabel();
 					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
@@ -479,8 +495,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						float score = game.getScore("level" + Integer.toString(button.label));
 						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
 						float ratio = starsScore / 30;
-						if (score != 0){
-							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
+						if (score != 0) {
+							canvas.drawText(scoreToTime(score), font, (bounds.x + bounds.width / 2) * scale, 9 * (bounds.y + bounds.height) * scale / 8);
 						}
 						if (ratio > 1) {
 							ratio = 1;
@@ -496,12 +512,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					}
 				}
 			}
-		} else{
+		} else {
 			// TODO: Support XBox
-			if (levelPage == -1){
-				levelSelectButton.hoveringButton(xbox,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+			if (levelPage == -1) {
+				levelSelectButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = levelSelectButton.getBounds();
-				canvas.draw(levelSelectButton.getTexture(),bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
 				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
@@ -511,55 +527,55 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 				volumeLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeLowButton.getBounds();
-				canvas.draw(volumeLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(volumeLowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				volumeHighButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeHighButton.getBounds();
-				canvas.draw(volumeHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(volumeHighButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				sensitivityLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = sensitivityLowButton.getBounds();
-				canvas.draw(sensitivityLowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(sensitivityLowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				sensitivityHighButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = sensitivityHighButton.getBounds();
-				canvas.draw(sensitivityHighButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(sensitivityHighButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 
 				smallWindowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = smallWindowButton.getBounds();
-				canvas.draw(smallWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(smallWindowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
 				largeWindowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = largeWindowButton.getBounds();
-				canvas.draw(largeWindowButton.getTexture(), bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale,bounds.getHeight()*scale);
+				canvas.draw(largeWindowButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-			}else{
-				settingsButton.hoveringButton(xbox,time,levels.size,levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+			} else {
+				settingsButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = settingsButton.getBounds();
-				canvas.draw(settingsTexture,bounds.x*scale,bounds.y*scale,bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(settingsTexture, bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 			}
-			if (levelPage == 0){
-				forwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+			if (levelPage == 0) {
+				forwardButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
-				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else if (levelPage == (numberOfLevels - 1)/3) {
-				backwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				canvas.draw(forwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+			} else if (levelPage == (numberOfLevels - 1) / 3) {
+				backwardButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
-				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-			} else if (levelPage!=-1) {
-				forwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				canvas.draw(backwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+			} else if (levelPage != -1) {
+				forwardButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = forwardButton.getBounds();
-				canvas.draw(forwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
-				backwardButton.hoveringButton(xbox,time,levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				canvas.draw(forwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+				backwardButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = backwardButton.getBounds();
-				canvas.draw(backwardButton.getTexture(), bounds.x*scale, bounds.y*scale, bounds.getWidth()*scale, bounds.getHeight()*scale);
+				canvas.draw(backwardButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 			}
-//			for (LevelBox levelBox: levelBoxes){
-//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
-//				levelBox.font.getData().setScale(levelBox.fontScale*scale);
-//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? (levelBox.bounds.y+levelBox.glyph.height *1.25f)*sy : (levelBox.bounds.y+levelBox.glyph.height)*sy );
-			if (levelPage!=-1) {
+			//			for (LevelBox levelBox: levelBoxes){
+			//				levelBox.font.setColor(pressState == levelBox.label*2-1 ? Color.GRAY : Color.DARK_GRAY);
+			//				levelBox.font.getData().setScale(levelBox.fontScale*scale);
+			//				canvas.drawText("level " + Integer.toString(levelBox.label), levelBox.font, levelBox.bounds.x*sx,levelBox.enlarged ? (levelBox.bounds.y+levelBox.glyph.height *1.25f)*sy : (levelBox.bounds.y+levelBox.glyph.height)*sy );
+			if (levelPage != -1) {
 				for (ButtonBox button : levels) {
 					int level = button.getLabel();
 					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
@@ -570,8 +586,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						float score = game.getScore("level" + Integer.toString(button.label));
 						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
 						float ratio = starsScore / 30;
-						if (score != 0){
-							canvas.drawText(scoreToTime(score),font,(bounds.x+bounds.width/2)*scale,9 * (bounds.y+bounds.height) * scale / 8);
+						if (score != 0) {
+							canvas.drawText(scoreToTime(score), font, (bounds.x + bounds.width / 2) * scale, 9 * (bounds.y + bounds.height) * scale / 8);
 						}
 						if (ratio > 1) {
 							ratio = 1;
@@ -588,6 +604,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				}
 			}
 		}
+	}
 		canvas.end();
 	}
 
@@ -642,7 +659,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 			if (isReady() && listener != null) {
 				pressState = 0;
-				listener.exitScreen(this, 0);
+				loading = true;
+				new Thread(load).start();
+//				listener.exitScreen(this, 0);
 			}
 		}
 		//game.update(assets.getEntry("savedata", JsonValue.class));
@@ -1324,5 +1343,40 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		int milliseconds = (int) ((score - (int)score) * 1000);
 
 		return String.format("Time: %d'%02d\"%03d", minutes, seconds, milliseconds);
+	}
+
+	private class AssetLoader implements Runnable {
+		Screen mode;
+		GameMode gamemode;
+
+		public AssetLoader (Screen mode, GameMode gamemode){
+			this.mode= mode;
+			this.gamemode = gamemode;
+		}
+
+		@Override
+		public void run() {
+			// Load assets here (e.g., textures, sounds, etc.)
+			// This code will run in a separate thread
+
+			// Simulate loading time
+            gamemode.loadLevel(getLevel(),game);
+
+            // Assets loaded, switch to the main game screen
+			listener.exitScreen(mode,0);
+		}
+	}
+	private void processLoad(){
+		time += Gdx.graphics.getDeltaTime();
+		int frame = (loadAnimation == null ? 11 : loadAnimation.getFrame());
+		if (loadAnimation != null) {
+			if (time >= .25) {
+				frame++;
+				time = 0f;
+				if (frame >= loadAnimation.getSize())
+					frame = 0;
+				loadAnimation.setFrame(frame);
+			}
+		}
 	}
 }
