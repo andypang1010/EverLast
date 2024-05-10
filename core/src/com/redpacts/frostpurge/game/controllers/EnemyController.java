@@ -17,6 +17,7 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
@@ -139,7 +140,12 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[1] = 1;
         indices[2] = 2;
 
-        Vector2 rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
+        Vector2 rayStart;
+        if(Objects.equals(((EnemyModel) model).getEnemyType(), "Messenger")){
+            rayStart = model.getBody().getPosition().cpy().add(3.5f, -5f);
+        }else{
+            rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
+        }
         int numRays = 15; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
 
@@ -296,45 +302,52 @@ public class EnemyController extends CharactersController implements StateMachin
 
             case CHASE:
                 playQuack(true);
-
-
-                // Update path to player every 0.5 seconds
-                if (updatePathCounter > 30){
-                    setGoal(modelPositionToTile(playerModel));
-                    if (((EnemyModel) model).getID() == 1){
+                if (updatePathCounter > 30) {
+                    if (Objects.equals(((EnemyModel) model).getEnemyType(), "Regular")) {
+                            setGoal(modelPositionToTile(playerModel));
+                            if (((EnemyModel) model).getID() == 1) {
 //                        System.out.println(targetTile.getPosition());
-                        if (pathQueue.notEmpty()) {
+                                if (pathQueue.notEmpty()) {
 //                            System.out.println("next tile:");
 //                            System.out.println(pathQueue.first().getPosition());
+                                }
+                            }
+                            float dist = Vector2.dst(
+                                    model.getBody().getPosition().x,
+                                    model.getBody().getPosition().y,
+                                    playerModel.getBody().getPosition().x,
+                                    playerModel.getBody().getPosition().y);
+//                    System.out.println(dist);
+                            if (dist < 10) {
+                                speedMultiplier = 40;
+                            } else if (dist < 15) {
+                                speedMultiplier = 50;
+                            } else if (dist < 20) {
+                                speedMultiplier = 60;
+                            } else if (dist < 25) {
+                                speedMultiplier = 70;
+                            } else if (dist < 30) {
+                                speedMultiplier = 80;
+                            } else if (dist < 35) {
+                                speedMultiplier = 90;
+                            }
+                        alertNeighborEnemies();
+                    }else if (Objects.equals(((EnemyModel) model).getEnemyType(), "Messenger")) {
+                        CharactersModel neighborEnemy = findNeighborEnemies();
+                        if(neighborEnemy == null){
+                            changeState(EnemyStates.PATROL);
+                            nextWaypointIndex = 0;
+                            setGoal(waypoints[0]);
+                        }else{
+                            setGoal(modelPositionToTile(neighborEnemy));
+                            alertNeighborEnemies();
                         }
                     }
                     updatePathCounter = 0;
-                    float dist =Vector2.dst(
-                            model.getBody().getPosition().x,
-                            model.getBody().getPosition().y,
-                            playerModel.getBody().getPosition().x,
-                            playerModel.getBody().getPosition().y);
-//                    System.out.println(dist);
-                    if (dist<10){
-                        speedMultiplier = 40;
-                    }else if (dist<15){
-                        speedMultiplier = 50;
-                    }
-                    else if (dist<20){
-                        speedMultiplier = 60;
-                    }else if (dist<25){
-                        speedMultiplier = 70;
-                    }else if (dist<30){
-                        speedMultiplier = 80;
-                    }else if (dist<35){
-                        speedMultiplier = 90;
-                    }
-                }
-                else {
+                }else{
                     updatePathCounter++;
                 }
-
-                alertNeighborEnemies();
+                // Update path to player every 0.5 seconds
 
                 break;
         }
@@ -366,6 +379,27 @@ public class EnemyController extends CharactersController implements StateMachin
                 System.out.println("Alerted!!!");
             }
         }
+    }
+
+    private CharactersModel findNeighborEnemies() {
+        for (int i = 0; i < GameMode.enemyControllers.size; i++) {
+            EnemyController enemy = GameMode.enemyControllers.get(i);
+            if (enemy == this) continue;
+
+            Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
+//                    System.out.println(((EnemyModel) enemy.getModel()).getID() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
+            if (enemy.getCurrentState() != EnemyStates.CHASE && !Objects.equals(((EnemyModel) enemy.model).getEnemyType(), "Messenger") &&
+                    Vector2.dst(
+                            model.getBody().getPosition().x,
+                            model.getBody().getPosition().y,
+                            enemyPosition.x,
+                            enemyPosition.y)
+                            < 300) {
+
+                return enemy.model;
+            }
+        }
+        return null;
     }
 
     public void playQuack(boolean on) {

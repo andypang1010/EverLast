@@ -31,6 +31,7 @@
     "EnemyLR": "enemies/enemyLRfilmstripEDIT1.png",
     "EnemyUp": "enemies/enemyUpfilmstripEDIT1.png",
     "EnemyDown": "enemies/enemyDownfilmstripEDIT1.png",
+    "EnemyBat": "enemies/bat_filmstrip_1.png",
     "Fire" : "characters/firenoaxis.png",
     "FireBoost": "characters/fireboostnoaxis.png",
     "IdleBouncyMushroom": "bouncy/bouncyMushroomIdle.png",
