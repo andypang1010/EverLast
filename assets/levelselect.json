@@ -12,7 +12,7 @@
         "emptystars": "ui/outline_stars.png",
         "filledstars": "ui/filled_stars.png",
         "levelSelectButton": "levelSelect/levelSelectButton.png",
-        "settingsButton": "pauseScreen/Settings.png",
+        "settingsButton": "pauseScreen/settings.png",
         "exitGameButton": "levelSelect/exitgameButton.png",
         "incButton": "levelSelect/more_+button.png",
         "decButton": "levelSelect/less_-button.png",
