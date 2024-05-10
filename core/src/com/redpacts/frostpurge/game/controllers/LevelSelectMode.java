@@ -525,12 +525,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				levelSelectButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
-
+				font.setColor(Color.BLACK);
 				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
-
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 12.3f / 21f);
+				font.setColor(Color.BLACK);
 				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 1.93f / 5f);
 
 				volumeLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeLowButton.getBounds();
@@ -910,7 +910,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				}
 				for (ButtonBox levelButton : levels) {
 					int level = levelButton.label;
-					if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getA()) {
+					if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getA() && time>.1) {
 						pressState = levelButton.label * 2 - 1;
 					}
 				}

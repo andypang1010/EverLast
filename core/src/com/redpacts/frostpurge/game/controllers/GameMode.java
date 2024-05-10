@@ -878,7 +878,7 @@ public class GameMode implements Screen, InputProcessor {
                 }else if (exitButton.getEnlarged()){
                     listener.exitScreen(this,1);
                 }
-            } else if (gameState == GameState.OVER && inputController.xbox.getBack()) {
+            } else if (gameState == GameState.OVER && inputController.xbox.getA()) {
                 if (homeButton.getEnlarged()) {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {
@@ -888,7 +888,7 @@ public class GameMode implements Screen, InputProcessor {
                 }else if (exitButton.getEnlarged()){
                     listener.exitScreen(this,1);
                 }
-            } else if (gameState == GameState.WIN && inputController.xbox.getBack()) {
+            } else if (gameState == GameState.WIN && inputController.xbox.getA()) {
                 if (homeButton.getEnlarged()) {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {

@@ -119,6 +119,10 @@ public class ButtonBox {
                                     this.resize("down");
                                     homebutton.resize("up");
                                     time[0] = 0;
+                                } else if (x>0){
+                                    this.resize("down");
+                                    exitbutton.resize("up");
+                                    time[0] = 0;
                                 }
                                 break;
                             case 2:
@@ -144,9 +148,13 @@ public class ButtonBox {
                                     this.resize("down");
                                     homebutton.resize("up");
                                     time[0] = 0;
-                                } else if (y > 0 || x > 0) {
+                                } else if (y > 0) {
                                     this.resize("down");
                                     retrybutton.resize("up");
+                                    time[0] = 0;
+                                }else if (x>0){
+                                    this.resize("down");
+                                    exitbutton.resize("up");
                                     time[0] = 0;
                                 }
                                 break;
@@ -161,6 +169,10 @@ public class ButtonBox {
                                 if (y < 0 || x < 0) {
                                     this.resize("down");
                                     levelselectbutton.resize("up");
+                                    time[0] = 0;
+                                }else if (x>0){
+                                    this.resize("down");
+                                    exitbutton.resize("up");
                                     time[0] = 0;
                                 }
                                 break;
