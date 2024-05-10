@@ -133,6 +133,7 @@ public class CollisionController{
 
         if (player != null) {
             player.createBody(world);
+            System.out.println("PLAYER CREATED");
             addObject(player);
         }
         for (EnemyModel e : enemies) {
