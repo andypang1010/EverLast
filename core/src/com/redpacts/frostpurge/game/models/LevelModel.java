@@ -21,6 +21,7 @@ public class LevelModel {
     private int width;
     private int height;
     private TileModel[][] baseLayer;
+    private TileModel[][] baseLayer2;
     private TileModel[][] extraLayer;
     private TileModel[][] accentLayer;
     private Array<EnemyModel> enemies;
@@ -36,6 +37,7 @@ public class LevelModel {
         this.height = height;
         this.width = width;
         baseLayer = new TileModel[height][width];
+        baseLayer2 = new TileModel[height][width];
         extraLayer = new TileModel[height][width];
         accentLayer = new TileModel[height][width];
         enemies = new Array<>();
@@ -53,6 +55,9 @@ public class LevelModel {
      */
     public void populateBase(int i, int j, TextureRegion texture){
         baseLayer[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
+    }
+    public void populateBase2(int i, int j, TextureRegion texture){
+        baseLayer2[i][j] = new EmptyTile(texture, new Vector2(j*64,i*64));
     }
     /**
      * Used to populate the array for the accent layer by creating an emptytile in the appropriate index
@@ -148,9 +153,13 @@ public class LevelModel {
     public void createBreakable(int x, int y, int rotation, AssetDirectory directory, int index, String label, int base){
         // TODO: Right now only supports one type of breakable.
         TextureRegion glassBox =  new TextureRegion(directory.getEntry("BreakableGlassBox", Texture.class));
+        TextureRegion woodBox =  new TextureRegion(directory.getEntry("BreakableWoodBox", Texture.class));
         switch (label) {
             case "glass":
-                breakables.insert(bouncy.size, new BreakableTile(glassBox, new Vector2(x,y), 1,  base, 1, 4, 4));
+                breakables.insert(breakables.size, new BreakableTile(glassBox, new Vector2(x,y), 1,  base, 1, 4, 4));
+                break;
+            case "wood":
+                breakables.insert(breakables.size, new BreakableTile(woodBox, new Vector2(x,y), 1,  base, 1, 4, 4));
                 break;
         }
 //        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);
@@ -182,6 +191,9 @@ public class LevelModel {
     public int getHeight(){return height;}
     public TileModel[][] getBaseLayer(){
         return baseLayer;
+    }
+    public TileModel[][] getBase2Layer(){
+        return baseLayer2;
     }
     public TileModel[][] getExtraLayer(){
         return extraLayer;

@@ -197,7 +197,7 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(Contact contact, PlayerModel player, BreakableTile tile) {
         // TODO: Implement actual break speed
-        if (player.getBody().getLinearVelocity().len() > 65) {
+        if (player.getBody().getLinearVelocity().len() > 90) {
             contact.setEnabled(false);
             tile.deactivate();
         }

@@ -18,7 +18,9 @@
         "decButton": "levelSelect/less_-button.png",
         "smallRes": "levelSelect/1280x720_button.png",
         "largeRes": "levelSelect/1920x1080_button.png",
-        "settingsBackground": "levelSelect/background.png"
+        "settingsBackground": "levelSelect/background.png",
+        "loadingBackground": "loading/startscreen.png",
+        "loading": "loading/loading2.png"
 	},
   "music" : {
     "song" : "sound/menu.ogg"

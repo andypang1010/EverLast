@@ -37,11 +37,13 @@ public class LevelController {
         JsonValue layer1 = leveljson.get("layers").child();
         JsonValue layer2 = layer1.next();
         JsonValue layer3 = layer2.next();
-        JsonValue characters = layer3.next();
+        JsonValue layer4 = layer3.next();
+        JsonValue characters = layer4.next();
 
         initializeBaseTileLayer(level, layer1, tileset);
-        initializeExtraTileLayer(level, layer2, tileset,tileProperties);
-        initializeAccentTileLayer(level, layer3, tileset, tileProperties);
+        initializeBase2TileLayer(level,layer2,tileset);
+        initializeExtraTileLayer(level, layer3, tileset,tileProperties);
+        initializeAccentTileLayer(level, layer4, tileset, tileProperties);
         initializeCharacterLayer(level, characters, directory);
 
         return level;
@@ -60,9 +62,22 @@ public class LevelController {
             int index = data[i];
             if (index!=0){
                 index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                //System.out.println(index);
                 level.populateBase(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
             }else{
                 level.populateBase(height- 1-i/width, i%width, tileset[0][0]);
+            }
+        }
+    }
+    private void initializeBase2TileLayer(LevelModel level, JsonValue layer, TextureRegion[][]tileset){
+        int[] data = layer.get("data").asIntArray();
+        for (int i = 0; i<data.length;i++){
+            int index = data[i];
+            if (index!=0){
+                index-=1; //NOTE: THIS IS A NUMBER THAT NEEDS TO BE ADJUSTED BASED ON TILSET SIZE AND ORDER
+                level.populateBase2(height- 1-i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth]);
+            }else{
+                level.populateBase2(height- 1-i/width, i%width, tileset[0][0]);
             }
         }
     }
@@ -152,7 +167,7 @@ public class LevelController {
                     properties = properties.next();
                     x+= 75;
                     id = properties.getInt("value");
-                    System.out.println(id);
+                    //System.out.println(id);
                     level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, id);
                     break;
                 case "waypoint":
@@ -161,7 +176,7 @@ public class LevelController {
                     properties = properties.next();
                     int pointNumber = properties.getInt("value");
                     x += 32;
-                    System.out.println(id);
+                    //System.out.println(id);
                     level.addWaypoint(x,height*64 - y,id,pointNumber);
                     break;
                 case "bouncy":
