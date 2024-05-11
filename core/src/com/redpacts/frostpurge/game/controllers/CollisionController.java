@@ -1,6 +1,7 @@
 package com.redpacts.frostpurge.game.controllers;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -218,7 +219,9 @@ public class CollisionController{
         pickPowerUp((PlayerModel) player);
         win((PlayerModel) player);
         for (EnemyModel e : enemies){
-            checkEnemyVision(e);
+            if(!Objects.equals(e.getEnemyType(), "bat")){
+                checkEnemyVision(e);
+            }
         }
         postUpdate(1/60f);
     }

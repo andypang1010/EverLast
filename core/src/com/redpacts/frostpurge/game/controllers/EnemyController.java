@@ -77,6 +77,10 @@ public class EnemyController extends CharactersController implements StateMachin
             setGoal(modelPositionToTile(playerModel));
         }
 
+        if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
+            listenRadius = 30f;
+        }
+
         textureRegion = new TextureRegion();
         coneColor = new Color(1f,1f,1f,.5f);
 //        cone = new PolygonRegion(new TextureRegion(), null,null);
@@ -268,6 +272,11 @@ public class EnemyController extends CharactersController implements StateMachin
                 if (isPlayerWithinListenRadius()) {
                     currentListenInterval = notHeardToPatrolInterval;
                     setGoal(modelPositionToTile(playerModel));
+                    if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
+                        if(Math.random() < 0.01){
+                            changeState(EnemyStates.CHASE);
+                        }
+                    }
                 }
 
                 else if (reachedDestination) {
