@@ -908,6 +908,11 @@
                          "name":"enemyID",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"enemyType",
+                         "type":"string",
+                         "value":"duck"
                         }],
                  "rotation":0,
                  "type":"",
@@ -931,6 +936,11 @@
                          "name":"enemyID",
                          "type":"int",
                          "value":2
+                        }, 
+                        {
+                         "name":"enemyType",
+                         "type":"string",
+                         "value":"duck"
                         }],
                  "rotation":0,
                  "type":"",
@@ -954,6 +964,11 @@
                          "name":"enemyID",
                          "type":"int",
                          "value":3
+                        }, 
+                        {
+                         "name":"enemyType",
+                         "type":"string",
+                         "value":"duck"
                         }],
                  "rotation":0,
                  "type":"",
