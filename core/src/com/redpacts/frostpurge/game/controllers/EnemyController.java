@@ -145,10 +145,10 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[2] = 2;
 
         Vector2 rayStart;
-        if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
-            rayStart = model.getBody().getPosition().cpy().add(3.5f, -5f);
+        if(Objects.equals(enemy.getEnemyType(), "bat")){
+            rayStart = enemy.getBody().getPosition().cpy().add(3.5f, -5f);
         }else{
-            rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
+            rayStart = enemy.getBody().getPosition().cpy().add(3.5f, 4.5f);
         }
         int numRays = 15; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
@@ -156,14 +156,14 @@ public class EnemyController extends CharactersController implements StateMachin
         float angle = 0;
         Vector2 dir = new Vector2(1, 0);
         Vector2 rayDirection = dir.cpy().rotateDeg(angle);
-        Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(((EnemyModel)model).getRadius())); // Calculate end point of the ray
+        Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(enemy.getRadius())); // Calculate end point of the ray
         Vector2 rayPrevious = rayEnd.cpy();
         Vector2 ray1, ray2, ray3;
 
         for (int i = 1; i < numRays; i++) {
             angle += deltaAngle;
             rayDirection = dir.cpy().rotateDeg(angle);
-            rayEnd = rayStart.cpy().add(rayDirection.scl(((EnemyModel)model).getRadius()));
+            rayEnd = rayStart.cpy().add(rayDirection.scl(enemy.getRadius()));
 
             ray1 = rayStart.cpy().scl(10).add(-100, -100);
             ray2 = rayPrevious.cpy().scl(10).add(-100, -100);
@@ -171,7 +171,11 @@ public class EnemyController extends CharactersController implements StateMachin
 
             float[] vertices = {ray1.x, ray1.y, ray2.x, ray2.y, ray3.x, ray3.y};
             PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
-            canvas.draw(cone, new Color(0f, 0f, 0f, 0.5f), 70, 50 ,0);
+            if(Objects.equals(enemy.getEnemyType(), "flies")){
+                canvas.draw(cone, new Color(255f, 0f, 0f, 0.1f), 70, 50 ,0);
+            }else{
+                canvas.draw(cone, new Color(0f, 0f, 0f, 0.5f), 70, 50 ,0);
+            }
 
             rayPrevious = rayEnd.cpy();
         }
@@ -200,7 +204,11 @@ public class EnemyController extends CharactersController implements StateMachin
 //        model.resetFilmStrip(model.getFilmStrip(direction));
         processRun(direction);
         if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
-            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+            if(Objects.equals(enemy.getEnemyType(), "flies")){
+                enemy.drawCharacter(canvas, 1, (float) Math.toDegrees(model.getRotation()), Color.RED, "idle", direction);
+            }else{
+                enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+            }
         } else{
             if (((EnemyModel) model).getID() == 1) {
                 angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
@@ -208,7 +216,11 @@ public class EnemyController extends CharactersController implements StateMachin
                 System.out.println("actual:");
                 System.out.println(direction);
             }
-            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+            if(Objects.equals(enemy.getEnemyType(), "flies")){
+                enemy.drawCharacter(canvas, 1, (float) Math.toDegrees(model.getRotation()), Color.RED, "running", direction);
+            }else{
+                enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+            }
         }
         previousDirection = direction;
     }
@@ -351,6 +363,10 @@ public class EnemyController extends CharactersController implements StateMachin
                             setGoal(modelPositionToTile(neighborEnemy));
                             alertNeighborEnemies();
                         }
+                    }else if(Objects.equals(((EnemyModel) model).getEnemyType(), "flies")){
+                        setGoal(modelPositionToTile(playerModel));
+                        speedMultiplier = 70;
+                        alertNeighborEnemies();
                     }
                     updatePathCounter = 0;
                 }else{

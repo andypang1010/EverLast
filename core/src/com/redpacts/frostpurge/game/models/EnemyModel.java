@@ -94,8 +94,12 @@ public class EnemyModel extends CharactersModel{
         this.position = position;
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
-        this.radius = 3.19f;
         this.enemyType = enemyType;
+        if(Objects.equals(enemyType, "flies")){
+            this.radius = 10f;
+        }else{
+            this.radius = 3.19f;
+        }
 
         if(Objects.equals(this.enemyType, "duck")){
             Texture duck = new TextureRegion(directory.getEntry("EnemyLR", Texture.class)).getTexture();
@@ -133,6 +137,22 @@ public class EnemyModel extends CharactersModel{
             run_left = new FilmStrip(left.getTexture(),1,5,5);
             run_up = new FilmStrip(bat, 1, 5, 5);
             run_down = new FilmStrip(bat, 1, 5, 5);
+
+            quackSound = directory.getEntry("Quack", Sound.class);
+            quackId = -1;
+        }else if(Objects.equals(this.enemyType, "flies")){
+            Texture flies = new TextureRegion(directory.getEntry("EnemyFly", Texture.class)).getTexture();
+            idleright = new FilmStrip(flies, 1, 6, 6);
+            idleleft = idleright;
+            idleup = idleright;
+            run_right = new FilmStrip(flies, 1, 6, 6);
+
+            TextureRegion left = new TextureRegion(directory.getEntry( "EnemyFly", Texture.class ));
+            left.flip(false,true);
+
+            run_left = new FilmStrip(left.getTexture(),1,6,6);
+            run_up = new FilmStrip(flies, 1, 6, 6);
+            run_down = new FilmStrip(flies, 1, 6, 6);
 
             quackSound = directory.getEntry("Quack", Sound.class);
             quackId = -1;
@@ -239,6 +259,10 @@ public class EnemyModel extends CharactersModel{
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY;
         if(Objects.equals(this.enemyType, "bat")){
             fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+        }else if(Objects.equals(this.enemyType, "flies")){
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+            fixtureDef.isSensor = true;
         }else{
             fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
                     CollisionController.PhysicsConstants.CATEGORY_ENEMY |
