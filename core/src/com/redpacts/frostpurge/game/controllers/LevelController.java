@@ -148,6 +148,7 @@ public class LevelController {
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
         int x,y,rotation;
         int id;
+        String enemyType;
         int base = 3;
         String type;
         String label;
@@ -167,8 +168,10 @@ public class LevelController {
                     properties = properties.next();
                     x+= 75;
                     id = properties.getInt("value");
+                    properties = properties.next();
+                    enemyType = properties.getString("value");
                     //System.out.println(id);
-                    level.createEnemy(x,height*64-y,rotation,directory,type, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, id);
+                    level.createEnemy(x,height*64-y,rotation,directory,enemyType, new int[] {(int)Math.floor((double) x /64), height - (int)Math.floor((double) y /64)}, id);
                     break;
                 case "waypoint":
                     properties = properties.next();

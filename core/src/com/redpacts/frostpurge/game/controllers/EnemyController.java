@@ -141,7 +141,7 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[2] = 2;
 
         Vector2 rayStart;
-        if(Objects.equals(((EnemyModel) model).getEnemyType(), "Messenger")){
+        if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
             rayStart = model.getBody().getPosition().cpy().add(3.5f, -5f);
         }else{
             rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
@@ -303,7 +303,7 @@ public class EnemyController extends CharactersController implements StateMachin
             case CHASE:
                 playQuack(true);
                 if (updatePathCounter > 30) {
-                    if (Objects.equals(((EnemyModel) model).getEnemyType(), "Regular")) {
+                    if (Objects.equals(((EnemyModel) model).getEnemyType(), "duck")) {
                             setGoal(modelPositionToTile(playerModel));
                             if (((EnemyModel) model).getID() == 1) {
 //                        System.out.println(targetTile.getPosition());
@@ -332,7 +332,7 @@ public class EnemyController extends CharactersController implements StateMachin
                                 speedMultiplier = 90;
                             }
                         alertNeighborEnemies();
-                    }else if (Objects.equals(((EnemyModel) model).getEnemyType(), "Messenger")) {
+                    }else if (Objects.equals(((EnemyModel) model).getEnemyType(), "bat")) {
                         CharactersModel neighborEnemy = findNeighborEnemies();
                         if(neighborEnemy == null){
                             changeState(EnemyStates.PATROL);
@@ -388,7 +388,7 @@ public class EnemyController extends CharactersController implements StateMachin
 
             Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
 //                    System.out.println(((EnemyModel) enemy.getModel()).getID() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
-            if (enemy.getCurrentState() != EnemyStates.CHASE && !Objects.equals(((EnemyModel) enemy.model).getEnemyType(), "Messenger") &&
+            if (enemy.getCurrentState() != EnemyStates.CHASE && !Objects.equals(((EnemyModel) enemy.model).getEnemyType(), "bat") &&
                     Vector2.dst(
                             model.getBody().getPosition().x,
                             model.getBody().getPosition().y,

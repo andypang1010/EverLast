@@ -48,7 +48,7 @@ public class EnemyModel extends CharactersModel{
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
         this.radius = 3.19f;
-        this.enemyType = "Regular";
+        this.enemyType = "duck";
 
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
@@ -97,7 +97,7 @@ public class EnemyModel extends CharactersModel{
         this.radius = 3.19f;
         this.enemyType = enemyType;
 
-        if(Objects.equals(this.enemyType, "Regular")){
+        if(Objects.equals(this.enemyType, "duck")){
             Texture duck = new TextureRegion(directory.getEntry("EnemyLR", Texture.class)).getTexture();
             idleright = new FilmStrip(duck, 1, 8, 8);
             idleleft = idleright;
@@ -120,7 +120,7 @@ public class EnemyModel extends CharactersModel{
 
             quackSound = directory.getEntry("Quack", Sound.class);
             quackId = -1;
-        }else if(Objects.equals(this.enemyType, "Messenger")){
+        }else if(Objects.equals(this.enemyType, "bat")){
             Texture bat = new TextureRegion(directory.getEntry("EnemyBat", Texture.class)).getTexture();
             idleright = new FilmStrip(bat, 1, 5, 5);
             idleleft = idleright;
@@ -168,7 +168,7 @@ public class EnemyModel extends CharactersModel{
     }
 
     public float getPositionY() {
-        if(Objects.equals(this.enemyType, "Messenger")){
+        if(Objects.equals(this.enemyType, "bat")){
             return position.y - 256;
         }else{
             return position.y;
@@ -237,7 +237,7 @@ public class EnemyModel extends CharactersModel{
         fixtureDef.friction = 0.3f;
 
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY;
-        if(Objects.equals(this.enemyType, "Messenger")){
+        if(Objects.equals(this.enemyType, "bat")){
             fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_ENEMY);
         }else{
             fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |

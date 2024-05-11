@@ -135,11 +135,6 @@ public class LevelModel {
     public void createEnemy(int x, int y, int rotation, AssetDirectory directory, String type, int[] start, int index){
         //TODO: Add different enemy types so that the types actually matter
         // NOTE: THIS ONLY SUPPORTS UP TO TWENTY ENEMIES
-        if(Objects.equals(type, "enemy")){
-            type = "Messenger";
-        }else{
-            type = "Messenger";
-        }
         enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL, index, type));
     }
     public void addWaypoint(int x, int y, int enemyID, int pointNumber){

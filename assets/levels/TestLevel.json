@@ -1749,6 +1749,174 @@
                  "width":128,
                  "x":3306.66666666667,
                  "y":16768
+                }, 
+                {
+                 "gid":10947,
+                 "height":150,
+                 "id":13,
+                 "name":"Duck",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"enemy"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"enemyType",
+                         "type":"string",
+                         "value":"duck"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":150,
+                 "x":3530,
+                 "y":15756
+                }, 
+                {
+                 "gid":10947,
+                 "height":150,
+                 "id":14,
+                 "name":"Duck",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"enemy"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"enemyType",
+                         "type":"string",
+                         "value":"bat"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":150,
+                 "x":3592,
+                 "y":16908
+                }, 
+                {
+                 "gid":10951,
+                 "height":64,
+                 "id":15,
+                 "name":"Waypoint",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"waypoint"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"pointNumber",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":3882,
+                 "y":15730
+                }, 
+                {
+                 "gid":10951,
+                 "height":64,
+                 "id":16,
+                 "name":"Waypoint",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"waypoint"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"pointNumber",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":3296,
+                 "y":15760
+                }, 
+                {
+                 "gid":10951,
+                 "height":64,
+                 "id":17,
+                 "name":"Waypoint",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"waypoint"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"pointNumber",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":3904,
+                 "y":16906
+                }, 
+                {
+                 "gid":10951,
+                 "height":64,
+                 "id":18,
+                 "name":"Waypoint",
+                 "properties":[
+                        {
+                         "name":"Type",
+                         "type":"string",
+                         "value":"waypoint"
+                        }, 
+                        {
+                         "name":"enemyID",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"pointNumber",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":3328,
+                 "y":16944
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1757,7 +1925,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":13,
+ "nextobjectid":19,
  "orientation":"orthogonal",
  "renderorder":"right-up",
  "tiledversion":"1.10.2",
@@ -1782,6 +1950,14 @@
         {
          "firstgid":10939,
          "source":"..\/Tilesets\/BreakableGlass.tsx"
+        }, 
+        {
+         "firstgid":10943,
+         "source":"..\/Tilesets\/Enemy.tsx"
+        }, 
+        {
+         "firstgid":10951,
+         "source":"..\/Tilesets\/MapMarker.tsx"
         }],
  "tilewidth":64,
  "type":"map",

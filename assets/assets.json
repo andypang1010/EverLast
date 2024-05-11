@@ -56,7 +56,7 @@
     }
   },
   "jsons": {
-    "level1": "levels/MyLevel1.json",
+    "level1": "levels/TestLevel.json",
     "level2": "levels/MyLevel2.json",
     "level3": "levels/MyLevel3.json",
     "level4": "levels/MyLevel4.json",
