@@ -672,7 +672,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					drawload();
 					canvas.end();
 				}else{
-					listener.exitScreen(this, 0);
+					new Thread(load).start();
+//					listener.exitScreen(this, 0);
 				}
 
 
