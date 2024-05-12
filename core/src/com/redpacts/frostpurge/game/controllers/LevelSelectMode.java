@@ -36,6 +36,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Null;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.util.Controllers;
 import com.redpacts.frostpurge.game.util.FilmStrip;
@@ -407,9 +408,15 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private void draw() {
 	canvas.begin();
 	if (loading) {
-		canvas.drawBackground(loadingscreen,0,0,true);
-		processLoad();
-		canvas.draw(loadAnimation,Color.WHITE, 0, 0,1040*scale,(float) 150*scale,0,.65f*scale,.65f*scale,false);
+		drawload();
+		if (xbox != null){
+		load.run();
+		}else{
+			canvas.drawBackground(loadingscreen,0,0,true);
+			processLoad();
+			canvas.draw(loadAnimation,Color.WHITE, 0, 0,1040*scale,(float) 150*scale,0,.65f*scale,.65f*scale,false);
+		}
+
 	}else{
 		if (scale != 0) {
 			font.getData().setScale(scale);
@@ -518,12 +525,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				levelSelectButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
-
+				font.setColor(Color.BLACK);
 				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 3f / 5f);
-
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 12.3f / 21f);
+				font.setColor(Color.BLACK);
 				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 3f / 7f, canvas.getHeight() * 2f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 1.93f / 5f);
 
 				volumeLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeLowButton.getBounds();
@@ -660,8 +667,16 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			if (isReady() && listener != null) {
 				pressState = 0;
 				loading = true;
-				new Thread(load).start();
-//				listener.exitScreen(this, 0);
+				if (xbox!=null){
+					canvas.begin();
+					drawload();
+					canvas.end();
+				}else{
+					new Thread(load).start();
+//					listener.exitScreen(this, 0);
+				}
+
+
 			}
 		}
 		//game.update(assets.getEntry("savedata", JsonValue.class));
@@ -895,7 +910,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				}
 				for (ButtonBox levelButton : levels) {
 					int level = levelButton.label;
-					if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getA()) {
+					if (levelButton.enlarged && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available && xbox.getA() && time>.1) {
 						pressState = levelButton.label * 2 - 1;
 					}
 				}
@@ -1148,6 +1163,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 							}else{
 								if (levels.get(mode.levelPage*3 + 1).available){
 									levels.get(mode.levelPage*3 + 1).resize("up");
+									exit.resize("down");
 									mode.resetTime();
 								}else{
 									this.resize("down");
@@ -1158,16 +1174,25 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 							}
 						}else if (y>0){
 							if (!settings.enlarged){
+								System.out.println(4);
 								this.resize("down");
 								exit.resize("up");
 								mode.resetTime();
-							}else{
+							}else {
 								this.resize("down");
-								if (levels.get(mode.levelPage*3 + 2).available){
-									levels.get(mode.levelPage*3 + 2).resize("up");
+								boolean second = false;
+								boolean third = false;
+								try{
+									third = levels.get(mode.levelPage * 3 + 2).available;
+								} catch (Exception e){}
+								try{
+									second = levels.get(mode.levelPage * 3 + 1).available;
+								} catch (Exception e){}
+								if (third) {
+									levels.get(mode.levelPage * 3 + 2).resize("up");
 									mode.resetTime();
 								}
-								else if (levels.get(mode.levelPage*3 + 1).available){
+								else if (second){
 									levels.get(mode.levelPage*3 + 1).resize("up");
 									mode.resetTime();
 								}else {
@@ -1378,5 +1403,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				loadAnimation.setFrame(frame);
 			}
 		}
+	}
+	public void drawload(){
+//		canvas.begin();
+		canvas.drawBackground(loadingscreen,0,0,true);
+		font.setColor(Color.BLACK);
+		canvas.drawText("Loading...",font,1700*scale,150*scale);
+//		canvas.end();
 	}
 }
