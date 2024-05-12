@@ -1660,23 +1660,6 @@
          "name":"Characters",
          "objects":[
                 {
-                 "height":116,
-                 "id":1,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"type",
-                         "type":"string",
-                         "value":"player"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":180,
-                 "x":2040,
-                 "y":18238
-                }, 
-                {
                  "gid":10926,
                  "height":326.061,
                  "id":2,
