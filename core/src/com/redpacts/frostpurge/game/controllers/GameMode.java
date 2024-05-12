@@ -460,6 +460,7 @@ public class GameMode implements Screen, InputProcessor {
 
         if (gameState == GameState.OVER){
             if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -469,6 +470,7 @@ public class GameMode implements Screen, InputProcessor {
 
         } else if (gameState == GameState.WIN){
             if (playerModel.getGameOver()){
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -555,7 +557,7 @@ public class GameMode implements Screen, InputProcessor {
             playerModel.setShake(false);
             cameraShakeDuration += 10;
         }
-        cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4.5f));
+        cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4f));
         if(cameraShakeDuration > 0){
             cameraShakeDuration--;
             cameraTarget.x += (float) (200f * (1-2*Math.random()));
