@@ -42,6 +42,7 @@ public class PlayerModel extends CharactersModel {
     private int boostNum;
     private int boostCoolDown;
     private int invincibility;
+    private boolean shake;
     private int INVINCIBILITY_COOLDOWN = 120;
     private int gameOver;
     /**
@@ -90,6 +91,7 @@ public class PlayerModel extends CharactersModel {
 
         this.hp = 100;
         this.invincibility = 0;
+        this.shake = false;
         this.gameOver = 0;
         this.gameOverState = 0;
 
@@ -209,6 +211,14 @@ public class PlayerModel extends CharactersModel {
         if(this.hp < 0){
             this.hp = 0;
         }
+    }
+
+    public boolean getShake(){
+        return this.shake;
+    }
+
+    public void setShake(boolean s){
+        this.shake = s;
     }
 
     /**

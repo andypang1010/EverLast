@@ -551,8 +551,8 @@ public class GameMode implements Screen, InputProcessor {
         // Camera Movement
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
-        if(playerController.getShake()){
-            playerController.setShake(false);
+        if(playerModel.getShake()){
+            playerModel.setShake(false);
             cameraShakeDuration += 10;
         }
         cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4.5f));

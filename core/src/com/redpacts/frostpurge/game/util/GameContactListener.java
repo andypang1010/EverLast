@@ -124,6 +124,7 @@ public class GameContactListener implements ContactListener {
         if(!player.getInvincibility() && !player.getGameOver()) { // Player is not invincible, nor the gameplay is over
             Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
             player.addHp(-25);
+            player.setShake(true);
             player.getBody().applyForceToCenter(contactDirection.scl(50), true);
             enemy.getBody().applyForceToCenter(contactDirection.scl(-50), true);
 
@@ -200,6 +201,7 @@ public class GameContactListener implements ContactListener {
         if (player.getBody().getLinearVelocity().len() > 90) {
             contact.setEnabled(false);
             tile.deactivate();
+            player.setShake(true);
         }
     }
 
