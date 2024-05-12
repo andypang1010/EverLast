@@ -59,14 +59,15 @@
   "jsons": {
     "level1": "levels/TestLevel.json",
     "level2": "levels/MyLevel2.json",
-    "level3": "levels/MyLevel6.json",
+    "level3": "levels/MyLevel3.json",
     "level4": "levels/MyLevel4.json",
     "level5": "levels/MyLevel5.json",
+    "level6": "levels/MyLevel6.json",
+    "level7": "levels/MyLevel7.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
     "playgroundlevel": "levels/AlphaLevel.json",
-    "savedata": "save_data.json",
-    "level7": "levels/level7.json"
+    "savedata": "save_data.json"
   }
 }
