@@ -79,7 +79,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	/**
 	 * Background texture for level-select
 	 */
-	private Texture background;
+	private Texture background0;
+	private Texture background1;
+	private Texture background2;
+	private Texture background3;
 	private Texture settingsBackground;
 	/**
 	 * Texture for forward button
@@ -171,7 +174,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	AssetLoader load;
 	Texture loadingscreen;
 	FilmStrip loadAnimation;
-	Rectangle loadingBounds;
+	BitmapFont chalkFont;
+
 
 
 	public String getLevel(){
@@ -236,8 +240,14 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		Texture loadtexture = assets.getEntry("loading",Texture.class);
 		loadAnimation = new FilmStrip(loadtexture,1,4,4);
 		// Load the background
-		background = assets.getEntry("background", Texture.class);
-		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		background0 = assets.getEntry("background0", Texture.class);
+		background0.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		background1 = assets.getEntry("background1", Texture.class);
+		background1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		background2 = assets.getEntry("background2", Texture.class);
+		background2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		background3 = assets.getEntry("background3", Texture.class);
+		background3.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		settingsBackground = assets.getEntry("settingsBackground",Texture.class);
 		settingsBackground.setFilter(TextureFilter.Linear,TextureFilter.Linear);
 
@@ -314,24 +324,24 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		pageDirection = 0;
 		Texture button1 = assets.getEntry("level1", Texture.class);
 		ButtonBox level1Button = new ButtonBox(1,
-				new Rectangle(STANDARD_WIDTH * 5 / 100, STANDARD_HEIGHT * 5/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
+				new Rectangle(STANDARD_WIDTH * 8 / 100, STANDARD_HEIGHT * 3/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button1, this);
 
 		Texture button2 = assets.getEntry("level2", Texture.class);
 		ButtonBox level2Button = new ButtonBox(2,
-				new Rectangle(STANDARD_WIDTH * 36 / 100, STANDARD_HEIGHT * 5/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
+				new Rectangle(STANDARD_WIDTH * 38 / 100, STANDARD_HEIGHT * 3/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button2, this);
 
 		Texture button3 = assets.getEntry("level3", Texture.class);
 		ButtonBox level3Button = new ButtonBox(3,
-				new Rectangle(STANDARD_WIDTH * 61 / 100, STANDARD_HEIGHT * 5/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
+				new Rectangle(STANDARD_WIDTH * 68 / 100, STANDARD_HEIGHT * 3/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button3, this);
 
 		// TODO: Change scale when we have actual button for level 4, 5
 		Texture button4 = assets.getEntry("level4", Texture.class);
 		ButtonBox level4Button = new ButtonBox(4,
-				new Rectangle(STANDARD_WIDTH * 5 / 100, STANDARD_HEIGHT * 5/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
+				new Rectangle(STANDARD_WIDTH * 8 / 100, STANDARD_HEIGHT * 3/18, 7*button4.getWidth()/8, 7*button4.getHeight()/8), button4, this);
 
 		Texture button5 = assets.getEntry("level5", Texture.class);
 		ButtonBox level5Button = new ButtonBox(5,
-				new Rectangle(STANDARD_WIDTH * 36 / 100, STANDARD_HEIGHT * 5/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
+				new Rectangle(STANDARD_WIDTH * 38 / 100, STANDARD_HEIGHT * 3/18, 7*button5.getWidth()/8, 7*button5.getHeight()/8), button5, this);
 
 		levels = new Array<>(numberOfLevels);
 		levels.add(level1Button);
@@ -342,6 +352,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		// Break up the status bar texture into regions
 		font = assets.getEntry("font", BitmapFont.class);
+		chalkFont = assets.getEntry("chalk", BitmapFont.class);
 		pressState = 0;
 
 		active = true;
@@ -425,7 +436,21 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		if (levelPage == -1) {
 			canvas.drawBackground(settingsBackground, 0, 0, true);
 		} else {
-			canvas.drawBackground(background, 0, 0, true);
+			switch(levelPage){
+				case 0:
+					canvas.drawBackground(background0, 0, 0, true);
+					break;
+				case 1:
+					canvas.drawBackground(background1, 0, 0, true);
+					break;
+				case 2:
+					canvas.drawBackground(background2, 0, 0, true);
+					break;
+				case 3:
+					canvas.drawBackground(background3, 0, 0, true);
+					break;
+			}
+
 		}
 		Rectangle bounds;
 		exitButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
@@ -497,20 +522,32 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 					if (levelPage * 3 < level && level <= (levelPage + 1) * 3) {
 						button.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 						bounds = button.getBounds();
+						float hoverScale;
+						if (button.enlarged){
+							hoverScale = (float) 8 /7;
+						}else{
+							hoverScale = 1;
+						}
 						canvas.draw(button.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
-						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 5 * bounds.y * scale / 6, emptyStars.getWidth() * scale, emptyStars.getHeight() * scale);
+						canvas.drawCentered(emptyStars, (bounds.x + bounds.width / 2) * scale, 11 * bounds.y * scale *hoverScale/ 6, (float) (emptyStars.getWidth()*.75 * scale*hoverScale), (float) (emptyStars.getHeight()*.75 * scale*hoverScale));
 						float score = game.getScore("level" + Integer.toString(button.label));
 						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
 						float ratio = starsScore / 30;
 						if (score != 0) {
-							canvas.drawText(scoreToTime(score), font, (bounds.x + bounds.width / 2) * scale, 9 * (bounds.y + bounds.height) * scale / 8);
+							if (button.enlarged){
+								chalkFont.getData().setScale((float) 8/7*scale);
+							}else{
+								chalkFont.getData().setScale(1*scale);
+							}
+							chalkFont.setColor(Color.BLACK);
+							canvas.drawText(scoreToTime(score), chalkFont, (bounds.x + bounds.width / 2 + 10) * scale, (float) (6 * (bounds.y + bounds.height) * scale / 8));
 						}
 						if (ratio > 1) {
 							ratio = 1;
 						}
 						if (ratio != 0) {
 							stars.setRegionWidth((int) (emptyStars.getWidth() * ratio));
-							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 5 * bounds.y * scale / 6, (float) stars.getRegionWidth() * scale, stars.getRegionHeight() * scale);
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 11 * bounds.y * scale*hoverScale / 6, (float) ((float) stars.getRegionWidth() * .75* scale*hoverScale), (float) (stars.getRegionHeight() * .75* scale*hoverScale));
 							stars.setRegionWidth((emptyStars.getWidth()));
 						}
 						if (!button.available) {
