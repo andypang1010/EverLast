@@ -23,11 +23,13 @@ public class PlayerController extends CharactersController {
     private Sound accelerateSound;
     /** The sound for boosting */
     private Sound boostSound;
+    private boolean shake;
 
 
     PlayerController(PlayerModel player){
         model = player;
         flip = false;
+        shake = false;
 
         accelerateSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.ACCELERATE);
         boostSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.BOOST);
@@ -45,7 +47,16 @@ public class PlayerController extends CharactersController {
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
+            this.shake = true;
         }
+    }
+
+    public boolean getShake(){
+        return this.shake;
+    }
+
+    public void setShake(boolean s){
+        this.shake = s;
     }
 
     /**

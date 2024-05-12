@@ -144,7 +144,9 @@ public class GameMode implements Screen, InputProcessor {
     private FilmStrip heartHurt;
     private Color healthBarColor;
     private boolean debug;
-    private Vector2 cameraCenter;
+    private Vector2 cameraTarget;
+    private Vector2 cameraPosition;
+    private int cameraShakeDuration = 0;
     private float zoom;
     private float scale;
     private float sx;
@@ -394,6 +396,10 @@ public class GameMode implements Screen, InputProcessor {
         return heart;
     }
 
+    public void cameraShake(int i){
+        this.cameraShakeDuration += i;
+    }
+
     public void update(float delta) {
         if (gameState!= GameState.PLAY){
             for (EnemyController enemy : enemyControllers){
@@ -545,7 +551,18 @@ public class GameMode implements Screen, InputProcessor {
         // Camera Movement
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
-        canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
+        if(playerController.getShake()){
+            playerController.setShake(false);
+            cameraShakeDuration += 10;
+        }
+        cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4.5f));
+        if(cameraShakeDuration > 0){
+            cameraShakeDuration--;
+            cameraTarget.x += (float) (200f * (1-2*Math.random()));
+            cameraTarget.y += (float) (200f * (1-2*Math.random()));
+        }
+        cameraPosition = cameraPosition.scl(0.9f).add(cameraTarget.scl(0.1f));
+        canvas.center(camera, cameraPosition.x, cameraPosition.y);
         camera.zoom = 1/scale;
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
@@ -785,6 +802,8 @@ public class GameMode implements Screen, InputProcessor {
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight());
+
+        cameraPosition = playerModel.getPosition();
     }
 
     // PROCESSING PLAYER INPUT
