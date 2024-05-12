@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -143,6 +144,8 @@ public class GameMode implements Screen, InputProcessor {
     private FilmStrip heartHurt;
     private Color healthBarColor;
     private boolean debug;
+    private Vector2 cameraCenter;
+    private float zoom;
     private float scale;
     private float sx;
     private float sy;
@@ -539,6 +542,7 @@ public class GameMode implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
+        // Camera Movement
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
         canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
@@ -546,6 +550,7 @@ public class GameMode implements Screen, InputProcessor {
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
+
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
