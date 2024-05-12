@@ -38,7 +38,12 @@
         "largeRes": "levelSelect/1920x1080_button.png",
         "settingsBackground": "levelSelect/background.png",
         "loadingBackground": "loading/startscreen.png",
-        "loading": "loading/loading2.png"
+        "loading": "loading/loading2.png",
+        "page1": "levelselect/page1.png",
+        "page2": "levelselect/page2.png",
+        "page3": "levelselect/page3.png",
+        "page4": "levelselect/page4.png",
+        "page5": "levelselect/page5.png"
 	},
   "music" : {
     "song" : "sound/menu.ogg"
