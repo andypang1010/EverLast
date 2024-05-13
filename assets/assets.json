@@ -45,10 +45,17 @@
     "Accelerate" : "sound/accelerate.wav",
     "Boost" : "sound/boost.wav",
     "Collide" : "sound/collide.wav",
-    "Quack" : "sound/quack.wav"
+    "Quack" : "sound/quack.wav",
+    "Bat": "sound/bat.wav",
+    "Bounce": "sound/bounce.wav",
+    "Flies": "sound/flies.wav",
+    "Break": "sound/break.wav",
+    "Vacuum": "sound/vacuum.wav"
   },
   "music": {
-    "song" : "sound/level.ogg"
+    "song" : "sound/level.ogg",
+    "game_over": "sound/game_over.ogg",
+    "win": "sound/win.ogg"
   },
   "fonts": {
     "font": {

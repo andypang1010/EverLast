@@ -1,7 +1,10 @@
 package com.redpacts.frostpurge.game.util;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.*;
 
 import java.util.Objects;
@@ -10,10 +13,20 @@ import java.util.logging.Level;
 public class GameContactListener implements ContactListener {
     private World world;
     private LevelModel board;
+    private Sound collide;
+    private Sound breakBox;
+    private Sound bounce;
+    private float volume;
+    private float time;
 
-    public GameContactListener(World world, LevelModel board){
+    public GameContactListener(World world, LevelModel board, AssetDirectory assets, float volume){
         this.world = world;
         this.board = board;
+        collide = assets.getEntry("Collide",Sound.class);
+        breakBox = assets.getEntry("Break",Sound.class);
+        bounce = assets.getEntry("Bounce",Sound.class);
+        this.volume = volume;
+        time = 0;
     }
 
     /**
@@ -155,6 +168,10 @@ public class GameContactListener implements ContactListener {
 //        float vy1 = player.getVelocity().y;
 //
 //        player.setVelocity(-vx1, -vy1);
+        if (time>.5f){
+            collide.play(volume*1.5f);
+            time = 0;
+        }
     }
 
     /**
@@ -194,6 +211,7 @@ public class GameContactListener implements ContactListener {
      * @param tile   The tile
      */
     private void handleCollision(PlayerModel player, BouncyTile tile) {
+        bounce.play(volume);
         tile.activate();
     }
     /**
@@ -208,6 +226,12 @@ public class GameContactListener implements ContactListener {
             contact.setEnabled(false);
             tile.deactivate();
             player.setShake(true);
+            breakBox.play(volume*1.5f);
+        }else{
+            if (time>.5f){
+                collide.play(volume*1.5f);
+                time = 0;
+            }
         }
     }
 
@@ -249,5 +273,9 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(EnemyModel enemy, BouncyTile tile) {
         tile.activate();
+    }
+
+    public void updateTime(float time){
+        this.time+=time;
     }
 }

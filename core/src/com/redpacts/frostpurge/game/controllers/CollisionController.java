@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.physics.box2d.*;
 
+import com.redpacts.frostpurge.game.assets.AssetDirectory;
 import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.util.EnemyStates;
 import com.redpacts.frostpurge.game.util.GameContactListener;
@@ -67,6 +68,7 @@ public class CollisionController{
     private float swampx;
     private float swampy;
     private boolean vacuuming = false;
+    private GameContactListener contactListener;
 
     /// ACCESSORS
 
@@ -105,8 +107,8 @@ public class CollisionController{
      * @param height	The height in Box2d coordinates
      */
     protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy,
-                                  Array<BreakableTile> breakables, float width, float height) {
-        this(board, player, enemies, bouncy, breakables, new Rectangle(0,0,width,height));
+                                  Array<BreakableTile> breakables, float width, float height,AssetDirectory assets, float volume) {
+        this(board, player, enemies, bouncy, breakables, new Rectangle(0,0,width,height),assets, volume);
     }
 
     /**
@@ -121,7 +123,7 @@ public class CollisionController{
      * @param enemies List of enemies
      * @param bounds  The game bounds in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Array<BreakableTile> breakables, Rectangle bounds) {
+    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Array<BreakableTile> breakables, Rectangle bounds, AssetDirectory assets, float volume) {
         this.board = board;
         this.player = player;
         this.enemies = enemies;
@@ -165,7 +167,7 @@ public class CollisionController{
                 addObject(b);
             }
         }
-        GameContactListener contactListener = new GameContactListener(world, board);
+        contactListener = new GameContactListener(world, board, assets, volume);
         world.setContactListener(contactListener);
     }
 
@@ -217,6 +219,7 @@ public class CollisionController{
      */
     public void update() {
         // TODO: Implement dt here
+        contactListener.updateTime(Gdx.graphics.getDeltaTime());
         pickPowerUp((PlayerModel) player);
         win((PlayerModel) player);
         for (EnemyModel e : enemies){

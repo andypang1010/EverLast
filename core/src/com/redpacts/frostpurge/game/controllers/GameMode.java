@@ -167,6 +167,9 @@ public class GameMode implements Screen, InputProcessor {
     private SaveFileManager saveFileManager;
     private float[] controllerTime;
     private Music sample;
+    private Music winSample;
+    private Music gameoOverSample;
+    private boolean playing;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         // TODO: Change scale?
@@ -410,6 +413,8 @@ public class GameMode implements Screen, InputProcessor {
 
         else {
             sample.setVolume(0.15f * LevelSelectMode.volumeBar.getValue());
+            winSample.setVolume(0.15f * LevelSelectMode.volumeBar.getValue());
+            gameoOverSample.setVolume(0.20f * LevelSelectMode.volumeBar.getValue());
         }
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
@@ -459,6 +464,10 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         if (gameState == GameState.OVER){
+            if (!playing){
+                pausemusic();
+            }
+            playLoseMusic();
             if (playerModel.getGameOver()){ // Still drawing death animation
                 playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
@@ -469,6 +478,10 @@ public class GameMode implements Screen, InputProcessor {
             }
 
         } else if (gameState == GameState.WIN){
+            if (!playing){
+                pausemusic();
+            }
+            playWinMusic();
             if (playerModel.getGameOver()){
                 playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
@@ -735,7 +748,13 @@ public class GameMode implements Screen, InputProcessor {
 //        song = engine.newMusicBuffer( false, 44100 );
         sample = directory.getEntry( "song", Music.class );
         sample.setLooping(true);
-//        song.addSource(sample);
+
+        winSample = directory.getEntry( "win", Music.class );
+        winSample.setLooping(true);
+
+        gameoOverSample = directory.getEntry( "game_over", Music.class );
+        gameoOverSample.setLooping(true);
+
         int tilewidth = 64;
         int tileheight = 64;
         tilesetjson = directory.getEntry("tileset", JsonValue.class);
@@ -817,9 +836,12 @@ public class GameMode implements Screen, InputProcessor {
 //        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight());
-
         cameraPosition = playerModel.getPosition();
+
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight(),directory,0.15f * LevelSelectMode.volumeBar.getValue());
+        pausemusic();
+        playing = false;
+        playmusic();
     }
 
     // PROCESSING PLAYER INPUT
@@ -1096,7 +1118,24 @@ public class GameMode implements Screen, InputProcessor {
         sample.setPosition(0);
         sample.play();
     }
+    public void playWinMusic(){
+        if (!playing){
+            winSample.setPosition(0);
+            winSample.play();
+            playing = true;
+        }
+    }
+    public void playLoseMusic(){
+        System.out.println(playing);
+        if (!playing){
+            gameoOverSample.setPosition(0);
+            gameoOverSample.play();
+            playing = true;
+        }
+    }
     public void pausemusic(){
         sample.pause();
+        winSample.pause();
+        gameoOverSample.pause();
     }
 }
