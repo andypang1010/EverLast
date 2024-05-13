@@ -103,7 +103,7 @@ public class BouncyTile extends TileModel{
         fixtureDef.restitution = 4f;
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_BOUNCY;
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK);
 
         body.createFixture(fixtureDef);
         shape.dispose();
