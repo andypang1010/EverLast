@@ -30,6 +30,7 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 public class GameMode implements Screen, InputProcessor {
     /*
@@ -350,14 +351,22 @@ public class GameMode implements Screen, InputProcessor {
 
                 for (int x = i - 1; x <= i + 1; x++) {
                     for (int y = j - 1; y <= j + 1; y++) {
-                        System.out.println("X: " + x + ", Y: " + y);
-                        System.out.println("Distance from (" + i + ", " + j + ") is: " + Math.abs((x - i) + (y - j)));
                         if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
+//                            System.out.println("X: " + x + ", Y: " + y);
+//                            System.out.println("Distance from (" + i + ", " + j + ") is: " + Math.abs((x - i) + (y - j)) + "\n");
+
                             if (currentLevel.getExtraLayer()[y][x] == null) {
                                 groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
                             } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
                                 groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
+
+//                            if (currentLevel.getExtraLayer()[y][x] == null) {
+//                                groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+//                            }
+//                            else {
+//                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+//                            }
                         }
                     }
                 }
@@ -368,15 +377,27 @@ public class GameMode implements Screen, InputProcessor {
     private void populateIgnoreObstaclesTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
-                ignoreObstaclesTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
-                TileModel currentTile = currentLevel.getBaseLayer()[j][i];
+                TileModel currentTile = null;
+
+                if (currentLevel.getExtraLayer()[j][i] == null) {
+                    ignoreObstaclesTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    currentTile = currentLevel.getBaseLayer()[j][i];
+                }
+
+                else {
+                    ignoreObstaclesTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+                    currentTile = currentLevel.getExtraLayer()[j][i];
+                }
 
                 for (int x = i - 1; x <= i + 1; x++) {
                     for (int y = j - 1; y <= j + 1; y++) {
-                        System.out.println("X: " + x + ", Y: " + y);
-                        System.out.println("Distance from (" + i + ", " + j + ") is: " + Math.abs((x - i) + (y - j)));
                         if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
-                            ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                            if (currentLevel.getExtraLayer()[y][x] == null) {
+                                ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                            }
+                            else {
+                                ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+                            }
                         }
                     }
                 }
@@ -509,7 +530,7 @@ public class GameMode implements Screen, InputProcessor {
                 currentTime -= Gdx.graphics.getDeltaTime();
                 playerModel.addHp(-100 * Gdx.graphics.getDeltaTime() / maxTime);
             }
-            System.out.println(currentTime);
+//            System.out.println(currentTime);
         }
 
 
@@ -783,7 +804,15 @@ public class GameMode implements Screen, InputProcessor {
         for (int i = 0; i < enemies.size; i++){
 //            for (int j = 0; j<)
 //            enemies.get(i).getWaypoints()
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, groundedTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+
+            if (Objects.equals(enemies.get(i).getEnemyType(), "duck")) {
+                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, groundedTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+            }
+
+            else {
+                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, ignoreObstaclesTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+            }
+
         }
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

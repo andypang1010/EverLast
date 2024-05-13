@@ -73,6 +73,7 @@ public class EnemyController extends CharactersController implements StateMachin
         if (initState == EnemyStates.PATROL) {
             setGoal(this.waypoints[this.nextWaypointIndex]);
         }
+
         else {
             setGoal(modelPositionToTile(playerModel));
         }
@@ -89,6 +90,10 @@ public class EnemyController extends CharactersController implements StateMachin
     public void setGoal(TileModel goalTile) {
         pathQueue.clear();
 //        System.out.println("!!!Path Queue Cleared!!!");
+        System.out.println(((EnemyModel) model).getEnemyType() + " " + ((EnemyModel) model).getID());
+        System.out.println("Current Tile: " + currentTile.getPosition() + " " + currentTile.getType().toString());
+        System.out.println("Goal Tile: " + goalTile.getPosition() + " " + goalTile.getType().toString() + "\n");
+
         graphPath = tileGraph.findPath(currentTile, goalTile);
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
@@ -213,8 +218,8 @@ public class EnemyController extends CharactersController implements StateMachin
             if (((EnemyModel) model).getID() == 1) {
                 angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
 //            System.out.println(angle);
-                System.out.println("actual:");
-                System.out.println(direction);
+//                System.out.println("actual:");
+//                System.out.println(direction);
             }
             if(Objects.equals(enemy.getEnemyType(), "flies")){
                 enemy.drawCharacter(canvas, 1, (float) Math.toDegrees(model.getRotation()), Color.RED, "running", direction);
@@ -283,7 +288,14 @@ public class EnemyController extends CharactersController implements StateMachin
 
                 if (isPlayerWithinListenRadius()) {
                     currentListenInterval = notHeardToPatrolInterval;
-                    setGoal(modelPositionToTile(playerModel));
+
+                    if (Objects.equals(((EnemyModel) model).getEnemyType(), "duck") && modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
+                        setGoal(modelPositionToTile(playerModel));
+                    }
+                    else if (!Objects.equals(((EnemyModel) model).getEnemyType(), "duck")) {
+                        setGoal(modelPositionToTile(playerModel));
+                    }
+
                     if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
                         if(Math.random() < 0.01){
                             changeState(EnemyStates.CHASE);
@@ -325,7 +337,9 @@ public class EnemyController extends CharactersController implements StateMachin
                 playQuack(true);
                 if (updatePathCounter > 30) {
                     if (Objects.equals(((EnemyModel) model).getEnemyType(), "duck")) {
+                        if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
                             setGoal(modelPositionToTile(playerModel));
+                        }
                             if (((EnemyModel) model).getID() == 1) {
 //                        System.out.println(targetTile.getPosition());
                                 if (pathQueue.notEmpty()) {
