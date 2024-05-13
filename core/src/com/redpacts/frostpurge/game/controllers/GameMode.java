@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -143,6 +144,10 @@ public class GameMode implements Screen, InputProcessor {
     private FilmStrip heartHurt;
     private Color healthBarColor;
     private boolean debug;
+    private Vector2 cameraTarget;
+    private Vector2 cameraPosition;
+    private int cameraShakeDuration = 0;
+    private float zoom;
     private float scale;
     private float sx;
     private float sy;
@@ -391,6 +396,10 @@ public class GameMode implements Screen, InputProcessor {
         return heart;
     }
 
+    public void cameraShake(int i){
+        this.cameraShakeDuration += i;
+    }
+
     public void update(float delta) {
         if (gameState!= GameState.PLAY){
             for (EnemyController enemy : enemyControllers){
@@ -451,6 +460,7 @@ public class GameMode implements Screen, InputProcessor {
 
         if (gameState == GameState.OVER){
             if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -460,6 +470,7 @@ public class GameMode implements Screen, InputProcessor {
 
         } else if (gameState == GameState.WIN){
             if (playerModel.getGameOver()){
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -547,13 +558,26 @@ public class GameMode implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
+        // Camera Movement
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
-        canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
+        if(playerModel.getShake()){
+            playerModel.setShake(false);
+            cameraShakeDuration += 10;
+        }
+        cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4f));
+        if(cameraShakeDuration > 0){
+            cameraShakeDuration--;
+            cameraTarget.x += (float) (200f * (1-2*Math.random()));
+            cameraTarget.y += (float) (200f * (1-2*Math.random()));
+        }
+        cameraPosition = cameraPosition.scl(0.9f).add(cameraTarget.scl(0.1f));
+        canvas.center(camera, cameraPosition.x, cameraPosition.y);
         camera.zoom = 1/scale;
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
+
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
@@ -766,7 +790,7 @@ public class GameMode implements Screen, InputProcessor {
                 maxTime = 60;
                 break;
             case "level7":
-                maxTime = 75;
+                maxTime = 85;
                 break;
             default:
                 maxTime = 61;
@@ -794,6 +818,8 @@ public class GameMode implements Screen, InputProcessor {
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight());
+
+        cameraPosition = playerModel.getPosition();
     }
 
     // PROCESSING PLAYER INPUT

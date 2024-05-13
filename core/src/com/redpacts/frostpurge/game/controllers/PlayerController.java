@@ -45,6 +45,7 @@ public class PlayerController extends CharactersController {
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
+            ((PlayerModel) model).setShake(true);
         }
     }
 
