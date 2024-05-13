@@ -502,15 +502,23 @@ public class GameMode implements Screen, InputProcessor {
 
 
         drawble.clear();
+        float playerX = playerModel.getPosition().x;
+        float playerY = playerModel.getPosition().y;
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 TileModel accentTile = currentLevel.getAccentLayer()[i][j];
                 TileModel extraTile = currentLevel.getExtraLayer()[i][j];
-                if(accentTile!=null && playerModel.getPosition().cpy().sub(accentTile.getPosition()).len() <= 1600){
-                    drawble.add(accentTile);
+                if(accentTile!=null){
+                    float dst2 = (float) (Math.pow(accentTile.getPosition().x-playerX, 2) + Math.pow(accentTile.getPosition().y-playerY, 2));
+                    if(Math.sqrt(dst2) <= 1600){
+                        drawble.add(accentTile);
+                    }
                 }
-                if(extraTile!=null && playerModel.getPosition().cpy().sub(extraTile.getPosition()).len() <= 1600){
-                    drawble.add(extraTile);
+                if(extraTile!=null){
+                    float dst2 = (float) (Math.pow(extraTile.getPosition().x-playerX, 2) + Math.pow(extraTile.getPosition().y-playerY, 2));
+                    if(Math.sqrt(dst2) <= 1600){
+                        drawble.add(extraTile);
+                    }
                 }
             }
         }
@@ -752,6 +760,12 @@ public class GameMode implements Screen, InputProcessor {
                 maxTime = 60;
                 break;
             case "level5":
+                maxTime = 75;
+                break;
+            case "level6":
+                maxTime = 60;
+                break;
+            case "level7":
                 maxTime = 75;
                 break;
             default:
