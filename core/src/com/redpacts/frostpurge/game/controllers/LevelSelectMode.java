@@ -645,7 +645,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						}
 						if (ratio != 0) {
 							stars.setRegionWidth((int) (emptyStars.getWidth() * ratio));
-							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 11 * bounds.y * scale*hoverScale / 6, (float) ((float) stars.getRegionWidth() * .75* scale*hoverScale), (float) (stars.getRegionHeight() * .75* scale*hoverScale));
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - (emptyStars.getWidth()*.75f *hoverScale* (1 - ratio) / 2))) * scale, 11 * bounds.y * scale*hoverScale / 6, (float) ((float) stars.getRegionWidth() * .75* scale*hoverScale), (float) (stars.getRegionHeight() * .75* scale*hoverScale));
 							stars.setRegionWidth((emptyStars.getWidth()));
 						}
 						if (!button.available) {
@@ -750,7 +750,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						}
 						if (ratio != 0) {
 							stars.setRegionWidth((int) (emptyStars.getWidth() * ratio));
-							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - emptyStars.getWidth() * (1 - ratio) / 2)) * scale, 11 * bounds.y * scale*hoverScale / 6, (float) ((float) stars.getRegionWidth() * .75* scale*hoverScale), (float) (stars.getRegionHeight() * .75* scale*hoverScale));
+							canvas.drawCentered(stars, ((bounds.x + bounds.width / 2 - (emptyStars.getWidth()*.75f*hoverScale * (1 - ratio) / 2))) * scale, 11 * bounds.y * scale*hoverScale / 6, (float) ((float) stars.getRegionWidth() * .75* scale*hoverScale), (float) (stars.getRegionHeight() * .75* scale*hoverScale));
 							stars.setRegionWidth((emptyStars.getWidth()));
 						}
 						if (!button.available) {
