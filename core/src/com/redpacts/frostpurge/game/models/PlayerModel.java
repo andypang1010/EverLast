@@ -15,7 +15,8 @@ public class PlayerModel extends CharactersModel {
 
     public enum Actions {
         ACCELERATE,
-        BOOST
+        BOOST,
+        VACUUM
     }
 
 
@@ -64,6 +65,8 @@ public class PlayerModel extends CharactersModel {
     private FilmStrip idleRightDamaged;
     private FilmStrip idleLeftDamaged;
     private FilmStrip idleUpDamaged;
+    private Sound vacuumSound;
+    private long vacuumID;
 
 
     boolean won = false;
@@ -168,6 +171,10 @@ public class PlayerModel extends CharactersModel {
         boostId = -1;
         setActionSound(Actions.BOOST, boostSound);
 
+        vacuumSound = directory.getEntry("Vacuum", Sound.class);
+        vacuumID = -1;
+        setActionSound(Actions.VACUUM, vacuumSound);
+
         fire = new TextureRegion(directory.getEntry("Fire", Texture.class)).getTexture();
         fireBoost = new TextureRegion(directory.getEntry("FireBoost", Texture.class)).getTexture();
         alive = true;
@@ -271,6 +278,8 @@ public class PlayerModel extends CharactersModel {
                 return accelerateSound;
             case BOOST:
                 return boostSound;
+            case VACUUM:
+                return vacuumSound;
         }
         assert false : "Invalid action enumeration";
         return null;
@@ -284,6 +293,9 @@ public class PlayerModel extends CharactersModel {
             case BOOST:
                 boostSound = sound;
                 break;
+            case VACUUM:
+                vacuumSound = sound;
+                break;
             default:
                 assert false : "Invalid action enumeration";
                 break;
@@ -296,6 +308,8 @@ public class PlayerModel extends CharactersModel {
                 return accelerateId;
             case BOOST:
                 return boostId;
+            case VACUUM:
+                return vacuumID;
         }
         assert false : "Invalid action enumeration";
         return -1;
@@ -309,6 +323,8 @@ public class PlayerModel extends CharactersModel {
             case BOOST:
                 boostId = id;
                 break;
+            case VACUUM:
+                vacuumID = id;
             default:
                 assert false : "Invalid action enumeration";
         }
