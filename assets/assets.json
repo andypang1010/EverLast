@@ -37,6 +37,8 @@
     "ActiveBouncyMushroom": "bouncy/bouncyMushroomFilmstrip.png",
     "BreakableGlassBox": "breakable/breakableGlassBoxFilmstrip.png",
     "BreakableWoodBox": "breakable/breakableWoodBoxFilmstrip.png",
+    "SmallGoal": "goal/smallGoalFilmStrip.png",
+    "BigGoal": "goal/bigGoalFilmStrip.png",
     "tileset": "Tilesets/TileSetComplete.png"
   },
   "sounds" : {
@@ -67,11 +69,13 @@
     "level3": "levels/MyLevel3.json",
     "level4": "levels/MyLevel4.json",
     "level5": "levels/MyLevel5.json",
+    "level6": "levels/MyLevel6.json",
+    "level7": "levels/MyLevel7.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
     "playgroundlevel": "levels/AlphaLevel.json",
-    "savedata": "save_data.json",
-    "level7": "levels/level7.json"
+    "savedata": "save_data.json"
+
   }
 }
