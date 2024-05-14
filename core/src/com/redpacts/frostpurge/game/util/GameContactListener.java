@@ -190,12 +190,8 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(PlayerModel player, GoalTile tile) {
         // TODO: Update so that we dampen the velocity of player
-//        System.out.println("Contact with swamp");
-//        System.out.println("player position:" + player.getPosition());
-//        System.out.println("tile position:" + tile.getPosition());
-//        world.destroyBody(tile.getBody());
-//        board.removeExtra(tile.getPosition().x, tile.getPosition().y);
-//        player.setCanBoost(true);
+        tile.activate();
+        player.setWin(true);
     }
     /**
      * Handles collisions between a player and a bouncy

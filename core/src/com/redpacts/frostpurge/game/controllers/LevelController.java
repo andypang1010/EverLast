@@ -127,9 +127,9 @@ public class LevelController {
                 case "empty tile":
                     level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
                     break;
-                case "goal":
-                    level.populateGoal(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
-                    break;
+//                case "goal":
+//                    level.populateGoal(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
+//                    break;
                 default:
                     if (index!=0){
                         level.populateEmpty(height-1- i/width, i%width, tileset[index/tilesetWidth][index%tilesetWidth], base);
@@ -193,6 +193,12 @@ public class LevelController {
                     label = properties.getString("value");
                     level.createBreakable(x,(height*64-y),rotation,directory, id, label, base);
                     break;
+                case "goal":
+                    properties = properties.next();
+                    label = properties.getString("value");
+                    level.createGoal(x,(height*64-y),rotation,directory, label, base);
+                    break;
+
             }
             objects = objects.next();
         }

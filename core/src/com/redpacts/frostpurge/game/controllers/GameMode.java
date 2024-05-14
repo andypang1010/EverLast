@@ -132,6 +132,7 @@ public class GameMode implements Screen, InputProcessor {
     private Array<EnemyModel> enemies;
     private Array<BouncyTile> bouncy;
     private Array<BreakableTile> breakables;
+    private GoalTile goal;
     private Array<ButtonBox> buttons = new Array<>();;
 
     private TileGraph tileGraph = new TileGraph();
@@ -529,6 +530,7 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         drawble.add(playerModel);
+        drawble.add(goal);
         drawble.addAll(enemies);
         drawble.addAll(bouncy);
         drawble.addAll(breakables);
@@ -572,8 +574,10 @@ public class GameMode implements Screen, InputProcessor {
             } else if(object instanceof EnemyModel){
                 enemyControllers.get(i).draw(canvas,(EnemyModel) object);
                 i++;
-            } else if (object instanceof ObstacleTile || object instanceof EmptyTile || object instanceof GoalTile || object instanceof SwampTile){
+            } else if (object instanceof ObstacleTile || object instanceof EmptyTile || object instanceof SwampTile){
                 currentLevel.drawTile((TileModel) object, canvas);
+            } else if (object instanceof GoalTile) {
+                currentLevel.drawGoal((GoalTile) object, canvas);
             } else if (object instanceof BreakableTile) {
                 currentLevel.drawBreakable((BreakableTile) object, canvas);
             } else if (object instanceof BouncyTile) {
@@ -757,6 +761,7 @@ public class GameMode implements Screen, InputProcessor {
         playerModel = currentLevel.getPlayer();
         bouncy = currentLevel.getBouncy();
         breakables = currentLevel.getBreakables();
+        goal = currentLevel.getGoal();
         switch (level){
             case "level1":
                 maxTime = 46;
@@ -798,7 +803,7 @@ public class GameMode implements Screen, InputProcessor {
 //        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight(),directory,0.15f * LevelSelectMode.volumeBar.getValue());
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables, goal, canvas.getWidth(), canvas.getHeight(),directory,0.15f * LevelSelectMode.volumeBar.getValue());
         pausemusic();
         playing = false;
         playmusic();

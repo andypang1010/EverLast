@@ -27,6 +27,7 @@ public class LevelModel {
     private Array<EnemyModel> enemies;
     private Array<BouncyTile> bouncy;
     private Array<BreakableTile> breakables;
+    private GoalTile goal;
     private PlayerModel player;
     private boolean altered;
     private String name;
@@ -106,7 +107,7 @@ public class LevelModel {
      * @param texture texture of the swamp tile
      */
     public void populateGoal(int i, int j, TextureRegion texture, int base){
-        extraLayer[i][j] = new GoalTile(texture, new Vector2(j*64,i*64), base);
+//        extraLayer[i][j] = new GoalTile(texture, new Vector2(j*64,i*64), base);
     }
 
     /**
@@ -164,6 +165,29 @@ public class LevelModel {
         }
 //        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);
     }
+
+    /**
+     * Creates a goal object
+     * @param x x coordinate of spawn point
+     * @param y y coordinate of spawn point
+     * @param rotation initial rotation of player
+     * @param directory The directory so that the bouncy can get its animations
+     * @param label type of breakable (e.g. glass, wood, etc.)
+     * @return enemy to be put into an enemy controller
+     */
+    public void createGoal(int x, int y, int rotation, AssetDirectory directory, String label, int base){
+        TextureRegion smallGoal =  new TextureRegion(directory.getEntry("SmallGoal", Texture.class));
+        TextureRegion bigGoal =  new TextureRegion(directory.getEntry("BigGoal", Texture.class));
+        switch (label) {
+            case "small":
+                goal = new GoalTile(smallGoal, new Vector2(x,y), "small", 1, base, 1, 10, 10);
+                break;
+            case "big":
+                goal = new GoalTile(bigGoal, new Vector2(x,y), "big", 1, base, 1, 10, 10);
+                break;
+        }
+//        extraLayer[y / 64][x / 64] = new BreakableTile(texture, new Vector2(x,y), 1,  base, 1, 4, 4);
+    }
     /**
      * Creates a bouncy object
      * @param x x coordinate of spawn point
@@ -209,6 +233,7 @@ public class LevelModel {
     }
     public Array<BouncyTile> getBouncy() { return bouncy;}
     public Array<BreakableTile> getBreakables() { return breakables;}
+    public GoalTile getGoal() { return goal;}
     public String getName(){return name;}
     public String getNextLevelName(){
         char num = name.charAt(name.length()-1);
@@ -267,6 +292,10 @@ public class LevelModel {
         return neighbors;
     }
 
+    public void drawGoal(GoalTile object, GameCanvas canvas){
+        object.processFilmStrip();
+        canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);
+    }
     public void drawBouncy(BouncyTile object, GameCanvas canvas){
         object.processFilmStrip();
         canvas.draw(object.getFilmStrip(), object.getPosition().x, object.getPosition().y);

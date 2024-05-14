@@ -35,6 +35,7 @@ public class CollisionController{
     public Array<BouncyTile> bouncy;
     /** Reference to all the breakables in the game */
     public Array<BreakableTile> breakables;
+    public GoalTile goal;
     /** Width of the collision geometry */
     protected float width;
     /** Height of the collision geometry */
@@ -106,8 +107,8 @@ public class CollisionController{
      * @param height	The height in Box2d coordinates
      */
     protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy,
-                                  Array<BreakableTile> breakables, float width, float height,AssetDirectory assets, float volume) {
-        this(board, player, enemies, bouncy, breakables, new Rectangle(0,0,width,height),assets, volume);
+                                  Array<BreakableTile> breakables, GoalTile goal, float width, float height,AssetDirectory assets, float volume) {
+        this(board, player, enemies, bouncy, breakables, goal, new Rectangle(0,0,width,height),assets, volume);
     }
 
     /**
@@ -122,12 +123,13 @@ public class CollisionController{
      * @param enemies List of enemies
      * @param bounds  The game bounds in Box2d coordinates
      */
-    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Array<BreakableTile> breakables, Rectangle bounds, AssetDirectory assets, float volume) {
+    protected CollisionController(LevelModel board, PlayerModel player, Array<EnemyModel> enemies, Array<BouncyTile> bouncy, Array<BreakableTile> breakables, GoalTile goal, Rectangle bounds, AssetDirectory assets, float volume) {
         this.board = board;
         this.player = player;
         this.enemies = enemies;
         this.bouncy = bouncy;
         this.breakables = breakables;
+        this.goal = goal;
 
         world = new World(new Vector2(),false);
         this.bounds = new Rectangle(bounds);
@@ -143,6 +145,11 @@ public class CollisionController{
                 e.createBody(world);
                 addObject(e);
             }
+        }
+        if (goal != null) {
+            goal.createBody(world);
+            System.out.println("GOAL CREATED");
+            addObject(goal);
         }
         for (TileModel[] t : board.getExtraLayer()) {
             for (TileModel tile : t){
@@ -220,7 +227,6 @@ public class CollisionController{
         // TODO: Implement dt here
         contactListener.updateTime(Gdx.graphics.getDeltaTime());
         pickPowerUp((PlayerModel) player);
-        win((PlayerModel) player);
         for (EnemyModel e : enemies){
             checkEnemyVision(e);
         }
