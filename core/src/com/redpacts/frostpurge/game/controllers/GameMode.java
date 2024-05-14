@@ -801,7 +801,7 @@ public class GameMode implements Screen, InputProcessor {
         collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight(),directory,0.15f * LevelSelectMode.volumeBar.getValue());
         pausemusic();
         playing = false;
-        playmusic();
+//        playmusic();
     }
 
     // PROCESSING PLAYER INPUT
