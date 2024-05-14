@@ -71,10 +71,10 @@
     "level5": "levels/MyLevel5.json",
     "level6": "levels/MyLevel6.json",
     "level7": "levels/MyLevel7.json",
+    "playgroundlevel": "levels/AlphaLevel.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
-    "playgroundlevel": "levels/OldLevels/AlphaLevel.json",
     "savedata": "save_data.json"
 
   }
