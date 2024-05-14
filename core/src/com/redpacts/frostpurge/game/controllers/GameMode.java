@@ -128,7 +128,7 @@ public class GameMode implements Screen, InputProcessor {
     private Array<ButtonBox> buttons = new Array<>();;
 
     private TileGraph groundedTileGraph = new TileGraph();
-    private TileGraph ignoreObstaclesTileGraph = new TileGraph();
+    private TileGraph ignoreCollisionsTileGraph = new TileGraph();
 
     private Texture statusBarBGTexture;
     private Texture boostBarTexture;
@@ -333,10 +333,18 @@ public class GameMode implements Screen, InputProcessor {
     private void populateGroundedTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
-                TileModel currentTile = null;
+                TileModel currentTile;
 
                 if (currentLevel.getExtraLayer()[j][i] == null) {
                     groundedTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    currentTile = currentLevel.getBaseLayer()[j][i];
+                }
+
+                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP
+                        || currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.DESTRUCTIBLE) {
+                    groundedTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    groundedTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+
                     currentTile = currentLevel.getBaseLayer()[j][i];
                 }
 
@@ -352,21 +360,24 @@ public class GameMode implements Screen, InputProcessor {
                 for (int x = i - 1; x <= i + 1; x++) {
                     for (int y = j - 1; y <= j + 1; y++) {
                         if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
-//                            System.out.println("X: " + x + ", Y: " + y);
-//                            System.out.println("Distance from (" + i + ", " + j + ") is: " + Math.abs((x - i) + (y - j)) + "\n");
-
                             if (currentLevel.getExtraLayer()[y][x] == null) {
                                 groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                            } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
-                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
 
-//                            if (currentLevel.getExtraLayer()[y][x] == null) {
-//                                groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-//                            }
-//                            else {
-//                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
-//                            }
+                            else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP
+                            || currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.DESTRUCTIBLE) {
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+
+                                if (currentLevel.getExtraLayer()[j][i] != null) {
+                                    groundedTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getBaseLayer()[y][x]);
+                                    groundedTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getExtraLayer()[y][x]);
+                                }
+                            }
+
+                            else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+                            }
                         }
                     }
                 }
@@ -374,18 +385,26 @@ public class GameMode implements Screen, InputProcessor {
         }
     }
 
-    private void populateIgnoreObstaclesTileGraph() {
+    private void populateIgnoreCollisionsTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
-                TileModel currentTile = null;
+                TileModel currentTile;
 
                 if (currentLevel.getExtraLayer()[j][i] == null) {
-                    ignoreObstaclesTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    currentTile = currentLevel.getBaseLayer()[j][i];
+                }
+
+                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP
+                        || currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.DESTRUCTIBLE) {
+                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+
                     currentTile = currentLevel.getBaseLayer()[j][i];
                 }
 
                 else {
-                    ignoreObstaclesTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
                     currentTile = currentLevel.getExtraLayer()[j][i];
                 }
 
@@ -393,10 +412,22 @@ public class GameMode implements Screen, InputProcessor {
                     for (int y = j - 1; y <= j + 1; y++) {
                         if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
                             if (currentLevel.getExtraLayer()[y][x] == null) {
-                                ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
                             }
+
+                            else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP
+                                    || currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.DESTRUCTIBLE) {
+                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+
+                                if (currentLevel.getExtraLayer()[j][i] != null) {
+                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getBaseLayer()[y][x]);
+                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getExtraLayer()[y][x]);
+                                }
+                            }
+
                             else {
-                                ignoreObstaclesTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
                         }
                     }
@@ -795,7 +826,7 @@ public class GameMode implements Screen, InputProcessor {
         currentLevel.setName(level);
 
         populateGroundedTileGraph();
-        populateIgnoreObstaclesTileGraph();
+        populateIgnoreCollisionsTileGraph();
 
         playerController = new PlayerController(playerModel);
 
@@ -810,7 +841,7 @@ public class GameMode implements Screen, InputProcessor {
             }
 
             else {
-                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, ignoreObstaclesTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, ignoreCollisionsTileGraph,currentLevel,enemies.get(i).getWaypoints()));
             }
 
         }
