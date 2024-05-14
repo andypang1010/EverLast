@@ -132,19 +132,19 @@ public class PlayerController extends CharactersController {
     }
 
     private void playAccelerate(boolean on) {
-        long soundId = ((PlayerModel) model).getActionId(PlayerModel.Actions.ACCELERATE);
-
-        if (on) {
-            accelerateSound.setVolume(soundId, Math.min(model.getBody().getLinearVelocity().len() / 120f, 1f) * LevelSelectMode.volumeBar.getValue());
-
-            if (soundId == -1) {
-                soundId = accelerateSound.loop();
-                ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, soundId);
-            }
-        } else {
-            ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, -1);
-            accelerateSound.stop(soundId);
-        }
+//        long soundId = ((PlayerModel) model).getActionId(PlayerModel.Actions.ACCELERATE);
+//
+//        if (on) {
+//            accelerateSound.setVolume(soundId, Math.min(model.getBody().getLinearVelocity().len() / 120f, 1f) * LevelSelectMode.volumeBar.getValue());
+//
+//            if (soundId == -1) {
+//                soundId = accelerateSound.loop();
+//                ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, soundId);
+//            }
+//        } else {
+//            ((PlayerModel) model).setActionId(PlayerModel.Actions.ACCELERATE, -1);
+//            accelerateSound.stop(soundId);
+//        }
     }
 
     public void playBoost() {
