@@ -574,14 +574,14 @@ public class GameMode implements Screen, InputProcessor {
             } else if(object instanceof EnemyModel){
                 enemyControllers.get(i).draw(canvas,(EnemyModel) object);
                 i++;
-            } else if (object instanceof ObstacleTile || object instanceof EmptyTile || object instanceof SwampTile){
-                currentLevel.drawTile((TileModel) object, canvas);
             } else if (object instanceof GoalTile) {
                 currentLevel.drawGoal((GoalTile) object, canvas);
             } else if (object instanceof BreakableTile) {
                 currentLevel.drawBreakable((BreakableTile) object, canvas);
             } else if (object instanceof BouncyTile) {
                 currentLevel.drawBouncy((BouncyTile) object, canvas);
+            } else if (object instanceof ObstacleTile || object instanceof EmptyTile || object instanceof SwampTile){
+                currentLevel.drawTile((TileModel) object, canvas);
             }
         }
 

@@ -310,10 +310,6 @@ public class LevelModel {
 
     public void drawDebug(TileModel object, GameCanvas canvas) {
         if (object != null && object.shape != null) {
-//            System.out.println(object.shape.getVertexCount());
-//            System.out.println(object.getPosition());
-//            System.out.println("\n");
-//            System.out.println(object.getType());
             canvas.drawPhysics(object.shape, Color.RED, object.getPosition().x + 32, object.getPosition().y + 32, 0, 1, 1);
         }
     }
@@ -326,14 +322,14 @@ public class LevelModel {
         }
         return extraLayer[indexy][indexx] instanceof SwampTile;
     }
-    public boolean isGoalTile(float x, float y){
-        int indexx = (int) Math.floor(x/64);
-        int indexy = (int) Math.floor(y/64);
-        if (!inBounds(indexx,indexy)){
-            return false;
-        }
-        return extraLayer[indexy][indexx] instanceof GoalTile;
-    }
+//    public boolean isGoalTile(float x, float y){
+//        int indexx = (int) Math.floor(x/64);
+//        int indexy = (int) Math.floor(y/64);
+//        if (!inBounds(indexx,indexy)){
+//            return false;
+//        }
+//        return extraLayer[indexy][indexx] instanceof GoalTile;
+//    }
     public void removeExtra(float x, float y){
         int indexx = (int) Math.floor(x/64);
         int indexy = (int) Math.floor(y/64);

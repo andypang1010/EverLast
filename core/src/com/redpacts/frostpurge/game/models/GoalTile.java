@@ -94,14 +94,14 @@ public class GoalTile extends TileModel{
 
         if(label.equals("big")) {
             // Set the position of the obstacle
-            bodyDef.position.set(this.getPosition().cpy().add(64f * 8 / 2, 64f * 2 / 2).scl(0.1f));
+            bodyDef.position.set(this.getPosition().cpy().add(64f * 8 / 2, 64f * 3 / 2).scl(0.1f));
 
             body = world.createBody(bodyDef);
             body.setUserData(this);
             shape.setAsBox(6.4f * 8 / 2, 6.4f * 2 / 2);
         } else {
             // Set the position of the obstacle
-            bodyDef.position.set(this.getPosition().cpy().add(64f * 6 / 2, 64f * 2 / 2).scl(0.1f));
+            bodyDef.position.set(this.getPosition().cpy().add(64f * 6 / 2, 64f * 3 / 2).scl(0.1f));
 
             body = world.createBody(bodyDef);
             body.setUserData(this);

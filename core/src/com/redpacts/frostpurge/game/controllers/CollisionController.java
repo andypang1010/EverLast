@@ -258,16 +258,16 @@ public class CollisionController{
             }
         }
     }
-    /**
-     * Check if the player is on a swamp tile, and pick up the power up if true
-     *
-     * @param player Player to check
-     */
-    private void win(PlayerModel player){
-        if(board.isGoalTile(player.getPosition().x, player.getPosition().y)){
-            player.setWin(true);
-        }
-    }
+//    /**
+//     * Check if the player is on a swamp tile, and pick up the power up if true
+//     *
+//     * @param player Player to check
+//     */
+//    private void win(PlayerModel player){
+//        if(board.isGoalTile(player.getPosition().x, player.getPosition().y)){
+//            player.setWin(true);
+//        }
+//    }
     /**
      * Processes physics
      *

@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json"
+        }
+    },
  "height":150,
  "infinite":false,
  "layers":[
@@ -652,16 +659,10 @@
          "name":"Characters",
          "objects":[
                 {
-                 "gid":10927,
+                 "gid":10926,
                  "height":326.061,
                  "id":2,
                  "name":"Liv",
-                 "properties":[
-                        {
-                         "name":"type",
-                         "type":"string",
-                         "value":"player"
-                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -670,9 +671,9 @@
                  "y":8178.78787878787
                 }, 
                 {
-                 "gid":10949,
+                 "gid":10929,
                  "height":422,
-                 "id":4,
+                 "id":3,
                  "name":"",
                  "properties":[
                         {
@@ -699,7 +700,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":5,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-up",
  "tiledversion":"1.10.2",
@@ -710,12 +711,12 @@
          "source":"..\/Tilesets\/TileSet.json"
         }, 
         {
-         "firstgid":10927,
+         "firstgid":10926,
          "source":"..\/Tilesets\/Liv.tsx"
         }, 
         {
-         "firstgid":10949,
-         "source":"..\/..\/Tiled\/levels\/goalFilmStripBig.tsx"
+         "firstgid":10929,
+         "source":"goalFilmStripBig.tsx"
         }],
  "tilewidth":64,
  "type":"map",
