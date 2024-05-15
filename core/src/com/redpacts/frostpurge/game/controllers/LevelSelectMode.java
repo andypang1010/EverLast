@@ -76,6 +76,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private AssetDirectory assets;
 	public boolean loading = false;
 	public boolean loadNext = false;
+	public float loadtime = 0;
 
 	/**
 	 * Background texture for level-select
@@ -182,7 +183,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	FilmStrip loadAnimation;
 	BitmapFont chalkFont;
 
-
+	GameMode gamemode;
 
 	public String getLevel(){
 		return selectedLevel;
@@ -233,7 +234,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		load = new AssetLoader(this,gamemode);
 		this.canvas = canvas;
 		inputController = new InputController();
-
+		this.gamemode = gamemode;
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(), canvas.getHeight());
 
@@ -506,12 +507,14 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	private void draw() {
 	canvas.begin();
-	System.out.println(loadNext);
 
 	if (loading) {
 		drawload();
 		if (xbox != null){
-		load.run();
+			gamemode.loadLevel(getLevel(),game);
+
+			// Assets loaded, switch to the main game screen
+			listener.exitScreen(this,0);
 		}else{
 			canvas.drawBackground(loadingscreen,0,0,true);
 			processLoad();
@@ -519,7 +522,13 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 	} else if (loadNext) {
 			drawload();
-			loading = true;
+			if (loadtime <.3f){
+//				System.out.println("waiting");
+				loadtime+= Gdx.graphics.getDeltaTime();
+			}else{
+				gamemode.loadLevel(getLevel(),game);
+				listener.exitScreen(this,0);
+			}
 	} else{
 		if (scale != 0) {
 			font.getData().setScale(scale);
@@ -789,6 +798,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
+		if(loadNext){
+			drawloadSneaky();
+		}
 		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
 		sample.setVolume(0.5f * volumeBar.getValue());
@@ -828,7 +840,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 			if (isReady() && listener != null) {
 				pressState = 0;
-				loading = true;
+				if (xbox == null){
+					loading = true;
+				}else{
+					loadNext = true;
+				}
 				if (xbox!=null){
 					canvas.begin();
 					drawload();
@@ -1543,10 +1559,13 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			// This code will run in a separate thread
 
 			// Simulate loading time
-            gamemode.loadLevel(getLevel(),game);
+			if (xbox == null){
+				gamemode.loadLevel(getLevel(),game);
 
-            // Assets loaded, switch to the main game screen
-			listener.exitScreen(mode,0);
+				// Assets loaded, switch to the main game screen
+				listener.exitScreen(mode,0);
+			}
+
 		}
 	}
 	private void processLoad(){
@@ -1568,5 +1587,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		font.setColor(Color.BLACK);
 		canvas.drawText("Loading...",font,1700*scale,150*scale);
 //		canvas.end();
+	}
+	public void drawloadSneaky(){
+		canvas.drawBackgroundLOAD(loadingscreen,0,0,true);
+		font.setColor(Color.BLACK);
+		canvas.drawTextLOAD("Loading...",font,1700*scale,150*scale);
 	}
 }

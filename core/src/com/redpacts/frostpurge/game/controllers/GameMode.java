@@ -302,7 +302,7 @@ public class GameMode implements Screen, InputProcessor {
      * Checks if the player chooses to return to level select screen.
      */
     public boolean isLevelSelectScreen() {return this.levelSelectScreen;}
-    public boolean isRetry(){ if (inputController.xbox != null){
+    public boolean isRetry(){ if (inputController.xbox == null){
             return this.retryButton.isPressed()||this.retryPauseButton.isPressed();
         } else{
         return this.retryButton.getEnlarged()||this.retryPauseButton.getEnlarged();

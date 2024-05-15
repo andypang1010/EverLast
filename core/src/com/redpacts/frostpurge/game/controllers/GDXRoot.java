@@ -170,17 +170,20 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.resetButton();
 			playing.pausemusic();
 
-			if (levelselect.xbox != null){
-				System.out.println("HEHEHHEHEHEHEHEHHEHEHEHEHEHEHE");
-				levelselect.loadNext = true;
-			}else{
-				levelselect.loading = true;
-			}
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
 			levelselect.playmusic();
-			new Thread(levelselect.load).start();
+			if (levelselect.xbox != null){
+				levelselect.drawloadSneaky();
+				levelselect.loadtime=0;
+				levelselect.loadNext = true;
+				levelselect.loading = false;
+			}else{
+				levelselect.loading = true;
+//				new Thread(levelselect.load).start();
+			}
+
 		} else if (screen == playing) {
 			playing.resetButton();
 			playing.pausemusic();

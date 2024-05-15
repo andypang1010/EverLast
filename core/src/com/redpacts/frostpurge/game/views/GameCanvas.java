@@ -360,7 +360,21 @@ public class GameCanvas {
         spriteBatch.draw(image, x, y, w, h);
         spriteBatch.end();
     }
-
+    public void drawBackgroundLOAD(Texture image, float x, float y, boolean fill) {
+        spriteBatch.begin();
+        float w, h;
+        if (fill) {
+            w = getWidth();
+            h = getHeight();
+        } else {
+            w = image.getWidth();
+            h = image.getHeight();
+        }
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x, y, w, h);
+        System.out.println("drawn");
+        spriteBatch.end();
+    }
 
     public void drawBar(ProgressBar bar, float width, float height, float x, float y) {
         bar.setColor(Color.WHITE);
@@ -649,6 +663,23 @@ public class GameCanvas {
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.setProjectionMatrix(camera.combined);
+
+        GlyphLayout layout = new GlyphLayout(font,text);
+        font.setColor(Color.WHITE);
+        font.draw(spriteBatch, layout, x, y);
+
+        active = DrawPass.STANDARD;
+        spriteBatch.end();
+    }public void drawTextLOAD(String text, BitmapFont font, float x, float y) {
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        // Call the master drawing method (we have to for transforms)
+
+        //Update HUD camera
 
         GlyphLayout layout = new GlyphLayout(font,text);
         font.setColor(Color.WHITE);
