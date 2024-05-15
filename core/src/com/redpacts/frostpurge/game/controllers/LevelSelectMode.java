@@ -1303,7 +1303,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		public void hoveringButton(XBoxController xbox, float time, int size, Array<ButtonBox> levels, ButtonBox settings, ButtonBox exit, ButtonBox volumedown, ButtonBox volumeup, ButtonBox sensdown, ButtonBox sensup, ButtonBox resdown, ButtonBox resup){
 			if (xbox == null) {
-				System.out.println("XBOX IS NOT FOUND");
 				int x = (int) (Gdx.input.getX() / scale);
 				int y = (int) ((Gdx.graphics.getHeight() - Gdx.input.getY()) / scale);
 				float centerX = this.bounds.x + this.bounds.width / 2;

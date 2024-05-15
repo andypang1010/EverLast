@@ -222,7 +222,7 @@ public class GameMode implements Screen, InputProcessor {
 
         exitTexture = pauseScreenAssets.getEntry("exitGameButton", Texture.class);
         exitButton = new ButtonBox(5, enlargeScale, scale,
-                new Rectangle((float) (STANDARD_WIDTH * 87 / 100), (float) (STANDARD_HEIGHT * 1.5/100), exitTexture.getWidth(), exitTexture.getHeight()), exitTexture);
+                new Rectangle((float) (STANDARD_WIDTH * 86 / 100), (float) (STANDARD_HEIGHT * 2.5/100), exitTexture.getWidth(), exitTexture.getHeight()), exitTexture);
 
         nextTexture = pauseScreenAssets.getEntry("nextLevel",Texture.class);
         nextButton = new ButtonBox(6, enlargeScale, scale,
