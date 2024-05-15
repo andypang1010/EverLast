@@ -1176,7 +1176,6 @@ public class GameMode implements Screen, InputProcessor {
         }
     }
     public void playLoseMusic(){
-        System.out.println(playing);
         if (!playing){
             gameoOverSample.setPosition(0);
             gameoOverSample.play();
