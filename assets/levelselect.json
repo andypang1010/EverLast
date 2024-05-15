@@ -31,7 +31,7 @@
         "filledstars": "ui/filled_stars.png",
         "levelSelectButton": "levelSelect/levelSelectButton.png",
         "settingsButton": "pauseScreen/Settings.png",
-        "exitGameButton": "levelSelect/exitgameButton.png",
+        "exitGameButton": "pauseScreen/quit.png",
         "incButton": "levelSelect/more_+button.png",
         "decButton": "levelSelect/less_-button.png",
         "smallRes": "levelSelect/1280x720_button.png",

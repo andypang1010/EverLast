@@ -349,6 +349,17 @@ public class GameCanvas {
         spriteBatch.draw(image, x, y, w, h);
         spriteBatch.end();
     }
+    public void drawBackgroundAnimationHUD(TextureRegion image, float x, float y,OrthographicCamera camera) {
+        spriteBatch.begin();
+        float w, h;
+        w = getWidth();
+        h = getHeight();
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x, y, w, h);
+        spriteBatch.end();
+    }
 
 
     public void drawBar(ProgressBar bar, float width, float height, float x, float y) {

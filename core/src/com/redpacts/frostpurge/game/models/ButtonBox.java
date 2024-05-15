@@ -40,7 +40,7 @@ public class ButtonBox {
      * if it is not already enlarged. When the cursor moves away from the button, it returns to its original size.
      * The resizing of the button ensures it maintains its center position.
      */
-    public void hoveringButton(XBoxController xbox, float[] time, ButtonBox resumebutton, ButtonBox levelselectbutton, ButtonBox homebutton, ButtonBox retrybutton, ButtonBox exitbutton, GameMode.GameState state){
+    public void hoveringButton(XBoxController xbox, float[] time, ButtonBox resumebutton, ButtonBox levelselectbutton, ButtonBox homebutton, ButtonBox retrybutton, ButtonBox exitbutton, GameMode.GameState state, ButtonBox nextbutton,ButtonBox retryPause){
         if (xbox!=null){
             if (this.enlarged && time[0] >.2f) {
                 float x = xbox.getLeftX();
@@ -55,13 +55,6 @@ public class ButtonBox {
                 switch (state) {
                     case PAUSE:
                         switch (this.label) {
-                            case 0:
-                                if (y < 0) {
-                                    this.resize("down");
-                                    resumebutton.resize("up");
-                                    time[0] = 0;
-                                }
-                                break;
                             case 1:
                                 if (y < 0 || x < 0) {
                                     this.resize("down");
@@ -70,6 +63,10 @@ public class ButtonBox {
                                 } else if(x>0){
                                     this.resize("down");
                                     exitbutton.resize("up");
+                                    time[0]=0;
+                                } else if (y>0){
+                                    this.resize("down");
+                                    retryPause.resize("up");
                                     time[0]=0;
                                 }
                                 break;
@@ -95,6 +92,17 @@ public class ButtonBox {
                                     time[0] = 0;
                                 }
                                 break;
+                            case 4:
+                                if (x<0){
+                                    this.resize("down");
+                                    resumebutton.resize("up");
+                                    time[0]=0;
+                                } else if (y<0) {
+                                    this.resize("down");
+                                    exitbutton.resize("up");
+                                    time[0]=0;
+                                }
+                                break;
                             case 5:
                                 if (x<0){
                                     this.resize("down");
@@ -117,7 +125,7 @@ public class ButtonBox {
                                     time[0] = 0;
                                 } else if (x>0){
                                     this.resize("down");
-                                    exitbutton.resize("up");
+                                    nextbutton.resize("up");
                                     time[0] = 0;
                                 }
                                 break;
@@ -128,7 +136,7 @@ public class ButtonBox {
                                     time[0] = 0;
                                 }
                                 break;
-                            case 5:
+                            case 6:
                                 if (x<0){
                                     this.resize("down");
                                     levelselectbutton.resize("up");
@@ -162,15 +170,15 @@ public class ButtonBox {
                                 }
                                 break;
                             case 4:
-                                if (y < 0 || x < 0) {
-                                    this.resize("down");
-                                    levelselectbutton.resize("up");
-                                    time[0] = 0;
-                                }else if (x>0){
+                                if (x>0){
                                     this.resize("down");
                                     exitbutton.resize("up");
                                     time[0] = 0;
-                                }
+                                }else if (y < 0 || x < 0) {
+                                this.resize("down");
+                                levelselectbutton.resize("up");
+                                time[0] = 0;
+                            }
                                 break;
                             case 5:
                                 if (x<0){
