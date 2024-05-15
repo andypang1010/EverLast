@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -137,6 +138,10 @@ public class GameMode implements Screen, InputProcessor {
     private FilmStrip heartHurt;
     private Color healthBarColor;
     private boolean debug;
+    private Vector2 cameraTarget;
+    private Vector2 cameraPosition;
+    private int cameraShakeDuration = 0;
+    private float zoom;
     private float scale;
     private float sx;
     private float sy;
@@ -156,6 +161,9 @@ public class GameMode implements Screen, InputProcessor {
     private SaveFileManager saveFileManager;
     private float[] controllerTime;
     private Music sample;
+    private Music winSample;
+    private Music gameoOverSample;
+    private boolean playing;
     public GameMode(GameCanvas canvas) {
         this.canvas = canvas;
         // TODO: Change scale?
@@ -455,6 +463,10 @@ public class GameMode implements Screen, InputProcessor {
         return heart;
     }
 
+    public void cameraShake(int i){
+        this.cameraShakeDuration += i;
+    }
+
     public void update(float delta) {
         if (gameState!= GameState.PLAY){
             for (EnemyController enemy : enemyControllers){
@@ -465,6 +477,8 @@ public class GameMode implements Screen, InputProcessor {
 
         else {
             sample.setVolume(0.15f * LevelSelectMode.volumeBar.getValue());
+            winSample.setVolume(0.15f * LevelSelectMode.volumeBar.getValue());
+            gameoOverSample.setVolume(0.20f * LevelSelectMode.volumeBar.getValue());
         }
         controllerTime[0] += Gdx.graphics.getDeltaTime();
         Gdx.input.setInputProcessor(this);
@@ -514,7 +528,12 @@ public class GameMode implements Screen, InputProcessor {
         }
 
         if (gameState == GameState.OVER){
+            if (!playing){
+                pausemusic();
+            }
+            playLoseMusic();
             if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -523,7 +542,12 @@ public class GameMode implements Screen, InputProcessor {
             }
 
         } else if (gameState == GameState.WIN){
+            if (!playing){
+                pausemusic();
+            }
+            playWinMusic();
             if (playerModel.getGameOver()){
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -566,15 +590,23 @@ public class GameMode implements Screen, InputProcessor {
 
 
         drawble.clear();
+        float playerX = playerModel.getPosition().x;
+        float playerY = playerModel.getPosition().y;
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 TileModel accentTile = currentLevel.getAccentLayer()[i][j];
                 TileModel extraTile = currentLevel.getExtraLayer()[i][j];
-                if(accentTile!=null && playerModel.getPosition().cpy().sub(accentTile.getPosition()).len() <= 1600){
-                    drawble.add(accentTile);
+                if(accentTile!=null){
+                    float dst2 = (float) (Math.pow(accentTile.getPosition().x-playerX, 2) + Math.pow(accentTile.getPosition().y-playerY, 2));
+                    if(Math.sqrt(dst2) <= 1600){
+                        drawble.add(accentTile);
+                    }
                 }
-                if(extraTile!=null && playerModel.getPosition().cpy().sub(extraTile.getPosition()).len() <= 1600){
-                    drawble.add(extraTile);
+                if(extraTile!=null){
+                    float dst2 = (float) (Math.pow(extraTile.getPosition().x-playerX, 2) + Math.pow(extraTile.getPosition().y-playerY, 2));
+                    if(Math.sqrt(dst2) <= 1600){
+                        drawble.add(extraTile);
+                    }
                 }
             }
         }
@@ -603,13 +635,26 @@ public class GameMode implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
+        // Camera Movement
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
-        canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
+        if(playerModel.getShake()){
+            playerModel.setShake(false);
+            cameraShakeDuration += 10;
+        }
+        cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4f));
+        if(cameraShakeDuration > 0){
+            cameraShakeDuration--;
+            cameraTarget.x += (float) (200f * (1-2*Math.random()));
+            cameraTarget.y += (float) (200f * (1-2*Math.random()));
+        }
+        cameraPosition = cameraPosition.scl(0.9f).add(cameraTarget.scl(0.1f));
+        canvas.center(camera, cameraPosition.x, cameraPosition.y);
         camera.zoom = 1/scale;
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
+
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
@@ -767,7 +812,13 @@ public class GameMode implements Screen, InputProcessor {
 //        song = engine.newMusicBuffer( false, 44100 );
         sample = directory.getEntry( "song", Music.class );
         sample.setLooping(true);
-//        song.addSource(sample);
+
+        winSample = directory.getEntry( "win", Music.class );
+        winSample.setLooping(true);
+
+        gameoOverSample = directory.getEntry( "game_over", Music.class );
+        gameoOverSample.setLooping(true);
+
         int tilewidth = 64;
         int tileheight = 64;
         tilesetjson = directory.getEntry("tileset", JsonValue.class);
@@ -818,6 +869,12 @@ public class GameMode implements Screen, InputProcessor {
             case "level5":
                 maxTime = 75;
                 break;
+            case "level6":
+                maxTime = 60;
+                break;
+            case "level7":
+                maxTime = 85;
+                break;
             default:
                 maxTime = 61;
         }
@@ -852,7 +909,12 @@ public class GameMode implements Screen, InputProcessor {
 //        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight());
+        cameraPosition = playerModel.getPosition();
+
+        collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables,canvas.getWidth(), canvas.getHeight(),directory,0.15f * LevelSelectMode.volumeBar.getValue());
+        pausemusic();
+        playing = false;
+        playmusic();
     }
 
     // PROCESSING PLAYER INPUT
@@ -951,7 +1013,7 @@ public class GameMode implements Screen, InputProcessor {
                 }else if (exitButton.getEnlarged()){
                     listener.exitScreen(this,1);
                 }
-            } else if (gameState == GameState.OVER && inputController.xbox.getBack()) {
+            } else if (gameState == GameState.OVER && inputController.xbox.getA()) {
                 if (homeButton.getEnlarged()) {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {
@@ -961,7 +1023,7 @@ public class GameMode implements Screen, InputProcessor {
                 }else if (exitButton.getEnlarged()){
                     listener.exitScreen(this,1);
                 }
-            } else if (gameState == GameState.WIN && inputController.xbox.getBack()) {
+            } else if (gameState == GameState.WIN && inputController.xbox.getA()) {
                 if (homeButton.getEnlarged()) {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {
@@ -1129,7 +1191,24 @@ public class GameMode implements Screen, InputProcessor {
         sample.setPosition(0);
         sample.play();
     }
+    public void playWinMusic(){
+        if (!playing){
+            winSample.setPosition(0);
+            winSample.play();
+            playing = true;
+        }
+    }
+    public void playLoseMusic(){
+        System.out.println(playing);
+        if (!playing){
+            gameoOverSample.setPosition(0);
+            gameoOverSample.play();
+            playing = true;
+        }
+    }
     public void pausemusic(){
         sample.pause();
+        winSample.pause();
+        gameoOverSample.pause();
     }
 }

@@ -45,10 +45,17 @@
     "Accelerate" : "sound/accelerate.wav",
     "Boost" : "sound/boost.wav",
     "Collide" : "sound/collide.wav",
-    "Quack" : "sound/quack.wav"
+    "Quack" : "sound/quack.wav",
+    "Bat": "sound/bat.wav",
+    "Bounce": "sound/bounce.wav",
+    "Flies": "sound/flies.wav",
+    "Break": "sound/break.wav",
+    "Vacuum": "sound/vacuum.wav"
   },
   "music": {
-    "song" : "sound/level.ogg"
+    "song" : "sound/level.ogg",
+    "game_over": "sound/game_over.ogg",
+    "win": "sound/win.ogg"
   },
   "fonts": {
     "font": {
@@ -61,12 +68,13 @@
     "level2": "levels/MyLevel2.json",
     "level3": "levels/MyLevel3.json",
     "level4": "levels/MyLevel4.json",
-    "level5": "levels/TestLevel.json",
+    "level5": "levels/MyLevel5.json",
+    "level6": "levels/MyLevel6.json",
+    "level7": "levels/MyLevel7.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
     "playgroundlevel": "levels/AlphaLevel.json",
-    "savedata": "save_data.json",
-    "level7": "levels/level7.json"
+    "savedata": "save_data.json"
   }
 }

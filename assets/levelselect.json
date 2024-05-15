@@ -1,13 +1,31 @@
 {
 	"textures": {
-        "background": "levelSelect/levelSelectScreen.png",
+        "background0": "levelSelect/background0.png",
+        "background1": "levelSelect/background1.png",
+        "background2": "levelSelect/background2.png",
+        "background3": "levelSelect/background3.png",
         "backwardButton": "levelSelect/backButton.png",
         "forwardButton": "levelSelect/forwardButton.png",
-        "level1": "levelSelect/level1.png",
-        "level2": "levelSelect/level2.png",
-        "level3": "levelSelect/level3.png",
-        "level4": "levelSelect/level1.png",
-        "level5": "levelSelect/level2.png",
+        "level1": "levelSelect/levelsButtons/1.png",
+        "level2": "levelSelect/levelsButtons/2.png",
+        "level3": "levelSelect/levelsButtons/3.png",
+        "level4": "levelSelect/levelsButtons/4.png",
+        "level5": "levelSelect/levelsButtons/5.png",
+        "level6": "levelSelect/levelsButtons/6.png",
+        "level7": "levelSelect/levelsButtons/7.png",
+        "level8": "levelSelect/levelsButtons/8.png",
+        "level9": "levelSelect/levelsButtons/9.png",
+        "level10": "levelSelect/levelsButtons/10.png",
+        "level11": "levelSelect/levelsButtons/11.png",
+        "level12": "levelSelect/levelsButtons/12.png",
+        "level13": "levelSelect/levelsButtons/13.png",
+        "level14": "levelSelect/levelsButtons/14.png",
+        "level15": "levelSelect/levelsButtons/15.png",
+        "level16": "levelSelect/levelsButtons/16.png",
+        "level17": "levelSelect/levelsButtons/17.png",
+        "level18": "levelSelect/levelsButtons/18.png",
+        "level19": "levelSelect/levelsButtons/19.png",
+        "level20": "levelSelect/levelsButtons/20.png",
         "lock": "ui/locked_level_UI.png",
         "emptystars": "ui/outline_stars.png",
         "filledstars": "ui/filled_stars.png",
@@ -20,7 +38,12 @@
         "largeRes": "levelSelect/1920x1080_button.png",
         "settingsBackground": "levelSelect/background.png",
         "loadingBackground": "loading/startscreen.png",
-        "loading": "loading/loading2.png"
+        "loading": "loading/loading2.png",
+        "page1": "levelselect/page1.png",
+        "page2": "levelselect/page2.png",
+        "page3": "levelselect/page3.png",
+        "page4": "levelselect/page4.png",
+        "page5": "levelselect/page5.png"
 	},
   "music" : {
     "song" : "sound/menu.ogg"
@@ -29,7 +52,11 @@
       "font": {
         "file": "ui/racetime.ttf",
         "size": 64
-    }
+    },
+      "chalk": {
+        "file": "ui/chalk.ttf",
+        "size": 70
+      }
   },
   "jsons": {
       "savedata": "save_data.json"

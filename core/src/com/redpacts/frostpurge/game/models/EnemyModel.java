@@ -258,8 +258,7 @@ public class EnemyModel extends CharactersModel{
 
         if(Objects.equals(this.enemyType, "bat")){
             fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT;
-            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT |
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT |
                     CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES);
         }else if(Objects.equals(this.enemyType, "flies")){
             fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES;

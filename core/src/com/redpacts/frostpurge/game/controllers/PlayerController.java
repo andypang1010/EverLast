@@ -23,6 +23,7 @@ public class PlayerController extends CharactersController {
     private Sound accelerateSound;
     /** The sound for boosting */
     private Sound boostSound;
+    private Sound vacuumSound;
 
 
     PlayerController(PlayerModel player){
@@ -31,10 +32,12 @@ public class PlayerController extends CharactersController {
 
         accelerateSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.ACCELERATE);
         boostSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.BOOST);
+        vacuumSound = ((PlayerModel) model).getActionSound(PlayerModel.Actions.VACUUM);
     }
 
     public void vacuum() {
         if(((PlayerModel)model).getVacuumingProgression() == 0){
+            playVacuum();
             ((PlayerModel)model).setVacuumingProgression(1);
         }
     }
@@ -45,6 +48,7 @@ public class PlayerController extends CharactersController {
             model.getBody().applyForceToCenter(horizontal*100f, -vertical*100f, true);
             ((PlayerModel) model).addCanBoost(-1);
             ((PlayerModel) model).resetBoostCoolDown();
+            ((PlayerModel) model).setShake(true);
         }
     }
 
@@ -83,6 +87,9 @@ public class PlayerController extends CharactersController {
 //         Switch vacuum state
         if(((PlayerModel) model).getVacuumingProgression() > 0){
             int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
+            if (vacuumFrame == 1){
+                playVacuum();
+            }
             if(vacuumFrame >= 1 && vacuumFrame <= 9){
                 ((PlayerModel) model).setVacuumingState(PlayerModel.VacuumingState.START);
             }else if(vacuumFrame >= 10 && vacuumFrame <= 19){
@@ -144,9 +151,13 @@ public class PlayerController extends CharactersController {
     public void playBoost() {
         boostSound.play(1 *  LevelSelectMode.volumeBar.getValue());
     }
+    public void playVacuum() {
+        vacuumSound.play(1 *  LevelSelectMode.volumeBar.getValue());
+    }
     public void pauseSounds(){
         boostSound.pause();
         accelerateSound.pause();
+        vacuumSound.pause();
     }
 
     public Vector2 cameraOffsetPos() {
