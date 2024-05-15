@@ -282,7 +282,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		levelSelectButton.available = true;
 
 		settingsTexture = assets.getEntry("settingsButton",Texture.class);
-		settingsButton = new ButtonBox(-2,new Rectangle(STANDARD_WIDTH*93/100,STANDARD_HEIGHT*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
+		settingsButton = new ButtonBox(-2,new Rectangle(STANDARD_WIDTH*86/100,STANDARD_HEIGHT*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
 		settingsButton.available = true;
 
 
