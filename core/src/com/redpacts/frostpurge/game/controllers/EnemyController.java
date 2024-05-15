@@ -195,8 +195,8 @@ public class EnemyController extends CharactersController implements StateMachin
             if (((EnemyModel) model).getID() == 1) {
                 angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
 //            System.out.println(angle);
-                System.out.println("actual:");
-                System.out.println(direction);
+//                System.out.println("actual:");
+//                System.out.println(direction);
             }
             enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
         }

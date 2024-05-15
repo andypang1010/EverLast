@@ -297,6 +297,10 @@ public class GameCanvas {
         Gdx.gl.glClearColor(1f, 1f, 1f, 1.0f);  // Homage to the XNA years
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
+    public void beginNoClear(){
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+    }
 
     /**
      * Ends a drawing sequence, flushing textures to the graphics card.
@@ -329,6 +333,47 @@ public class GameCanvas {
         }
         spriteBatch.setColor(Color.WHITE);
         spriteBatch.draw(image, x, y, w, h);
+    }public void drawBackgroundHUD(Texture image, float x, float y, boolean fill,OrthographicCamera camera) {
+        spriteBatch.begin();
+        float w, h;
+        if (fill) {
+            w = getWidth();
+            h = getHeight();
+        } else {
+            w = image.getWidth();
+            h = image.getHeight();
+        }
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x, y, w, h);
+        spriteBatch.end();
+    }
+    public void drawBackgroundAnimationHUD(TextureRegion image, float x, float y,OrthographicCamera camera) {
+        spriteBatch.begin();
+        float w, h;
+        w = getWidth();
+        h = getHeight();
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x, y, w, h);
+        spriteBatch.end();
+    }
+    public void drawBackgroundLOAD(Texture image, float x, float y, boolean fill) {
+        spriteBatch.begin();
+        float w, h;
+        if (fill) {
+            w = getWidth();
+            h = getHeight();
+        } else {
+            w = image.getWidth();
+            h = image.getHeight();
+        }
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x, y, w, h);
+        System.out.println("drawn");
+        spriteBatch.end();
     }
 
     public void drawBar(ProgressBar bar, float width, float height, float x, float y) {
@@ -378,6 +423,19 @@ public class GameCanvas {
         // Unlike Lab 1, we can shortcut without a master drawing method
         spriteBatch.setColor(Color.WHITE);
         spriteBatch.draw(image, x,  y, width, height);
+    }public void drawUI(Texture image, float x, float y, float width, float height, OrthographicCamera camera) {
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        camera.update();
+        spriteBatch.setProjectionMatrix(camera.combined);
+        // Unlike Lab 1, we can shortcut without a master drawing method
+        spriteBatch.setColor(Color.WHITE);
+        spriteBatch.draw(image, x,  y, width, height);
+        spriteBatch.end();
     }
 
     public void drawCentered(Texture image, float x, float y, float width, float height){
@@ -604,6 +662,24 @@ public class GameCanvas {
         //Update HUD camera
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(camera.combined);
+
+        GlyphLayout layout = new GlyphLayout(font,text);
+        font.setColor(Color.WHITE);
+        font.draw(spriteBatch, layout, x, y);
+
+        active = DrawPass.STANDARD;
+        spriteBatch.end();
+    }public void drawTextLOAD(String text, BitmapFont font, float x, float y) {
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+        if (active != DrawPass.STANDARD) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+            return;
+        }
+        // Call the master drawing method (we have to for transforms)
+
+        //Update HUD camera
 
         GlyphLayout layout = new GlyphLayout(font,text);
         font.setColor(Color.WHITE);

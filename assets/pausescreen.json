@@ -8,6 +8,9 @@
         "retryScreen": "pauseScreen/retryScreen.png",
         "retryButton": "pauseScreen/retryButton.png",
         "winScreen": "pauseScreen/winScreen.png",
-        "exitGameButton": "levelSelect/exitgameButton.png"
+        "exitGameButton": "pauseScreen/quit.png",
+        "pauseAnimation": "pauseScreen/pause-resume_animation.png",
+        "nextLevel":"pauseScreen/next.png",
+        "retryPause": "pauseScreen/retryPause.png"
     }
 }

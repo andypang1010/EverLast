@@ -75,6 +75,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	private AssetDirectory assets;
 	public boolean loading = false;
+	public boolean loadNext = false;
+	public float loadtime = 0;
 
 	/**
 	 * Background texture for level-select
@@ -161,7 +163,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private float sy;
 	private BitmapFont font;
 	private String selectedLevel;
-	private XBoxController xbox;
+	public XBoxController xbox;
 	private float time;
 
 	private SaveFileManager game;
@@ -181,7 +183,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	FilmStrip loadAnimation;
 	BitmapFont chalkFont;
 
-
+	GameMode gamemode;
 
 	public String getLevel(){
 		return selectedLevel;
@@ -232,7 +234,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		load = new AssetLoader(this,gamemode);
 		this.canvas = canvas;
 		inputController = new InputController();
-
+		this.gamemode = gamemode;
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(), canvas.getHeight());
 
@@ -278,11 +280,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		backwardButton.available = true;
 
 		levelSelectTexture = assets.getEntry("levelSelectButton",Texture.class);
-		levelSelectButton = new ButtonBox(-1,new Rectangle(STANDARD_WIDTH*6/100,STANDARD_HEIGHT*2/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
+		levelSelectButton = new ButtonBox(-1,new Rectangle(STANDARD_WIDTH*6/100,STANDARD_HEIGHT*1/15,levelSelectTexture.getWidth(),levelSelectTexture.getHeight()),levelSelectTexture,this);
 		levelSelectButton.available = true;
 
 		settingsTexture = assets.getEntry("settingsButton",Texture.class);
-		settingsButton = new ButtonBox(-2,new Rectangle(STANDARD_WIDTH*93/100,STANDARD_HEIGHT*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
+		settingsButton = new ButtonBox(-2,new Rectangle(STANDARD_WIDTH*86/100,STANDARD_HEIGHT*13/15,settingsTexture.getWidth(), settingsTexture.getHeight()),settingsTexture,this);
 		settingsButton.available = true;
 
 
@@ -297,35 +299,35 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		largeWindowTexture = assets.getEntry("largeRes",Texture.class);
 
 		volumeLowButton = new ButtonBox(-3,
-				new Rectangle(STANDARD_WIDTH * 3.17f / 7f - volumeBar.getWidth() - 120f, STANDARD_HEIGHT * 3f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
+				new Rectangle(STANDARD_WIDTH * 22f / 100f, STANDARD_HEIGHT * 66f/100f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
 		volumeLowButton.available = true;
 
 		volumeHighButton = new ButtonBox(-4,
-				new Rectangle(STANDARD_WIDTH * 3.57f / 7f + volumeBar.getWidth() + 120f, STANDARD_HEIGHT * 3f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
+				new Rectangle(STANDARD_WIDTH * 54f/100f, STANDARD_HEIGHT * 66f/100f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
 		volumeHighButton.available = true;
 
 		sensitivityBar = new ProgressBar(0f, 2f, 0.1f,false, skin);
 		sensitivityBar.setValue(sensitivityBar.getMaxValue() / 2);
 
 		sensitivityLowButton = new ButtonBox(-5,
-				new Rectangle(STANDARD_WIDTH * 3.17f / 7f - sensitivityBar.getWidth() - 120f, STANDARD_HEIGHT * 2f / 5f - 20f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
+				new Rectangle(STANDARD_WIDTH * 22f / 100f, STANDARD_HEIGHT * 56f/100f, decTexture.getWidth(),decTexture.getHeight()),decTexture,this);
 		sensitivityLowButton.available = true;
 
 		sensitivityHighButton = new ButtonBox(-6,
-				new Rectangle(STANDARD_WIDTH * 3.57f / 7f + sensitivityBar.getWidth() + 120f, STANDARD_HEIGHT * 2f / 5f - 20f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
+				new Rectangle(STANDARD_WIDTH * 54f/100f, STANDARD_HEIGHT * 56f/100f, incTexture.getWidth(),incTexture.getHeight()),incTexture,this);
 		sensitivityHighButton.available = true;
 
 		smallWindowButton = new ButtonBox(-7,
-				new Rectangle(STANDARD_WIDTH * 2.6f / 10f, STANDARD_HEIGHT * 2f / 15f, smallWindowTexture.getWidth(), smallWindowTexture.getHeight()), smallWindowTexture, this);
+				new Rectangle(STANDARD_WIDTH * 22f / 100f, STANDARD_HEIGHT * 35f / 100f, smallWindowTexture.getWidth(), smallWindowTexture.getHeight()), smallWindowTexture, this);
 		smallWindowButton.available = true;
 
 		largeWindowButton = new ButtonBox(-8,
-				new Rectangle(STANDARD_WIDTH * 6.8f / 11f, STANDARD_HEIGHT * 2f / 15f, largeWindowTexture.getWidth(), largeWindowTexture.getHeight()), largeWindowTexture, this);
+				new Rectangle(STANDARD_WIDTH * 22f / 100f, STANDARD_HEIGHT * 25f / 100f, largeWindowTexture.getWidth(), largeWindowTexture.getHeight()), largeWindowTexture, this);
 		largeWindowButton.available = true;
 
 
 		exitTexture = assets.getEntry("exitGameButton",Texture.class);
-		exitButton = new ButtonBox(-9,new Rectangle(STANDARD_WIDTH*45/100,STANDARD_HEIGHT*1/15,exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
+		exitButton = new ButtonBox(-9,new Rectangle((float) (STANDARD_WIDTH*87/100), (float) (STANDARD_HEIGHT*1.5/100),exitTexture.getWidth(),exitTexture.getHeight()),exitTexture,this);
 		exitButton.available = true;
 
 		// Load the level button
@@ -505,17 +507,29 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 */
 	private void draw() {
 	canvas.begin();
+
 	if (loading) {
 		drawload();
 		if (xbox != null){
-		load.run();
+			gamemode.loadLevel(getLevel(),game);
+
+			// Assets loaded, switch to the main game screen
+			listener.exitScreen(this,0);
 		}else{
 			canvas.drawBackground(loadingscreen,0,0,true);
 			processLoad();
 			canvas.draw(loadAnimation,Color.WHITE, 0, 0,1040*scale,(float) 150*scale,0,.65f*scale,.65f*scale,false);
 		}
-
-	}else{
+	} else if (loadNext) {
+			drawload();
+			if (loadtime <.3f){
+//				System.out.println("waiting");
+				loadtime+= Gdx.graphics.getDeltaTime();
+			}else{
+				gamemode.loadLevel(getLevel(),game);
+				listener.exitScreen(this,0);
+			}
+	} else{
 		if (scale != 0) {
 			font.getData().setScale(scale);
 		}
@@ -558,9 +572,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-				font.setColor(Color.BLACK);
-				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 12.3f / 21f);
+//				font.setColor(Color.BLACK);
+//				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 27f / 100f, canvas.getHeight() * 66f/ 100f);
 
 				volumeLowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeLowButton.getBounds();
@@ -570,9 +584,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				bounds = volumeHighButton.getBounds();
 				canvas.draw(volumeHighButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
 
-				font.setColor(Color.BLACK);
-				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 1.93f / 5f);
+//				font.setColor(Color.BLACK);
+//				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 27f/100f, canvas.getHeight() * 56f/100f);
 
 				sensitivityLowButton.hoveringButton(null, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = sensitivityLowButton.getBounds();
@@ -632,10 +646,12 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						float starsScore = game.getStarScore("level" + Integer.toString(button.label));
 						float ratio = starsScore / 30;
 						if (score != 0) {
-							if (button.enlarged){
-								chalkFont.getData().setScale((float) 8/7*scale);
-							}else{
-								chalkFont.getData().setScale(1*scale);
+							if (scale!=0){
+								if (button.enlarged){
+									chalkFont.getData().setScale((float) 8/7*scale);
+								}else{
+									chalkFont.getData().setScale(1*scale);
+								}
 							}
 							chalkFont.setColor(Color.BLACK);
 							canvas.drawText(scoreToTime(score), chalkFont, (bounds.x + bounds.width / 2 + 10) * scale, (float) (6 * (bounds.y + bounds.height) * scale / 8));
@@ -649,7 +665,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 							stars.setRegionWidth((emptyStars.getWidth()));
 						}
 						if (!button.available) {
-							canvas.draw(lock, (bounds.x + 35) * scale, (bounds.y+.75f*bounds.height -10) * scale, lock.getWidth() * scale, lock.getHeight() * scale);
+							canvas.draw(lock, (bounds.x) * scale, (bounds.y) * scale, lock.getWidth() *.88f*scale, lock.getHeight() *.88f* scale);
 						}
 					}
 				}
@@ -657,15 +673,17 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		} else {
 			// TODO: Support XBox
 			if (levelPage == -1) {
+				exitButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
+				bounds = exitButton.getBounds();
+				canvas.draw(exitButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+
 				levelSelectButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = levelSelectButton.getBounds();
 				canvas.draw(levelSelectButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
-				font.setColor(Color.BLACK);
-				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
-				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 12.3f / 21f);
-				font.setColor(Color.BLACK);
-				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
-				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 2.6f / 7f, canvas.getHeight() * 1.93f / 5f);
+
+//				font.setColor(Color.BLACK);
+//				canvas.drawText("VOL: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 3.25f / 5f);
+				canvas.drawBar(volumeBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 27f / 100f, canvas.getHeight() * 66f/ 100f);
 
 				volumeLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeLowButton.getBounds();
@@ -674,6 +692,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 				volumeHighButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = volumeHighButton.getBounds();
 				canvas.draw(volumeHighButton.getTexture(), bounds.x * scale, bounds.y * scale, bounds.getWidth() * scale, bounds.getHeight() * scale);
+
+//				font.setColor(Color.BLACK);
+//				canvas.drawText("SENS: ", font, canvas.getWidth() * 1.5f / 7f, canvas.getHeight() * 2.25f / 5f);
+				canvas.drawBar(sensitivityBar, canvas.getWidth() / 4f, canvas.getHeight() / 20f, canvas.getWidth() * 27f/100f, canvas.getHeight() * 56f/100f);
 
 				sensitivityLowButton.hoveringButton(xbox, time, levels.size, levels, settingsButton, exitButton, volumeLowButton, volumeHighButton, sensitivityLowButton, sensitivityHighButton, smallWindowButton, largeWindowButton);
 				bounds = sensitivityLowButton.getBounds();
@@ -754,7 +776,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 							stars.setRegionWidth((emptyStars.getWidth()));
 						}
 						if (!button.available) {
-							canvas.draw(lock, (bounds.x + 35) * scale, (bounds.y+.75f*bounds.height -10) * scale, lock.getWidth() * scale, lock.getHeight() * scale);
+							canvas.draw(lock, (bounds.x) * scale, (bounds.y) * scale, lock.getWidth() *.88f*scale, lock.getHeight() *.88f* scale);
 						}
 					}
 				}
@@ -776,6 +798,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
+		if(loadNext){
+			drawloadSneaky();
+		}
 		Gdx.input.setInputProcessor(this);
 		inputController.readInput(null,null);
 		sample.setVolume(0.5f * volumeBar.getValue());
@@ -815,7 +840,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			}
 			if (isReady() && listener != null) {
 				pressState = 0;
-				loading = true;
+				if (xbox == null){
+					loading = true;
+				}else{
+					loadNext = true;
+				}
 				if (xbox!=null){
 					canvas.begin();
 					drawload();
@@ -946,7 +975,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		if(settingsButton.isPressed()){
 			pageDirection = -(levelPage+1);
 		}
-		if(exitButton.isPressed()){
+		if(exitButton.isPressed() && levelPage==-1){
 			listener.exitScreen(this, 1);
 		}
 		if(forwardButton.isPressed() && levelPage < (numberOfLevels - 1)/3 ){
@@ -1013,7 +1042,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 		if (xbox != null) {
 			if (levelPage!=-1) {
-				if (xbox.getRBumper() && levelPage < (numberOfLevels - 1) / 3) {
+				if (xbox.getRBumper() && levelPage < (numberOfLevels - 1) / 3 && time > .2f) {
+					resetTime();
 					pageDirection = 1;
 					for (int i = 0; i < 3; i++) {
 						try {
@@ -1033,7 +1063,8 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 						levels.get((levelPage + pageDirection) * 3).resize("up");
 					}
 
-				} else if (xbox.getLBumper() && levelPage > 0) {
+				} else if (xbox.getLBumper() && levelPage > 0 && time > .2f) {
+					resetTime();
 					pageDirection = -1;
 					for (int i = 0; i < 3; i++) {
 						try {
@@ -1362,11 +1393,11 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 							case -1:
 								if (x>0){
 									this.resize("down");
-									resdown.resize("up");
+									exit.resize("up");
 									mode.resetTime();
 								} else if (y<0){
 									this.resize("down");
-									sensdown.resize("up");
+									resup.resize("up");
 									mode.resetTime();
 								}
 								break;
@@ -1389,6 +1420,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 								}else if (y>0){
 									this.resize("down");
 									sensup.resize("up");
+									mode.resetTime();
+								}else if (x>0){
+									this.resize("down");
+									exit.resize("up");
 									mode.resetTime();
 								}
 								break;
@@ -1414,26 +1449,26 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 									mode.resetTime();
 								}else if (y>0){
 									this.resize("down");
-									resup.resize("up");
+									resdown.resize("up");
 									mode.resetTime();
 								}else if(y<0){
 									this.resize("down");
 									volumeup.resize("up");
+									mode.resetTime();
+								}else if (x>0){
+									this.resize("down");
+									exit.resize("up");
 									mode.resetTime();
 								}
 								break;
 							case -7:
 								if (x>0){
 									this.resize("down");
-									resup.resize("up");
-									mode.resetTime();
-								} else if (x<0) {
-									this.resize("down");
-									mode.levelSelectButton.resize("up");
+									exit.resize("up");
 									mode.resetTime();
 								} else if (y>0){
 									this.resize("down");
-									exit.resize("up");
+									resup.resize("up");
 									mode.resetTime();
 								}else if(y<0){
 									this.resize("down");
@@ -1442,33 +1477,33 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 								}
 								break;
 							case -8:
-								if (x<0){
-									this.resize("down");
-									resdown.resize("up");
-									mode.resetTime();
-								}else if (y>0){
+								if (x>0){
 									this.resize("down");
 									exit.resize("up");
 									mode.resetTime();
+								}else if (y>0){
+									this.resize("down");
+									mode.levelSelectButton.resize("up");
+									mode.resetTime();
 								}else if(y<0){
 									this.resize("down");
-									sensup.resize("up");
+									resdown.resize("up");
+									mode.resetTime();
+								}else if (x<0){
+									this.resize("down");
+									mode.levelSelectButton.resize("up");
 									mode.resetTime();
 								}
 								break;
 							case -9:
 								if (x<0){
 									this.resize("down");
-									resdown.resize("up");
-									mode.resetTime();
-								} else if(x>0){
-									this.resize("down");
-									resup.resize("up");
+									mode.levelSelectButton.resize("up");
 									mode.resetTime();
 								}
 								else if (y<0){
 									this.resize("down");
-									resdown.resize("up");
+									sensup.resize("up");
 									mode.resetTime();
 								}
 						}
@@ -1523,10 +1558,13 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 			// This code will run in a separate thread
 
 			// Simulate loading time
-            gamemode.loadLevel(getLevel(),game);
+			if (xbox == null){
+				gamemode.loadLevel(getLevel(),game);
 
-            // Assets loaded, switch to the main game screen
-			listener.exitScreen(mode,0);
+				// Assets loaded, switch to the main game screen
+				listener.exitScreen(mode,0);
+			}
+
 		}
 	}
 	private void processLoad(){
@@ -1548,5 +1586,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		font.setColor(Color.BLACK);
 		canvas.drawText("Loading...",font,1700*scale,150*scale);
 //		canvas.end();
+	}
+	public void drawloadSneaky(){
+		canvas.drawBackgroundLOAD(loadingscreen,0,0,true);
+		font.setColor(Color.BLACK);
+		canvas.drawTextLOAD("Loading...",font,1700*scale,150*scale);
 	}
 }
