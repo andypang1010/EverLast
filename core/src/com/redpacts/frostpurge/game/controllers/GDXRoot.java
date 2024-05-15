@@ -181,7 +181,7 @@ public class GDXRoot extends Game implements ScreenListener {
 				levelselect.loading = false;
 			}else{
 				levelselect.loading = true;
-//				new Thread(levelselect.load).start();
+				new Thread(levelselect.load).start();
 			}
 
 		} else if (screen == playing) {

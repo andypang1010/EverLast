@@ -48,7 +48,8 @@
     "Bounce": "sound/bounce.wav",
     "Flies": "sound/flies.wav",
     "Break": "sound/break.wav",
-    "Vacuum": "sound/vacuum.wav"
+    "Vacuum": "sound/vacuum.wav",
+    "Hit": "sound/hit.wav"
   },
   "music": {
     "song" : "sound/level.ogg",
