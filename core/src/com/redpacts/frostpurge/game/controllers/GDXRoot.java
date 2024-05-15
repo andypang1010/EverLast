@@ -147,6 +147,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.pausemusic();
 
 			levelselect.loading = false;
+			levelselect.loadNext = false;
 			levelselect.levelPage = -1;
 			levelselect.resetTime();
 			levelselect.levelSelectButton.resize("up");
@@ -159,6 +160,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.pausemusic();
 
 			levelselect.loading = false;
+			levelselect.loadNext = false;
 			levelselect.resetTime();
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
@@ -168,12 +170,20 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.resetButton();
 			playing.pausemusic();
 
-			levelselect.loading = true;
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
 			levelselect.playmusic();
-			new Thread(levelselect.load).start();
+			if (levelselect.xbox != null){
+				levelselect.drawloadSneaky();
+				levelselect.loadtime=0;
+				levelselect.loadNext = true;
+				levelselect.loading = false;
+			}else{
+				levelselect.loading = true;
+				new Thread(levelselect.load).start();
+			}
+
 		} else if (screen == playing) {
 			playing.resetButton();
 			playing.pausemusic();
