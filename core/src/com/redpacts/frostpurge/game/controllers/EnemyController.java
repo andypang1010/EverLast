@@ -316,18 +316,18 @@ public class EnemyController extends CharactersController implements StateMachin
                             playerModel.getBody().getPosition().y);
 //                    System.out.println(dist);
                     if (dist<10){
-                        speedMultiplier = 40;
+                        speedMultiplier = 60;
                     }else if (dist<15){
-                        speedMultiplier = 50;
+                        speedMultiplier = 70;
                     }
                     else if (dist<20){
-                        speedMultiplier = 60;
-                    }else if (dist<25){
-                        speedMultiplier = 70;
-                    }else if (dist<30){
                         speedMultiplier = 80;
-                    }else if (dist<35){
+                    }else if (dist<25){
                         speedMultiplier = 90;
+                    }else if (dist<30){
+                        speedMultiplier = 100;
+                    }else if (dist<35){
+                        speedMultiplier = 110;
                     }
                 }
                 else {
