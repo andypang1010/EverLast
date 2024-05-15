@@ -188,6 +188,10 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	public String getLevel(){
 		return selectedLevel;
 	}
+	public void increaseLevel(){
+		int curr = selectedLevel.charAt(selectedLevel.length()-1) - 47;
+		selectedLevel = "level" + Integer.toString(curr);
+	}
 	public void resetPressState(){pressState = 0;}
 
 	public SaveFileManager getSaveFile(){return game;}
