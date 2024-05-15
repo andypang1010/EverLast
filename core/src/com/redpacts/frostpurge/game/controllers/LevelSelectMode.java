@@ -948,49 +948,51 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //		for (LevelBox levelBox : levelBoxes) {
 //			if (levelBox.bounds.contains(screenX/sx, screenY/sy)) {
 //				pressState = levelBox.label *2 -1;
+		if (levelPage == -1) {
+			if (volumeLowButton.isPressed()) {
+				volumeBar.setValue(volumeBar.getValue() - volumeBar.getStepSize());
+			}
 
-		if (volumeLowButton.isPressed()) {
-			volumeBar.setValue(volumeBar.getValue() - volumeBar.getStepSize());
-		}
+			if (volumeHighButton.isPressed()) {
+				volumeBar.setValue(volumeBar.getValue() + volumeBar.getStepSize());
+			}
 
-		if (volumeHighButton.isPressed()) {
-			volumeBar.setValue(volumeBar.getValue() + volumeBar.getStepSize());
-		}
+			if (sensitivityLowButton.isPressed()) {
+				sensitivityBar.setValue(sensitivityBar.getValue() - sensitivityBar.getStepSize());
+			}
 
-		if (sensitivityLowButton.isPressed()) {
-			sensitivityBar.setValue(sensitivityBar.getValue() - sensitivityBar.getStepSize());
-		}
+			if (sensitivityHighButton.isPressed()) {
+				sensitivityBar.setValue(sensitivityBar.getValue() + sensitivityBar.getStepSize());
+			}
 
-		if (sensitivityHighButton.isPressed()) {
-			sensitivityBar.setValue(sensitivityBar.getValue() + sensitivityBar.getStepSize());
-		}
+			if (smallWindowButton.isPressed()) {
+				Gdx.graphics.setWindowedMode(1280, 720);
+			}
 
-		if (smallWindowButton.isPressed()) {
-			Gdx.graphics.setWindowedMode(1280, 720);
-		}
+			if (largeWindowButton.isPressed()) {
+				Gdx.graphics.setWindowedMode(1920, 1080);
+			}
 
-		if (largeWindowButton.isPressed()) {
-			Gdx.graphics.setWindowedMode(1920, 1080);
-		}
-
-		if(levelSelectButton.isPressed()){
-			pageDirection =1 ;
-		}
-		if(settingsButton.isPressed()){
-			pageDirection = -(levelPage+1);
-		}
-		if(exitButton.isPressed() && levelPage==-1){
-			listener.exitScreen(this, 1);
-		}
-		if(forwardButton.isPressed() && levelPage < (numberOfLevels - 1)/3 ){
-			pageDirection = 1;
-		} else if(backwardButton.isPressed() && levelPage > 0){
-			pageDirection = -1;
-		}
-		for(ButtonBox levelButton: levels){
-			int level = levelButton.getLabel();
-			if(levelButton.isPressed() && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available){
-				pressState = levelButton.getLabel() * 2 - 1;
+			if (levelSelectButton.isPressed()) {
+				pageDirection = 1;
+			}
+		}else {
+			if (settingsButton.isPressed()) {
+				pageDirection = -(levelPage + 1);
+			}
+			if (exitButton.isPressed() && levelPage == -1) {
+				listener.exitScreen(this, 1);
+			}
+			if (forwardButton.isPressed() && levelPage < (numberOfLevels - 1) / 3) {
+				pageDirection = 1;
+			} else if (backwardButton.isPressed() && levelPage > 0) {
+				pageDirection = -1;
+			}
+			for (ButtonBox levelButton : levels) {
+				int level = levelButton.getLabel();
+				if (levelButton.isPressed() && levelPage * 3 < level && level <= (levelPage + 1) * 3 && levelButton.available) {
+					pressState = levelButton.getLabel() * 2 - 1;
+				}
 			}
 		}
 		return false;
