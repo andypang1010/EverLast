@@ -307,6 +307,12 @@ public class GameMode implements Screen, InputProcessor {
         return this.retryButton.getEnlarged()||this.retryPauseButton.getEnlarged();
         }
     }
+    public boolean isNext(){ if (inputController.xbox == null){
+        return this.nextButton.isPressed();
+        } else{
+            return this.nextButton.getEnlarged();
+        }
+    }
     /**
      * Reset boolean flags for home screen and level select screen..
      */
@@ -542,6 +548,10 @@ public class GameMode implements Screen, InputProcessor {
             }
             inputController.clearPausePressed();
         } else if (pressState == 8){
+            pressState = 0;
+            listener.exitScreen(this,0);
+        } else if (pressState == 10){
+            System.out.println("NEXT LEVEL PRESSED");
             pressState = 0;
             listener.exitScreen(this,0);
         }
@@ -1048,8 +1058,8 @@ public class GameMode implements Screen, InputProcessor {
                 pressState = 1;
             } else if (levelSelectButton.isPressed()){
                 pressState = 3;
-            }else if (exitButton.isPressed()){
-                listener.exitScreen(this,1);
+            }else if (nextButton.isPressed()){
+                pressState = 9;
             }
         }
         return false;
@@ -1118,8 +1128,8 @@ public class GameMode implements Screen, InputProcessor {
                     pressState = 1;
                 } else if (levelSelectButton.getEnlarged()) {
                     pressState = 3;
-                }else if (exitButton.getEnlarged()){
-                    listener.exitScreen(this,1);
+                }else if (nextButton.getEnlarged()){
+                    pressState = 9;
                 }
             }
         }
