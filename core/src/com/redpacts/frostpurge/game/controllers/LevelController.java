@@ -184,19 +184,19 @@ public class LevelController {
                     id = properties.getInt("value");
                     properties = properties.next();
                     label = properties.getString("value");
-                    level.createBouncy(x,(height*64-y),rotation,directory, id, label, base);
+                    level.createBouncy(x,(height*64-y),rotation,directory, id, label, -base);
                     break;
                 case "breakable":
                     properties = properties.next();
                     id = properties.getInt("value");
                     properties = properties.next();
                     label = properties.getString("value");
-                    level.createBreakable(x,(height*64-y),rotation,directory, id, label, base);
+                    level.createBreakable(x,(height*64-y),rotation,directory, id, label, -base);
                     break;
                 case "goal":
                     properties = properties.next();
                     label = properties.getString("value");
-                    level.createGoal(x,(height*64-y),rotation,directory, label, base * 2);
+                    level.createGoal(x,(height*64-y),rotation,directory, label, -base);
                     break;
 
             }
