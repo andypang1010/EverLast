@@ -148,7 +148,7 @@ public class LevelController {
     private void initializeCharacterLayer(LevelModel level, JsonValue layer, AssetDirectory directory){
         int x,y,rotation;
         int id;
-        int base = 3;
+        int base = 0;
         String type;
         String label;
         JsonValue objects = layer.get("objects").child();
