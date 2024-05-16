@@ -196,7 +196,7 @@ public class LevelController {
                 case "goal":
                     properties = properties.next();
                     label = properties.getString("value");
-                    level.createGoal(x,(height*64-y),rotation,directory, label, base);
+                    level.createGoal(x,(height*64-y),rotation,directory, label, base * 2);
                     break;
 
             }
