@@ -135,7 +135,7 @@ public class GameMode implements Screen, InputProcessor {
     private Array<ButtonBox> buttons = new Array<>();;
 
     private TileGraph groundedTileGraph = new TileGraph();
-    private TileGraph ignoreCollisionsTileGraph = new TileGraph();
+//    private TileGraph ignoreCollisionsTileGraph = new TileGraph();
 
     private Texture statusBarBGTexture;
     private Texture boostBarTexture;
@@ -421,56 +421,56 @@ public class GameMode implements Screen, InputProcessor {
         }
     }
 
-    private void populateIgnoreCollisionsTileGraph() {
-        for (int i = 0; i < currentLevel.getWidth(); i++) {
-            for (int j = 0; j < currentLevel.getHeight(); j++) {
-                TileModel currentTile;
-
-                if (currentLevel.getExtraLayer()[j][i] == null) {
-                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
-                    currentTile = currentLevel.getBaseLayer()[j][i];
-                }
-
-                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP
-                        || currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.DESTRUCTIBLE) {
-                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
-                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
-
-                    currentTile = currentLevel.getBaseLayer()[j][i];
-                }
-
-                else {
-                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
-                    currentTile = currentLevel.getExtraLayer()[j][i];
-                }
-
-                for (int x = i - 1; x <= i + 1; x++) {
-                    for (int y = j - 1; y <= j + 1; y++) {
-                        if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
-                            if (currentLevel.getExtraLayer()[y][x] == null) {
-                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                            }
-
-                            else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP
-                                    || currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.DESTRUCTIBLE) {
-                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
-
-                                if (currentLevel.getExtraLayer()[j][i] != null) {
-                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getBaseLayer()[y][x]);
-                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getExtraLayer()[y][x]);
-                                }
-                            }
-
-                            else {
-                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private void populateIgnoreCollisionsTileGraph() {
+//        for (int i = 0; i < currentLevel.getWidth(); i++) {
+//            for (int j = 0; j < currentLevel.getHeight(); j++) {
+//                TileModel currentTile;
+//
+//                if (currentLevel.getExtraLayer()[j][i] == null) {
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+//                    currentTile = currentLevel.getBaseLayer()[j][i];
+//                }
+//
+//                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP
+//                        || currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.DESTRUCTIBLE) {
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+//
+//                    currentTile = currentLevel.getBaseLayer()[j][i];
+//                }
+//
+//                else {
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+//                    currentTile = currentLevel.getExtraLayer()[j][i];
+//                }
+//
+//                for (int x = i - 1; x <= i + 1; x++) {
+//                    for (int y = j - 1; y <= j + 1; y++) {
+//                        if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
+//                            if (currentLevel.getExtraLayer()[y][x] == null) {
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+//                            }
+//
+//                            else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP
+//                                    || currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.DESTRUCTIBLE) {
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+//
+//                                if (currentLevel.getExtraLayer()[j][i] != null) {
+//                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getBaseLayer()[y][x]);
+//                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getExtraLayer()[y][x]);
+//                                }
+//                            }
+//
+//                            else {
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     protected TextureRegion processHeart() {
         FilmStrip heart;

@@ -289,10 +289,7 @@ public class EnemyController extends CharactersController implements StateMachin
                 if (isPlayerWithinListenRadius()) {
                     currentListenInterval = notHeardToPatrolInterval;
 
-                    if (Objects.equals(((EnemyModel) model).getEnemyType(), "duck") && modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
-                        setGoal(modelPositionToTile(playerModel));
-                    }
-                    else if (!Objects.equals(((EnemyModel) model).getEnemyType(), "duck")) {
+                    if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
                         setGoal(modelPositionToTile(playerModel));
                     }
 
@@ -378,7 +375,9 @@ public class EnemyController extends CharactersController implements StateMachin
                             alertNeighborEnemies();
                         }
                     }else if(Objects.equals(((EnemyModel) model).getEnemyType(), "flies")){
-                        setGoal(modelPositionToTile(playerModel));
+                        if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
+                            setGoal(modelPositionToTile(playerModel));
+                        }
                         speedMultiplier = 70;
                         alertNeighborEnemies();
                     }
