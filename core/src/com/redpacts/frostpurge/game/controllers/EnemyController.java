@@ -294,9 +294,7 @@ public class EnemyController extends CharactersController implements StateMachin
                     }
 
                     if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
-                        if(Math.random() < 0.01){
-                            changeState(EnemyStates.CHASE);
-                        }
+                        changeState(EnemyStates.CHASE);
                     }
                 }
 
@@ -350,18 +348,19 @@ public class EnemyController extends CharactersController implements StateMachin
                                     playerModel.getBody().getPosition().x,
                                     playerModel.getBody().getPosition().y);
 //                    System.out.println(dist);
-                            if (dist < 10) {
-                                speedMultiplier = 40;
-                            } else if (dist < 15) {
-                                speedMultiplier = 50;
-                            } else if (dist < 20) {
+                            if (dist<10){
                                 speedMultiplier = 60;
-                            } else if (dist < 25) {
+                            }else if (dist<15){
                                 speedMultiplier = 70;
-                            } else if (dist < 30) {
+                            }
+                            else if (dist<20){
                                 speedMultiplier = 80;
-                            } else if (dist < 35) {
+                            }else if (dist<25){
                                 speedMultiplier = 90;
+                            }else if (dist<30){
+                                speedMultiplier = 100;
+                            }else if (dist<35){
+                                speedMultiplier = 110;
                             }
                         alertNeighborEnemies();
                     }else if (Objects.equals(((EnemyModel) model).getEnemyType(), "bat")) {
@@ -371,6 +370,7 @@ public class EnemyController extends CharactersController implements StateMachin
                             nextWaypointIndex = 0;
                             setGoal(waypoints[0]);
                         }else{
+                            speedMultiplier = 100;
                             setGoal(modelPositionToTile(neighborEnemy));
                             alertNeighborEnemies();
                         }
