@@ -169,12 +169,17 @@ public class PlayerController extends CharactersController {
     private void resetOtherFilmStrips(FilmStrip filmStrip){
     }
 
-    public void draw(GameCanvas canvas, float horizontal, float vertical){
+    public void draw(GameCanvas canvas, float horizontal, float vertical, boolean paused){
         drawShadow(canvas);
         // Draw player
         switch (((PlayerModel) model).getGameOverState()) {
-            case 0: // Player active
-                String direction = getDirection(horizontal,vertical,previousDirection);
+            case 0:// Player active
+                String direction;
+                if (paused){
+                    direction = previousDirection;
+                }else{
+                    direction = getDirection(horizontal,vertical,previousDirection);
+                }
                 int vacuumFrame = ((PlayerModel)model).getVacuumingProgression();
                 if(((PlayerModel) model).getVacuumingState() == PlayerModel.VacuumingState.START){
                     model.resetFilmStrip(model.getFilmStrip("vacuum"+direction));

@@ -173,7 +173,7 @@ public class EnemyModel extends CharactersModel{
     }
     public ArrayList<int[]> getWaypoints(){
         waypoints.trimToSize();
-        System.out.println("Waypoints");
+//        System.out.println("Waypoints");
         for (int i = 0; i<waypoints.size();i++){
             System.out.println(waypoints.get(i)[0]);
             System.out.println(waypoints.get(i)[1]);
@@ -256,16 +256,20 @@ public class EnemyModel extends CharactersModel{
         fixtureDef.density = 0.015f / (radius * radius * 3.14f);
         fixtureDef.friction = 0.3f;
 
-        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY;
         if(Objects.equals(this.enemyType, "bat")){
-            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+            fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT;
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES);
         }else if(Objects.equals(this.enemyType, "flies")){
+            fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES;
             fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                    CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT);
             fixtureDef.isSensor = true;
         }else{
+            fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK;
             fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                    CollisionController.PhysicsConstants.CATEGORY_ENEMY |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK |
                     CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
                     CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |
                     CollisionController.PhysicsConstants.CATEGORY_BOUNCY);

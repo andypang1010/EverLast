@@ -440,7 +440,9 @@ public class PlayerModel extends CharactersModel {
 
         // Setting category and mask bits for the player
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;
-        fixtureDef.filter.maskBits = (CollisionController.PhysicsConstants.CATEGORY_ENEMY |
+        fixtureDef.filter.maskBits = (CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK |
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES |
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT |
                 CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
                 CollisionController.PhysicsConstants.CATEGORY_SWAMP |
                 CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |
