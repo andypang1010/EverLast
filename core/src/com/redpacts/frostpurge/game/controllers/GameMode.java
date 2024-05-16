@@ -977,7 +977,7 @@ public class GameMode implements Screen, InputProcessor {
         currentLevel.setName(level);
 
         populateGroundedTileGraph();
-//        populateIgnoreCollisionsTileGraph();
+        populateIgnoreCollisionsTileGraph();
 
         playerController = new PlayerController(playerModel);
 
@@ -986,12 +986,11 @@ public class GameMode implements Screen, InputProcessor {
         for (int i = 0; i < enemies.size; i++){
 //            for (int j = 0; j<)
 //            enemies.get(i).getWaypoints()
-
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, groundedTileGraph,currentLevel,enemies.get(i).getWaypoints()));
-//
-//            else {
-//                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, ignoreCollisionsTileGraph,currentLevel,enemies.get(i).getWaypoints()));
-//            }
+            if(Objects.equals(enemies.get(i).getEnemyType(), "duck")){
+                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, groundedTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+            } else {
+                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, ignoreCollisionsTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+            }
 
         }
         camera = new OrthographicCamera();
