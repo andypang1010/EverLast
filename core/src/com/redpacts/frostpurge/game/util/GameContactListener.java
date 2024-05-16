@@ -15,6 +15,7 @@ public class GameContactListener implements ContactListener {
     private Sound collide;
     private Sound breakBox;
     private Sound bounce;
+    private Sound hit;
     private float volume;
     private float time;
 
@@ -24,6 +25,7 @@ public class GameContactListener implements ContactListener {
         collide = assets.getEntry("Collide",Sound.class);
         breakBox = assets.getEntry("Break",Sound.class);
         bounce = assets.getEntry("Bounce",Sound.class);
+        hit = assets.getEntry("Hit",Sound.class);
         this.volume = volume;
         time = 0;
     }
@@ -139,7 +141,10 @@ public class GameContactListener implements ContactListener {
             player.addHp(-25);
             player.getBody().applyForceToCenter(contactDirection.scl(50), true);
             enemy.getBody().applyForceToCenter(contactDirection.scl(-50), true);
-
+            if (time>.5f){
+                hit.play(volume*2f);
+                time = 0;
+            }
             player.startInvincibility();
         } else { // Player is invincible
             contact.setEnabled(false);
