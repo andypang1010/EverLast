@@ -970,7 +970,7 @@ public class GameMode implements Screen, InputProcessor {
                 maxTime = 85;
                 break;
             default:
-                maxTime = 61;
+                maxTime = 85;
         }
 
         currentTime = maxTime;
