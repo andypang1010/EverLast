@@ -82,7 +82,7 @@ public class GameContactListener implements ContactListener {
         } else if (obj1 instanceof PlayerModel && obj2 instanceof GoalTile && fixtureB.isSensor()) {
             handleCollision((PlayerModel) obj1, (GoalTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof BouncyTile) {
-            handleCollision((PlayerModel) obj1, (BouncyTile) obj2);
+            handleCollision(contact, (PlayerModel) obj1, (BouncyTile) obj2);
         } else if (obj1 instanceof PlayerModel && obj2 instanceof BreakableTile) {
             handleCollision(contact, (PlayerModel) obj1, (BreakableTile) obj2);
         }
@@ -112,7 +112,7 @@ public class GameContactListener implements ContactListener {
         }
 
         else if (obj1 instanceof BouncyTile && obj2 instanceof PlayerModel) {
-            handleCollision((PlayerModel) obj2, (BouncyTile) obj1);
+            handleCollision(contact, (PlayerModel) obj2, (BouncyTile) obj1);
         } else if (obj1 instanceof BouncyTile && obj2 instanceof EnemyModel) {
             handleCollision((EnemyModel) obj2, (BouncyTile) obj1);
         }
@@ -204,7 +204,10 @@ public class GameContactListener implements ContactListener {
      * @param player The player
      * @param tile   The tile
      */
-    private void handleCollision(PlayerModel player, BouncyTile tile) {
+    private void handleCollision(Contact contact, PlayerModel player, BouncyTile tile) {
+        int xDirection = tile.checkBoundLeftRight(contact.getWorldManifold().getPoints()[0]);
+        int yDirection = tile.checkBoundTopBottom(contact.getWorldManifold().getPoints()[0]);
+        player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().scl(10 * xDirection, 10 * yDirection));
         bounce.play(volume);
         tile.activate();
     }
@@ -216,7 +219,7 @@ public class GameContactListener implements ContactListener {
      */
     private void handleCollision(Contact contact, PlayerModel player, BreakableTile tile) {
         // TODO: Implement actual break speed
-        if (player.getBody().getLinearVelocity().len() > 90) {
+        if (player.getBody().getLinearVelocity().len() > 105) {
             contact.setEnabled(false);
             tile.deactivate();
             breakBox.play(volume*1.5f);

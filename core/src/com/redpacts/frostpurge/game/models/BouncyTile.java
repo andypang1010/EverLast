@@ -82,6 +82,18 @@ public class BouncyTile extends TileModel{
         }
     }
 
+    public int checkBoundTopBottom(Vector2 contactPoint) {
+        if (Math.abs(contactPoint.y - this.body.getPosition().y - 6.4f * 2 / 2) < 0.1f || Math.abs(contactPoint.y - this.body.getPosition().y + 6.4f * 2 / 2) < 0.1f)
+            return -1;
+        return 1;
+    }
+
+    public int checkBoundLeftRight(Vector2 contactPoint) {
+        if (Math.abs(contactPoint.x - this.body.getPosition().x - 6.4f * 3 / 2) < 0.1f || Math.abs(contactPoint.x - this.body.getPosition().x + 6.4f * 3 / 2) < 0.1f)
+            return -1;
+        return 1;
+    }
+
     @Override
     public void createBody(World world) {
         BodyDef bodyDef = new BodyDef();
