@@ -335,33 +335,29 @@ public class EnemyController extends CharactersController implements StateMachin
                         if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
                             setGoal(modelPositionToTile(playerModel));
                         }
-                            if (((EnemyModel) model).getID() == 1) {
-//                        System.out.println(targetTile.getPosition());
-                                if (pathQueue.notEmpty()) {
-//                            System.out.println("next tile:");
-//                            System.out.println(pathQueue.first().getPosition());
-                                }
-                            }
-                            float dist = Vector2.dst(
-                                    model.getBody().getPosition().x,
-                                    model.getBody().getPosition().y,
-                                    playerModel.getBody().getPosition().x,
-                                    playerModel.getBody().getPosition().y);
-//                    System.out.println(dist);
-                            if (dist<10){
-                                speedMultiplier = 60;
-                            }else if (dist<15){
-                                speedMultiplier = 70;
-                            }
-                            else if (dist<20){
-                                speedMultiplier = 80;
-                            }else if (dist<25){
-                                speedMultiplier = 90;
-                            }else if (dist<30){
-                                speedMultiplier = 100;
-                            }else if (dist<35){
-                                speedMultiplier = 110;
-                            }
+                        float dist = Vector2.dst(
+                                model.getBody().getPosition().x,
+                                model.getBody().getPosition().y,
+                                playerModel.getBody().getPosition().x,
+                                playerModel.getBody().getPosition().y);
+                        if (dist<10){
+                                speedMultiplier = 50;
+                        }else if (dist<15){
+                            speedMultiplier = 55;
+                        }
+                        else if (dist<20){
+                            speedMultiplier = 65;
+                        }else if (dist<25){
+                            speedMultiplier = 75;
+                        }else if (dist<30){
+                            speedMultiplier = 100;
+                        }else if (dist<35){
+                            speedMultiplier = 110;
+                        }else if (dist<50){
+                            speedMultiplier = 120;
+                        }else{
+                            speedMultiplier = 200;
+                        }
                         alertNeighborEnemies();
                     }else if (Objects.equals(((EnemyModel) model).getEnemyType(), "bat")) {
                         CharactersModel neighborEnemy = findNeighborEnemies();
@@ -370,7 +366,7 @@ public class EnemyController extends CharactersController implements StateMachin
                             nextWaypointIndex = 0;
                             setGoal(waypoints[0]);
                         }else{
-                            speedMultiplier = 100;
+                            speedMultiplier = 150;
                             setGoal(modelPositionToTile(neighborEnemy));
                             alertNeighborEnemies();
                         }
