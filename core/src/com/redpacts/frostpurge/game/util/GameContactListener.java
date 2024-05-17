@@ -143,7 +143,7 @@ public class GameContactListener implements ContactListener {
                 player.addHp(-1);
             }else{
                 Vector2 contactDirection = player.getPosition().cpy().sub(enemy.getPosition()).nor();
-                player.addHp(-25);
+                player.addHp(-15);
                 player.setShake(true);
                 player.getBody().applyForceToCenter(contactDirection.scl(50), true);
                 enemy.getBody().applyForceToCenter(contactDirection.scl(-50), true);
