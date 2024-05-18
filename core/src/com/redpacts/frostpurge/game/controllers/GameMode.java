@@ -966,40 +966,40 @@ public class GameMode implements Screen, InputProcessor {
                 maxTime = 40;
                 break;
             case "level4":
-                maxTime = 40;
-                break;
-            case "level5":
-                maxTime = 40;
-                break;
-            case "level6":
-                maxTime = 40;
-                break;
-            case "level7":
-                maxTime = 60;
-                break;
-            case "level 8":
-                maxTime = 60;
-                break;
-            case "level 9":
-                maxTime = 45;
-                break;
-            case "level 10":
-                maxTime = 45;
-                break;
-            case "level 11":
-                maxTime = 60;
-                break;
-            case "level 12":
                 maxTime = 50;
                 break;
+            case "level5":
+                maxTime = 50;
+                break;
+            case "level6":
+                maxTime = 60;
+                break;
+            case "level7":
+                maxTime = 50;
+                break;
+            case "level 8":
+                maxTime = 65;
+                break;
+            case "level 9":
+                maxTime = 65;
+                break;
+            case "level 10":
+                maxTime = 65;
+                break;
+            case "level 11":
+                maxTime = 70;
+                break;
+            case "level 12":
+                maxTime = 70;
+                break;
             case "level 13":
-                maxTime = 45;
+                maxTime = 80;
                 break;
             case "level 14":
-                maxTime = 60;
+                maxTime = 80;
                 break;
             case "level 15":
-                maxTime = 60;
+                maxTime = 85;
                 break;
             default:
                 maxTime = 85;
