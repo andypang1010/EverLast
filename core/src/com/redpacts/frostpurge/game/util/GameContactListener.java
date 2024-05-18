@@ -207,7 +207,7 @@ public class GameContactListener implements ContactListener {
     private void handleCollision(Contact contact, PlayerModel player, BouncyTile tile) {
         int xDirection = tile.checkBoundLeftRight(contact.getWorldManifold().getPoints()[0]);
         int yDirection = tile.checkBoundTopBottom(contact.getWorldManifold().getPoints()[0]);
-        player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().scl(10 * xDirection, 10 * yDirection));
+        player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().scl(4 * xDirection, 4 * yDirection));
         bounce.play(volume);
         tile.activate();
     }
