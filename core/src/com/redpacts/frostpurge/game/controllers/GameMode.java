@@ -641,13 +641,13 @@ public class GameMode implements Screen, InputProcessor {
                 TileModel extraTile = currentLevel.getExtraLayer()[i][j];
                 if(accentTile!=null){
                     float dst2 = (float) (Math.pow(accentTile.getPosition().x-playerX, 2) + Math.pow(accentTile.getPosition().y-playerY, 2));
-                    if(Math.sqrt(dst2) <= 1600){
+                    if(Math.sqrt(dst2) <= 1350){
                         drawble.add(accentTile);
                     }
                 }
                 if(extraTile!=null){
                     float dst2 = (float) (Math.pow(extraTile.getPosition().x-playerX, 2) + Math.pow(extraTile.getPosition().y-playerY, 2));
-                    if(Math.sqrt(dst2) <= 1600){
+                    if(Math.sqrt(dst2) <= 1350){
                         drawble.add(extraTile);
                     }
                 }
@@ -949,25 +949,49 @@ public class GameMode implements Screen, InputProcessor {
         breakables = currentLevel.getBreakables();
         switch (level){
             case "level1":
-                maxTime = 46;
+                maxTime = 30;
                 break;
             case "level2":
                 maxTime = 70;
                 break;
             case "level3":
-                maxTime = 60;
+                maxTime = 40;
                 break;
             case "level4":
-                maxTime = 60;
+                maxTime = 40;
                 break;
             case "level5":
-                maxTime = 75;
+                maxTime = 40;
                 break;
             case "level6":
-                maxTime = 60;
+                maxTime = 40;
                 break;
             case "level7":
-                maxTime = 85;
+                maxTime = 60;
+                break;
+            case "level 8":
+                maxTime = 60;
+                break;
+            case "level 9":
+                maxTime = 45;
+                break;
+            case "level 10":
+                maxTime = 45;
+                break;
+            case "level 11":
+                maxTime = 60;
+                break;
+            case "level 12":
+                maxTime = 50;
+                break;
+            case "level 13":
+                maxTime = 45;
+                break;
+            case "level 14":
+                maxTime = 60;
+                break;
+            case "level 15":
+                maxTime = 60;
                 break;
             default:
                 maxTime = 85;
