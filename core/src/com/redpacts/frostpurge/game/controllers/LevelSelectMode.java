@@ -505,6 +505,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 //				System.out.println("waiting");
 				loadtime+= Gdx.graphics.getDeltaTime();
 			}else{
+				increaseLevel();
 				gamemode.loadLevel(getLevel(),game);
 				listener.exitScreen(this,0);
 			}
