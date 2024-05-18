@@ -448,16 +448,16 @@ public class EnemyController extends CharactersController implements StateMachin
 
         if (on) {
 //            quackSound.setVolume(soundId, 1 / (model.getPosition().cpy().sub(playerModel.getPosition()).len()));
-            quackInterval += Gdx.graphics.getDeltaTime();
+//            quackInterval += Gdx.graphics.getDeltaTime();
             quackSound.setVolume(soundId, 0.1f  * LevelSelectMode.volumeBar.getValue());
             if (soundId == -1) {
                 soundId = quackSound.loop();
                 ((EnemyModel) model).setQuackId(soundId);
-            } else if (quackInterval > 1.9f && quackInterval <= 3.8f) {
-                ((EnemyModel) model).setQuackId(-1);
-                quackSound.stop(soundId);
-            } else if (quackInterval > 3.8f){
-                quackInterval = 0f;
+//            } else if (quackInterval > 1.9f && quackInterval <= 3.8f) {
+//                ((EnemyModel) model).setQuackId(-1);
+//                quackSound.stop(soundId);
+//            } else if (quackInterval > 3.8f){
+//                quackInterval = 0f;
             }
 
         } else {

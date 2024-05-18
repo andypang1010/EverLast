@@ -129,7 +129,7 @@ public class GoalTile extends TileModel{
         leftFixtureDef.restitution = 0.25f;
         leftFixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_OBSTACLE;
         leftFixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK);
 
         body.createFixture(leftFixtureDef);
 
@@ -145,7 +145,7 @@ public class GoalTile extends TileModel{
         rightFixtureDef.restitution = 0.25f;
         rightFixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_OBSTACLE;
         rightFixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK);
 
         body.createFixture(rightFixtureDef);
 
