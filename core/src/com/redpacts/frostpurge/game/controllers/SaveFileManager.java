@@ -29,11 +29,11 @@ public class SaveFileManager {
                 levelValue.get("unlocked").set(String.valueOf(new JsonValue(unlocked)));
                 levelValue.get("completed").set(String.valueOf(new JsonValue(completed)));
                 float currScore = levelValue.getFloat("score");
-                if (score<currScore || currScore == 0){
+                if ((score<currScore || currScore == 0) && score != 0){
                     levelValue.get("score").set(String.valueOf(new JsonValue(score)));
                 }
                 float currStarScore = levelValue.getFloat("star");
-                if (starScore<currStarScore || currStarScore == 0){
+                if ((starScore<currStarScore || currStarScore == 0) && starScore !=0){
                     levelValue.get("star").set(String.valueOf(new JsonValue(starScore)));
                 }
                 break;
