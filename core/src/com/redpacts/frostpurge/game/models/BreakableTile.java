@@ -109,7 +109,7 @@ public class BreakableTile extends TileModel{
         fixtureDef.restitution = 0.25f;
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE;
         fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY);
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK);
 
         body.createFixture(fixtureDef);
         shape.dispose();

@@ -31,6 +31,8 @@
     "EnemyLR": "enemies/enemyLRfilmstripEDIT1.png",
     "EnemyUp": "enemies/enemyUpfilmstripEDIT1.png",
     "EnemyDown": "enemies/enemyDownfilmstripEDIT1.png",
+    "EnemyBat": "enemies/bat_filmstrip_1.png",
+    "EnemyFly": "enemies/flies_filmstrip.png",
     "Fire" : "characters/firenoaxis.png",
     "FireBoost": "characters/fireboostnoaxis.png",
     "IdleBouncyMushroom": "bouncy/bouncyMushroomIdle.png",
@@ -72,11 +74,18 @@
     "level5": "levels/MyLevel5.json",
     "level6": "levels/MyLevel6.json",
     "level7": "levels/MyLevel7.json",
-    "playgroundlevel": "levels/AlphaLevel.json",
+    "level8": "levels/MyLevel8.json",
+    "level9": "levels/MyLevel9.json",
+    "level10": "levels/MyLevel10.json",
+    "level11": "levels/MyLevel11.json",
+    "level12": "levels/Sebastian-1.json",
+    "level13": "levels/Sebastian-2.json",
+    "level14": "levels/Sebastian-3.json",
+    "level15": "levels/MyLevel12.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
+    "playgroundlevel": "levels/AlphaLevel.json",
     "savedata": "save_data.json"
-
   }
 }

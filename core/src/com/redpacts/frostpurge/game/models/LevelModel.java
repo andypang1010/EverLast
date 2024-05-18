@@ -15,6 +15,7 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class LevelModel {
@@ -135,7 +136,7 @@ public class LevelModel {
     public void createEnemy(int x, int y, int rotation, AssetDirectory directory, String type, int[] start, int index){
         //TODO: Add different enemy types so that the types actually matter
         // NOTE: THIS ONLY SUPPORTS UP TO TWENTY ENEMIES
-        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL, index));
+        enemies.insert(index-1,new EnemyModel(new Vector2(x,y), rotation, directory, start, EnemyStates.PATROL, index, type));
     }
     public void addWaypoint(int x, int y, int enemyID, int pointNumber){
         int[] coordinates = {(int) Math.floor((double) x /64), (int) Math.floor((double) y /64)};
@@ -267,7 +268,9 @@ public class LevelModel {
         if (!inBounds(intx, inty)) {
             return null;
         }
-        if (extraLayer[inty][intx]==null){
+        if (extraLayer[inty][intx]==null
+        || extraLayer[inty][intx].getType() == TileModel.TileType.SWAMP
+        || extraLayer[inty][intx].getType() == TileModel.TileType.DESTRUCTIBLE){
             return baseLayer[inty][intx];
         }else{
             return extraLayer[inty][intx];

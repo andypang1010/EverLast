@@ -17,6 +17,7 @@ import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EnemyController extends CharactersController implements StateMachine<EnemyModel, EnemyStates> {
 
@@ -73,8 +74,13 @@ public class EnemyController extends CharactersController implements StateMachin
         if (initState == EnemyStates.PATROL) {
             setGoal(this.waypoints[this.nextWaypointIndex]);
         }
+
         else {
             setGoal(modelPositionToTile(playerModel));
+        }
+
+        if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
+            listenRadius = 30f;
         }
 
         textureRegion = new TextureRegion();
@@ -83,35 +89,41 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void setGoal(TileModel goalTile) {
+
         pathQueue.clear();
 //        System.out.println("!!!Path Queue Cleared!!!");
+        System.out.println(((EnemyModel) model).getEnemyType() + " " + ((EnemyModel) model).getID());
+        System.out.println("Current Tile: " + currentTile.getPosition() + " " + currentTile.getType().toString());
+        System.out.println("Goal Tile: " + goalTile.getPosition() + " " + goalTile.getType().toString() + "\n");
+
         graphPath = tileGraph.findPath(currentTile, goalTile);
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
         }
+
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed bottom");
                 graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y-64), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
             }
         }
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed left");
             graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x-64, model.getPosition().y), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
             }
         }
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed top");
             graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y+64), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
             }
         }
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed right");
             graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x+64, model.getPosition().y), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
@@ -140,21 +152,26 @@ public class EnemyController extends CharactersController implements StateMachin
         indices[1] = 1;
         indices[2] = 2;
 
-        Vector2 rayStart = model.getBody().getPosition().cpy().add(3.5f, 4.5f);
+        Vector2 rayStart;
+        if(Objects.equals(enemy.getEnemyType(), "bat")){
+            rayStart = enemy.getBody().getPosition().cpy().add(3.5f, -5f);
+        }else{
+            rayStart = enemy.getBody().getPosition().cpy().add(3.5f, 4.5f);
+        }
         int numRays = 15; // Number of segments for circle
         float deltaAngle = 360f / (numRays - 1); // Angle between each segment
 
         float angle = 0;
         Vector2 dir = new Vector2(1, 0);
         Vector2 rayDirection = dir.cpy().rotateDeg(angle);
-        Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(((EnemyModel)model).getRadius())); // Calculate end point of the ray
+        Vector2 rayEnd = rayStart.cpy().add(rayDirection.scl(enemy.getRadius())); // Calculate end point of the ray
         Vector2 rayPrevious = rayEnd.cpy();
         Vector2 ray1, ray2, ray3;
 
         for (int i = 1; i < numRays; i++) {
             angle += deltaAngle;
             rayDirection = dir.cpy().rotateDeg(angle);
-            rayEnd = rayStart.cpy().add(rayDirection.scl(((EnemyModel)model).getRadius()));
+            rayEnd = rayStart.cpy().add(rayDirection.scl(enemy.getRadius()));
 
             ray1 = rayStart.cpy().scl(10).add(-100, -100);
             ray2 = rayPrevious.cpy().scl(10).add(-100, -100);
@@ -162,7 +179,11 @@ public class EnemyController extends CharactersController implements StateMachin
 
             float[] vertices = {ray1.x, ray1.y, ray2.x, ray2.y, ray3.x, ray3.y};
             PolygonRegion cone = new PolygonRegion(new TextureRegion(), vertices, indices);
-            canvas.draw(cone, new Color(0f, 0f, 0f, 0.5f), 70, 50 ,0);
+            if(Objects.equals(enemy.getEnemyType(), "flies")){
+                canvas.draw(cone, new Color(255f, 0f, 0f, 0.1f), 70, 50 ,0);
+            }else{
+                canvas.draw(cone, new Color(0f, 0f, 0f, 0.5f), 70, 50 ,0);
+            }
 
             rayPrevious = rayEnd.cpy();
         }
@@ -191,7 +212,11 @@ public class EnemyController extends CharactersController implements StateMachin
 //        model.resetFilmStrip(model.getFilmStrip(direction));
         processRun(direction);
         if (enemy.getVelocity().x == 0 && enemy.getVelocity().y ==0){
-            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+            if(Objects.equals(enemy.getEnemyType(), "flies")){
+                enemy.drawCharacter(canvas, 1, (float) Math.toDegrees(model.getRotation()), Color.RED, "idle", direction);
+            }else{
+                enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "idle", direction);
+            }
         } else{
             if (((EnemyModel) model).getID() == 1) {
                 angle = (float) Math.toDegrees(Math.atan2(model.getVelocity().y,model.getVelocity().x));
@@ -199,7 +224,11 @@ public class EnemyController extends CharactersController implements StateMachin
 //                System.out.println("actual:");
 //                System.out.println(direction);
             }
-            enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+            if(Objects.equals(enemy.getEnemyType(), "flies")){
+                enemy.drawCharacter(canvas, 1, (float) Math.toDegrees(model.getRotation()), Color.RED, "running", direction);
+            }else{
+                enemy.drawCharacter(canvas, (float) Math.toDegrees(model.getRotation()), Color.WHITE, "running", direction);
+            }
         }
         previousDirection = direction;
     }
@@ -226,6 +255,10 @@ public class EnemyController extends CharactersController implements StateMachin
 
         // Update enemy's current tile
         currentTile = board.getTileState(model.getPosition().x, model.getPosition().y);
+
+        if (currentTile == null) {
+            return;
+        }
 
         switch (currentState) {
             case PATROL:
@@ -262,7 +295,14 @@ public class EnemyController extends CharactersController implements StateMachin
 
                 if (isPlayerWithinListenRadius()) {
                     currentListenInterval = notHeardToPatrolInterval;
-                    setGoal(modelPositionToTile(playerModel));
+
+                    if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
+                        setGoal(modelPositionToTile(playerModel));
+                    }
+
+                    if(Objects.equals(((EnemyModel) model).getEnemyType(), "bat")){
+                        changeState(EnemyStates.CHASE);
+                    }
                 }
 
                 else if (reachedDestination) {
@@ -297,45 +337,58 @@ public class EnemyController extends CharactersController implements StateMachin
 
             case CHASE:
                 playQuack(true);
-
-
-                // Update path to player every 0.5 seconds
-                if (updatePathCounter > 30){
-                    setGoal(modelPositionToTile(playerModel));
-                    if (((EnemyModel) model).getID() == 1){
-//                        System.out.println(targetTile.getPosition());
-                        if (pathQueue.notEmpty()) {
-//                            System.out.println("next tile:");
-//                            System.out.println(pathQueue.first().getPosition());
+                if (updatePathCounter > 30) {
+                    if (Objects.equals(((EnemyModel) model).getEnemyType(), "duck")) {
+                        if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
+                            setGoal(modelPositionToTile(playerModel));
                         }
+                        float dist = Vector2.dst(
+                                model.getBody().getPosition().x,
+                                model.getBody().getPosition().y,
+                                playerModel.getBody().getPosition().x,
+                                playerModel.getBody().getPosition().y);
+                        if (dist<10){
+                                speedMultiplier = 40;
+                        }else if (dist<15){
+                            speedMultiplier = 50;
+                        }
+                        else if (dist<20){
+                            speedMultiplier = 60;
+                        }else if (dist<25){
+                            speedMultiplier = 75;
+                        }else if (dist<35){
+                            speedMultiplier = 100;
+                        }else if (dist<50){
+                            speedMultiplier = 110;
+                        }else if (dist<100){
+                            speedMultiplier = 120;
+                        }else{
+                            speedMultiplier = 200;
+                        }
+                        alertNeighborEnemies();
+                    }else if (Objects.equals(((EnemyModel) model).getEnemyType(), "bat")) {
+                        CharactersModel neighborEnemy = findNeighborEnemies();
+                        if(neighborEnemy == null){
+                            changeState(EnemyStates.PATROL);
+                            nextWaypointIndex = 0;
+                            setGoal(waypoints[0]);
+                        }else{
+                            speedMultiplier = 150;
+                            setGoal(modelPositionToTile(neighborEnemy));
+                            alertNeighborEnemies();
+                        }
+                    }else if(Objects.equals(((EnemyModel) model).getEnemyType(), "flies")){
+                        if (modelPositionToTile(playerModel).getType() != TileModel.TileType.OBSTACLE) {
+                            setGoal(modelPositionToTile(playerModel));
+                        }
+                        speedMultiplier = 70;
+                        alertNeighborEnemies();
                     }
                     updatePathCounter = 0;
-                    float dist =Vector2.dst(
-                            model.getBody().getPosition().x,
-                            model.getBody().getPosition().y,
-                            playerModel.getBody().getPosition().x,
-                            playerModel.getBody().getPosition().y);
-//                    System.out.println(dist);
-                    if (dist<10){
-                        speedMultiplier = 40;
-                    }else if (dist<15){
-                        speedMultiplier = 50;
-                    }
-                    else if (dist<20){
-                        speedMultiplier = 60;
-                    }else if (dist<25){
-                        speedMultiplier = 70;
-                    }else if (dist<30){
-                        speedMultiplier = 80;
-                    }else if (dist<35){
-                        speedMultiplier = 90;
-                    }
-                }
-                else {
+                }else{
                     updatePathCounter++;
                 }
-
-                alertNeighborEnemies();
+                // Update path to player every 0.5 seconds
 
                 break;
         }
@@ -367,6 +420,27 @@ public class EnemyController extends CharactersController implements StateMachin
                 System.out.println("Alerted!!!");
             }
         }
+    }
+
+    private CharactersModel findNeighborEnemies() {
+        for (int i = 0; i < GameMode.enemyControllers.size; i++) {
+            EnemyController enemy = GameMode.enemyControllers.get(i);
+            if (enemy == this) continue;
+
+            Vector2 enemyPosition = enemy.model.getBody().getPosition().cpy();
+//                    System.out.println(((EnemyModel) enemy.getModel()).getID() + "'s distance to current enemy: " + Vector2.dst(model.getBody().getPosition().x, model.getBody().getPosition().y, enemyPosition.x, enemyPosition.y));
+            if (enemy.getCurrentState() != EnemyStates.CHASE && !Objects.equals(((EnemyModel) enemy.model).getEnemyType(), "bat") &&
+                    Vector2.dst(
+                            model.getBody().getPosition().x,
+                            model.getBody().getPosition().y,
+                            enemyPosition.x,
+                            enemyPosition.y)
+                            < 300) {
+
+                return enemy.model;
+            }
+        }
+        return null;
     }
 
     public void playQuack(boolean on) {

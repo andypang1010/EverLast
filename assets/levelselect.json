@@ -39,11 +39,11 @@
         "settingsBackground": "levelSelect/background.png",
         "loadingBackground": "loading/startscreen.png",
         "loading": "loading/loading2.png",
-        "page1": "levelselect/page1.png",
-        "page2": "levelselect/page2.png",
-        "page3": "levelselect/page3.png",
-        "page4": "levelselect/page4.png",
-        "page5": "levelselect/page5.png"
+        "page1": "levelSelect/page1.png",
+        "page2": "levelSelect/page2.png",
+        "page3": "levelSelect/page3.png",
+        "page4": "levelSelect/page4.png",
+        "page5": "levelSelect/page5.png"
 	},
   "music" : {
     "song" : "sound/menu.ogg"

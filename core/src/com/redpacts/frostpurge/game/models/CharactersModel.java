@@ -197,6 +197,114 @@ public abstract class CharactersModel extends GameObject {
 
     }
 
+    public void drawCharacter(GameCanvas canvas, float scale, float rotation, Color tint, String state, String direction) {
+        String directiontrue = "none";
+        if (this instanceof EnemyModel) {
+            directiontrue = getDirection(this.getVelocity().x, this.getVelocity().y, "none");
+        }
+        switch (state) {
+            case "idle":
+                switch (direction) {
+                    case "left":
+                        canvas.draw(idleleft, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "right":
+                        canvas.draw(idleright, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    default:
+                        canvas.draw(idleup, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                }
+                break;
+            case "running":
+                if (this instanceof EnemyModel) {
+                    direction = directiontrue;
+                }
+                switch (direction) {
+                    case "left":
+                        canvas.draw(run_left, tint, (float) run_left.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, type.equals("enemy"));
+                        break;
+                    case "right":
+                        canvas.draw(run_right, tint, (float) run_right.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "up":
+                        canvas.draw(run_up, tint, (float) run_up.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "down":
+                        canvas.draw(run_down, tint, (float) run_down.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Character animation fail");
+                }
+                break;
+            case "death":
+                switch (direction) {
+                    case "right":
+                        canvas.draw(death, tint, (float) death.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "left":
+                        canvas.draw(death, tint, (float) death.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, true);
+                        break;
+                    default:
+                        canvas.draw(death, tint, (float) death.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                }
+                break;
+            case "win":
+                switch (direction) {
+                    case "right":
+                        canvas.draw(win, tint, (float) win.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "left":
+                        canvas.draw(win, tint, (float) win.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, true);
+                        break;
+                    default:
+                        canvas.draw(win, tint, (float) win.getRegionWidth() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                }
+                break;
+            case "vacuuming_start":
+                switch (direction) {
+                    case "left":
+                        canvas.draw(vacuum_start_left, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "right":
+                        canvas.draw(vacuum_start_right, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    default:
+                        canvas.draw(vacuum_start_left, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                }
+                break;
+            case "vacuuming":
+                switch (direction) {
+                    case "left":
+                        canvas.draw(vacuum_left, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "right":
+                        canvas.draw(vacuum_right, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    default:
+                        canvas.draw(vacuum_left, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                }
+                break;
+            case "vacuuming_end":
+                switch (direction) {
+                    case "left":
+                        canvas.draw(vacuum_end_left, tint, (float) idleleft.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    case "right":
+                        canvas.draw(vacuum_end_right, tint, (float) idleright.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                        break;
+                    default:
+                        canvas.draw(vacuum_end_left, tint, (float) idleup.getRegionHeight() / 2, 140, position.x, position.y, 0, scale, scale, false);
+                }
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
     public String getDirection(float x, float y, String previous) {
         float angle = (float) Math.toDegrees(Math.atan2(x, y));
 

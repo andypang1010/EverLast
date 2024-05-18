@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Vector2;
 import com.redpacts.frostpurge.game.assets.AssetDirectory;
 
 //import com.redpacts.frostpurge.game.assets.AssetDirectory;
@@ -20,14 +21,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.utils.Json;
-
 import com.badlogic.gdx.utils.JsonValue;
-import com.redpacts.frostpurge.game.assets.AssetDirectory;
-import com.redpacts.frostpurge.game.audio.AudioEngine;
-import com.redpacts.frostpurge.game.audio.AudioSource;
-import com.redpacts.frostpurge.game.audio.MusicQueue;
 import com.redpacts.frostpurge.game.models.*;
 import com.redpacts.frostpurge.game.models.ButtonBox;
 import com.redpacts.frostpurge.game.util.EnemyStates;
@@ -36,8 +30,8 @@ import com.redpacts.frostpurge.game.util.ScreenListener;
 import com.redpacts.frostpurge.game.util.TileGraph;
 import com.redpacts.frostpurge.game.views.GameCanvas;
 
-import java.awt.*;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class GameMode implements Screen, InputProcessor {
     /*
@@ -141,7 +135,8 @@ public class GameMode implements Screen, InputProcessor {
     private GoalTile goal;
     private Array<ButtonBox> buttons = new Array<>();;
 
-    private TileGraph tileGraph = new TileGraph();
+    private TileGraph groundedTileGraph = new TileGraph();
+//    private TileGraph ignoreCollisionsTileGraph = new TileGraph();
 
     private Texture statusBarBGTexture;
     private Texture boostBarTexture;
@@ -150,6 +145,10 @@ public class GameMode implements Screen, InputProcessor {
     private FilmStrip heartHurt;
     private Color healthBarColor;
     private boolean debug;
+    private Vector2 cameraTarget;
+    private Vector2 cameraPosition;
+    private int cameraShakeDuration = 0;
+    private float zoom;
     private float scale;
     private float sx;
     private float sy;
@@ -369,17 +368,26 @@ public class GameMode implements Screen, InputProcessor {
         obj_list.sort(comparator);
     }
 
-    private void populateTileGraph() {
+    private void populateGroundedTileGraph() {
         for (int i = 0; i < currentLevel.getWidth(); i++) {
             for (int j = 0; j < currentLevel.getHeight(); j++) {
-                TileModel currentTile = null;
+                TileModel currentTile;
 
                 if (currentLevel.getExtraLayer()[j][i] == null) {
-                    tileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    groundedTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
                     currentTile = currentLevel.getBaseLayer()[j][i];
                 }
+
+                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP
+                        || currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.DESTRUCTIBLE) {
+                    groundedTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+                    groundedTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+
+                    currentTile = currentLevel.getBaseLayer()[j][i];
+                }
+
                 else if (currentLevel.getExtraLayer()[j][i].getType() != TileModel.TileType.OBSTACLE) {
-                    tileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+                    groundedTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
                     currentTile = currentLevel.getExtraLayer()[j][i];
                 }
 
@@ -387,16 +395,26 @@ public class GameMode implements Screen, InputProcessor {
                     continue;
                 }
 
-                for(int x = i - 1; x <= i + 1; x++) {
-                    for(int y = j-1; y <= j+1; y++) {
-                        if (i == x && j == y) {
-                            continue;
-                        }
-                        if (currentLevel.inBounds(x, y)) {
+                for (int x = i - 1; x <= i + 1; x++) {
+                    for (int y = j - 1; y <= j + 1; y++) {
+                        if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
                             if (currentLevel.getExtraLayer()[y][x] == null) {
-                                tileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
-                            } else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
-                                tileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                            }
+
+                            else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP
+                            || currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.DESTRUCTIBLE) {
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+
+                                if (currentLevel.getExtraLayer()[j][i] != null) {
+                                    groundedTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getBaseLayer()[y][x]);
+                                    groundedTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getExtraLayer()[y][x]);
+                                }
+                            }
+
+                            else if (currentLevel.getExtraLayer()[y][x].getType() != TileModel.TileType.OBSTACLE) {
+                                groundedTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
                             }
                         }
                     }
@@ -404,6 +422,57 @@ public class GameMode implements Screen, InputProcessor {
             }
         }
     }
+
+//    private void populateIgnoreCollisionsTileGraph() {
+//        for (int i = 0; i < currentLevel.getWidth(); i++) {
+//            for (int j = 0; j < currentLevel.getHeight(); j++) {
+//                TileModel currentTile;
+//
+//                if (currentLevel.getExtraLayer()[j][i] == null) {
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+//                    currentTile = currentLevel.getBaseLayer()[j][i];
+//                }
+//
+//                else if (currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.SWAMP
+//                        || currentLevel.getExtraLayer()[j][i].getType() == TileModel.TileType.DESTRUCTIBLE) {
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getBaseLayer()[j][i]);
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+//
+//                    currentTile = currentLevel.getBaseLayer()[j][i];
+//                }
+//
+//                else {
+//                    ignoreCollisionsTileGraph.addTile(currentLevel.getExtraLayer()[j][i]);
+//                    currentTile = currentLevel.getExtraLayer()[j][i];
+//                }
+//
+//                for (int x = i - 1; x <= i + 1; x++) {
+//                    for (int y = j - 1; y <= j + 1; y++) {
+//                        if (Math.abs((x - i) + (y - j)) == 1 && currentLevel.inBounds(x, y)) {
+//                            if (currentLevel.getExtraLayer()[y][x] == null) {
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+//                            }
+//
+//                            else if (currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.SWAMP
+//                                    || currentLevel.getExtraLayer()[y][x].getType() == TileModel.TileType.DESTRUCTIBLE) {
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getBaseLayer()[y][x]);
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+//
+//                                if (currentLevel.getExtraLayer()[j][i] != null) {
+//                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getBaseLayer()[y][x]);
+//                                    ignoreCollisionsTileGraph.connectTiles(currentLevel.getExtraLayer()[j][i], currentLevel.getExtraLayer()[y][x]);
+//                                }
+//                            }
+//
+//                            else {
+//                                ignoreCollisionsTileGraph.connectTiles(currentTile, currentLevel.getExtraLayer()[y][x]);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     protected TextureRegion processHeart() {
         FilmStrip heart;
@@ -422,6 +491,10 @@ public class GameMode implements Screen, InputProcessor {
         }
         heart.setFrame(frame);
         return heart;
+    }
+
+    public void cameraShake(int i){
+        this.cameraShakeDuration += i;
     }
 
     public void update(float delta) {
@@ -504,6 +577,7 @@ public class GameMode implements Screen, InputProcessor {
             }
             playLoseMusic();
             if (playerModel.getGameOver()){ // Still drawing death animation
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -517,6 +591,7 @@ public class GameMode implements Screen, InputProcessor {
             }
             playWinMusic();
             if (playerModel.getGameOver()){
+                playerModel.getBody().setLinearVelocity(0, 0);
                 playerModel.addGameOver();
             } else{
                 playerModel.setGameOverState(0);
@@ -560,15 +635,23 @@ public class GameMode implements Screen, InputProcessor {
 
 
         drawble.clear();
+        float playerX = playerModel.getPosition().x;
+        float playerY = playerModel.getPosition().y;
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 TileModel accentTile = currentLevel.getAccentLayer()[i][j];
                 TileModel extraTile = currentLevel.getExtraLayer()[i][j];
-                if(accentTile!=null && playerModel.getPosition().cpy().sub(accentTile.getPosition()).len() <= 1600){
-                    drawble.add(accentTile);
+                if(accentTile!=null){
+                    float dst2 = (float) (Math.pow(accentTile.getPosition().x-playerX, 2) + Math.pow(accentTile.getPosition().y-playerY, 2));
+                    if(Math.sqrt(dst2) <= 1600){
+                        drawble.add(accentTile);
+                    }
                 }
-                if(extraTile!=null && playerModel.getPosition().cpy().sub(extraTile.getPosition()).len() <= 1600){
-                    drawble.add(extraTile);
+                if(extraTile!=null){
+                    float dst2 = (float) (Math.pow(extraTile.getPosition().x-playerX, 2) + Math.pow(extraTile.getPosition().y-playerY, 2));
+                    if(Math.sqrt(dst2) <= 1600){
+                        drawble.add(extraTile);
+                    }
                 }
             }
         }
@@ -598,13 +681,26 @@ public class GameMode implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         canvas.begin();
 
+        // Camera Movement
         //Vector2 cameraPos = playerController.cameraOffsetPos();
 //        canvas.center(camera, (float) (playerModel.getPosition().x+Math.random()*10), (float) (playerModel.getPosition().y+Math.random()*10));
-        canvas.center(camera, playerModel.getPosition().x, playerModel.getPosition().y);
+        if(playerModel.getShake()){
+            playerModel.setShake(false);
+            cameraShakeDuration += 10;
+        }
+        cameraTarget = playerModel.getPosition().cpy().add(playerModel.getBody().getLinearVelocity().cpy().scl(4f));
+        if(cameraShakeDuration > 0){
+            cameraShakeDuration--;
+            cameraTarget.x += (float) (200f * (1-2*Math.random()));
+            cameraTarget.y += (float) (200f * (1-2*Math.random()));
+        }
+        cameraPosition = cameraPosition.scl(0.9f).add(cameraTarget.scl(0.1f));
+        canvas.center(camera, cameraPosition.x, cameraPosition.y);
         camera.zoom = 1/scale;
 //        board.draw(canvas);
 //        playerController.draw(canvas, inputController.getHorizontal(), inputController.getVertical());
 //        enemyController.draw(canvas);
+
         for (int i = 0; i<currentLevel.getHeight();i++){
             for (int j = 0; j<currentLevel.getWidth();j++){
                 currentLevel.drawTile(currentLevel.getBaseLayer()[i][j],canvas);
@@ -875,14 +971,21 @@ public class GameMode implements Screen, InputProcessor {
             case "level5":
                 maxTime = 75;
                 break;
+            case "level6":
+                maxTime = 60;
+                break;
+            case "level7":
+                maxTime = 85;
+                break;
             default:
-                maxTime = 61;
+                maxTime = 85;
         }
 
         currentTime = maxTime;
         currentLevel.setName(level);
 
-        populateTileGraph();
+        populateGroundedTileGraph();
+//        populateIgnoreCollisionsTileGraph();
 
         playerController = new PlayerController(playerModel);
 
@@ -891,7 +994,13 @@ public class GameMode implements Screen, InputProcessor {
         for (int i = 0; i < enemies.size; i++){
 //            for (int j = 0; j<)
 //            enemies.get(i).getWaypoints()
-            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL,tileGraph,currentLevel,enemies.get(i).getWaypoints()));
+
+            enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, groundedTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+//
+//            else {
+//                enemyControllers.add(new EnemyController(enemies.get(i), playerModel, EnemyStates.PATROL, ignoreCollisionsTileGraph,currentLevel,enemies.get(i).getWaypoints()));
+//            }
+
         }
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -902,6 +1011,7 @@ public class GameMode implements Screen, InputProcessor {
 //        System.out.println(scale);
         HUDcamera = new OrthographicCamera();
         HUDcamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        cameraPosition = playerModel.getPosition();
         collisionController = new CollisionController(currentLevel, playerModel, enemies, bouncy, breakables, goal, canvas.getWidth(), canvas.getHeight(),directory,0.15f * LevelSelectMode.volumeBar.getValue());
         pausemusic();
         playing = false;

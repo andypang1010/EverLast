@@ -43,6 +43,7 @@ public class PlayerModel extends CharactersModel {
     private int boostNum;
     private int boostCoolDown;
     private int invincibility;
+    private boolean shake;
     private int INVINCIBILITY_COOLDOWN = 120;
     private int gameOver;
     /**
@@ -93,6 +94,7 @@ public class PlayerModel extends CharactersModel {
 
         this.hp = 100;
         this.invincibility = 0;
+        this.shake = false;
         this.gameOver = 0;
         this.gameOverState = 0;
 
@@ -216,6 +218,14 @@ public class PlayerModel extends CharactersModel {
         if(this.hp < 0){
             this.hp = 0;
         }
+    }
+
+    public boolean getShake(){
+        return this.shake;
+    }
+
+    public void setShake(boolean s){
+        this.shake = s;
     }
 
     /**
@@ -430,7 +440,9 @@ public class PlayerModel extends CharactersModel {
 
         // Setting category and mask bits for the player
         fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_PLAYER;
-        fixtureDef.filter.maskBits = (CollisionController.PhysicsConstants.CATEGORY_ENEMY |
+        fixtureDef.filter.maskBits = (CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK |
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES |
+                CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT |
                 CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
                 CollisionController.PhysicsConstants.CATEGORY_SWAMP |
                 CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |

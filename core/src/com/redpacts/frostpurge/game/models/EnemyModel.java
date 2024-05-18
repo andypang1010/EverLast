@@ -17,6 +17,7 @@ import com.redpacts.frostpurge.game.views.GameCanvas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EnemyModel extends CharactersModel{
 
@@ -25,6 +26,7 @@ public class EnemyModel extends CharactersModel{
      */
     EnemyStates initState;
     EnemyStates currentState;
+    private String enemyType;
     private int[] startpatrol;
     private int[] endpatrol;
     private int enemyID;
@@ -46,6 +48,7 @@ public class EnemyModel extends CharactersModel{
         this.rotation = rotation;
         this.velocity = new Vector2(0,0);
         this.radius = 3.19f;
+        this.enemyType = "duck";
 
         //texture = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class )).getTexture();
 
@@ -81,6 +84,90 @@ public class EnemyModel extends CharactersModel{
         addWaypoint(this.startpatrol,0);
         enemyID = id;
     }
+
+    /**
+     * Instantiates the player with their starting location and angle and with their texture
+     * @param position vector2 representing the starting location
+     * @param rotation float representing angle the player is facing
+     */
+    public EnemyModel(Vector2 position, float rotation, AssetDirectory directory, int[] startpatrol, EnemyStates initState, int id, String enemyType){
+        this.position = position;
+        this.rotation = rotation;
+        this.velocity = new Vector2(0,0);
+        this.enemyType = enemyType;
+        if(Objects.equals(enemyType, "flies")){
+            this.radius = 10f;
+        }else{
+            this.radius = 3.19f;
+        }
+
+        if(Objects.equals(this.enemyType, "duck")){
+            Texture duck = new TextureRegion(directory.getEntry("EnemyLR", Texture.class)).getTexture();
+            idleright = new FilmStrip(duck, 1, 8, 8);
+            idleleft = idleright;
+            idleup = idleright;
+
+            run_right = new FilmStrip(duck, 1, 8, 8);
+//        run_right.setFrame(4);
+
+            TextureRegion left = new TextureRegion(directory.getEntry( "EnemyLR", Texture.class ));
+            left.flip(false,true);
+
+            run_left = new FilmStrip(left.getTexture(),1,8,8);
+//        run_left.setFrame(4);
+
+            Texture up= new TextureRegion(directory.getEntry( "EnemyUp", Texture.class )).getTexture();
+            run_up = new FilmStrip(up, 1, 7, 7);
+
+            Texture down = new TextureRegion(directory.getEntry( "EnemyDown", Texture.class )).getTexture();
+            run_down = new FilmStrip(down, 1, 8, 8);
+
+            quackSound = directory.getEntry("Quack", Sound.class);
+            quackId = -1;
+        }else if(Objects.equals(this.enemyType, "bat")){
+            Texture bat = new TextureRegion(directory.getEntry("EnemyBat", Texture.class)).getTexture();
+            idleright = new FilmStrip(bat, 1, 5, 5);
+            idleleft = idleright;
+            idleup = idleright;
+            run_right = new FilmStrip(bat, 1, 5, 5);
+
+            TextureRegion left = new TextureRegion(directory.getEntry( "EnemyBat", Texture.class ));
+            left.flip(false,true);
+
+            run_left = new FilmStrip(left.getTexture(),1,5,5);
+            run_up = new FilmStrip(bat, 1, 5, 5);
+            run_down = new FilmStrip(bat, 1, 5, 5);
+
+            quackSound = directory.getEntry("Bat", Sound.class);
+            quackId = -1;
+        }else if(Objects.equals(this.enemyType, "flies")){
+            Texture flies = new TextureRegion(directory.getEntry("EnemyFly", Texture.class)).getTexture();
+            idleright = new FilmStrip(flies, 1, 6, 6);
+            idleleft = idleright;
+            idleup = idleright;
+            run_right = new FilmStrip(flies, 1, 6, 6);
+
+            TextureRegion left = new TextureRegion(directory.getEntry( "EnemyFly", Texture.class ));
+            left.flip(false,true);
+
+            run_left = new FilmStrip(left.getTexture(),1,6,6);
+            run_up = new FilmStrip(flies, 1, 6, 6);
+            run_down = new FilmStrip(flies, 1, 6, 6);
+
+            quackSound = directory.getEntry("Flies", Sound.class);
+            quackId = -1;
+        }
+
+        this.startpatrol = startpatrol;
+        type = "enemy";
+
+        this.initState = initState;
+        currentState = initState;
+        waypoints = new ArrayList<int[]>(6);
+        addWaypoint(this.startpatrol,0);
+        enemyID = id;
+    }
+
     public void addWaypoint(int[] newPoint, int id){
         this.waypoints.add(id,newPoint);
     }
@@ -98,6 +185,18 @@ public class EnemyModel extends CharactersModel{
     public EnemyStates getCurrentState() {return currentState;}
     public void setCurrentState(EnemyStates currentState) {
         this.currentState = currentState;
+    }
+
+    public float getPositionY() {
+        if(Objects.equals(this.enemyType, "bat")){
+            return position.y - 256;
+        }else{
+            return position.y;
+        }
+    }
+
+    public String getEnemyType(){
+        return this.enemyType;
     }
 
     /*
@@ -157,13 +256,26 @@ public class EnemyModel extends CharactersModel{
         fixtureDef.density = 0.015f / (radius * radius * 3.14f);
         fixtureDef.friction = 0.3f;
 
+        if(Objects.equals(this.enemyType, "bat")){
+            fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT;
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES);
+        }else if(Objects.equals(this.enemyType, "flies")){
+            fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES;
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_FLIES |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_BAT);
+            fixtureDef.isSensor = true;
+        }else{
+            fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK;
+            fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
+                    CollisionController.PhysicsConstants.CATEGORY_ENEMY_DUCK |
+                    CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
+                    CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |
+                    CollisionController.PhysicsConstants.CATEGORY_BOUNCY);
+        }
         // Setting category and mask bits for the enemy
-        fixtureDef.filter.categoryBits = CollisionController.PhysicsConstants.CATEGORY_ENEMY;
-        fixtureDef.filter.maskBits = (short)(CollisionController.PhysicsConstants.CATEGORY_PLAYER |
-                CollisionController.PhysicsConstants.CATEGORY_ENEMY |
-                CollisionController.PhysicsConstants.CATEGORY_OBSTACLE |
-                CollisionController.PhysicsConstants.CATEGORY_DESTRUCTIBLE |
-                CollisionController.PhysicsConstants.CATEGORY_BOUNCY);
+
 
         body.createFixture(fixtureDef);
         shape.dispose(); // Always dispose shapes after use
