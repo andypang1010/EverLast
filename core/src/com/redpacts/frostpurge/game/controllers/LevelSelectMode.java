@@ -164,7 +164,7 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 	private BitmapFont font;
 	private String selectedLevel;
 	public XBoxController xbox;
-	private float time;
+	public float time;
 
 	private SaveFileManager game;
 

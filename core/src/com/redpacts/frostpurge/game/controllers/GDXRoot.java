@@ -161,7 +161,7 @@ public class GDXRoot extends Game implements ScreenListener {
 
 			levelselect.loading = false;
 			levelselect.loadNext = false;
-			levelselect.resetTime();
+			levelselect.time = -1;
 			levelselect.setScreenListener(this);
 			setScreen(levelselect);
 			mode = "levelselect";
