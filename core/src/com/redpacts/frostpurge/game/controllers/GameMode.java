@@ -643,13 +643,13 @@ public class GameMode implements Screen, InputProcessor {
                 TileModel extraTile = currentLevel.getExtraLayer()[i][j];
                 if(accentTile!=null){
                     float dst2 = (float) (Math.pow(accentTile.getPosition().x-playerX, 2) + Math.pow(accentTile.getPosition().y-playerY, 2));
-                    if(Math.sqrt(dst2) <= 1350){
+                    if(Math.sqrt(dst2) <= 1400){
                         drawble.add(accentTile);
                     }
                 }
                 if(extraTile!=null){
                     float dst2 = (float) (Math.pow(extraTile.getPosition().x-playerX, 2) + Math.pow(extraTile.getPosition().y-playerY, 2));
-                    if(Math.sqrt(dst2) <= 1350){
+                    if(Math.sqrt(dst2) <= 1400){
                         drawble.add(extraTile);
                     }
                 }
