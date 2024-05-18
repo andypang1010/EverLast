@@ -39,6 +39,8 @@
     "ActiveBouncyMushroom": "bouncy/bouncyMushroomFilmstrip.png",
     "BreakableGlassBox": "breakable/breakableGlassBoxFilmstrip.png",
     "BreakableWoodBox": "breakable/breakableWoodBoxFilmstrip.png",
+    "BigGoal": "goal/bigGoalFilmStrip.png",
+    "SmallGoal": "goal/smallGoalFilmStrip.png",
     "tileset": "Tilesets/TileSetComplete.png"
   },
   "sounds" : {
