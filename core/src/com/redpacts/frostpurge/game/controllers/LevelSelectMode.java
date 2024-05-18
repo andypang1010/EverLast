@@ -1587,11 +1587,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		}
 	}
 	public void drawload(){
-//		canvas.begin();
 		canvas.drawBackground(loadingscreen,0,0,true);
 		font.setColor(Color.BLACK);
 		canvas.drawText("Loading...",font,1700*scale,150*scale);
-//		canvas.end();
 	}
 	public void drawloadSneaky(){
 		canvas.drawBackgroundLOAD(loadingscreen,0,0,true);

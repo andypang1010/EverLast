@@ -199,8 +199,6 @@ public class ButtonBox {
         }else{
             int x = (int) (Gdx.input.getX() / screenScale);
             int y = (int) ((Gdx.graphics.getHeight()- Gdx.input.getY()) / screenScale);
-            System.out.println("SCALE");
-            System.out.println(screenScale);
             float centerX = this.bounds.x + this.bounds.width/2;
             float centerY = this.bounds.y + this.bounds.height/2;
             if (bounds.contains(x, y) && !this.enlarged){
