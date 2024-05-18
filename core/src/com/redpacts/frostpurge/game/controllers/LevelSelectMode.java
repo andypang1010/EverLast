@@ -189,8 +189,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		return selectedLevel;
 	}
 	public void increaseLevel(){
-		int curr = selectedLevel.charAt(selectedLevel.length()-1) - 47;
-		selectedLevel = "level" + Integer.toString(curr);
+		String curr = selectedLevel.substring(5);
+		int level = Integer.parseInt(curr)+1;
+		selectedLevel = "level" + Integer.toString(level);
 	}
 	public void resetPressState(){pressState = 0;}
 
