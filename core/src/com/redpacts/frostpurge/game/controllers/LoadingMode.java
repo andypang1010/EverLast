@@ -222,7 +222,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		Texture loadingTexture = new TextureRegion(internal.getEntry("loading2",Texture.class)).getTexture();
 		loading = new FilmStrip(loadingTexture, 1,4,4);
 
-		bounds = new Rectangle(83*STANDARD_WIDTH/100, STANDARD_HEIGHT/8, playButton.getWidth(), playButton.getHeight());
+		bounds = new Rectangle(78*STANDARD_WIDTH/100, STANDARD_HEIGHT/8, playButton.getWidth(), playButton.getHeight());
 		// No progress so far.
 		progress = 0;
 		pressState = 0;
