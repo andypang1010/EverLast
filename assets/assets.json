@@ -79,6 +79,7 @@
     "level12": "levels/Sebastian-1.json",
     "level13": "levels/Sebastian-2.json",
     "level14": "levels/Sebastian-3.json",
+    "level15": "levels/MyLevel12.json",
     "baselayer": "Tilesets/PlaygroundTileset.json",
     "extralayer": "Tilesets/TestHouse.json",
     "tileset": "Tilesets/TileSet.json",
