@@ -189,8 +189,9 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		return selectedLevel;
 	}
 	public void increaseLevel(){
-		int curr = selectedLevel.charAt(selectedLevel.length()-1) - 47;
-		selectedLevel = "level" + Integer.toString(curr);
+		String curr = selectedLevel.substring(5);
+		int level = Integer.parseInt(curr)+1;
+		selectedLevel = "level" + Integer.toString(level);
 	}
 	public void resetPressState(){pressState = 0;}
 
@@ -336,7 +337,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 
 		// Load the level button
 		// Label of each button represents the level number
-//		numberOfLevels = 20; // Number of levels
 		numberOfLevels = 15; // Number of levels
 		levelPage = 0;
 		pageDirection = 0;
@@ -400,27 +400,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		Texture button15 = assets.getEntry("level15", Texture.class);
 		ButtonBox level15Button = new ButtonBox(15,
 				new Rectangle(STANDARD_WIDTH * 68 / 100, STANDARD_HEIGHT * 3/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button15, this);
-//
-//		Texture button16 = assets.getEntry("level16", Texture.class);
-//		ButtonBox level16Button = new ButtonBox(16,
-//				new Rectangle(STANDARD_WIDTH * 8 / 100, STANDARD_HEIGHT * 3/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button16, this);
-//
-//		Texture button17 = assets.getEntry("level17", Texture.class);
-//		ButtonBox level17Button = new ButtonBox(17,
-//				new Rectangle(STANDARD_WIDTH * 38 / 100, STANDARD_HEIGHT * 3/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button17, this);
-//
-//		Texture button18 = assets.getEntry("level18", Texture.class);
-//		ButtonBox level18Button = new ButtonBox(18,
-//				new Rectangle(STANDARD_WIDTH * 68 / 100, STANDARD_HEIGHT * 3/18, 7*button3.getWidth()/8, 7*button3.getHeight()/8), button18, this);
-//
-//		Texture button19 = assets.getEntry("level19", Texture.class);
-//		ButtonBox level19Button = new ButtonBox(19,
-//				new Rectangle(STANDARD_WIDTH * 8 / 100, STANDARD_HEIGHT * 3/18, 7*button1.getWidth()/8, 7*button1.getHeight()/8), button19, this);
-//
-//		Texture button20 = assets.getEntry("level20", Texture.class);
-//		ButtonBox level20Button = new ButtonBox(20,
-//				new Rectangle(STANDARD_WIDTH * 38 / 100, STANDARD_HEIGHT * 3/18, 7*button2.getWidth()/8, 7*button2.getHeight()/8), button20, this);
-
 
 		levels = new Array<>(numberOfLevels);
 		levels.add(level1Button);
@@ -438,11 +417,6 @@ public class LevelSelectMode implements Screen, InputProcessor, ControllerListen
 		levels.add(level13Button);
 		levels.add(level14Button);
 		levels.add(level15Button);
-//		levels.add(level16Button);
-//		levels.add(level17Button);
-//		levels.add(level18Button);
-//		levels.add(level19Button);
-//		levels.add(level20Button);
 
 		// Break up the status bar texture into regions
 		font = assets.getEntry("font", BitmapFont.class);
