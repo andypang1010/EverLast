@@ -26,6 +26,7 @@ public class EnemyController extends CharactersController implements StateMachin
     private float alertRadius = 30f;
     private float currentListenInterval = 0f;
     private final float notHeardToPatrolInterval = 3f;
+    private float quackInterval = 0f;
 
     /*
     FSM
@@ -373,10 +374,16 @@ public class EnemyController extends CharactersController implements StateMachin
 
         if (on) {
 //            quackSound.setVolume(soundId, 1 / (model.getPosition().cpy().sub(playerModel.getPosition()).len()));
-            quackSound.setVolume(soundId, 0.4f  * LevelSelectMode.volumeBar.getValue());
+            quackInterval += Gdx.graphics.getDeltaTime();
+            quackSound.setVolume(soundId, 0.1f  * LevelSelectMode.volumeBar.getValue());
             if (soundId == -1) {
                 soundId = quackSound.loop();
                 ((EnemyModel) model).setQuackId(soundId);
+            } else if (quackInterval > 1.9f && quackInterval <= 3.8f) {
+                ((EnemyModel) model).setQuackId(-1);
+                quackSound.stop(soundId);
+            } else if (quackInterval > 3.8f){
+                quackInterval = 0f;
             }
 
         } else {

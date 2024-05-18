@@ -238,6 +238,7 @@ public class GameMode implements Screen, InputProcessor {
         this.buttons.add(homeButton);
         this.buttons.add(levelSelectButton);
         this.buttons.add(retryButton);
+        this.buttons.add(retryPauseButton);
         this.buttons.add(exitButton);
         this.buttons.add(nextButton);
 
@@ -464,7 +465,7 @@ public class GameMode implements Screen, InputProcessor {
                 gameState = GameState.PAUSE;
 //                pauseButton.resize("up");
                 resumeButton.resize("up");
-                retryButton.resize("down");
+                retryPauseButton.resize("down");
                 levelSelectButton.resize("down");
                 homeButton.resize("down");
             } else if (gameState == GameState.PAUSE && !inputController.didPause()) {
