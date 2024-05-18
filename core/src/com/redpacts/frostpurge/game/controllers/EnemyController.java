@@ -88,6 +88,7 @@ public class EnemyController extends CharactersController implements StateMachin
     }
 
     public void setGoal(TileModel goalTile) {
+
         pathQueue.clear();
 //        System.out.println("!!!Path Queue Cleared!!!");
         System.out.println(((EnemyModel) model).getEnemyType() + " " + ((EnemyModel) model).getID());
@@ -98,29 +99,30 @@ public class EnemyController extends CharactersController implements StateMachin
         for (int i = 1; i < graphPath.getCount(); i++) {
             pathQueue.addLast(graphPath.get(i));
         }
+
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed bottom");
                 graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y-64), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
             }
         }
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed left");
             graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x-64, model.getPosition().y), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
             }
         }
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed top");
             graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x, model.getPosition().y+64), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
             }
         }
         if (pathQueue.isEmpty()){
-            System.out.println("missed");
+            System.out.println("missed right");
             graphPath = tileGraph.findPath(board.getTileState(model.getPosition().x+64, model.getPosition().y), goalTile);
             for (int i = 1; i < graphPath.getCount(); i++) {
                 pathQueue.addLast(graphPath.get(i));
@@ -252,6 +254,10 @@ public class EnemyController extends CharactersController implements StateMachin
 
         // Update enemy's current tile
         currentTile = board.getTileState(model.getPosition().x, model.getPosition().y);
+
+        if (currentTile == null) {
+            return;
+        }
 
         switch (currentState) {
             case PATROL:

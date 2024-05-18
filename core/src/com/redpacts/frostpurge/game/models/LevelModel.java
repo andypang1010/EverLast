@@ -243,7 +243,9 @@ public class LevelModel {
         if (!inBounds(intx, inty)) {
             return null;
         }
-        if (extraLayer[inty][intx]==null){
+        if (extraLayer[inty][intx]==null
+        || extraLayer[inty][intx].getType() == TileModel.TileType.SWAMP
+        || extraLayer[inty][intx].getType() == TileModel.TileType.DESTRUCTIBLE){
             return baseLayer[inty][intx];
         }else{
             return extraLayer[inty][intx];
