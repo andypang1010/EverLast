@@ -138,7 +138,7 @@ public class EnemyModel extends CharactersModel{
             run_up = new FilmStrip(bat, 1, 5, 5);
             run_down = new FilmStrip(bat, 1, 5, 5);
 
-            quackSound = directory.getEntry("Quack", Sound.class);
+            quackSound = directory.getEntry("Bat", Sound.class);
             quackId = -1;
         }else if(Objects.equals(this.enemyType, "flies")){
             Texture flies = new TextureRegion(directory.getEntry("EnemyFly", Texture.class)).getTexture();
@@ -154,7 +154,7 @@ public class EnemyModel extends CharactersModel{
             run_up = new FilmStrip(flies, 1, 6, 6);
             run_down = new FilmStrip(flies, 1, 6, 6);
 
-            quackSound = directory.getEntry("Quack", Sound.class);
+            quackSound = directory.getEntry("Flies", Sound.class);
             quackId = -1;
         }
 
